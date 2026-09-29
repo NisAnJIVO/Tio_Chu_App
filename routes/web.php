@@ -19,6 +19,11 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Endpoint para refrescar el token CSRF (útil tras inactividad prolongada)
+Route::get('/csrf-refresh', function () {
+    return response()->json(['token' => csrf_token()]);
+})->middleware('web')->name('csrf.refresh');
+
 // Rutas Protegidas del Sistema
 Route::middleware('auth')->group(function () {
 

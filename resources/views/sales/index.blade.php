@@ -523,7 +523,7 @@
                             <div>
                                 <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">1. Licores & Combos</h3>
                                 <p class="text-[11px] text-zinc-400">
-                                    Cada combo incluye su soda (Gins incluyen <strong>2 Aguas Tónicas</strong>). Puedes cambiar acompañamiento con el botón <strong>+ Especial</strong>.
+                                    Apertura y reposiciones sincronizadas desde <a href="{{ route('barInventory.index', ['session_id' => $session->id, 'bar' => $selectedBar]) }}" class="text-amber-400 font-bold underline hover:text-amber-300">Inventario de Barras</a>. Cada combo incluye su soda (Gins incluyen <strong>2 Aguas Tónicas</strong>). Puedes cambiar acompañamiento con el botón <strong>+ Especial</strong>.
                                 </p>
                             </div>
                             <span class="text-xs font-mono font-bold text-amber-400" id="badge-liquor-subtotal">

@@ -75,6 +75,8 @@ class BarInventoryController extends Controller
                         'initial_units' => $initialUnits,
                         'added_packages' => 0,
                         'added_units' => 0,
+                        'night_packages' => 0,
+                        'night_units' => 0,
                         'packages' => $initialPackages,
                         'units' => $initialUnits,
                         'total_initial' => $totalInitial,
@@ -114,37 +116,46 @@ class BarInventoryController extends Controller
 
         foreach ($rows as $id => $data) {
             $barSale = BarSale::with('product')->find($id);
-            if ($barSale && $barSale->product) {
-                $unitsPerPkg = $barSale->product->units_per_package > 0 ? (int)$barSale->product->units_per_package : 1;
+            if (!$barSale || !$barSale->product) continue;
 
-                $initPkg = (int)($data['initial_packages'] ?? 0);
-                $initUnits = (int)($data['initial_units'] ?? 0);
-                $addPkg = (int)($data['added_packages'] ?? 0);
-                $addUnits = (int)($data['added_units'] ?? 0);
+            $unitsPerPkg = $barSale->product->units_per_package > 0 ? (int)$barSale->product->units_per_package : 1;
 
-                // Consolidar totales de apertura
-                $totalPkg = $initPkg + $addPkg;
-                $totalUnits = $initUnits + $addUnits;
-                $totalInitial = ($totalPkg * $unitsPerPkg) + $totalUnits;
+            $initPkg   = (int)($data['initial_packages'] ?? 0);
+            $initUnits = (int)($data['initial_units']   ?? 0);
+            $addPkg    = (int)($data['added_packages']  ?? 0);
+            $addUnits  = (int)($data['added_units']     ?? 0);
+            $nightPkg  = (int)($data['night_packages']  ?? 0);
+            $nightUnits= (int)($data['night_units']     ?? 0);
 
-                $barSale->initial_packages = $initPkg;
-                $barSale->initial_units = $initUnits;
-                $barSale->added_packages = $addPkg;
-                $barSale->added_units = $addUnits;
-                $barSale->packages = $totalPkg;
-                $barSale->units = $totalUnits;
-                $barSale->total_initial = $totalInitial;
+            // Total Apertura (inicio de noche)
+            $apertPkg   = $initPkg + $addPkg;
+            $apertUnits = $initUnits + $addUnits;
 
-                // Ajustar saldo y vendido consistentemente
-                $vendido = max(0, $totalInitial - (int)$barSale->saldo);
-                $barSale->vendido = $vendido;
+            // Total Noche (apertura + lo que se agregó durante el turno)
+            $totalNightPkg   = $apertPkg + $nightPkg;
+            $totalNightUnits = $apertUnits + $nightUnits;
+            $totalNightBot   = ($totalNightPkg * $unitsPerPkg) + $totalNightUnits;
 
-                if ($barSale->product->category !== 'Mixers') {
-                    $barSale->subtotal = $vendido * (float)$barSale->unit_price;
-                }
+            // Guardar todos los campos de referencia y los totales de noche
+            $barSale->initial_packages = $initPkg;
+            $barSale->initial_units    = $initUnits;
+            $barSale->added_packages   = $addPkg;
+            $barSale->added_units      = $addUnits;
+            $barSale->night_packages   = $nightPkg;
+            $barSale->night_units      = $nightUnits;
 
-                $barSale->save();
+            // packages/units = Total Noche → lo que Ventas por Barra usa como base
+            $barSale->packages     = $totalNightPkg;
+            $barSale->units        = $totalNightUnits;
+            $barSale->total_initial = $totalNightBot;
+
+            // Ajustar vendido sin sobreescribir el saldo si ya fue editado
+            $barSale->vendido = max(0, $totalNightBot - (int)$barSale->saldo);
+            if ($barSale->product->category !== 'Mixers') {
+                $barSale->subtotal = $barSale->vendido * (float)$barSale->unit_price;
             }
+
+            $barSale->save();
         }
 
         return redirect()->route('barInventory.index', [
@@ -191,8 +202,8 @@ class BarInventoryController extends Controller
 
             $barSale->initial_packages = $initPkg;
             $barSale->initial_units = $initUnits;
-            $barSale->packages = $initPkg + (int)$barSale->added_packages;
-            $barSale->units = $initUnits + (int)$barSale->added_units;
+            $barSale->packages = $initPkg + (int)$barSale->added_packages + (int)$barSale->night_packages;
+            $barSale->units = $initUnits + (int)$barSale->added_units + (int)$barSale->night_units;
             $barSale->total_initial = ($barSale->packages * $unitsPerPkg) + $barSale->units;
             // Si el saldo no se había editado, ajustarlo al total inicial
             if ((int)$barSale->vendido === 0) {

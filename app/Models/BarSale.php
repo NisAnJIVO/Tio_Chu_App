@@ -18,6 +18,8 @@ class BarSale extends Model
         'initial_units',
         'added_packages',
         'added_units',
+        'night_packages',
+        'night_units',
         'selected_special_mixer',
         'packages',
         'units',
@@ -30,17 +32,20 @@ class BarSale extends Model
 
     protected $casts = [
         'initial_packages' => 'integer',
-        'initial_units' => 'integer',
-        'added_packages' => 'integer',
-        'added_units' => 'integer',
-        'packages' => 'integer',
-        'units' => 'integer',
-        'total_initial' => 'integer',
-        'saldo' => 'integer',
-        'vendido' => 'integer',
-        'unit_price' => 'decimal:2',
-        'subtotal' => 'decimal:2',
+        'initial_units'    => 'integer',
+        'added_packages'   => 'integer',
+        'added_units'      => 'integer',
+        'night_packages'   => 'integer',
+        'night_units'      => 'integer',
+        'packages'         => 'integer',
+        'units'            => 'integer',
+        'total_initial'    => 'integer',
+        'saldo'            => 'integer',
+        'vendido'          => 'integer',
+        'unit_price'       => 'decimal:2',
+        'subtotal'         => 'decimal:2',
     ];
+
 
     public function nightSession(): BelongsTo
     {
