@@ -58,5 +58,38 @@
     </main>
 </div>
 
+<script>
+// Refrescar token CSRF antes de cualquier submit de formulario
+// Evita error 419 (Page Expired) por inactividad o servidor reiniciado
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('form').forEach(function(form) {
+        form.addEventListener('submit', async function(e) {
+            // Solo para formularios POST/PUT/PATCH/DELETE
+            const method = (form.querySelector('[name="_method"]')?.value || form.method || 'GET').toUpperCase();
+            if (method === 'GET') return; // GET no necesita CSRF
+
+            e.preventDefault();
+
+            try {
+                const res = await fetch('/csrf-refresh', { credentials: 'same-origin' });
+                const data = await res.json();
+
+                // Actualizar todos los inputs _token del formulario
+                form.querySelectorAll('input[name="_token"]').forEach(function(inp) {
+                    inp.value = data.token;
+                });
+
+                // Actualizar también el meta tag global
+                const metaTag = document.querySelector('meta[name="csrf-token"]');
+                if (metaTag) metaTag.setAttribute('content', data.token);
+            } catch (err) {
+                console.warn('No se pudo refrescar el CSRF token:', err);
+            }
+
+            form.submit();
+        });
+    });
+});
+</script>
 </body>
 </html>

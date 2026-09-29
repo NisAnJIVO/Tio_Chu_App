@@ -239,6 +239,7 @@ class BarSaleController extends Controller
         $updatedSales = [];
         $combosPerMixer = [];
 
+
         foreach ($rows as $id => $data) {
             $barSale = BarSale::with('product')->find($id);
             if (!$barSale) continue;
