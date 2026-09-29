@@ -155,15 +155,35 @@
             </a>
         </div>
 
+        <!-- 5. Multimedia -->
+        <div>
+            <a href="{{ route('media.index') }}" 
+               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('media.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
+                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('media.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                </svg>
+                <span class="truncate">Multimedia</span>
+            </a>
+        </div>
+
     </nav>
 
     <!-- Pie del Sidebar: Usuario & Salida -->
     <div class="p-3.5 border-t shrink-0" style="border-color: #1a1a1f;">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-8 h-8 rounded-xl bg-zinc-900 text-zinc-200 font-semibold text-xs flex items-center justify-center shrink-0 border border-zinc-800">
-                    {{ strtoupper(substr(Auth::user()->name ?? 'D', 0, 1)) }}
-                </div>
+                @if(Auth::user()?->avatar_url)
+                    <img src="{{ Auth::user()->avatar_url }}" 
+                         alt="{{ Auth::user()->name }}" 
+                         class="w-8 h-8 rounded-xl object-cover shrink-0 border border-zinc-850">
+                @else
+                    <div class="w-8 h-8 rounded-xl bg-zinc-900 text-zinc-200 font-semibold text-xs flex items-center justify-center shrink-0 border border-zinc-800">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'D', 0, 1)) }}
+                    </div>
+                @endif
+
                 <div class="truncate">
                     <p class="text-xs font-semibold text-white truncate">{{ Auth::user()->name ?? 'Don Ludo' }}</p>
                     <p class="text-[11px] text-zinc-500 truncate">{{ Auth::user()->email ?? 'admin@tiochu.com' }}</p>

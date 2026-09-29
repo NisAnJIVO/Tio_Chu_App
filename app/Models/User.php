@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -45,5 +46,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * URL completa del avatar de perfil con control de caché.
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if ($this->avatar && file_exists(public_path($this->avatar))) {
+            return asset($this->avatar) . '?v=' . ($this->updated_at ? $this->updated_at->timestamp : time());
+        }
+
+        return null;
     }
 }
