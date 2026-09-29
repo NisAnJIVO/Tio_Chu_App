@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarInventoryController;
 use App\Http\Controllers\BarSaleController;
 use App\Http\Controllers\CashClosingController;
 use App\Http\Controllers\DashboardController;
@@ -40,6 +41,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{session}', [NightSessionController::class, 'destroy'])->name('destroy');
     });
 
+    // 3.5 Inventario de Barras (Apertura & Saldos)
+    Route::prefix('bar-inventory')->name('barInventory.')->group(function () {
+        Route::get('/', [BarInventoryController::class, 'index'])->name('index');
+        Route::put('/bulk-update', [BarInventoryController::class, 'updateBulk'])->name('updateBulk');
+        Route::post('/sync-previous', [BarInventoryController::class, 'syncFromPreviousNight'])->name('sync');
+    });
+
     // 4. Ventas e Inventario por Barra (Módulo 6)
     Route::prefix('sales')->name('sales.')->group(function () {
         Route::get('/', [BarSaleController::class, 'index'])->name('index');
@@ -47,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/store-sales', [StoreSaleController::class, 'store'])->name('storeSales.store');
         Route::delete('/store-sales/{storeSale}', [StoreSaleController::class, 'destroy'])->name('storeSales.destroy');
         Route::post('/tienda-extras', [StoreSaleController::class, 'updateExtras'])->name('tiendaExtras.update');
+        Route::post('/special-mixers', [BarSaleController::class, 'storeSpecialMixer'])->name('specialMixers.store');
     });
 
     // 5. Facturas Emitidas / Tarjetas / POS (Módulo 1)
@@ -85,3 +94,4 @@ Route::middleware('auth')->group(function () {
     });
 
 });
+

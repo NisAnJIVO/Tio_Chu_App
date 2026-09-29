@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,9 +22,16 @@ class NightSession extends Model
     ];
 
     protected $casts = [
-        'session_date' => 'date',
         'pos_commission_rate' => 'decimal:4',
     ];
+
+    protected function sessionDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value ? Carbon::parse($value) : null,
+            set: fn ($value) => $value ? Carbon::parse($value)->format('Y-m-d') : null,
+        );
+    }
 
     public function staffAttendances(): HasMany
     {

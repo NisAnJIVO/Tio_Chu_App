@@ -14,6 +14,11 @@ class BarSale extends Model
         'night_session_id',
         'product_id',
         'bar_name',
+        'initial_packages',
+        'initial_units',
+        'added_packages',
+        'added_units',
+        'selected_special_mixer',
         'packages',
         'units',
         'total_initial',
@@ -24,6 +29,10 @@ class BarSale extends Model
     ];
 
     protected $casts = [
+        'initial_packages' => 'integer',
+        'initial_units' => 'integer',
+        'added_packages' => 'integer',
+        'added_units' => 'integer',
         'packages' => 'integer',
         'units' => 'integer',
         'total_initial' => 'integer',
@@ -48,9 +57,11 @@ class BarSale extends Model
      */
     public function calculateTotals(): void
     {
-        // Total inicial en botellas = paquetes + unidades
-        $this->total_initial = (int)$this->packages + (int)$this->units;
+        $unitsPerPkg = (int)($this->product?->units_per_package ?? 1);
+        if ($unitsPerPkg < 1) $unitsPerPkg = 1;
+        $this->total_initial = ((int)$this->packages * $unitsPerPkg) + (int)$this->units;
         $this->vendido = max(0, $this->total_initial - (int)$this->saldo);
         $this->subtotal = $this->vendido * (float)$this->unit_price;
     }
 }
+

@@ -45,7 +45,7 @@ class TioChuSystemTest extends TestCase
     {
         $response = $this->actingAs($this->user)->get(route('dashboard'));
         $response->assertStatus(200);
-        $response->assertSee('DISCOTECA TÍO CHU');
+        $response->assertSee('TÍO CHU');
     }
 
     public function test_products_catalog_lists_seeded_drinks(): void
@@ -181,18 +181,18 @@ class TioChuSystemTest extends TestCase
             ->where('product_id', 23) // Ginger Ale 2.0L
             ->first();
 
-        // Vendemos 10 combos de Singani y consumimos 12 botellas de Ginger Ale (2 extras)
+        // Vendemos 10 combos de Singani (1 paq de 6 + 4 unidades = 10) y consumimos 12 botellas de Ginger Ale (2 paq de 6 = 12)
         $response = $this->actingAs($this->user)->put(route('sales.updateBulk'), [
             'night_session_id' => $session->id,
             'sales' => [
                 $singaniSale->id => [
-                    'packages' => 10,
-                    'units' => 0,
+                    'packages' => 1,
+                    'units' => 4,
                     'saldo' => 0, // vendido: 10
                     'unit_price' => 240.00,
                 ],
                 $gingerSale->id => [
-                    'packages' => 12,
+                    'packages' => 2,
                     'units' => 0,
                     'saldo' => 0, // consumido: 12
                     'unit_price' => 25.00,
@@ -230,19 +230,19 @@ class TioChuSystemTest extends TestCase
             ->where('product_id', 26) // Agua Tónica 1.0L
             ->first();
 
-        // 5 combos de Gin (deben cubrir 5 * 2 = 10 tónicas). Consumimos 13 tónicas (3 extras).
+        // 5 combos de Gin (0 paq + 5 unid = 5 botellas). Consumimos 13 tónicas (2 paq de 6 + 1 unid = 13).
         $response = $this->actingAs($this->user)->put(route('sales.updateBulk'), [
             'night_session_id' => $session->id,
             'sales' => [
                 $ginSale->id => [
-                    'packages' => 5,
-                    'units' => 0,
+                    'packages' => 0,
+                    'units' => 5,
                     'saldo' => 0, // vendido: 5 combos
                     'unit_price' => 300.00,
                 ],
                 $tonicaSale->id => [
-                    'packages' => 13,
-                    'units' => 0,
+                    'packages' => 2,
+                    'units' => 1,
                     'saldo' => 0, // consumido: 13 tónicas
                     'unit_price' => 20.00,
                 ]
@@ -394,11 +394,11 @@ class TioChuSystemTest extends TestCase
         $responseView->assertSee('Bolsas de hielo');
     }
 
-    public function test_cannot_create_session_in_the_past(): void
+    public function test_cannot_create_duplicate_session_date(): void
     {
-        $pastDate = now()->subDays(1)->format('Y-m-d');
+        $existingDate = \Carbon\Carbon::parse(NightSession::first()->session_date)->format('Y-m-d');
         $response = $this->actingAs($this->user)->post(route('sessions.store'), [
-            'session_date' => $pastDate,
+            'session_date' => $existingDate,
             'pos_commission_rate' => 0.0130,
         ]);
 

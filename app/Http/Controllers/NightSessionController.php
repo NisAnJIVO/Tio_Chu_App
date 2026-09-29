@@ -29,11 +29,10 @@ class NightSessionController extends Controller
         $today = Carbon::now()->format('Y-m-d');
 
         $validated = $request->validate([
-            'session_date' => 'required|date|unique:night_sessions,session_date|after_or_equal:' . $today,
+            'session_date' => 'required|date|unique:night_sessions,session_date',
             'pos_commission_rate' => 'required|numeric|min:0|max:1',
             'notes' => 'nullable|string',
         ], [
-            'session_date.after_or_equal' => 'No puedes programar una noche en una fecha que ya pasó (ayer o anterior).',
             'session_date.unique' => 'Ya existe una noche registrada para esta fecha.',
         ]);
 
@@ -55,7 +54,7 @@ class NightSessionController extends Controller
         // Inicializar resumen de cierre
         CashClosing::create(['night_session_id' => $session->id]);
 
-        // Cargar personal activo según el día de la semana (Sábado viene más personal que Viernes y Domingo)
+        // Cargar personal activo según el día de la semana
         $dayName = $validated['day_name'];
         $staff = Staff::where('is_active', true)->get();
         foreach ($staff as $member) {
@@ -69,18 +68,47 @@ class NightSessionController extends Controller
             }
         }
 
+        // Buscar noche anterior para heredar saldos sobrantes de barra
+        $dateStr = Carbon::parse($validated['session_date'])->format('Y-m-d');
+        $previousSession = NightSession::where('id', '!=', $session->id)
+            ->whereDate('session_date', '<', $dateStr)
+            ->orderByDesc('session_date')
+            ->first() ?? NightSession::where('id', '<', $session->id)->orderByDesc('id')->first();
+
         // Cargar productos en los 3 puntos de venta (Barra Kelly, Barra Ariel, Tienda)
         $products = Product::where('is_active', true)->get();
         foreach (['Barra Kelly (Principal)', 'Barra Ariel (Subte)', 'Tienda'] as $bar) {
             foreach ($products as $prod) {
+                $unitsPerPkg = $prod->units_per_package > 0 ? (int)$prod->units_per_package : 1;
+                $initPkg = 0;
+                $initUnits = 0;
+                $totalInit = 0;
+
+                if ($previousSession && $bar !== 'Tienda') {
+                    $prevSale = BarSale::where('night_session_id', $previousSession->id)
+                        ->where('bar_name', $bar)
+                        ->where('product_id', $prod->id)
+                        ->first();
+
+                    if ($prevSale && (int)$prevSale->saldo > 0) {
+                        $initPkg = intdiv((int)$prevSale->saldo, $unitsPerPkg);
+                        $initUnits = (int)$prevSale->saldo % $unitsPerPkg;
+                        $totalInit = (int)$prevSale->saldo;
+                    }
+                }
+
                 BarSale::create([
                     'night_session_id' => $session->id,
                     'product_id' => $prod->id,
                     'bar_name' => $bar,
-                    'packages' => 0,
-                    'units' => 0,
-                    'total_initial' => 0,
-                    'saldo' => 0,
+                    'initial_packages' => $initPkg,
+                    'initial_units' => $initUnits,
+                    'added_packages' => 0,
+                    'added_units' => 0,
+                    'packages' => $initPkg,
+                    'units' => $initUnits,
+                    'total_initial' => $totalInit,
+                    'saldo' => $totalInit,
                     'vendido' => 0,
                     'unit_price' => $prod->sale_price,
                     'subtotal' => 0,

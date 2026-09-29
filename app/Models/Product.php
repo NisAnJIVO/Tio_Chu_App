@@ -34,6 +34,31 @@ class Product extends Model
         return $this->hasMany(BarSale::class);
     }
 
+    public static function getDrinkSubcategories(): array
+    {
+        return [
+            'Singanis',
+            'Rones',
+            'Fernet',
+            'Whiskys',
+            'Gins',
+            'Tequilas',
+            'Otros',
+        ];
+    }
+
+    public function getDrinkTypeAttribute(): string
+    {
+        $name = strtolower($this->name);
+        if (str_contains($name, 'singani')) return 'Singanis';
+        if (str_contains($name, 'ron')) return 'Rones';
+        if (str_contains($name, 'fernet')) return 'Fernet';
+        if (str_contains($name, 'whisky')) return 'Whiskys';
+        if (str_contains($name, 'gin') || str_contains($name, 'tanqueray') || str_contains($name, 'beefeater') || str_contains($name, 'dharma') || str_contains($name, 'ganesha') || str_contains($name, 'james cook')) return 'Gins';
+        if (str_contains($name, 'tequila') || str_contains($name, 'jagermeister')) return 'Tequilas';
+        return 'Otros';
+    }
+
     /**
      * Mapeo de Licores a su Mixer/Soda incluido en el Combo según el flujo de Tío Chu:
      * - Singanis => Ginger Ale 2.0L (id 23)
@@ -71,3 +96,4 @@ class Product extends Model
         ];
     }
 }
+

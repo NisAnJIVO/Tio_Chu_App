@@ -408,13 +408,122 @@
 
                 <div class="space-y-6">
 
+                <!-- Barra de acciones: Botón Agregar Especial -->
+                <div class="flex justify-end mb-3">
+                    <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')" 
+                            class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all">
+                        <span>+ Nueva Variante / Soda por Categoría</span>
+                    </button>
+                </div>
+
+                <!-- Modal Registrar Variante / Especial en Catálogo -->
+                <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-md w-full shadow-2xl">
+                        <h3 class="text-sm font-black text-white uppercase tracking-wider mb-2">Registrar Variante Especial</h3>
+                        <p class="text-xs text-zinc-400 mb-4">Define una soda/mixer especial para una categoría de tragos (ej: Sprite o Aquarius para Rones/Singanis).</p>
+                        
+                        <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4">
+                            @csrf
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-300 mb-1">Categoría del Trago</label>
+                                <select name="category" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
+                                    <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Categoría --</option>
+                                    @foreach($categories as $cat)
+                                        <option value="{{ $cat }}" class="bg-[#12141c]">{{ $cat }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-300 mb-1">Nombre de la Variante / Soda</label>
+                                <input type="text" name="mixer_name" placeholder="Ej: Sprite 2.0L, Aquarius Pera" required 
+                                    class="glass-input w-full text-xs rounded-xl px-3 py-2 text-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-300 mb-1">Producto Mixer para Descuento en Barra</label>
+                                <select name="product_id" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
+                                    <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Soda / Mixer en Almacén --</option>
+                                    @foreach($allMixerProducts as $mix)
+                                        <option value="{{ $mix->id }}" class="bg-[#12141c]">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="flex justify-end gap-2 pt-3">
+                                <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" 
+                                        class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold">Cancelar</button>
+                                <button type="submit" class="px-5 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110">Guardar en Catálogo</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Asignar Mixers Especiales a la Fila de Venta -->
+                <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-lg w-full shadow-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <div>
+                                <span class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold">Combos Especiales</span>
+                                <h3 class="text-base font-black text-white" id="modal-liquor-title">Licor</h3>
+                            </div>
+                            <button type="button" onclick="closeSpecialModal()" class="text-zinc-400 hover:text-white text-lg font-bold">✕</button>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex items-center justify-between text-xs font-mono">
+                            <div>
+                                <span class="text-zinc-400">Total Combos Vendidos:</span>
+                                <span class="font-bold text-white ml-1 text-sm" id="modal-total-combos">0</span>
+                            </div>
+                            <div>
+                                <span class="text-zinc-400">Mixer por Defecto:</span>
+                                <span class="font-bold text-amber-300 ml-1" id="modal-default-mixer-name">-</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
+                            <p class="text-[11px] text-zinc-400">
+                                Asigna cuántos combos se despacharon con un mixer alternativo (se restarán automáticamente del mixer por defecto):
+                            </p>
+                            
+                            <div class="space-y-2">
+                                @foreach($allMixerProducts as $mixer)
+                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-amber-400/60"></span>
+                                            <span class="text-xs font-medium text-zinc-200">{{ $mixer->name }}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <label class="text-[11px] text-zinc-400 font-mono">Combos:</label>
+                                            <input type="number" min="0" value="0" 
+                                                   data-mixer-id="{{ $mixer->id }}" 
+                                                   data-mixer-name="{{ $mixer->name }}"
+                                                   class="modal-special-qty glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white">
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-amber-400/10 border border-amber-400/20 rounded-xl flex items-center justify-between text-xs font-mono">
+                            <span class="text-zinc-300">Mixers por defecto restantes:</span>
+                            <span class="font-bold text-amber-400 text-sm" id="modal-remaining-default">0</span>
+                        </div>
+
+                        <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
+                            <button type="button" onclick="closeSpecialModal()" class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold">Cancelar</button>
+                            <button type="button" onclick="saveSpecialModal()" class="px-6 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 shadow-lg shadow-amber-500/20">Listo / Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+
                     <!-- 1. TABLA DE LICORES (COMBOS) -->
                     <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
                         <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
                             <div>
                                 <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">1. Licores & Combos</h3>
                                 <p class="text-[11px] text-zinc-400">
-                                    Cada combo incluye su soda (Gins incluyen <strong>2 Aguas Tónicas</strong>).
+                                    Cada combo incluye su soda (Gins incluyen <strong>2 Aguas Tónicas</strong>). Puedes cambiar acompañamiento con el botón <strong>+ Especial</strong>.
                                 </p>
                             </div>
                             <span class="text-xs font-mono font-bold text-amber-400" id="badge-liquor-subtotal">
@@ -429,6 +538,7 @@
                                         <th class="px-4 py-3 w-10 text-center">N°</th>
                                         <th class="px-4 py-3">Licor</th>
                                         <th class="px-4 py-3">Mixer Incluido</th>
+                                        <th class="px-3 py-3 text-center">Especiales</th>
                                         <th class="px-2 py-3 w-20 text-center">Paquete</th>
                                         <th class="px-2 py-3 w-20 text-center">Unidad</th>
                                         <th class="px-4 py-3 w-20 text-center">Total Inicial</th>
@@ -445,15 +555,36 @@
                                             $mixerId = $mixerInfo['mixer_id'] ?? 0;
                                             $mixerRatio = $mixerInfo['ratio'] ?? 1;
                                             $mixerName = 'Solo';
-                                            if ($mixerId == 23) $mixerName = '+ 1 Ginger Ale 2L';
-                                            elseif ($mixerId == 24) $mixerName = '+ 1 Coca Cola 2L';
-                                            elseif ($mixerId == 25) $mixerName = '+ 1 Agua Vital 2L';
-                                            elseif ($mixerId == 26) $mixerName = '+ 2 Aguas Tónicas 1L';
+                                            if ($mixerId == 23) $mixerName = '1 Ginger Ale 2L';
+                                            elseif ($mixerId == 24) $mixerName = '1 Coca Cola 2L';
+                                            elseif ($mixerId == 25) $mixerName = '1 Agua Vital 2L';
+                                            elseif ($mixerId == 26) $mixerName = '2 Aguas Tónicas 1L';
+
+                                            $specialsJson = is_array($sale->selected_special_mixer) ? json_encode($sale->selected_special_mixer) : ($sale->selected_special_mixer ?? '{}');
+                                            $specialsDecoded = [];
+                                            if (!empty($sale->selected_special_mixer)) {
+                                                $decoded = is_string($sale->selected_special_mixer) ? json_decode($sale->selected_special_mixer, true) : $sale->selected_special_mixer;
+                                                if (is_array($decoded)) $specialsDecoded = $decoded;
+                                            }
+
+                                            $badgeParts = [];
+                                            foreach ($specialsDecoded as $mId => $q) {
+                                                if ($q > 0) {
+                                                    $mObj = $allMixerProducts->firstWhere('id', $mId);
+                                                    $shortName = $mObj ? explode(' ', $mObj->name)[0] : 'Mixer';
+                                                    $badgeParts[] = "$shortName ($q)";
+                                                }
+                                            }
+                                            $badgeText = count($badgeParts) > 0 ? implode(', ', $badgeParts) : '+ Especial';
+                                            $hasSpecials = count($badgeParts) > 0;
                                         @endphp
                                         <tr class="hover:bg-white/[0.02] liquor-row" 
                                             data-row-id="{{ $sale->id }}" 
                                             data-product-id="{{ $sale->product_id }}"
+                                            data-product-name="{{ $sale->product->name }}"
+                                            data-units-per-pkg="{{ $sale->product->units_per_package ?? 1 }}"
                                             data-mixer-id="{{ $mixerId }}"
+                                            data-mixer-name="{{ $mixerName }}"
                                             data-mixer-ratio="{{ $mixerRatio }}">
                                             <td class="px-4 py-2.5 text-center text-zinc-500 font-bold">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2.5 font-bold text-white font-sans">
@@ -461,9 +592,26 @@
                                             </td>
                                             <td class="px-4 py-2.5 text-zinc-400 text-[11px]">
                                                 <span class="inline-flex px-2 py-0.5 rounded-full {{ $mixerRatio == 2 ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30 font-bold' : 'bg-white/5 text-zinc-300' }}">
-                                                    {{ $mixerName }}
+                                                    + {{ $mixerName }}
                                                 </span>
                                             </td>
+                                            
+                                            <!-- BOTÓN INTERACTIVO DE MIXER ESPECIAL -->
+                                            <td class="px-3 py-1.5 text-center">
+                                                <input type="hidden" 
+                                                       name="sales[{{ $sale->id }}][selected_special_mixer]" 
+                                                       id="input-specials-{{ $sale->id }}" 
+                                                       value="{{ $specialsJson }}" 
+                                                       class="input-special-mixers">
+                                                <button type="button" 
+                                                        onclick="openSpecialModal({{ $sale->id }})" 
+                                                        id="btn-special-{{ $sale->id }}"
+                                                        class="px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer border {{ $hasSpecials ? 'bg-amber-400/20 text-amber-300 border-amber-400/40 shadow-sm' : 'bg-white/5 hover:bg-white/10 text-zinc-400 border-white/10 hover:text-white' }}">
+                                                    <span class="text-amber-400 font-black">+</span>
+                                                    <span id="badge-special-{{ $sale->id }}">{{ $badgeText }}</span>
+                                                </button>
+                                            </td>
+
                                             <td class="px-2 py-1.5 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][packages]" value="{{ $sale->packages }}" min="0"
                                                        class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white input-packages">
@@ -492,13 +640,13 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="10" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay licores registrados.</td>
+                                            <td colspan="11" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay licores registrados.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                                 <tfoot class="bg-white/[0.03] border-t border-white/10 font-bold text-xs text-white">
                                     <tr>
-                                        <td colspan="7" class="px-4 py-3 text-right uppercase tracking-wider font-mono">Subtotal Combos:</td>
+                                        <td colspan="8" class="px-4 py-3 text-right uppercase tracking-wider font-mono">Subtotal Combos:</td>
                                         <td class="px-4 py-3 text-center font-mono font-black text-amber-400 text-sm" id="tfoot-liquor-vendido">{{ $totalLiquorCombos }}</td>
                                         <td></td>
                                         <td class="px-4 py-3 text-right font-mono font-black text-amber-400 text-sm" id="tfoot-liquor-subtotal">Bs. {{ number_format($subtotalLiquors, 2) }}</td>
@@ -514,7 +662,7 @@
                             <div>
                                 <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">2. Mixers, Sodas & Aguas (Control de Extras)</h3>
                                 <p class="text-[11px] text-zinc-400">
-                                    Las sodas consumidas que pertenecen a los combos se descuentan automáticamente. Solo las adicionales (extras) se cobran.
+                                    Las sodas consumidas que pertenecen a los combos se descuentan automáticamente (incluyendo variantes especiales). Solo las adicionales (extras) se cobran.
                                 </p>
                             </div>
                             <span class="text-xs font-mono font-bold text-amber-400" id="badge-mixer-subtotal">
@@ -543,6 +691,7 @@
                                     @forelse($mixerSales as $index => $sale)
                                         <tr class="hover:bg-white/[0.02] mixer-row" 
                                             data-row-id="{{ $sale->id }}" 
+                                            data-units-per-pkg="{{ $sale->product->units_per_package ?? 1 }}"
                                             data-product-id="{{ $sale->product_id }}">
                                             <td class="px-4 py-2.5 text-center text-zinc-500 font-bold">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2.5 font-bold text-white font-sans">
@@ -616,28 +765,132 @@
                 </div>
             </form>
 
-            <!-- Script Reactivo para Combos, Deducción Automática con Ratio y Extras -->
+            <!-- Script Reactivo para Combos, Deducción Automática y Mixers Especiales -->
             <script>
+            let currentActiveRowId = null;
+
+            function openSpecialModal(rowId) {
+                currentActiveRowId = rowId;
+                const row = document.querySelector(`.liquor-row[data-row-id="${rowId}"]`);
+                if (!row) return;
+
+                const liquorName = row.getAttribute('data-product-name');
+                const defaultMixerName = row.getAttribute('data-mixer-name');
+                const unitsPerPkg = parseInt(row.getAttribute('data-units-per-pkg')) || 1;
+                const pkg = parseInt(row.querySelector('.input-packages').value) || 0;
+                const units = parseInt(row.querySelector('.input-units').value) || 0;
+                const saldo = parseInt(row.querySelector('.input-saldo').value) || 0;
+                const totalCombos = Math.max(0, (pkg * unitsPerPkg + units) - saldo);
+
+                document.getElementById('modal-liquor-title').textContent = liquorName;
+                document.getElementById('modal-total-combos').textContent = totalCombos;
+                document.getElementById('modal-default-mixer-name').textContent = defaultMixerName;
+
+                // Cargar valores actuales del input JSON
+                const inputJson = document.getElementById(`input-specials-${rowId}`);
+                let currentSpecials = {};
+                try {
+                    currentSpecials = JSON.parse(inputJson.value || '{}');
+                } catch(e) {
+                    currentSpecials = {};
+                }
+
+                // Llenar inputs del modal
+                document.querySelectorAll('.modal-special-qty').forEach(inp => {
+                    const mId = inp.getAttribute('data-mixer-id');
+                    inp.value = currentSpecials[mId] || 0;
+                });
+
+                updateModalRemaining(totalCombos);
+                document.getElementById('modal-assign-special').classList.remove('hidden');
+            }
+
+            function updateModalRemaining(totalCombos) {
+                let specialSum = 0;
+                document.querySelectorAll('.modal-special-qty').forEach(inp => {
+                    specialSum += parseInt(inp.value) || 0;
+                });
+                const remaining = Math.max(0, totalCombos - specialSum);
+                const remEl = document.getElementById('modal-remaining-default');
+                remEl.textContent = remaining;
+                if (specialSum > totalCombos) {
+                    remEl.className = 'font-bold text-rose-400 text-sm';
+                    remEl.textContent = `${remaining} (¡Excede los combos!)`;
+                } else {
+                    remEl.className = 'font-bold text-amber-400 text-sm';
+                }
+            }
+
+            document.querySelectorAll('.modal-special-qty').forEach(inp => {
+                inp.addEventListener('input', function() {
+                    const totalCombos = parseInt(document.getElementById('modal-total-combos').textContent) || 0;
+                    updateModalRemaining(totalCombos);
+                });
+            });
+
+            function closeSpecialModal() {
+                document.getElementById('modal-assign-special').classList.add('hidden');
+                currentActiveRowId = null;
+            }
+
+            function saveSpecialModal() {
+                if (!currentActiveRowId) return;
+
+                const rowId = currentActiveRowId;
+                const inputJson = document.getElementById(`input-specials-${rowId}`);
+                const badgeEl = document.getElementById(`badge-special-${rowId}`);
+                const btnEl = document.getElementById(`btn-special-${rowId}`);
+
+                let specialsObj = {};
+                let badgeParts = [];
+
+                document.querySelectorAll('.modal-special-qty').forEach(inp => {
+                    const qty = parseInt(inp.value) || 0;
+                    const mId = inp.getAttribute('data-mixer-id');
+                    const mName = inp.getAttribute('data-mixer-name');
+                    if (qty > 0) {
+                        specialsObj[mId] = qty;
+                        const shortName = mName.split(' ')[0];
+                        badgeParts.push(`${shortName} (${qty})`);
+                    }
+                });
+
+                inputJson.value = JSON.stringify(specialsObj);
+
+                if (badgeParts.length > 0) {
+                    badgeEl.textContent = badgeParts.join(', ');
+                    btnEl.className = 'px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer border bg-amber-400/20 text-amber-300 border-amber-400/40 shadow-sm';
+                } else {
+                    badgeEl.textContent = '+ Especial';
+                    btnEl.className = 'px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer border bg-white/5 hover:bg-white/10 text-zinc-400 border-white/10 hover:text-white';
+                }
+
+                closeSpecialModal();
+                window.recalculateSales();
+            }
+
             document.addEventListener('DOMContentLoaded', function () {
                 const liquorRows = document.querySelectorAll('.liquor-row');
                 const mixerRows = document.querySelectorAll('.mixer-row');
 
                 if (!liquorRows.length && !mixerRows.length) return;
 
-                function recalculate() {
+                window.recalculateSales = function() {
                     let combosPerMixer = {};
                     let totalLiquorCombos = 0;
                     let subtotalLiquors = 0;
 
                     liquorRows.forEach(row => {
+                        const rowId = row.getAttribute('data-row-id');
+                        const unitsPerPkg = parseInt(row.getAttribute('data-units-per-pkg')) || 1;
                         const pkg = parseInt(row.querySelector('.input-packages').value) || 0;
                         const units = parseInt(row.querySelector('.input-units').value) || 0;
                         const saldo = parseInt(row.querySelector('.input-saldo').value) || 0;
                         const price = parseFloat(row.querySelector('.input-price').value) || 0;
-                        const mixerId = parseInt(row.getAttribute('data-mixer-id')) || 0;
+                        const defaultMixerId = parseInt(row.getAttribute('data-mixer-id')) || 0;
                         const mixerRatio = parseInt(row.getAttribute('data-mixer-ratio')) || 1;
 
-                        const totalInitial = pkg + units;
+                        const totalInitial = (pkg * unitsPerPkg) + units;
                         const vendido = Math.max(0, totalInitial - saldo);
                         const subtotal = vendido * price;
 
@@ -648,8 +901,28 @@
                         totalLiquorCombos += vendido;
                         subtotalLiquors += subtotal;
 
-                        if (mixerId > 0) {
-                            combosPerMixer[mixerId] = (combosPerMixer[mixerId] || 0) + (vendido * mixerRatio);
+                        // Parsear especiales asignados a esta fila
+                        const specialInput = document.getElementById(`input-specials-${rowId}`);
+                        let specials = {};
+                        try {
+                            specials = JSON.parse(specialInput.value || '{}');
+                        } catch(e) {
+                            specials = {};
+                        }
+
+                        let specialCount = 0;
+                        for (const [mId, qty] of Object.entries(specials)) {
+                            const q = parseInt(qty) || 0;
+                            if (q > 0) {
+                                combosPerMixer[mId] = (combosPerMixer[mId] || 0) + q;
+                                specialCount += q;
+                            }
+                        }
+
+                        // El mixer por defecto recibe el remanente
+                        if (defaultMixerId > 0) {
+                            const remaining = Math.max(0, vendido - specialCount);
+                            combosPerMixer[defaultMixerId] = (combosPerMixer[defaultMixerId] || 0) + (remaining * mixerRatio);
                         }
                     });
 
@@ -658,13 +931,14 @@
                     let subtotalMixers = 0;
 
                     mixerRows.forEach(row => {
+                        const unitsPerPkg = parseInt(row.getAttribute('data-units-per-pkg')) || 1;
                         const pkg = parseInt(row.querySelector('.input-packages').value) || 0;
                         const units = parseInt(row.querySelector('.input-units').value) || 0;
                         const saldo = parseInt(row.querySelector('.input-saldo').value) || 0;
                         const price = parseFloat(row.querySelector('.input-price').value) || 0;
                         const productId = parseInt(row.getAttribute('data-product-id')) || 0;
 
-                        const totalInitial = pkg + units;
+                        const totalInitial = (pkg * unitsPerPkg) + units;
                         const consumido = Math.max(0, totalInitial - saldo);
                         const included = combosPerMixer[productId] || 0;
                         const extras = Math.max(0, consumido - included);
@@ -698,10 +972,10 @@
 
                     document.getElementById('header-grand-total').innerHTML = `<span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     document.getElementById('footer-grand-total').textContent = 'Bs. ' + grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }
+                };
 
                 document.querySelectorAll('#sales-form input').forEach(input => {
-                    input.addEventListener('input', recalculate);
+                    input.addEventListener('input', window.recalculateSales);
                 });
             });
             </script>

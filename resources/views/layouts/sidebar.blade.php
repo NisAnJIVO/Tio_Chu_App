@@ -75,6 +75,15 @@
                     <span>Inventario Bebidas</span>
                 </a>
 
+                <a href="{{ route('barInventory.index') }}" 
+                   class="flex items-center gap-3 px-3 py-2 text-xs rounded-xl transition-all {{ request()->routeIs('barInventory.*') ? 'bg-amber-400/10 text-amber-400 font-bold border-r-2 border-amber-400 shadow-[inset_0_0_12px_rgba(251,191,36,0.06)]' : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.04]' }}">
+                    <svg class="w-4 h-4 {{ request()->routeIs('barInventory.*') ? 'text-amber-400' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 12h16m-7 6h7"/>
+                        <path d="M4 18h4"/>
+                    </svg>
+                    <span>Inventario Barras</span>
+                </a>
+
                 <a href="{{ route('sales.index') }}" 
                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-xl transition-all {{ request()->routeIs('sales.*') ? 'bg-amber-400/10 text-amber-400 font-bold border-r-2 border-amber-400 shadow-[inset_0_0_12px_rgba(251,191,36,0.06)]' : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.04]' }}">
                     <svg class="w-4 h-4 {{ request()->routeIs('sales.*') ? 'text-amber-400' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
