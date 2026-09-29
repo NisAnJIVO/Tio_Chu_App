@@ -21,11 +21,19 @@ class NightSessionController extends Controller
 
     public function create()
     {
-        return view('sessions.create');
+        $openSession = NightSession::where('status', 'open')->first();
+        return view('sessions.create', compact('openSession'));
     }
 
     public function store(Request $request)
     {
+        // Validar que no haya una noche anterior abierta
+        $openSession = NightSession::where('status', 'open')->first();
+        if ($openSession) {
+            $openDate = Carbon::parse($openSession->session_date)->format('d/m/Y');
+            return redirect()->route('sessions.create')->with('error', "No puedes aperturar una nueva noche porque la jornada del {$openSession->day_name} ({$openDate}) aún se encuentra ABIERTA. Debes realizar el Cierre de Caja definitivo antes de abrir una nueva.");
+        }
+
         $today = Carbon::now()->format('Y-m-d');
 
         $validated = $request->validate([
@@ -48,8 +56,10 @@ class NightSessionController extends Controller
         ];
         $parsedDate = Carbon::parse($validated['session_date']);
         $validated['day_name'] = $diasEspañol[$parsedDate->dayOfWeek] ?? 'Viernes';
+        $validated['status'] = 'open';
 
         $session = NightSession::create($validated);
+        session(['active_night_session_id' => $session->id]);
 
         // Inicializar resumen de cierre
         CashClosing::create(['night_session_id' => $session->id]);

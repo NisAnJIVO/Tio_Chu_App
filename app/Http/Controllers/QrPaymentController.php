@@ -18,11 +18,7 @@ class QrPaymentController extends Controller
 
     public function index(Request $request)
     {
-        $sessionId = $request->get('session_id');
-        $session = $sessionId 
-            ? NightSession::find($sessionId) 
-            : NightSession::orderByDesc('session_date')->first();
-
+        $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $pointsOfSale = ['Barra Principal', 'Tienda', 'Subte'];
@@ -93,6 +89,11 @@ class QrPaymentController extends Controller
             'amount' => 'required|numeric|min:0.01',
         ]);
 
+        $session = NightSession::findOrFail($validated['night_session_id']);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden registrar cobros QR en una noche cerrada.');
+        }
+
         $pointOfSale = $validated['point_of_sale'] ?? 'Barra Principal';
 
         $cobrante = trim($validated['cobrante_name'] ?? $validated['operator_name'] ?? '');
@@ -110,17 +111,18 @@ class QrPaymentController extends Controller
             'is_confirmed' => true,
         ]);
 
-        $session = NightSession::find($validated['night_session_id']);
-        if ($session) {
-            $this->sessionService->recalculateClosing($session);
-        }
+        $this->sessionService->recalculateClosing($session);
 
-        return back()->with('success', 'Pago QR registrado en ' . $validated['point_of_sale'] . '.');
+        return back()->with('success', 'Pago QR registrado en ' . $pointOfSale . '.');
     }
 
     public function destroy(QrPayment $qr)
     {
         $session = $qr->nightSession;
+        if ($session && !$session->isOpen()) {
+            return back()->with('error', 'No se pueden anular cobros QR de una noche cerrada.');
+        }
+
         $qr->delete();
 
         if ($session) {

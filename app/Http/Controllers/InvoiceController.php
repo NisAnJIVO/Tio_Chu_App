@@ -18,11 +18,7 @@ class InvoiceController extends Controller
 
     public function index(Request $request)
     {
-        $sessionId = $request->get('session_id');
-        $session = $sessionId 
-            ? NightSession::find($sessionId) 
-            : NightSession::orderByDesc('session_date')->first();
-
+        $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $invoices = collect();
@@ -75,6 +71,10 @@ class InvoiceController extends Controller
         ]);
 
         $session = NightSession::findOrFail($validated['night_session_id']);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden registrar facturas en una noche cerrada.');
+        }
+
         $commissionRate = $validated['commission_rate'] ?? $session->pos_commission_rate;
 
         $invoice = new Invoice();
@@ -96,6 +96,10 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         $session = $invoice->nightSession;
+        if ($session && !$session->isOpen()) {
+            return back()->with('error', 'No se pueden eliminar facturas de una noche cerrada.');
+        }
+
         $invoice->delete();
 
         if ($session) {

@@ -399,6 +399,115 @@
                 </div>
             </div>
 
+            <!-- Barra de acciones: Botón Agregar Especial -->
+            <div class="flex justify-end mb-3">
+                <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')" 
+                        class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all">
+                    <span>+ Nueva Variante / Soda por Categoría</span>
+                </button>
+            </div>
+
+            <!-- Modal Registrar Variante / Especial en Catálogo -->
+            <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-md w-full shadow-2xl">
+                    <h3 class="text-sm font-black text-white uppercase tracking-wider mb-2">Registrar Variante Especial</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Define una soda/mixer especial para una categoría de tragos (ej: Sprite o Aquarius para Rones/Singanis).</p>
+                    
+                    <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-300 mb-1">Categoría del Trago</label>
+                            <select name="category" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
+                                <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Categoría --</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat }}" class="bg-[#12141c]">{{ $cat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-300 mb-1">Nombre de la Variante / Soda</label>
+                            <input type="text" name="mixer_name" placeholder="Ej: Sprite 2.0L, Aquarius Pera" required 
+                                class="glass-input w-full text-xs rounded-xl px-3 py-2 text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-300 mb-1">Producto Mixer para Descuento en Barra</label>
+                            <select name="product_id" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
+                                <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Soda / Mixer en Almacén --</option>
+                                @foreach($allMixerProducts as $mix)
+                                    <option value="{{ $mix->id }}" class="bg-[#12141c]">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex justify-end gap-2 pt-3">
+                            <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" 
+                                    class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold cursor-pointer">Cancelar</button>
+                            <button type="submit" class="px-5 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 cursor-pointer">Guardar en Catálogo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Asignar Mixers Especiales a la Fila de Venta -->
+            <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-lg w-full shadow-2xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div>
+                            <span class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold">Combos Especiales</span>
+                            <h3 class="text-base font-black text-white" id="modal-liquor-title">Licor</h3>
+                        </div>
+                        <button type="button" onclick="closeSpecialModal()" class="text-zinc-400 hover:text-white text-lg font-bold cursor-pointer">✕</button>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex items-center justify-between text-xs font-mono">
+                        <div>
+                            <span class="text-zinc-400">Total Combos Vendidos:</span>
+                            <span class="font-bold text-white ml-1 text-sm" id="modal-total-combos">0</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Mixer por Defecto:</span>
+                            <span class="font-bold text-amber-300 ml-1" id="modal-default-mixer-name">-</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
+                        <p class="text-[11px] text-zinc-400">
+                            Asigna cuántos combos se despacharon con un mixer alternativo (se restarán automáticamente del mixer por defecto):
+                        </p>
+                        
+                        <div class="space-y-2">
+                            @foreach($allMixerProducts as $mixer)
+                                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-amber-400/60"></span>
+                                        <span class="text-xs font-medium text-zinc-200">{{ $mixer->name }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[11px] text-zinc-400 font-mono">Combos:</label>
+                                        <input type="number" min="0" value="0" 
+                                               data-mixer-id="{{ $mixer->id }}" 
+                                               data-mixer-name="{{ $mixer->name }}"
+                                               class="modal-special-qty glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-amber-400/10 border border-amber-400/20 rounded-xl flex items-center justify-between text-xs font-mono">
+                        <span class="text-zinc-300">Mixers por defecto restantes:</span>
+                        <span class="font-bold text-amber-400 text-sm" id="modal-remaining-default">0</span>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
+                        <button type="button" onclick="closeSpecialModal()" class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold cursor-pointer">Cancelar</button>
+                        <button type="button" onclick="saveSpecialModal()" class="px-6 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 shadow-lg shadow-amber-500/20 cursor-pointer">Listo / Aplicar</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Formulario Tabular de Inventario y Ventas para Barras -->
             <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form">
                 @csrf
@@ -407,115 +516,6 @@
                 <input type="hidden" name="bar_name" value="{{ $selectedBar }}">
 
                 <div class="space-y-6">
-
-                <!-- Barra de acciones: Botón Agregar Especial -->
-                <div class="flex justify-end mb-3">
-                    <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')" 
-                            class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all">
-                        <span>+ Nueva Variante / Soda por Categoría</span>
-                    </button>
-                </div>
-
-                <!-- Modal Registrar Variante / Especial en Catálogo -->
-                <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-md w-full shadow-2xl">
-                        <h3 class="text-sm font-black text-white uppercase tracking-wider mb-2">Registrar Variante Especial</h3>
-                        <p class="text-xs text-zinc-400 mb-4">Define una soda/mixer especial para una categoría de tragos (ej: Sprite o Aquarius para Rones/Singanis).</p>
-                        
-                        <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4">
-                            @csrf
-                            <div>
-                                <label class="block text-xs font-medium text-zinc-300 mb-1">Categoría del Trago</label>
-                                <select name="category" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
-                                    <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Categoría --</option>
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat }}" class="bg-[#12141c]">{{ $cat }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-medium text-zinc-300 mb-1">Nombre de la Variante / Soda</label>
-                                <input type="text" name="mixer_name" placeholder="Ej: Sprite 2.0L, Aquarius Pera" required 
-                                    class="glass-input w-full text-xs rounded-xl px-3 py-2 text-white">
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-medium text-zinc-300 mb-1">Producto Mixer para Descuento en Barra</label>
-                                <select name="product_id" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
-                                    <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Soda / Mixer en Almacén --</option>
-                                    @foreach($allMixerProducts as $mix)
-                                        <option value="{{ $mix->id }}" class="bg-[#12141c]">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="flex justify-end gap-2 pt-3">
-                                <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" 
-                                        class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold">Cancelar</button>
-                                <button type="submit" class="px-5 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110">Guardar en Catálogo</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Modal Asignar Mixers Especiales a la Fila de Venta -->
-                <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-lg w-full shadow-2xl space-y-4">
-                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                            <div>
-                                <span class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold">Combos Especiales</span>
-                                <h3 class="text-base font-black text-white" id="modal-liquor-title">Licor</h3>
-                            </div>
-                            <button type="button" onclick="closeSpecialModal()" class="text-zinc-400 hover:text-white text-lg font-bold">✕</button>
-                        </div>
-
-                        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex items-center justify-between text-xs font-mono">
-                            <div>
-                                <span class="text-zinc-400">Total Combos Vendidos:</span>
-                                <span class="font-bold text-white ml-1 text-sm" id="modal-total-combos">0</span>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400">Mixer por Defecto:</span>
-                                <span class="font-bold text-amber-300 ml-1" id="modal-default-mixer-name">-</span>
-                            </div>
-                        </div>
-
-                        <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
-                            <p class="text-[11px] text-zinc-400">
-                                Asigna cuántos combos se despacharon con un mixer alternativo (se restarán automáticamente del mixer por defecto):
-                            </p>
-                            
-                            <div class="space-y-2">
-                                @foreach($allMixerProducts as $mixer)
-                                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-amber-400/60"></span>
-                                            <span class="text-xs font-medium text-zinc-200">{{ $mixer->name }}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <label class="text-[11px] text-zinc-400 font-mono">Combos:</label>
-                                            <input type="number" min="0" value="0" 
-                                                   data-mixer-id="{{ $mixer->id }}" 
-                                                   data-mixer-name="{{ $mixer->name }}"
-                                                   class="modal-special-qty glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white">
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="p-3 bg-amber-400/10 border border-amber-400/20 rounded-xl flex items-center justify-between text-xs font-mono">
-                            <span class="text-zinc-300">Mixers por defecto restantes:</span>
-                            <span class="font-bold text-amber-400 text-sm" id="modal-remaining-default">0</span>
-                        </div>
-
-                        <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
-                            <button type="button" onclick="closeSpecialModal()" class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold">Cancelar</button>
-                            <button type="button" onclick="saveSpecialModal()" class="px-6 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 shadow-lg shadow-amber-500/20">Listo / Aplicar</button>
-                        </div>
-                    </div>
-                </div>
 
                     <!-- 1. TABLA DE LICORES (COMBOS) -->
                     <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">

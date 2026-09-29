@@ -19,11 +19,7 @@ class BarInventoryController extends Controller
 
     public function index(Request $request)
     {
-        $sessionId = $request->get('session_id');
-        $session = $sessionId 
-            ? NightSession::find($sessionId) 
-            : NightSession::orderByDesc('session_date')->first();
-
+        $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $selectedBar = $request->get('bar', 'Barra Kelly (Principal)');
@@ -93,6 +89,48 @@ class BarInventoryController extends Controller
                 ->where('bar_name', $selectedBar)
                 ->get();
 
+            // Sincronizar automáticamente el saldo inicial si la sesión anterior fue modificada
+            if ($previousSession) {
+                foreach ($allBarSales as $barSale) {
+                    if (!$barSale->product) continue;
+                    $prevSale = BarSale::where('night_session_id', $previousSession->id)
+                        ->where('bar_name', $selectedBar)
+                        ->where('product_id', $barSale->product_id)
+                        ->first();
+
+                    $prevSaldo = $prevSale ? (int)$prevSale->saldo : 0;
+                    $unitsPerPkg = $barSale->product->units_per_package > 0 ? (int)$barSale->product->units_per_package : 1;
+
+                    $expectedInitPkg = intdiv($prevSaldo, $unitsPerPkg);
+                    $expectedInitUnits = $prevSaldo % $unitsPerPkg;
+
+                    if ($barSale->initial_packages !== $expectedInitPkg || $barSale->initial_units !== $expectedInitUnits) {
+                        $barSale->initial_packages = $expectedInitPkg;
+                        $barSale->initial_units = $expectedInitUnits;
+
+                        $totalNightPkg = $expectedInitPkg + (int)$barSale->added_packages + (int)$barSale->night_packages;
+                        $totalNightUnits = $expectedInitUnits + (int)$barSale->added_units + (int)$barSale->night_units;
+                        $totalNightBot = ($totalNightPkg * $unitsPerPkg) + $totalNightUnits;
+
+                        $barSale->packages = $totalNightPkg;
+                        $barSale->units = $totalNightUnits;
+                        $barSale->total_initial = $totalNightBot;
+
+                        if ((int)$barSale->vendido === 0) {
+                            $barSale->saldo = $totalNightBot;
+                        } else {
+                            $barSale->vendido = max(0, $totalNightBot - (int)$barSale->saldo);
+                        }
+
+                        if ($barSale->product->category !== 'Mixers') {
+                            $barSale->subtotal = $barSale->vendido * (float)$barSale->unit_price;
+                        }
+
+                        $barSale->save();
+                    }
+                }
+            }
+
             $liquorSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category !== 'Mixers');
             $mixerSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category === 'Mixers');
         }
@@ -110,9 +148,14 @@ class BarInventoryController extends Controller
 
     public function updateBulk(Request $request)
     {
+        $sessionId = $request->input('night_session_id');
+        $session = NightSession::find($sessionId);
+        if ($session && !$session->isOpen()) {
+            return back()->with('error', 'La noche está cerrada. Para modificar aperturas o inventario, reabre la noche desde Cierre de Caja.');
+        }
+
         $rows = $request->input('inventory', []);
         $selectedBar = $request->input('bar_name', 'Barra Kelly (Principal)');
-        $sessionId = $request->input('night_session_id');
 
         foreach ($rows as $id => $data) {
             $barSale = BarSale::with('product')->find($id);
@@ -173,6 +216,9 @@ class BarInventoryController extends Controller
         $selectedBar = $request->input('bar_name');
 
         $session = NightSession::findOrFail($sessionId);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'La noche está cerrada. No se pueden sincronizar saldos en una noche cerrada.');
+        }
         $dateStr = \Carbon\Carbon::parse($session->session_date)->format('Y-m-d');
         $previousSession = NightSession::where('id', '!=', $session->id)
             ->whereDate('session_date', '<', $dateStr)

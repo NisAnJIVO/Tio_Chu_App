@@ -19,12 +19,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        // Obtener noche seleccionada o la última abierta/disponible
-        $sessionId = $request->get('session_id');
-        $session = $sessionId 
-            ? NightSession::find($sessionId) 
-            : NightSession::orderByDesc('session_date')->first();
-
+        $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $closing = null;

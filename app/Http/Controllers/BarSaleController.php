@@ -22,11 +22,7 @@ class BarSaleController extends Controller
 
     public function index(Request $request)
     {
-        $sessionId = $request->get('session_id');
-        $session = $sessionId 
-            ? NightSession::find($sessionId) 
-            : NightSession::orderByDesc('session_date')->first();
-
+        $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $selectedBar = $request->get('bar', 'Barra Kelly (Principal)');
@@ -230,9 +226,14 @@ class BarSaleController extends Controller
 
     public function updateBulk(Request $request)
     {
+        $sessionId = $request->input('night_session_id');
+        $session = NightSession::find($sessionId);
+        if ($session && !$session->isOpen()) {
+            return back()->with('error', 'La noche está cerrada. Para modificar ventas o combos, reabre la noche desde Cierre de Caja.');
+        }
+
         $rows = $request->input('sales', []);
         $mapping = Product::getMixerMapping();
-        $sessionId = $request->input('night_session_id');
         $barName = $request->input('bar_name', 'Barra Kelly (Principal)');
 
         // 1ra pasada: Actualizar inventario de licores y calcular subtotal de combos
@@ -318,7 +319,7 @@ class BarSaleController extends Controller
             $mixerSale->save();
         }
 
-        // Actualizar guardarropa/snacks si los hay
+        // Propagar saldos a la siguiente noche si existe (para mantener el inventario sincronizado)
         if ($sessionId) {
             $session = NightSession::find($sessionId);
             if ($session) {
@@ -331,6 +332,57 @@ class BarSaleController extends Controller
                 }
                 $closing->save();
                 $this->sessionService->recalculateClosing($session);
+
+                // Buscar la siguiente noche inmediata
+                $dateStr = \Carbon\Carbon::parse($session->session_date)->format('Y-m-d');
+                $nextSession = NightSession::where('id', '!=', $session->id)
+                    ->whereDate('session_date', '>', $dateStr)
+                    ->orderBy('session_date')
+                    ->first() ?? NightSession::where('id', '>', $session->id)->orderBy('id')->first();
+
+                if ($nextSession) {
+                    $nextSales = BarSale::with('product')
+                        ->where('night_session_id', $nextSession->id)
+                        ->where('bar_name', $barName)
+                        ->get();
+
+                    foreach ($nextSales as $nextSale) {
+                        if (!$nextSale->product) continue;
+                        $curSale = BarSale::where('night_session_id', $session->id)
+                            ->where('bar_name', $barName)
+                            ->where('product_id', $nextSale->product_id)
+                            ->first();
+
+                        $curSaldo = $curSale ? (int)$curSale->saldo : 0;
+                        $unitsPerPkg = $nextSale->product->units_per_package > 0 ? (int)$nextSale->product->units_per_package : 1;
+
+                        $nextInitPkg = intdiv($curSaldo, $unitsPerPkg);
+                        $nextInitUnits = $curSaldo % $unitsPerPkg;
+
+                        $nextSale->initial_packages = $nextInitPkg;
+                        $nextSale->initial_units = $nextInitUnits;
+
+                        $totNightPkg = $nextInitPkg + (int)$nextSale->added_packages + (int)$nextSale->night_packages;
+                        $totNightUnits = $nextInitUnits + (int)$nextSale->added_units + (int)$nextSale->night_units;
+                        $totNightBot = ($totNightPkg * $unitsPerPkg) + $totNightUnits;
+
+                        $nextSale->packages = $totNightPkg;
+                        $nextSale->units = $totNightUnits;
+                        $nextSale->total_initial = $totNightBot;
+
+                        if ((int)$nextSale->vendido === 0) {
+                            $nextSale->saldo = $totNightBot;
+                        } else {
+                            $nextSale->vendido = max(0, $totNightBot - (int)$nextSale->saldo);
+                        }
+
+                        if ($nextSale->product->category !== 'Mixers') {
+                            $nextSale->subtotal = $nextSale->vendido * (float)$nextSale->unit_price;
+                        }
+
+                        $nextSale->save();
+                    }
+                }
             }
         }
 

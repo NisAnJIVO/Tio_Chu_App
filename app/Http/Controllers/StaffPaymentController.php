@@ -19,11 +19,7 @@ class StaffPaymentController extends Controller
 
     public function index(Request $request)
     {
-        $sessionId = $request->get('session_id');
-        $session = $sessionId 
-            ? NightSession::find($sessionId) 
-            : NightSession::orderByDesc('session_date')->first();
-
+        $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $attendances = collect();
@@ -114,6 +110,13 @@ class StaffPaymentController extends Controller
 
     public function update(Request $request)
     {
+        if ($request->has('night_session_id')) {
+            $session = NightSession::find($request->input('night_session_id'));
+            if ($session && !$session->isOpen()) {
+                return back()->with('error', 'No se pueden modificar pagos en una noche cerrada.');
+            }
+        }
+
         $attendancesData = $request->input('attendances', []);
 
         foreach ($attendancesData as $id => $data) {
@@ -126,11 +129,8 @@ class StaffPaymentController extends Controller
             }
         }
 
-        if ($request->has('night_session_id')) {
-            $session = NightSession::find($request->input('night_session_id'));
-            if ($session) {
-                $this->sessionService->recalculateClosing($session);
-            }
+        if (isset($session) && $session) {
+            $this->sessionService->recalculateClosing($session);
         }
 
         return back()->with('success', 'Planilla de pagos actualizada.');
@@ -138,6 +138,10 @@ class StaffPaymentController extends Controller
 
     public function markAllPaid(Request $request, NightSession $session)
     {
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden modificar pagos en una noche cerrada.');
+        }
+
         StaffAttendance::where('night_session_id', $session->id)->update(['is_paid' => true]);
         $this->sessionService->recalculateClosing($session);
 
@@ -153,6 +157,10 @@ class StaffPaymentController extends Controller
         ]);
 
         $session = NightSession::findOrFail($validated['night_session_id']);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se puede agregar personal en una noche cerrada.');
+        }
+
         $staff = Staff::findOrFail($validated['staff_id']);
 
         $payAmount = isset($validated['pay_amount']) && $validated['pay_amount'] > 0
@@ -178,6 +186,10 @@ class StaffPaymentController extends Controller
     public function destroy(StaffAttendance $attendance)
     {
         $session = $attendance->nightSession;
+        if ($session && !$session->isOpen()) {
+            return back()->with('error', 'No se puede eliminar personal de una noche cerrada.');
+        }
+
         $name = $attendance->staff->name ?? 'Personal';
         $attendance->delete();
 

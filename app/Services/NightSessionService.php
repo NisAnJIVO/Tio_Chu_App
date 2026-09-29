@@ -8,6 +8,35 @@ use App\Models\NightSession;
 class NightSessionService
 {
     /**
+     * Resuelve la sesión activa o seleccionada, recordando la selección en la sesión HTTP
+     */
+    public function resolveSession(?int $sessionId = null): ?NightSession
+    {
+        if ($sessionId) {
+            $session = NightSession::find($sessionId);
+            if ($session) {
+                session(['active_night_session_id' => $session->id]);
+                return $session;
+            }
+        }
+
+        $sessionFromStorage = session('active_night_session_id');
+        if ($sessionFromStorage) {
+            $session = NightSession::find($sessionFromStorage);
+            if ($session) {
+                return $session;
+            }
+        }
+
+        $session = NightSession::orderByDesc('session_date')->first();
+        if ($session) {
+            session(['active_night_session_id' => $session->id]);
+        }
+
+        return $session;
+    }
+
+    /**
      * Recalcula y sincroniza el cuadre de caja de una noche
      */
     public function recalculateClosing(NightSession $session): CashClosing

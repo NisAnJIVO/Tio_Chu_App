@@ -35,14 +35,14 @@
                             class="glass-input text-xs font-mono font-bold rounded-xl px-2.5 py-1.5 text-zinc-100 cursor-pointer">
                         @foreach($allSessions as $s)
                             <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-[#12141c] text-zinc-100">
-                                {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}
+                                {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'Abierta' : 'Cerrada' }})
                             </option>
                         @endforeach
                     </select>
                 </form>
             @endif
 
-            @if($session && $previousSession)
+            @if($session && $previousSession && $session->isOpen())
                 <form method="POST" action="{{ route('barInventory.sync') }}" onsubmit="return confirm('¿Deseas volver a sincronizar los saldos de la noche anterior? Se actualizará el saldo inicial.');">
                     @csrf
                     <input type="hidden" name="session_id" value="{{ $session->id }}">
@@ -55,6 +55,24 @@
             @endif
         </div>
     </div>
+
+    @if($session && !$session->isOpen())
+        <div class="glass-panel p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-xl flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-xl">🔒</span>
+                <div>
+                    <h4 class="text-xs font-black text-rose-300 uppercase tracking-wider font-mono">Noche Cerrada (Modo Solo Lectura)</h4>
+                    <p class="text-xs text-zinc-300 mt-0.5">
+                        Esta jornada fue finalizada en Cierre de Caja. Las aperturas y reposiciones no pueden ser modificadas.
+                    </p>
+                </div>
+            </div>
+            <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" 
+               class="px-3.5 py-1.5 glass-card border border-rose-400/30 text-rose-300 hover:text-white hover:bg-rose-500/20 rounded-xl text-xs font-bold font-mono transition-all shrink-0">
+                Ver en Cierre de Caja &rarr;
+            </a>
+        </div>
+    @endif
 
     @if(!$session)
         <div class="glass-panel border border-white/10 rounded-3xl p-12 text-center shadow-2xl">
@@ -188,22 +206,22 @@
                                         
                                         <!-- Saldo Anterior -->
                                         <td class="px-1.5 py-1.5 text-center border-l border-white/5">
-                                            <input type="number" name="inventory[{{ $sale->id }}][initial_packages]" value="{{ $initPkg }}" min="0"
-                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-pkg">
+                                            <input type="number" name="inventory[{{ $sale->id }}][initial_packages]" value="{{ $initPkg }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-pkg disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
                                         <td class="px-1.5 py-1.5 text-center border-r border-white/5">
-                                            <input type="number" name="inventory[{{ $sale->id }}][initial_units]" value="{{ $initUnits }}" min="0"
-                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-units">
+                                            <input type="number" name="inventory[{{ $sale->id }}][initial_units]" value="{{ $initUnits }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-units disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
 
                                         <!-- Agregar al Inicio (Apertura) -->
                                         <td class="px-1.5 py-1.5 text-center bg-amber-400/[0.02]">
-                                            <input type="number" name="inventory[{{ $sale->id }}][added_packages]" value="{{ $addPkg }}" min="0"
-                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-pkg">
+                                            <input type="number" name="inventory[{{ $sale->id }}][added_packages]" value="{{ $addPkg }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-pkg disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
                                         <td class="px-1.5 py-1.5 text-center border-r border-white/5 bg-amber-400/[0.02]">
-                                            <input type="number" name="inventory[{{ $sale->id }}][added_units]" value="{{ $addUnits }}" min="0"
-                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-units">
+                                            <input type="number" name="inventory[{{ $sale->id }}][added_units]" value="{{ $addUnits }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-units disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
 
                                         <!-- Total Apertura -->
@@ -220,18 +238,26 @@
                                         <!-- + Durante Noche (con botones +/- interactivos) -->
                                         <td class="px-2 py-1.5 text-center bg-emerald-500/[0.04]">
                                             <div class="flex items-center justify-center gap-1">
-                                                <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
-                                                <input type="number" name="inventory[{{ $sale->id }}][night_packages]" value="{{ $nightPkg }}" min="0"
-                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-pkg">
-                                                <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
+                                                @endif
+                                                <input type="number" name="inventory[{{ $sale->id }}][night_packages]" value="{{ $nightPkg }}" min="0" @disabled(!$session->isOpen())
+                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-pkg disabled:opacity-50 disabled:cursor-not-allowed">
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="px-2 py-1.5 text-center border-r border-white/5 bg-emerald-500/[0.04]">
                                             <div class="flex items-center justify-center gap-1">
-                                                <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
-                                                <input type="number" name="inventory[{{ $sale->id }}][night_units]" value="{{ $nightUnits }}" min="0"
-                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-units">
-                                                <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
+                                                @endif
+                                                <input type="number" name="inventory[{{ $sale->id }}][night_units]" value="{{ $nightUnits }}" min="0" @disabled(!$session->isOpen())
+                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-units disabled:opacity-50 disabled:cursor-not-allowed">
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @endif
                                             </div>
                                         </td>
 
@@ -359,22 +385,22 @@
                                         
                                         <!-- Saldo Anterior -->
                                         <td class="px-1.5 py-1.5 text-center border-l border-white/5">
-                                            <input type="number" name="inventory[{{ $sale->id }}][initial_packages]" value="{{ $initPkg }}" min="0"
-                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-pkg">
+                                            <input type="number" name="inventory[{{ $sale->id }}][initial_packages]" value="{{ $initPkg }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-pkg disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
                                         <td class="px-1.5 py-1.5 text-center border-r border-white/5">
-                                            <input type="number" name="inventory[{{ $sale->id }}][initial_units]" value="{{ $initUnits }}" min="0"
-                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-units">
+                                            <input type="number" name="inventory[{{ $sale->id }}][initial_units]" value="{{ $initUnits }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-bold text-zinc-300 input-init-units disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
 
                                         <!-- Agregar al Inicio (Apertura) -->
                                         <td class="px-1.5 py-1.5 text-center bg-amber-400/[0.02]">
-                                            <input type="number" name="inventory[{{ $sale->id }}][added_packages]" value="{{ $addPkg }}" min="0"
-                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-pkg">
+                                            <input type="number" name="inventory[{{ $sale->id }}][added_packages]" value="{{ $addPkg }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-pkg disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
                                         <td class="px-1.5 py-1.5 text-center border-r border-white/5 bg-amber-400/[0.02]">
-                                            <input type="number" name="inventory[{{ $sale->id }}][added_units]" value="{{ $addUnits }}" min="0"
-                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-units">
+                                            <input type="number" name="inventory[{{ $sale->id }}][added_units]" value="{{ $addUnits }}" min="0" @disabled(!$session->isOpen())
+                                                   class="glass-input w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-black text-amber-300 border-amber-400/30 input-add-units disabled:opacity-50 disabled:cursor-not-allowed">
                                         </td>
 
                                         <!-- Total Apertura -->
@@ -391,18 +417,26 @@
                                         <!-- + Durante Noche (con botones +/- interactivos) -->
                                         <td class="px-2 py-1.5 text-center bg-emerald-500/[0.04]">
                                             <div class="flex items-center justify-center gap-1">
-                                                <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
-                                                <input type="number" name="inventory[{{ $sale->id }}][night_packages]" value="{{ $nightPkg }}" min="0"
-                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-pkg">
-                                                <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
+                                                @endif
+                                                <input type="number" name="inventory[{{ $sale->id }}][night_packages]" value="{{ $nightPkg }}" min="0" @disabled(!$session->isOpen())
+                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-pkg disabled:opacity-50 disabled:cursor-not-allowed">
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="px-2 py-1.5 text-center border-r border-white/5 bg-emerald-500/[0.04]">
                                             <div class="flex items-center justify-center gap-1">
-                                                <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
-                                                <input type="number" name="inventory[{{ $sale->id }}][night_units]" value="{{ $nightUnits }}" min="0"
-                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-units">
-                                                <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-minus w-6 h-6 rounded-md bg-white/10 hover:bg-red-500/20 active:scale-90 text-zinc-300 hover:text-red-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">−</button>
+                                                @endif
+                                                <input type="number" name="inventory[{{ $sale->id }}][night_units]" value="{{ $nightUnits }}" min="0" @disabled(!$session->isOpen())
+                                                       class="glass-input w-12 text-center rounded-lg px-1 py-1 text-xs font-mono font-black text-emerald-300 border-emerald-500/30 input-night-units disabled:opacity-50 disabled:cursor-not-allowed">
+                                                @if($session->isOpen())
+                                                    <button type="button" class="btn-step-plus w-6 h-6 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 font-black text-sm flex items-center justify-center transition-all cursor-pointer select-none">+</button>
+                                                @endif
                                             </div>
                                         </td>
 
@@ -432,9 +466,16 @@
                     <div class="text-xs font-mono text-zinc-400">
                         * Al presionar guardar, los valores de <span class="text-amber-300 font-bold">Total Noche</span> se autocompletan directamente en <a href="{{ route('sales.index', ['session_id' => $session->id, 'bar' => $selectedBar]) }}" class="text-amber-400 underline font-bold">Ventas por Barra</a>.
                     </div>
-                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 text-xs font-black rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-amber-500/25 cursor-pointer uppercase tracking-wider">
-                        Guardar Inventario de {{ $selectedBar }}
-                    </button>
+                    @if($session->isOpen())
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 text-xs font-black rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-amber-500/25 cursor-pointer uppercase tracking-wider">
+                            Guardar Inventario de {{ $selectedBar }}
+                        </button>
+                    @else
+                        <div class="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-zinc-400 font-mono text-xs flex items-center gap-2">
+                            <span class="text-rose-400">🔒</span>
+                            <span>Modo Solo Lectura (Noche Cerrada)</span>
+                        </div>
+                    @endif
                 </div>
 
             </div>

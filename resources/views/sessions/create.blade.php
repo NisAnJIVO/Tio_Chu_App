@@ -22,6 +22,26 @@
         </a>
     </div>
 
+    @if(isset($openSession) && $openSession)
+        <div class="glass-panel p-5 rounded-2xl border border-amber-400/40 bg-amber-400/10 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold text-lg shrink-0 border border-amber-400/30">
+                    ⚠️
+                </div>
+                <div>
+                    <h4 class="text-xs font-black text-amber-300 uppercase tracking-wider">Jornada Anterior Aún Abierta</h4>
+                    <p class="text-xs text-zinc-300 mt-0.5">
+                        La noche del <strong class="text-white">{{ $openSession->day_name }} ({{ \Carbon\Carbon::parse($openSession->session_date)->format('d/m/Y') }})</strong> está en curso. Debes cerrarla antes de aperturar una nueva.
+                    </p>
+                </div>
+            </div>
+            <a href="{{ route('closing.index', ['session_id' => $openSession->id]) }}" 
+               class="px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 font-black text-xs rounded-xl hover:brightness-110 shadow-lg shadow-amber-500/20 whitespace-nowrap">
+                Ir a Cerrar Noche &rarr;
+            </a>
+        </div>
+    @endif
+
     <!-- Form Panel -->
     <form method="POST" action="{{ route('sessions.store') }}" class="glass-panel p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl space-y-6">
         @csrf
