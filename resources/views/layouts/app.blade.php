@@ -25,7 +25,7 @@
     @include('layouts.sidebar')
 
     <!-- Main Content Area (Única área que hace scroll) -->
-    <main class="flex-1 h-screen overflow-y-auto relative z-10 p-6 lg:p-8" style="background-color: #000000;">
+    <main class="flex-1 h-screen overflow-y-auto relative z-10 p-6 lg:p-8" style="background-color: #090a0f;">
         <!-- Alertas Flash -->
         @if(session('success'))
             <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 rounded-2xl flex items-center gap-2">

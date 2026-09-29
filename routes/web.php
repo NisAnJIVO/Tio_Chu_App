@@ -6,6 +6,7 @@ use App\Http\Controllers\BarSaleController;
 use App\Http\Controllers\CashClosingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NightSessionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QrPaymentController;
@@ -97,6 +98,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/{session}/close', [CashClosingController::class, 'closeNight'])->name('close');
         Route::post('/{session}/reopen', [CashClosingController::class, 'reopenNight'])->name('reopen');
     });
+
+    // 9. Galería Multimedia & Identidad Visual (Logos, Fondos, Bebidas)
+    Route::prefix('media')->name('media.')->group(function () {
+        Route::get('/', [MediaController::class, 'index'])->name('index');
+        Route::post('/', [MediaController::class, 'store'])->name('store');
+        Route::post('/{media}/replace', [MediaController::class, 'replace'])->name('replace');
+        Route::post('/{media}/set-system', [MediaController::class, 'setAsSystem'])->name('setSystem');
+        Route::delete('/{media}', [MediaController::class, 'destroy'])->name('destroy');
+    });
+
+    // 10. Perfil de Usuario (Foto de perfil / Avatar)
+    Route::post('/profile/avatar', [MediaController::class, 'updateAvatar'])->name('profile.avatar.update');
+    Route::delete('/profile/avatar', [MediaController::class, 'removeAvatar'])->name('profile.avatar.remove');
 
 });
 
