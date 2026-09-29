@@ -72,4 +72,35 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Producto eliminado.');
     }
+
+    /**
+     * Actualización ágil de stock con 1 solo toque (Fetch/AJAX o Form)
+     */
+    public function updateQuickStock(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'delta' => 'nullable|integer',
+            'stock' => 'nullable|integer|min:0',
+        ]);
+
+        if (isset($validated['delta'])) {
+            $product->stock_warehouse = max(0, (int)$product->stock_warehouse + (int)$validated['delta']);
+        } elseif (isset($validated['stock'])) {
+            $product->stock_warehouse = max(0, (int)$validated['stock']);
+        }
+
+        $product->save();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'product_id' => $product->id,
+                'stock_warehouse' => $product->stock_warehouse,
+                'status' => $product->stock_warehouse > 10 ? 'in_stock' : ($product->stock_warehouse > 0 ? 'low_stock' : 'out_of_stock'),
+                'message' => 'Stock de ' . $product->name . ' actualizado a ' . $product->stock_warehouse . '.',
+            ]);
+        }
+
+        return back()->with('success', 'Stock actualizado a ' . $product->stock_warehouse . '.');
+    }
 }

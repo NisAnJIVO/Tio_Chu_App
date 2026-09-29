@@ -3,58 +3,80 @@
 @section('title', 'Nueva Noche')
 
 @section('content')
-<div class="max-w-xl mx-auto space-y-6">
-    <div class="flex items-center justify-between border-b border-zinc-200 pb-4">
+<div class="max-w-2xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-white/10 pb-4">
         <div>
-            <h2 class="text-lg font-bold text-zinc-900 tracking-tight">Aperturar Nueva Noche</h2>
-            <p class="text-xs text-zinc-600">Inicializa automáticamente el inventario de las barras y la lista de personal para la fecha.</p>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-1">
+                Apertura Operativa
+            </span>
+            <h2 class="text-xl font-black text-white tracking-tight">Aperturar Nueva Noche</h2>
+            <p class="text-xs text-zinc-400">Inicializa automáticamente los inventarios de las 3 barras y la planilla de asistencia.</p>
         </div>
-        <a href="{{ route('sessions.index') }}" class="text-xs text-zinc-600 hover:text-zinc-900">&larr; Volver</a>
+        <a href="{{ route('sessions.index') }}" 
+           class="glass-card hover:bg-white/10 text-zinc-300 hover:text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Volver al Historial
+        </a>
     </div>
 
-    <form method="POST" action="{{ route('sessions.store') }}" class="bg-white border border-zinc-200 rounded p-6 space-y-4">
+    <!-- Form Panel -->
+    <form method="POST" action="{{ route('sessions.store') }}" class="glass-panel p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl space-y-6">
         @csrf
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-                <label for="session_date" class="block text-xs font-semibold text-zinc-700 mb-1">Fecha de la Noche</label>
+                <label for="session_date" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                    Fecha de la Noche <span class="text-amber-400">*</span>
+                </label>
                 <input type="date" name="session_date" id="session_date" required 
-                       min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
                        value="{{ old('session_date', \Carbon\Carbon::now()->format('Y-m-d')) }}"
-                       class="w-full text-xs border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900">
-                <p class="text-[10px] text-zinc-500 mt-1">Solo fechas de hoy en adelante.</p>
+                       class="glass-input w-full px-4 py-3 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all [color-scheme:dark]">
+                <p class="text-[11px] text-zinc-500 mt-1.5">Selecciona el día de inicio de la jornada nocturna.</p>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-zinc-700 mb-1">Día Detectado Automático</label>
-                <div class="flex items-center h-[38px] px-3 bg-zinc-50 border border-zinc-200 rounded text-xs font-semibold text-zinc-900" id="detected_day_display">
+                <label class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                    Día Detectado (Automático)
+                </label>
+                <div class="flex items-center h-[46px] px-4 glass-card border border-white/10 rounded-xl text-sm font-bold text-amber-400 font-mono" id="detected_day_display">
                     Calculando...
                 </div>
-                <p class="text-[10px] text-zinc-500 mt-1">Se calcula solo según el calendario.</p>
+                <p class="text-[11px] text-zinc-500 mt-1.5">Detecta Viernes, Sábado o Domingo para fijar la tarifa de personal.</p>
             </div>
         </div>
 
         <div>
-            <label for="pos_commission_rate" class="block text-xs font-semibold text-zinc-700 mb-1">
-                Tasa de Comisión Tarjetero / POS (Decimal)
+            <label for="pos_commission_rate" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                Tasa de Comisión Tarjetero / POS (Decimal) <span class="text-amber-400">*</span>
             </label>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
                 <input type="number" step="0.0001" name="pos_commission_rate" id="pos_commission_rate" required value="{{ old('pos_commission_rate', 0.0130) }}"
-                       class="w-full text-xs border border-zinc-300 rounded px-3 py-2 text-zinc-900 font-mono focus:outline-none focus:ring-1 focus:ring-zinc-900">
-                <span class="text-xs text-zinc-600 font-medium whitespace-nowrap">(0.013 = 1.3%)</span>
+                       class="glass-input w-full px-4 py-3 rounded-xl text-sm font-mono font-bold text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all">
+                <span class="text-xs font-mono font-bold text-amber-400 whitespace-nowrap bg-amber-500/10 px-3 py-3 rounded-xl border border-amber-500/20">
+                    = 1.30%
+                </span>
             </div>
-            <p class="text-[11px] text-zinc-600 mt-1">Don Ludo puede ajustar este valor si el banco cobra otra tarifa.</p>
+            <p class="text-[11px] text-zinc-500 mt-1.5">Por defecto 0.0130 (1.3% bancario). Ajustable si la tasa varía.</p>
         </div>
 
         <div>
-            <label for="notes" class="block text-xs font-semibold text-zinc-700 mb-1">Notas del Evento (Opcional)</label>
-            <textarea name="notes" id="notes" rows="2" placeholder="Ej. Fiesta temática, aniversario, DJ invitado..."
-                      class="w-full text-xs border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900">{{ old('notes') }}</textarea>
+            <label for="notes" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                Notas del Evento (Opcional)
+            </label>
+            <textarea name="notes" id="notes" rows="2" placeholder="Ej. Fiesta temática 80s, concierto en vivo, DJ invitado, feriado..."
+                      class="glass-input w-full px-4 py-3 rounded-xl text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all">{{ old('notes') }}</textarea>
         </div>
 
-        <div class="pt-4 flex items-center justify-end gap-2 border-t border-zinc-200">
-            <a href="{{ route('sessions.index') }}" class="px-3 py-1.5 border border-zinc-300 text-xs font-medium rounded text-zinc-700 hover:bg-zinc-50">Cancelar</a>
-            <button type="submit" class="px-4 py-1.5 bg-zinc-900 text-white text-xs font-semibold rounded hover:bg-zinc-800">
+        <div class="pt-6 flex items-center justify-end gap-3 border-t border-white/10">
+            <a href="{{ route('sessions.index') }}" 
+               class="px-5 py-2.5 glass-card hover:bg-white/10 text-zinc-400 hover:text-white text-xs font-semibold rounded-xl transition-all">
+                Cancelar
+            </a>
+            <button type="submit" 
+                    class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 text-xs font-extrabold tracking-wider uppercase rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
                 Aperturar Noche
             </button>
         </div>
@@ -69,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateDay() {
         if (!dateInput.value) return;
-        // Parse date considering local timezone
         const parts = dateInput.value.split('-');
         if (parts.length === 3) {
             const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));

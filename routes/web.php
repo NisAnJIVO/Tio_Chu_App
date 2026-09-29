@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // 1. Catálogo e Inventario Base (Módulo 2)
+    Route::patch('products/{product}/quick-stock', [ProductController::class, 'updateQuickStock'])->name('products.quickStock');
     Route::resource('products', ProductController::class)->except(['show']);
 
     // 2. Personal y Turnos (Módulo 3)

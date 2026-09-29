@@ -14,5 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->respond(function ($response, $e, $request) {
+            if ($response->getStatusCode() === 419) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'La sesión expiró por inactividad o actualización. Por favor ingresa nuevamente.',
+                ]);
+            }
+            return $response;
+        });
     })->create();
