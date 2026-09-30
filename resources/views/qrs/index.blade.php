@@ -50,6 +50,13 @@
         </div>
     @else
 
+        @if(!$session->isOpen())
+            <div class="glass-panel p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-xl flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3"><span class="text-xl">🔒</span><div><h4 class="text-xs font-black text-rose-300 uppercase tracking-wider font-mono">Noche Cerrada (Modo Solo Lectura)</h4><p class="text-xs text-zinc-300 mt-0.5">Esta jornada fue finalizada en Cierre de Caja. Los cobros QR no pueden modificarse.</p></div></div>
+                <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="px-3.5 py-1.5 glass-card border border-rose-400/30 text-rose-300 rounded-xl text-xs font-bold font-mono shrink-0">Ver en Cierre de Caja &rarr;</a>
+            </div>
+        @endif
+
         <!-- ==========================================
              TARJETAS DE RESUMEN EJECUTIVO (GRANDES Y LEGIBLES)
              ========================================== -->
@@ -101,7 +108,7 @@
                 Registrar Nuevo Cobro QR
             </h3>
             
-            <form method="POST" action="{{ route('qrs.store') }}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end">
+            <form method="POST" action="{{ route('qrs.store') }}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
@@ -201,7 +208,7 @@
                                             Bs. {{ number_format($qr->amount, 2) }}
                                         </td>
                                         <td class="px-2 py-2.5 text-right">
-                                            <form method="POST" action="{{ route('qrs.destroy', $qr) }}" onsubmit="return confirm('¿Eliminar este cobro QR?');">
+                                            <form method="POST" action="{{ route('qrs.destroy', $qr) }}" onsubmit="return confirm('¿Eliminar este cobro QR?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-rose-400 hover:text-rose-300 font-bold text-xs cursor-pointer">Borrar</button>

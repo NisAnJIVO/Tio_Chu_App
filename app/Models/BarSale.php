@@ -28,6 +28,7 @@ class BarSale extends Model
         'vendido',
         'unit_price',
         'subtotal',
+        'stock_synced_vendido',
     ];
 
     protected $casts = [
@@ -44,6 +45,7 @@ class BarSale extends Model
         'vendido'          => 'integer',
         'unit_price'       => 'decimal:2',
         'subtotal'         => 'decimal:2',
+        'stock_synced_vendido' => 'integer',
     ];
 
 

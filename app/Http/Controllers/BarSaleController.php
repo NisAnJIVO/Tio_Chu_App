@@ -274,6 +274,7 @@ class BarSaleController extends Controller
             $barSale->saldo = $saldo;
             $barSale->vendido = $vendido;
             $barSale->unit_price = $unitPrice;
+            $this->syncProductStock($barSale);
 
             if ($barSale->product && $barSale->product->category !== 'Mixers') {
                 $barSale->subtotal = $vendido * $unitPrice;
@@ -376,6 +377,8 @@ class BarSaleController extends Controller
                             $nextSale->vendido = max(0, $totNightBot - (int)$nextSale->saldo);
                         }
 
+                        $this->syncProductStock($nextSale);
+
                         if ($nextSale->product->category !== 'Mixers') {
                             $nextSale->subtotal = $nextSale->vendido * (float)$nextSale->unit_price;
                         }
@@ -391,5 +394,27 @@ class BarSaleController extends Controller
             'session_id' => $sessionId,
             'bar' => $barName,
         ])->with('success', 'Ventas de ' . $barName . ' guardadas correctamente.');
+    }
+
+    private function syncProductStock(BarSale $barSale): void
+    {
+        if (!$barSale->product) {
+            return;
+        }
+
+        $previouslySynced = (int) $barSale->stock_synced_vendido;
+        $currentSold = max(0, (int) $barSale->vendido);
+        $difference = $currentSold - $previouslySynced;
+
+        if ($difference !== 0) {
+            $product = $barSale->product;
+            $product->stock_warehouse = max(0, (int) $product->stock_warehouse - $difference);
+            $unitsPerPackage = max(1, (int) $product->units_per_package);
+            $product->stock_packages = intdiv($product->stock_warehouse, $unitsPerPackage);
+            $product->stock_units = $product->stock_warehouse % $unitsPerPackage;
+            $product->save();
+        }
+
+        $barSale->stock_synced_vendido = $currentSold;
     }
 }

@@ -39,7 +39,9 @@ class ProductController extends Controller
             'stock_warehouse' => 'required|integer|min:0',
         ]);
 
-        Product::create($validated);
+        $product = Product::create($validated);
+        $this->syncStockBreakdown($product);
+        $product->save();
 
         return redirect()->route('products.index')->with('success', 'Producto registrado correctamente.');
     }
@@ -63,6 +65,8 @@ class ProductController extends Controller
         ]);
 
         $product->update($validated);
+        $this->syncStockBreakdown($product);
+        $product->save();
 
         return redirect()->route('products.index')->with('success', 'Producto actualizado correctamente.');
     }
@@ -81,14 +85,26 @@ class ProductController extends Controller
         $validated = $request->validate([
             'delta' => 'nullable|integer',
             'stock' => 'nullable|integer|min:0',
+            'stock_packages' => 'nullable|integer|min:0',
+            'stock_units' => 'nullable|integer|min:0',
         ]);
 
-        if (isset($validated['delta'])) {
+        if (isset($validated['stock_packages']) || isset($validated['stock_units'])) {
+            $unitsPerPackage = max(1, (int) $product->units_per_package);
+            $packages = max(0, (int)($validated['stock_packages'] ?? $product->stock_packages));
+            $units = max(0, (int)($validated['stock_units'] ?? $product->stock_units));
+            $packages += intdiv($units, $unitsPerPackage);
+            $units %= $unitsPerPackage;
+            $product->stock_packages = $packages;
+            $product->stock_units = $units;
+            $product->stock_warehouse = ($packages * $unitsPerPackage) + $units;
+        } elseif (isset($validated['delta'])) {
             $product->stock_warehouse = max(0, (int)$product->stock_warehouse + (int)$validated['delta']);
         } elseif (isset($validated['stock'])) {
             $product->stock_warehouse = max(0, (int)$validated['stock']);
         }
 
+        $this->syncStockBreakdown($product);
         $product->save();
 
         if ($request->wantsJson() || $request->ajax()) {
@@ -96,11 +112,21 @@ class ProductController extends Controller
                 'success' => true,
                 'product_id' => $product->id,
                 'stock_warehouse' => $product->stock_warehouse,
+                'stock_packages' => $product->stock_packages,
+                'stock_units' => $product->stock_units,
                 'status' => $product->stock_warehouse > 10 ? 'in_stock' : ($product->stock_warehouse > 0 ? 'low_stock' : 'out_of_stock'),
                 'message' => 'Stock de ' . $product->name . ' actualizado a ' . $product->stock_warehouse . '.',
             ]);
         }
 
         return back()->with('success', 'Stock actualizado a ' . $product->stock_warehouse . '.');
+    }
+
+    private function syncStockBreakdown(Product $product): void
+    {
+        $unitsPerPackage = max(1, (int) $product->units_per_package);
+        $stock = max(0, (int) $product->stock_warehouse);
+        $product->stock_packages = intdiv($stock, $unitsPerPackage);
+        $product->stock_units = $stock % $unitsPerPackage;
     }
 }

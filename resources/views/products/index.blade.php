@@ -123,6 +123,9 @@
         @php
             $sub   = getSubcat($prod->name, $prod->category);
             $stock = (int) $prod->stock_warehouse;
+            $unitsPerPackage = max(1, (int) $prod->units_per_package);
+            $stockPackages = intdiv($stock, $unitsPerPackage);
+            $stockUnits = $stock % $unitsPerPackage;
 
             $iconColor = match($sub) {
                 'Singani' => 'text-amber-400',
@@ -153,7 +156,8 @@
              data-name="{{ strtolower($prod->name) }}"
              data-subcat="{{ $sub }}"
              data-price="{{ $prod->sale_price }}"
-             data-stock="{{ $stock }}">
+             data-stock="{{ $stock }}"
+             data-units-per-package="{{ $unitsPerPackage }}">
 
             {{-- Aura de color al hover --}}
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
@@ -214,6 +218,24 @@
                         onchange="onStockChange(this)"
                         onkeydown="if(event.key==='Enter'){this.blur();event.preventDefault();}">
                     <span class="save-indicator absolute -top-1 -right-1 text-[9px] font-mono opacity-0 transition-opacity duration-300 pointer-events-none bg-[#080a0f] px-1 rounded"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 w-full mt-1">
+                    <label class="text-[9px] text-zinc-500 font-mono text-center">
+                        Paquetes
+                        <input type="number" min="0" value="{{ $stockPackages }}"
+                               id="stock-packages-{{ $prod->id }}"
+                               data-product-id="{{ $prod->id }}"
+                               onchange="onStockPartChange({{ $prod->id }})"
+                               class="stock-part-input mt-1 w-full text-center text-xs font-black font-mono rounded-lg py-1.5 px-1 bg-white/[0.04] border border-white/10 text-zinc-300 focus:outline-none focus:border-amber-400/60">
+                    </label>
+                    <label class="text-[9px] text-zinc-500 font-mono text-center">
+                        Unidades
+                        <input type="number" min="0" value="{{ $stockUnits }}"
+                               id="stock-units-{{ $prod->id }}"
+                               data-product-id="{{ $prod->id }}"
+                               onchange="onStockPartChange({{ $prod->id }})"
+                               class="stock-part-input mt-1 w-full text-center text-xs font-black font-mono rounded-lg py-1.5 px-1 bg-white/[0.04] border border-white/10 text-zinc-300 focus:outline-none focus:border-amber-400/60">
+                    </label>
                 </div>
             </div>
 
@@ -423,7 +445,19 @@ let debounceTimers = {};
 
 /* --- DOM helpers --- */
 function getInput(id) { return document.getElementById('stock-input-' + id); }
+function getPartInput(id, part) { return document.getElementById('stock-' + part + '-' + id); }
 function getSaveEl(id) { return getInput(id)?.parentElement?.querySelector('.save-indicator'); }
+
+function syncPartInputs(id, total) {
+    const card = document.querySelector('.product-card[data-id="' + id + '"]');
+    const unitsPerPackage = parseInt(card?.dataset.unitsPerPackage) || 1;
+    const packages = Math.floor(Math.max(0, total) / unitsPerPackage);
+    const units = Math.max(0, total) % unitsPerPackage;
+    const packagesInput = getPartInput(id, 'packages');
+    const unitsInput = getPartInput(id, 'units');
+    if (packagesInput) packagesInput.value = packages;
+    if (unitsInput) unitsInput.value = units;
+}
 
 /* --- Color semantico del numero --- */
 function applyColor(inp, val) {
@@ -483,6 +517,7 @@ function pushStock(productId, newStock, oldStock) {
             inp.value = data.stock_warehouse;
             applyColor(inp, data.stock_warehouse);
         }
+        syncPartInputs(productId, data.stock_warehouse);
         showSaved(productId);
         refreshKPIs();
     })
@@ -508,7 +543,9 @@ function stepStock(productId, delta) {
 
 /* --- Input directo: color mientras tipea --- */
 function onStockInput(inp) {
-    applyColor(inp, parseInt(inp.value) || 0);
+    const total = parseInt(inp.value) || 0;
+    applyColor(inp, total);
+    syncPartInputs(inp.dataset.productId, total);
     refreshKPIs();
 }
 
@@ -522,6 +559,52 @@ function onStockChange(inp) {
     inp.dataset.lastSaved = nv;
     pushStock(productId, nv, old);
     refreshKPIs();
+}
+
+function onStockPartChange(productId) {
+    const packagesInput = getPartInput(productId, 'packages');
+    const unitsInput = getPartInput(productId, 'units');
+    const totalInput = getInput(productId);
+    const packages = Math.max(0, parseInt(packagesInput?.value) || 0);
+    const units = Math.max(0, parseInt(unitsInput?.value) || 0);
+    const unitsPerPackage = parseInt(document.querySelector('.product-card[data-id="' + productId + '"]')?.dataset.unitsPerPackage) || 1;
+    const old = parseInt(totalInput?.value) || 0;
+    const total = (packages * unitsPerPackage) + units;
+
+    if (totalInput) {
+        totalInput.value = total;
+        applyColor(totalInput, total);
+        totalInput.dataset.lastSaved = total;
+    }
+    pushStockParts(productId, packages, units, old);
+    refreshKPIs();
+}
+
+function pushStockParts(productId, packages, units, oldStock) {
+    showSaving(productId);
+    fetch(BASE + '/' + productId + '/quick-stock', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+        body: JSON.stringify({ stock_packages: packages, stock_units: units }),
+    })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+        const inp = getInput(productId);
+        if (inp) {
+            inp.value = data.stock_warehouse;
+            inp.dataset.lastSaved = data.stock_warehouse;
+            applyColor(inp, data.stock_warehouse);
+        }
+        syncPartInputs(productId, data.stock_warehouse);
+        showSaved(productId);
+        refreshKPIs();
+    })
+    .catch(() => {
+        const inp = getInput(productId);
+        if (inp) { inp.value = oldStock; applyColor(inp, oldStock); }
+        syncPartInputs(productId, oldStock);
+        showError(productId);
+    });
 }
 
 /* --- Filtro por subcategoria --- */

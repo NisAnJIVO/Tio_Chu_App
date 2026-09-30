@@ -39,6 +39,10 @@ class StoreSaleController extends Controller
         $cashAmount = (float)$validated['cash_amount'];
         $qrAmount = (float)$validated['qr_amount'];
         $cobrante = trim($validated['cobrante_name']);
+        $session = NightSession::findOrFail($validated['night_session_id']);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden registrar despachos en una noche cerrada.');
+        }
 
         $storeSale = StoreSale::create([
             'night_session_id' => $validated['night_session_id'],
@@ -64,10 +68,7 @@ class StoreSaleController extends Controller
             ]);
         }
 
-        $session = NightSession::find($validated['night_session_id']);
-        if ($session) {
-            $this->sessionService->recalculateClosing($session);
-        }
+        $this->sessionService->recalculateClosing($session);
 
         return back()->with('success', "Pedido de Tienda registrado ({$quantity} combo(s) por {$cobrante}).");
     }
@@ -75,6 +76,10 @@ class StoreSaleController extends Controller
     public function destroy(StoreSale $storeSale)
     {
         $session = $storeSale->nightSession;
+        if ($session && !$session->isOpen()) {
+            return back()->with('error', 'No se pueden eliminar despachos de una noche cerrada.');
+        }
+
         $storeSale->delete();
 
         if ($session) {
@@ -93,6 +98,10 @@ class StoreSaleController extends Controller
         ]);
 
         $session = NightSession::findOrFail($validated['night_session_id']);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden modificar ingresos en una noche cerrada.');
+        }
+
         $closing = CashClosing::firstOrCreate(['night_session_id' => $session->id]);
 
         $closing->update([

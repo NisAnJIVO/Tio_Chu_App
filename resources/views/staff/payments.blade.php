@@ -50,6 +50,13 @@
         </div>
     @else
 
+        @if(!$session->isOpen())
+            <div class="glass-panel p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-xl flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3"><span class="text-xl">🔒</span><div><h4 class="text-xs font-black text-rose-300 uppercase tracking-wider font-mono">Noche Cerrada (Modo Solo Lectura)</h4><p class="text-xs text-zinc-300 mt-0.5">Esta jornada fue finalizada en Cierre de Caja. Los pagos y la planilla no pueden modificarse.</p></div></div>
+                <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="px-3.5 py-1.5 glass-card border border-rose-400/30 text-rose-300 rounded-xl text-xs font-bold font-mono shrink-0">Ver en Cierre de Caja &rarr;</a>
+            </div>
+        @endif
+
         <!-- ==========================================
              RESUMEN DE PAGOS DE LA NOCHE (KPIs GRANDES)
              ========================================== -->
@@ -112,7 +119,7 @@
         </div>
 
         <!-- Barra de Acciones Rápidas -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 glass-panel rounded-2xl p-5 shadow-2xl">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 glass-panel rounded-2xl p-5 shadow-2xl {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
             @if($availableStaff->isNotEmpty())
                 <form method="POST" action="{{ route('staffPayments.store') }}" class="flex items-center gap-2.5 flex-1">
                     @csrf
@@ -143,7 +150,7 @@
         </div>
 
         <!-- Tabla de Planilla Oficial -->
-        <form method="POST" action="{{ route('staffPayments.update') }}">
+        <form method="POST" action="{{ route('staffPayments.update') }}" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
             @csrf
             @method('PUT')
             <input type="hidden" name="night_session_id" value="{{ $session->id }}">

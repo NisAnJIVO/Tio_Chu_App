@@ -18,6 +18,8 @@ class Product extends Model
         'unit',
         'units_per_package',
         'stock_warehouse',
+        'stock_packages',
+        'stock_units',
         'is_active',
     ];
 
@@ -26,6 +28,8 @@ class Product extends Model
         'cost_price' => 'decimal:2',
         'units_per_package' => 'integer',
         'stock_warehouse' => 'integer',
+        'stock_packages' => 'integer',
+        'stock_units' => 'integer',
         'is_active' => 'boolean',
     ];
 

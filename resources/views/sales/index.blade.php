@@ -54,6 +54,19 @@
         </div>
     @else
 
+        @if(!$session->isOpen())
+            <div class="glass-panel p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-xl flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🔒</span>
+                    <div>
+                        <h4 class="text-xs font-black text-rose-300 uppercase tracking-wider font-mono">Noche Cerrada (Modo Solo Lectura)</h4>
+                        <p class="text-xs text-zinc-300 mt-0.5">Esta jornada fue finalizada en Cierre de Caja. Las ventas, despachos y variantes no pueden modificarse.</p>
+                    </div>
+                </div>
+                <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="px-3.5 py-1.5 glass-card border border-rose-400/30 text-rose-300 hover:text-white hover:bg-rose-500/20 rounded-xl text-xs font-bold font-mono transition-all shrink-0">Ver en Cierre de Caja &rarr;</a>
+            </div>
+        @endif
+
         <!-- Selector de Puntos de Venta (Liquid Glass Pills: Barra Kelly, Barra Ariel, Tienda) -->
         <div class="flex items-center gap-2 glass-panel p-2 rounded-2xl border border-white/10 text-xs font-mono">
             @foreach($availableBars as $bar)
@@ -120,7 +133,7 @@
                     </span>
                 </div>
 
-                <form method="POST" action="{{ route('sales.storeSales.store') }}" id="tienda-order-form" class="space-y-4">
+                <form method="POST" action="{{ route('sales.storeSales.store') }}" id="tienda-order-form" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                     @csrf
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
@@ -278,7 +291,7 @@
                                     <td class="px-4 py-2.5 text-right text-blue-400 font-bold">Bs. {{ number_format($ss->qr_amount, 2) }}</td>
                                     <td class="px-4 py-2.5 text-zinc-300 font-sans uppercase font-medium">{{ $ss->cobrante_name }}</td>
                                     <td class="px-3 py-2.5 text-right">
-                                        <form method="POST" action="{{ route('sales.storeSales.destroy', $ss) }}" onsubmit="return confirm('¿Eliminar despacho?');">
+                                            <form method="POST" action="{{ route('sales.storeSales.destroy', $ss) }}" onsubmit="return confirm('¿Eliminar despacho?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-rose-400 hover:text-rose-300 font-bold text-xs cursor-pointer">Borrar</button>
@@ -401,8 +414,8 @@
 
             <!-- Barra de acciones: Botón Agregar Especial -->
             <div class="flex justify-end mb-3">
-                <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')" 
-                        class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all">
+                <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')" @disabled(!$session->isOpen())
+                    class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed">
                     <span>+ Nueva Variante / Soda por Categoría</span>
                 </button>
             </div>
@@ -413,7 +426,7 @@
                     <h3 class="text-sm font-black text-white uppercase tracking-wider mb-2">Registrar Variante Especial</h3>
                     <p class="text-xs text-zinc-400 mb-4">Define una soda/mixer especial para una categoría de tragos (ej: Sprite o Aquarius para Rones/Singanis).</p>
                     
-                    <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4">
+                    <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                         @csrf
                         <div>
                             <label class="block text-xs font-medium text-zinc-300 mb-1">Categoría del Trago</label>
@@ -509,7 +522,7 @@
             </div>
 
             <!-- Formulario Tabular de Inventario y Ventas para Barras -->
-            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form">
+            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">

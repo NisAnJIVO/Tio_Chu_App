@@ -42,7 +42,7 @@ class StaffPaymentController extends Controller
                 ->get();
 
             // Si la noche no tiene personal cargado, cargar según el día de la semana
-            if ($attendances->isEmpty()) {
+            if ($attendances->isEmpty() && $session->isOpen()) {
                 $dayName = $session->day_name;
                 $allStaff = Staff::where('is_active', true)->get();
                 foreach ($allStaff as $member) {
@@ -121,12 +121,19 @@ class StaffPaymentController extends Controller
 
         foreach ($attendancesData as $id => $data) {
             $att = StaffAttendance::find($id);
-            if ($att) {
-                $att->update([
-                    'pay_amount' => (float)($data['pay_amount'] ?? 0),
-                    'is_paid' => isset($data['is_paid']) && $data['is_paid'] == '1',
-                ]);
+            if (!$att) {
+                continue;
             }
+
+            $attendanceSession = $att->nightSession;
+            if ($attendanceSession && !$attendanceSession->isOpen()) {
+                return back()->with('error', 'No se pueden modificar pagos en una noche cerrada.');
+            }
+
+            $att->update([
+                'pay_amount' => (float)($data['pay_amount'] ?? 0),
+                'is_paid' => isset($data['is_paid']) && $data['is_paid'] == '1',
+            ]);
         }
 
         if (isset($session) && $session) {
