@@ -75,10 +75,13 @@ class CashClosingController extends Controller
         return back()->with('success', 'Gasto registrado correctamente.');
     }
 
-    public function destroyExpense(Expense $expense)
+    public function destroyExpense(Request $request, Expense $expense)
     {
         $session = $expense->nightSession;
         if ($session && !$session->isOpen()) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'No se pueden eliminar gastos de una noche cerrada.'], 403);
+            }
             return back()->with('error', 'No se pueden eliminar gastos de una noche cerrada.');
         }
 
@@ -86,6 +89,10 @@ class CashClosingController extends Controller
 
         if ($session) {
             $this->sessionService->recalculateClosing($session);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Gasto eliminado.']);
         }
 
         return back()->with('success', 'Gasto eliminado.');

@@ -18,10 +18,10 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/LogoTioChu.png') }}">
 
-    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <!-- Google Fonts: Plus Jakarta Sans (Única Fuente Oficial) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Scripts y Estilos Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -34,26 +34,22 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 h-screen overflow-y-auto relative z-10 p-4 lg:p-6 theme-main-bg transition-colors duration-200 flex flex-col">
-        <!-- Alertas Flash -->
+        <!-- Alerta Discreta Estilo iOS (Bottom-Right Toast sin bloqueo visual) -->
         @if(session('success'))
-            <div id="flash-success-toast" class="mb-4 px-4 py-2.5 bg-zinc-900 border border-emerald-500/40 text-xs text-emerald-300 rounded-xl flex items-center justify-between gap-3 shadow-md transition-all duration-300">
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    <span class="font-semibold">{{ session('success') }}</span>
-                </div>
-                <button type="button" onclick="document.getElementById('flash-success-toast')?.remove()" class="text-zinc-500 hover:text-white text-base leading-none cursor-pointer">&times;</button>
+            <div id="flash-success-toast" class="fixed bottom-5 right-5 z-50 px-4 py-2.5 bg-[#09090b]/95 border border-zinc-800 text-xs text-zinc-300 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300">
+                <span class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
+                <span class="font-semibold">{{ session('success') }}</span>
+                <button type="button" onclick="document.getElementById('flash-success-toast')?.remove()" class="text-zinc-500 hover:text-white text-sm ml-1 cursor-pointer">&times;</button>
             </div>
             <script>
                 setTimeout(function() {
                     const toast = document.getElementById('flash-success-toast');
                     if (toast) {
                         toast.style.opacity = '0';
-                        toast.style.transform = 'translateY(-6px)';
+                        toast.style.transform = 'translateY(8px)';
                         setTimeout(() => toast.remove(), 300);
                     }
-                }, 3000);
+                }, 2400);
             </script>
         @endif
         @if($errors->any())

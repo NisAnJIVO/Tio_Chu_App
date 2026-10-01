@@ -20,20 +20,31 @@
 <div class="space-y-4 max-w-7xl mx-auto w-full pb-8">
 
     <!-- ========================================================
-         1. CABECERA PRINCIPAL: TÍTULO & SELECTOR DE NOCHE
+         1. CABECERA PRINCIPAL: ESTADO DE NOCHE & SELECTOR
          ======================================================== -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-5 py-3.5 rounded-2xl theme-card border theme-border">
-        <div>
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">
-                Cobros por QR
-            </h1>
-            <p class="text-xs text-zinc-400 mt-0.5">
-                Transferencias bancarias recibidas por Yasta (Banco Unión) y Yape (Banco BCP)
-            </p>
-        </div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+        
+        <!-- Izquierda: Título y Selector de Noche -->
+        <div class="flex flex-wrap items-center gap-3">
+            <div>
+                <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white font-sans">
+                    Cobros por QR
+                </h1>
+                <p class="text-[11px] text-zinc-400 mt-0.5">
+                    Transferencias registradas por Yasta (Banco Unión) y Yape (Banco BCP)
+                </p>
+            </div>
 
-        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-            <!-- Selector de Noche -->
+            @if($session)
+                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500' : 'bg-zinc-600' }}"></span>
+                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-200' : 'text-zinc-500' }}">
+                        {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
+                    </span>
+                </div>
+            @endif
+
+            <!-- Selector de Noche en Píldora -->
             @if($allSessions->isNotEmpty())
                 <form method="GET" action="{{ route('qrs.index') }}" class="flex items-center">
                     <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors">
@@ -43,7 +54,7 @@
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1">
+                                class="bg-transparent border-0 text-xs font-bold text-zinc-300 focus:outline-none cursor-pointer pr-1">
                             @foreach($allSessions as $s)
                                 <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white">
                                     {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
@@ -53,8 +64,10 @@
                     </div>
                 </form>
             @endif
+        </div>
 
-            <!-- Estado Noche Cerrada (Discreto y sin alarmas) -->
+        <!-- Derecha: Estado o Acceso a Cierre -->
+        <div class="flex items-center gap-2 shrink-0">
             @if($session && !$session->isOpen())
                 <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400">
                     <svg class="w-3.5 h-3.5 text-zinc-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -62,175 +75,369 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                     <span>Modo lectura</span>
-                    <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="text-[#F5B81C] hover:underline ml-1 font-semibold">Cierre &rarr;</a>
+                    <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="text-[#F5B81C] hover:underline ml-1 font-bold">Cierre &rarr;</a>
                 </div>
             @endif
         </div>
+
     </div>
 
     @if(!$session)
         <!-- Estado Vacío -->
-        <div class="p-12 text-center rounded-2xl theme-card border theme-border">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
-            <p class="text-xs text-zinc-400 mt-1 mb-4">Apertura una noche para registrar cobros por QR.</p>
-            <a href="{{ route('sessions.create') }}" class="px-4 py-2 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all dilemo-btn inline-block">
+        <div class="p-12 text-center rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col items-center justify-center">
+            <div class="w-12 h-12 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-600 mb-3">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect width="6" height="6" x="3" y="3" rx="1"/>
+                    <rect width="6" height="6" x="15" y="3" rx="1"/>
+                    <rect width="6" height="6" x="3" y="15" rx="1"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                </svg>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
+            <p class="text-xs text-zinc-400 mt-1 mb-5">Apertura una noche para registrar cobros por QR.</p>
+            <a href="{{ route('sessions.create') }}" class="px-5 py-2.5 rounded-xl bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all active:scale-95 shadow-sm">
                 + Aperturar Nueva Noche
             </a>
         </div>
     @else
 
         <!-- ========================================================
-             2. MÉTRICAS CLARAS Y DIRECTAS PARA DON LUDO
+             2. 4 TARJETAS KPI RESUMEN: SOBRIAS Y MINIMALISTAS
              ======================================================== -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             
-            <!-- Total General en QRs -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Total Cobrado por QR</span>
-                <div class="mt-2 text-2xl font-black font-mono text-[#F5B81C] tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalGeneral, 2) }}
+            <!-- TARJETA 1: Total General QR -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Total Cobrado por QR
+                    </span>
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalGeneral, 2) }}
+                    </div>
+                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: Bs. {{ number_format($totalYasta, 0) }} • Yape: Bs. {{ number_format($totalYape, 0) }}
+                    </span>
                 </div>
-                <p class="text-[11px] text-zinc-400 mt-1 font-mono">
-                    Yasta: Bs. {{ number_format($totalYasta, 0) }} • Yape: Bs. {{ number_format($totalYape, 0) }}
-                </p>
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5 text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect width="6" height="6" x="3" y="3" rx="1"/>
+                        <rect width="6" height="6" x="15" y="3" rx="1"/>
+                        <rect width="6" height="6" x="3" y="15" rx="1"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                    </svg>
+                </div>
             </div>
 
-            <!-- Barra Principal (Kelly) -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Barra Kelly (Principal)</span>
-                <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalsByPos['Barra Principal']['total'], 2) }}
+            <!-- TARJETA 2: Barra Kelly (Principal) -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Barra Kelly (Principal)
+                    </span>
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Barra Principal']['total'], 2) }}
+                    </div>
+                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: Bs. {{ number_format($totalsByPos['Barra Principal']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Barra Principal']['yape'], 0) }}
+                    </span>
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1 font-mono">
-                    Yasta: Bs. {{ number_format($totalsByPos['Barra Principal']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Barra Principal']['yape'], 0) }}
-                </p>
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
+                    </svg>
+                </div>
             </div>
 
-            <!-- Tienda -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Tienda (Entrada)</span>
-                <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalsByPos['Tienda']['total'], 2) }}
+            <!-- TARJETA 3: Tienda (Entrada) -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Tienda (Entrada)
+                    </span>
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Tienda']['total'], 2) }}
+                    </div>
+                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: Bs. {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
+                    </span>
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1 font-mono">
-                    Yasta: Bs. {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
-                </p>
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                </div>
             </div>
 
-            <!-- Subte (Ariel) -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Barra Ariel (Subte)</span>
-                <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalsByPos['Subte']['total'], 2) }}
+            <!-- TARJETA 4: Barra Ariel (Subte) -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Barra Ariel (Subte)
+                    </span>
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Subte']['total'], 2) }}
+                    </div>
+                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: Bs. {{ number_format($totalsByPos['Subte']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Subte']['yape'], 0) }}
+                    </span>
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1 font-mono">
-                    Yasta: Bs. {{ number_format($totalsByPos['Subte']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Subte']['yape'], 0) }}
-                </p>
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                </div>
             </div>
 
         </div>
 
         <!-- ========================================================
-             3. FORMULARIO RÁPIDO DE REGISTRO QR
+             3. FORMULARIO MINIMALISTA CON SWITCHES MODO IPHONE & LOGOS
              ======================================================== -->
-        <div class="theme-card rounded-2xl p-5 border theme-border">
-            <div class="border-b theme-border pb-3 mb-4 flex items-center justify-between">
+        <div class="p-5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+            <div class="border-b border-zinc-800/80 pb-3 mb-4 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider font-sans">
+                    <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                         Registrar Nuevo Cobro QR
                     </h2>
-                    <p class="text-xs text-zinc-400 mt-0.5">
-                        Anota la transferencia verificando el comprobante en la app
+                    <p class="text-[11px] text-zinc-400 mt-0.5">
+                        Selecciona el punto de venta, la app y el mesero o bartender
                     </p>
                 </div>
             </div>
             
-            <form method="POST" action="{{ route('qrs.store') }}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5 items-end {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+            <form method="POST" action="{{ route('qrs.store') }}" 
+                  class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
-                <div>
-                    <label for="point_of_sale" class="block text-xs font-semibold text-zinc-300 mb-1">Punto de Venta</label>
-                    <select name="point_of_sale" id="point_of_sale" required 
-                            class="w-full text-xs font-semibold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                        <option value="Barra Principal" class="bg-zinc-950">Barra Kelly (Principal)</option>
-                        <option value="Tienda" class="bg-zinc-950">Tienda</option>
-                        <option value="Subte" class="bg-zinc-950">Barra Ariel (Subte)</option>
-                    </select>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    
+                    <!-- 1. PUNTO DE VENTA (SWITCHES MODO IPHONE) -->
+                    <div class="md:col-span-4 space-y-1.5">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                            Punto de Venta
+                        </label>
+                        <div class="grid grid-cols-3 p-1 rounded-xl bg-zinc-950 border border-zinc-800 text-xs">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="point_of_sale" value="Barra Principal" class="peer sr-only" checked>
+                                <div class="py-2 text-center rounded-lg font-bold text-zinc-400 transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-[0_0_12px_rgba(245,184,28,0.35)]">
+                                    Principal
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="point_of_sale" value="Tienda" class="peer sr-only">
+                                <div class="py-2 text-center rounded-lg font-bold text-zinc-400 transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-[0_0_12px_rgba(245,184,28,0.35)]">
+                                    Tienda
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="point_of_sale" value="Subte" class="peer sr-only">
+                                <div class="py-2 text-center rounded-lg font-bold text-zinc-400 transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-[0_0_12px_rgba(245,184,28,0.35)]">
+                                    Subte
+                                </div>
+                            </label>
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="cobrante_name" class="block text-xs font-semibold text-zinc-300 mb-1">Cobrante / Mesero</label>
-                    <select name="cobrante_name" id="cobrante_name" required 
-                            class="w-full text-xs font-semibold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer uppercase">
-                        <option value="" disabled selected class="bg-zinc-950 text-zinc-400">-- Seleccionar Personal --</option>
-                        @php
-                            $bartenders = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'bartender') || str_contains(mb_strtolower($s->role), 'barra'));
-                            $refuerzos  = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'refuerzo'));
-                            $meseros    = $cobrantesStaff->reject(fn($s) =>
-                                str_contains(mb_strtolower($s->role), 'bartender') ||
-                                str_contains(mb_strtolower($s->role), 'barra') ||
-                                str_contains(mb_strtolower($s->role), 'refuerzo')
-                            );
-                        @endphp
+                    <!-- 2. APLICACIÓN BANCARIA (SWITCHES MODO IPHONE CON LOGOS) -->
+                    <div class="md:col-span-3 space-y-1.5">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                            Aplicación
+                        </label>
+                        <div class="grid grid-cols-2 p-1 rounded-xl bg-zinc-950 border border-zinc-800 text-xs">
+                            <!-- YASTA -->
+                            <label class="cursor-pointer">
+                                <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
+                                <div class="py-1.5 px-2 flex items-center justify-center gap-2 rounded-lg font-bold text-zinc-400 transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-[0_0_12px_rgba(245,184,28,0.35)]">
+                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-5 w-auto object-contain rounded">
+                                    <span class="tracking-wide">YASTA</span>
+                                </div>
+                            </label>
+                            <!-- YAPE -->
+                            <label class="cursor-pointer">
+                                <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
+                                <div class="py-1.5 px-2 flex items-center justify-center gap-2 rounded-lg font-bold text-zinc-400 transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-[0_0_12px_rgba(245,184,28,0.35)]">
+                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-5 w-auto object-contain rounded">
+                                    <span class="tracking-wide">YAPE</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
 
-                        @if($bartenders->isNotEmpty())
-                            <optgroup label="BARTENDERS" class="bg-zinc-950 text-[#F5B81C] font-bold">
-                                @foreach($bartenders as $b)
-                                    <option value="{{ $b->name }}" class="bg-zinc-950 text-white">
-                                        {{ $b->name }} ({{ $b->role }}{{ $b->assigned_bar ? ' — ' . $b->assigned_bar : '' }})
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        @endif
+                    <!-- 3. COBRANTE (DROPDOWN PERSONALIZADO IOS PURE DARK) -->
+                    <div class="md:col-span-3 space-y-1.5 relative" id="cobrante-container">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                            Cobrante
+                        </label>
+                        <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
+                        
+                        <!-- Botón Trigger Personalizado -->
+                        <button type="button" 
+                                id="cobrante-trigger"
+                                onclick="toggleCobranteMenu()"
+                                class="w-full flex items-center justify-between text-xs font-bold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-zinc-300 hover:border-[#F5B81C] focus:outline-none transition-all cursor-pointer shadow-sm">
+                            <div class="flex items-center gap-2 truncate">
+                                <span id="cobrante-dot" class="w-2 h-2 rounded-full bg-zinc-600 shrink-0"></span>
+                                <span id="cobrante-display" class="truncate text-zinc-400 font-bold">Cobrante</span>
+                            </div>
+                            <svg id="cobrante-chevron" class="w-4 h-4 text-zinc-400 transition-transform duration-200 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
 
-                        @if($meseros->isNotEmpty())
-                            <optgroup label="MESEROS" class="bg-zinc-950 text-[#F5B81C] font-bold">
-                                @foreach($meseros as $m)
-                                    <option value="{{ $m->name }}" class="bg-zinc-950 text-white">
-                                        {{ $m->name }} ({{ $m->role }})
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        @endif
+                        <!-- Ventana Desplegable iOS Flotante -->
+                        <div id="cobrante-menu" 
+                             class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl bg-[#09090b]/98 border border-zinc-800 shadow-2xl backdrop-blur-xl p-2 max-h-72 overflow-y-auto space-y-2">
+                            
+                            <!-- Buscador Rápido -->
+                            <div class="sticky top-0 bg-[#09090b] pb-1 z-10">
+                                <div class="relative">
+                                    <svg class="w-3.5 h-3.5 text-zinc-500 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                    <input type="text" id="cobrante-search" oninput="filterCobrantes(this.value)" placeholder="Buscar cobrante..." 
+                                           class="w-full text-xs bg-zinc-950 border border-zinc-800 rounded-xl pl-8 pr-3 py-1.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
+                                </div>
+                            </div>
 
-                        @if($refuerzos->isNotEmpty())
-                            <optgroup label="REFUERZOS" class="bg-zinc-950 text-[#F5B81C] font-bold">
-                                @foreach($refuerzos as $r)
-                                    <option value="{{ $r->name }}" class="bg-zinc-950 text-white">
-                                        {{ $r->name }} ({{ $r->role }})
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        @endif
-                    </select>
-                </div>
+                            @php
+                                $bartenders = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'bartender') || str_contains(mb_strtolower($s->role), 'barra'));
+                                $refuerzos  = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'refuerzo'));
+                                $meseros    = $cobrantesStaff->reject(fn($s) =>
+                                    str_contains(mb_strtolower($s->role), 'bartender') ||
+                                    str_contains(mb_strtolower($s->role), 'barra') ||
+                                    str_contains(mb_strtolower($s->role), 'refuerzo')
+                                );
+                            @endphp
 
-                <div>
-                    <label for="bank_app" class="block text-xs font-semibold text-zinc-300 mb-1">Aplicación Bancaria</label>
-                    <select name="bank_app" id="bank_app" required 
-                            class="w-full text-xs font-semibold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                        <option value="YASTA" class="bg-zinc-950">YASTA (Banco Unión)</option>
-                        <option value="YAPE" class="bg-zinc-950">YAPE (Banco BCP)</option>
-                    </select>
-                </div>
+                            <!-- Grupo Bartenders -->
+                            @if($bartenders->isNotEmpty())
+                                <div class="cobrante-group" data-group="bartenders">
+                                    <div class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#F5B81C]">
+                                        BARTENDERS
+                                    </div>
+                                    <div class="space-y-0.5 mt-0.5">
+                                        @foreach($bartenders as $b)
+                                            @php
+                                                $bRole = str_ireplace('mozo', 'MESERO', $b->role);
+                                            @endphp
+                                            <div onclick="selectCobrante('{{ $b->name }}')" 
+                                                 class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-zinc-800/60 cursor-pointer transition-colors group"
+                                                 data-name="{{ $b->name }}"
+                                                 data-search="{{ strtolower($b->name . ' ' . $bRole) }}">
+                                                <div class="flex items-center gap-2 min-w-0">
+                                                    <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[10px] font-black text-zinc-300 group-hover:border-[#F5B81C] group-hover:text-white shrink-0">
+                                                        {{ substr($b->name, 0, 1) }}
+                                                    </div>
+                                                    <div class="min-w-0 truncate">
+                                                        <span class="text-xs font-bold text-white block truncate">{{ $b->name }}</span>
+                                                        <span class="text-[10px] text-zinc-400 font-medium block truncate">{{ strtoupper($bRole) }}</span>
+                                                    </div>
+                                                </div>
+                                                <span class="cobrante-check hidden text-[#F5B81C] text-xs font-black shrink-0 ml-2">✓</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
 
-                <div>
-                    <label for="amount" class="block text-xs font-semibold text-zinc-300 mb-1">Monto Cobrado (Bs.)</label>
-                    <input type="number" step="0.5" name="amount" id="amount" required placeholder="0.00"
-                           class="w-full text-sm font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:border-[#F5B81C]">
-                </div>
+                            <!-- Grupo Meseros -->
+                            @if($meseros->isNotEmpty())
+                                <div class="cobrante-group" data-group="meseros">
+                                    <div class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#F5B81C]">
+                                        MESEROS
+                                    </div>
+                                    <div class="space-y-0.5 mt-0.5">
+                                        @foreach($meseros as $m)
+                                            @php
+                                                $cleanRole = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $m->role);
+                                                if (empty($cleanRole) || strtolower($cleanRole) === 'staff') {
+                                                    $cleanRole = 'MESERO';
+                                                }
+                                            @endphp
+                                            <div onclick="selectCobrante('{{ $m->name }}')" 
+                                                 class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-zinc-800/60 cursor-pointer transition-colors group"
+                                                 data-name="{{ $m->name }}"
+                                                 data-search="{{ strtolower($m->name . ' ' . $cleanRole) }}">
+                                                <div class="flex items-center gap-2 min-w-0">
+                                                    <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[10px] font-black text-zinc-300 group-hover:border-[#F5B81C] group-hover:text-white shrink-0">
+                                                        {{ substr($m->name, 0, 1) }}
+                                                    </div>
+                                                    <div class="min-w-0 truncate">
+                                                        <span class="text-xs font-bold text-white block truncate">{{ $m->name }}</span>
+                                                        <span class="text-[10px] text-zinc-400 font-medium block truncate">{{ strtoupper($cleanRole) }}</span>
+                                                    </div>
+                                                </div>
+                                                <span class="cobrante-check hidden text-[#F5B81C] text-xs font-black shrink-0 ml-2">✓</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
 
-                <div>
-                    <button type="submit" class="w-full py-2.5 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all dilemo-btn cursor-pointer shadow-sm">
-                        + Registrar Cobro
-                    </button>
+                            <!-- Grupo Refuerzos -->
+                            @if($refuerzos->isNotEmpty())
+                                <div class="cobrante-group" data-group="refuerzos">
+                                    <div class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#F5B81C]">
+                                        REFUERZOS
+                                    </div>
+                                    <div class="space-y-0.5 mt-0.5">
+                                        @foreach($refuerzos as $r)
+                                            @php
+                                                $rRole = str_ireplace('mozo', 'MESERO', $r->role);
+                                            @endphp
+                                            <div onclick="selectCobrante('{{ $r->name }}')" 
+                                                 class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-zinc-800/60 cursor-pointer transition-colors group"
+                                                 data-name="{{ $r->name }}"
+                                                 data-search="{{ strtolower($r->name . ' ' . $rRole) }}">
+                                                <div class="flex items-center gap-2 min-w-0">
+                                                    <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[10px] font-black text-zinc-300 group-hover:border-[#F5B81C] group-hover:text-white shrink-0">
+                                                        {{ substr($r->name, 0, 1) }}
+                                                    </div>
+                                                    <div class="min-w-0 truncate">
+                                                        <span class="text-xs font-bold text-white block truncate">{{ $r->name }}</span>
+                                                        <span class="text-[10px] text-zinc-400 font-medium block truncate">{{ strtoupper($rRole) }}</span>
+                                                    </div>
+                                                </div>
+                                                <span class="cobrante-check hidden text-[#F5B81C] text-xs font-black shrink-0 ml-2">✓</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+
+                    <!-- 4. MONTO COBRADO & BOTÓN AGREGAR -->
+                    <div class="md:col-span-2 space-y-1.5">
+                        <label for="amount" class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                            Monto
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 font-sans font-bold text-xs text-[#F5B81C]">Bs.</span>
+                                <input type="number" step="any" min="0.01" name="amount" id="amount" required placeholder="0.00"
+                                       class="w-full text-base font-mono font-black rounded-xl pl-8 pr-2 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] placeholder:text-zinc-600">
+                            </div>
+                            <button type="submit" 
+                                    class="py-2.5 px-3 bg-[#F5B81C] text-black font-black text-xs rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all shadow-sm shrink-0 flex items-center gap-1 cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                <span class="hidden sm:inline">Cobrar</span>
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </form>
         </div>
 
         <!-- ========================================================
-             4. 3 COLUMNAS POR PUNTO DE VENTA (TABLAS DE AUDITORÍA)
+             4. 3 COLUMNAS POR PUNTO DE VENTA (AUDITORÍA LIMPIA)
              ======================================================== -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
@@ -244,55 +451,71 @@
                         default => $posName,
                     };
                 @endphp
-                <div class="rounded-2xl theme-card border theme-border flex flex-col h-full overflow-hidden">
+                <div class="rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col h-full overflow-hidden shadow-sm">
                     
                     <!-- Encabezado de Columna -->
-                    <div class="px-4 py-3.5 bg-zinc-950 border-b theme-border">
+                    <div class="px-4 py-3.5 bg-zinc-950 border-b border-zinc-800/80">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
+                            <h3 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                                 {{ $displayPosName }}
                             </h3>
-                            <span class="text-sm font-mono font-bold text-[#F5B81C]">
-                                Bs. {{ number_format($subtotals['total'], 2) }}
+                            <span class="text-sm font-mono font-black text-white">
+                                <span class="text-xs text-[#F5B81C] font-sans mr-0.5">Bs.</span>{{ number_format($subtotals['total'], 2) }}
                             </span>
                         </div>
-                        <div class="flex justify-between items-center text-[11px] text-zinc-400 mt-1 font-mono">
-                            <span>Yasta: Bs. {{ number_format($subtotals['yasta'], 0) }}</span>
-                            <span>Yape: Bs. {{ number_format($subtotals['yape'], 0) }}</span>
-                            <span class="text-zinc-500 font-sans">({{ $list->count() }} cobros)</span>
+                        <div class="flex justify-between items-center text-[10px] text-zinc-500 mt-1 font-mono">
+                            <span>Yasta: Bs. {{ number_format($subtotals['yasta'], 0) }} • Yape: Bs. {{ number_format($subtotals['yape'], 0) }}</span>
+                            <span class="font-sans text-zinc-400">({{ $list->count() }} cobros)</span>
                         </div>
                     </div>
 
                     <!-- Tabla de Transacciones -->
                     <div class="flex-1 overflow-y-auto max-h-[460px]">
                         <table class="w-full text-xs text-left border-collapse">
-                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
+                            <thead class="bg-zinc-950/80 border-b border-zinc-800/80 text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-bold backdrop-blur-sm">
                                 <tr>
                                     <th class="px-3.5 py-2.5">Cobrante</th>
                                     <th class="px-2 py-2.5 text-center">App</th>
                                     <th class="px-3.5 py-2.5 text-right">Monto</th>
-                                    <th class="px-2 py-2.5 text-right w-12">Acción</th>
+                                    <th class="px-2 py-2.5 text-right w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y theme-border font-sans">
+                            <tbody class="divide-y border-zinc-800/60 font-sans">
                                 @forelse($list as $qr)
-                                    <tr class="hover:bg-zinc-900/30 transition-colors">
-                                        <td class="px-3.5 py-2 font-medium text-zinc-200 uppercase">{{ $qr->operator_name }}</td>
-                                        <td class="px-2 py-2 text-center">
+                                    <tr id="qr-row-{{ $qr->id }}" class="hover:bg-zinc-900/40 transition-colors">
+                                        <td class="px-3.5 py-2.5 font-bold text-zinc-200 uppercase text-xs truncate max-w-[120px]">
+                                            {{ $qr->operator_name }}
+                                        </td>
+                                        <td class="px-2 py-2.5 text-center">
                                             @if($qr->bank_app === 'YASTA')
-                                                <span class="text-blue-400 font-bold text-[11px] font-mono">YASTA</span>
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[10px] font-bold text-zinc-300 font-mono">
+                                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-3.5 w-auto object-contain rounded">
+                                                    <span>Yasta</span>
+                                                </span>
                                             @else
-                                                <span class="text-purple-400 font-bold text-[11px] font-mono">YAPE</span>
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[10px] font-bold text-zinc-300 font-mono">
+                                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-3.5 w-auto object-contain rounded">
+                                                    <span>Yape</span>
+                                                </span>
                                             @endif
                                         </td>
-                                        <td class="px-3.5 py-2 text-right font-bold font-mono text-white">
+                                        <td class="px-3.5 py-2.5 text-right font-black font-mono text-white text-xs">
                                             Bs. {{ number_format($qr->amount, 2) }}
                                         </td>
-                                        <td class="px-2 py-2 text-right">
-                                            <form method="POST" action="{{ route('qrs.destroy', $qr) }}" onsubmit="return confirm('¿Eliminar este cobro QR?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                                        <td class="px-2 py-2.5 text-right">
+                                            <form method="POST" action="{{ route('qrs.destroy', $qr) }}" 
+                                                  class="delete-qr-form {{ !$session->isOpen() ? 'pointer-events-none opacity-40' : '' }}"
+                                                  data-qr-id="{{ $qr->id }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-rose-400 hover:text-rose-300 font-semibold text-xs cursor-pointer">Borrar</button>
+                                                <button type="submit" 
+                                                        title="Eliminar cobro"
+                                                        class="text-zinc-500 hover:text-rose-400 p-1 rounded-md transition-colors cursor-pointer active:scale-95">
+                                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <polyline points="3 6 5 6 21 6"/>
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                                    </svg>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -308,9 +531,9 @@
                     </div>
 
                     <!-- Pie de la Columna -->
-                    <div class="px-4 py-3 bg-zinc-950 border-t theme-border flex items-center justify-between font-sans">
-                        <span class="text-xs text-zinc-400 font-normal">Subtotal {{ $displayPosName }}:</span>
-                        <span class="text-xs font-bold font-mono text-[#F5B81C]">Bs. {{ number_format($subtotals['total'], 2) }}</span>
+                    <div class="px-4 py-3 bg-zinc-950 border-t border-zinc-800/80 flex items-center justify-between font-sans">
+                        <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider">Subtotal:</span>
+                        <span class="text-xs font-black font-mono text-[#F5B81C]">Bs. {{ number_format($subtotals['total'], 2) }}</span>
                     </div>
 
                 </div>
@@ -321,4 +544,155 @@
     @endif
 
 </div>
+
+<!-- Script para eliminación asíncrona sin parpadeo de página -->
+<script>
+// Control del Selector Personalizado de Cobrante (Estilo iOS)
+function toggleCobranteMenu() {
+    const menu = document.getElementById('cobrante-menu');
+    const chevron = document.getElementById('cobrante-chevron');
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    if (isHidden) {
+        menu.classList.remove('hidden');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        const search = document.getElementById('cobrante-search');
+        if (search) {
+            search.value = '';
+            filterCobrantes('');
+            setTimeout(() => search.focus(), 60);
+        }
+    } else {
+        menu.classList.add('hidden');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+    }
+}
+
+function selectCobrante(name) {
+    const input = document.getElementById('cobrante_name_input');
+    const display = document.getElementById('cobrante-display');
+    const dot = document.getElementById('cobrante-dot');
+    const trigger = document.getElementById('cobrante-trigger');
+
+    if (input) input.value = name;
+    if (display) {
+        display.textContent = name;
+        display.className = 'truncate text-white font-black';
+    }
+    if (dot) {
+        dot.className = 'w-2 h-2 rounded-full bg-[#F5B81C] shadow-[0_0_8px_rgba(245,184,28,0.5)] shrink-0';
+    }
+    if (trigger) {
+        trigger.classList.remove('border-rose-500/80');
+        trigger.classList.add('border-[#F5B81C]/70');
+    }
+
+    // Actualizar checks
+    document.querySelectorAll('.cobrante-item').forEach(item => {
+        const check = item.querySelector('.cobrante-check');
+        if (item.getAttribute('data-name') === name) {
+            item.classList.add('bg-zinc-800/80');
+            if (check) check.classList.remove('hidden');
+        } else {
+            item.classList.remove('bg-zinc-800/80');
+            if (check) check.classList.add('hidden');
+        }
+    });
+
+    toggleCobranteMenu();
+
+    const amountInput = document.getElementById('amount');
+    if (amountInput) amountInput.focus();
+}
+
+function filterCobrantes(query) {
+    const q = (query || '').toLowerCase().trim();
+    document.querySelectorAll('.cobrante-item').forEach(item => {
+        const searchData = item.getAttribute('data-search') || '';
+        if (searchData.includes(q)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    // Ocultar grupos vacíos
+    document.querySelectorAll('.cobrante-group').forEach(group => {
+        const visibleItems = Array.from(group.querySelectorAll('.cobrante-item')).filter(i => i.style.display !== 'none');
+        group.style.display = visibleItems.length ? 'block' : 'none';
+    });
+}
+
+// Cerrar al hacer clic afuera
+document.addEventListener('click', (e) => {
+    const container = document.getElementById('cobrante-container');
+    const menu = document.getElementById('cobrante-menu');
+    if (container && menu && !container.contains(e.target)) {
+        menu.classList.add('hidden');
+        const chevron = document.getElementById('cobrante-chevron');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+    }
+});
+
+// Validación al enviar el formulario
+document.addEventListener('DOMContentLoaded', () => {
+    const qrForm = document.querySelector('form[action="{{ route('qrs.store') }}"]');
+    if (qrForm) {
+        qrForm.addEventListener('submit', function(e) {
+            const cobranteVal = (document.getElementById('cobrante_name_input')?.value || '').trim();
+            if (!cobranteVal) {
+                e.preventDefault();
+                const trigger = document.getElementById('cobrante-trigger');
+                if (trigger) {
+                    trigger.classList.add('border-rose-500');
+                }
+                toggleCobranteMenu();
+            }
+        });
+    }
+
+    document.querySelectorAll('.delete-qr-form').forEach(form => {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!confirm('¿Eliminar este cobro QR?')) return;
+
+            const qrId = this.getAttribute('data-qr-id');
+            const row = document.getElementById('qr-row-' + qrId);
+            const actionUrl = this.getAttribute('action');
+            const token = this.querySelector('input[name="_token"]').value;
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'X-HTTP-Method-Override': 'DELETE',
+                        'Accept': 'application/json'
+                    },
+                    body: new URLSearchParams({
+                        '_method': 'DELETE',
+                        '_token': token
+                    })
+                });
+
+                if (response.ok) {
+                    if (row) {
+                        row.classList.add('transition-all', 'duration-300', 'opacity-0', 'scale-95');
+                        setTimeout(() => {
+                            row.remove();
+                            window.location.reload();
+                        }, 200);
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    this.submit();
+                }
+            } catch (err) {
+                this.submit();
+            }
+        });
+    });
+});
+</script>
 @endsection

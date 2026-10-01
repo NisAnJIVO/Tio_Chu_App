@@ -14,6 +14,7 @@ use App\Http\Controllers\QrPaymentController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StaffPaymentController;
 use App\Http\Controllers\StoreSaleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -128,6 +129,9 @@ Route::middleware('auth')->group(function () {
     // 10. Perfil de Usuario (Foto de perfil / Avatar)
     Route::post('/profile/avatar', [MediaController::class, 'updateAvatar'])->name('profile.avatar.update');
     Route::delete('/profile/avatar', [MediaController::class, 'removeAvatar'])->name('profile.avatar.remove');
+
+    // 11. Administración de Usuarios (Cuentas autorizadas)
+    Route::resource('users', UserController::class)->except(['create', 'show', 'edit']);
 
 });
 

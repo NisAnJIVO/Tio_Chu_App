@@ -133,10 +133,13 @@ class QrPaymentController extends Controller
         return back()->with('success', 'Pago QR registrado en ' . $pointOfSale . '.');
     }
 
-    public function destroy(QrPayment $qr)
+    public function destroy(Request $request, QrPayment $qr)
     {
         $session = $qr->nightSession;
         if ($session && !$session->isOpen()) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'No se pueden anular cobros QR de una noche cerrada.'], 403);
+            }
             return back()->with('error', 'No se pueden anular cobros QR de una noche cerrada.');
         }
 
@@ -144,6 +147,10 @@ class QrPaymentController extends Controller
 
         if ($session) {
             $this->sessionService->recalculateClosing($session);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Pago QR eliminado.']);
         }
 
         return back()->with('success', 'Pago QR eliminado.');

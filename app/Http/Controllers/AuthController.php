@@ -35,12 +35,11 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
-        $remember = $request->boolean('remember');
-
-        // Intentar autenticación con las credenciales ingresadas
-        if (Auth::attempt($credentials, $remember)) {
+        // Intentar autenticación con credenciales (sesión caduca al cerrar el navegador o puerto)
+        if (Auth::attempt($credentials, false)) {
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
+            $request->session()->flash('animate_entrance', true);
 
             return redirect()->intended(route('dashboard'));
         }

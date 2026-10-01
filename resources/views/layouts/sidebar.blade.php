@@ -58,7 +58,7 @@
 
 <!-- Sidebar Tío Chu: Colapsable, Sin Relleno "Club & Bar", Letras Grandes & Sin Scroll -->
 <aside id="main-sidebar" 
-       class="w-64 h-screen max-h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-hidden z-30 select-none bg-black border-r border-zinc-800/80" 
+       class="w-64 h-screen max-h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-hidden z-30 select-none bg-black border-r border-zinc-800/80 {{ session('animate_entrance') ? 'animate-entrance-sidebar' : '' }}" 
        style="width: 16rem; min-width: 16rem; max-width: 16rem; height: 100vh;">
     
     <!-- 1. Cabecera con Menú Hamburguesa -->
@@ -347,6 +347,23 @@
                     <span class="sidebar-text text-[13px] truncate">Multimedia</span>
                 </div>
                 @if(request()->routeIs('media.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
+            </a>
+
+            <!-- Administración de Usuarios -->
+            <a href="{{ route('users.index') }}" 
+               title="Administración de Usuarios"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('users.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('users.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M20 8v6M23 11h-6"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Usuarios</span>
+                </div>
+                @if(request()->routeIs('users.*'))
                     <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
                 @endif
             </a>

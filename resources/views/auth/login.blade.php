@@ -188,15 +188,6 @@
                                    class="w-full px-4 py-3 rounded-xl bg-black border border-zinc-800 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-colors">
                         </div>
 
-                        <!-- Recordar sesión -->
-                        <div class="flex items-center justify-between pt-1 form-field">
-                            <label class="flex items-center gap-2 cursor-pointer select-none">
-                                <input type="checkbox" 
-                                       name="remember" 
-                                       class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] focus:ring-0 focus:ring-offset-0 accent-[#F5B81C]">
-                                <span class="text-xs text-zinc-400">Recordar sesión</span>
-                            </label>
-                        </div>
 
                         <!-- Botón de Ingreso iOS Minimalista Dorado -->
                         <div class="pt-2 form-field">

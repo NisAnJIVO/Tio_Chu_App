@@ -61,33 +61,36 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
+        $session = NightSession::findOrFail($request->night_session_id);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden registrar facturas en una noche cerrada.');
+        }
+
+        $nextCorrelative = (Invoice::where('night_session_id', $session->id)->max('correlative_num') ?? 0) + 1;
+        $correlativeNum = $request->filled('correlative_num') ? (int) $request->input('correlative_num') : $nextCorrelative;
+
         $validated = $request->validate([
             'night_session_id' => 'required|exists:night_sessions,id',
-            'correlative_num' => 'required|integer|min:1',
+            'correlative_num' => 'nullable|integer|min:1',
             'payment_method' => 'required|in:tarjeta,efectivo',
-            'bar_name' => 'nullable|string|in:Principal,Subterraneo,Tienda,subterraneo,tienda,principal',
+            'bar_name' => 'nullable|string',
             'amount' => 'required|numeric|min:0.01',
             'commission_rate' => 'nullable|numeric|min:0|max:1',
             'notes' => 'nullable|string|max:255',
         ]);
 
-        $session = NightSession::findOrFail($validated['night_session_id']);
-        if (!$session->isOpen()) {
-            return back()->with('error', 'No se pueden registrar facturas en una noche cerrada.');
-        }
-
         $commissionRate = $validated['commission_rate'] ?? $session->pos_commission_rate;
 
         // Normalizar nombre de barra
         $barName = match(mb_strtolower(trim($validated['bar_name'] ?? 'Principal'))) {
-            'subterraneo', 'subte' => 'Subterráneo',
+            'subterraneo', 'subte', 'subterráneo' => 'Subterráneo',
             'tienda' => 'Tienda',
             default => 'Principal',
         };
 
         $invoice = new Invoice();
         $invoice->night_session_id = $session->id;
-        $invoice->correlative_num = $validated['correlative_num'];
+        $invoice->correlative_num = $correlativeNum;
         $invoice->payment_method = $validated['payment_method'];
         $invoice->bar_name = $barName;
         $invoice->amount = $validated['amount'];
@@ -99,20 +102,35 @@ class InvoiceController extends Controller
         // Recalcular el cierre de caja
         $this->sessionService->recalculateClosing($session);
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'invoice' => $invoice,
+            ]);
+        }
+
         return back()->with('success', 'Factura #' . $invoice->correlative_num . ' registrada.');
     }
 
-    public function destroy(Invoice $invoice)
+    public function destroy(Invoice $invoice, Request $request)
     {
         $session = $invoice->nightSession;
         if ($session && !$session->isOpen()) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['error' => 'No se pueden eliminar facturas de una noche cerrada.'], 422);
+            }
             return back()->with('error', 'No se pueden eliminar facturas de una noche cerrada.');
         }
 
+        $id = $invoice->id;
         $invoice->delete();
 
         if ($session) {
             $this->sessionService->recalculateClosing($session);
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'id' => $id]);
         }
 
         return back()->with('success', 'Factura eliminada.');

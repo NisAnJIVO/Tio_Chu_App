@@ -129,60 +129,109 @@
              ======================================================== -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             
-            <!-- Panel Izquierdo: Formulario Rápido -->
+            <!-- Panel Izquierdo: Formulario Rápido Rediseñado -->
             <div class="theme-card rounded-2xl p-5 border theme-border h-fit">
-                <div class="border-b theme-border pb-3 mb-4">
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider font-sans">
-                        Registrar Factura o Tarjeta
-                    </h2>
-                    <p class="text-xs text-zinc-400 mt-0.5">
-                        Anota el comprobante o voucher cobrado
-                    </p>
+                <div class="flex items-center justify-between border-b theme-border pb-3 mb-4">
+                    <div>
+                        <h2 class="text-sm font-black text-white uppercase tracking-wider font-sans">
+                            Registrar Factura
+                        </h2>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">
+                            Control de vouchers y comprobantes
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-zinc-950 border border-zinc-800 shrink-0" title="Número autoincremental automático">
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">N°</span>
+                        <span class="text-xs font-mono font-black text-[#F5B81C]">#{{ $nextCorrelative }}</span>
+                    </div>
                 </div>
                 
-                <form method="POST" action="{{ route('invoices.store') }}" class="space-y-3.5 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                <form method="POST" action="{{ route('invoices.store') }}" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                     @csrf
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
+                    <input type="hidden" name="correlative_num" value="{{ $nextCorrelative }}">
 
+                    <!-- 1. Forma de Pago (Píldoras Switch Modo iPhone) -->
                     <div>
-                        <label for="correlative_num" class="block text-xs font-semibold text-zinc-300 mb-1">N° de Factura</label>
-                        <input type="number" name="correlative_num" id="correlative_num" required value="{{ $nextCorrelative }}" min="1"
-                               class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
+                        <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Forma de Pago</label>
+                        <input type="hidden" name="payment_method" id="payment_method_input" value="tarjeta">
+                        <div class="grid grid-cols-2 p-1 rounded-xl bg-zinc-950 border border-zinc-800 gap-1">
+                            <button type="button"
+                                    id="btn-method-tarjeta"
+                                    onclick="selectPaymentMethod('tarjeta')"
+                                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] active:scale-95">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                </svg>
+                                <span>Tarjeta</span>
+                            </button>
+                            <button type="button"
+                                    id="btn-method-efectivo"
+                                    onclick="selectPaymentMethod('efectivo')"
+                                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white active:scale-95">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <span>Efectivo</span>
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- 2. Barra (Píldoras Switch Modo iPhone) -->
                     <div>
-                        <label for="payment_method" class="block text-xs font-semibold text-zinc-300 mb-1">Forma de Pago</label>
-                        <select name="payment_method" id="payment_method" required 
-                                class="w-full text-xs font-semibold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                            <option value="tarjeta" class="bg-zinc-950">TARJETA (Máquina / Débito / Crédito)</option>
-                            <option value="efectivo" class="bg-zinc-950">EFECTIVO (Pago en mano)</option>
-                        </select>
+                        <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Barra</label>
+                        <input type="hidden" name="bar_name" id="bar_name_input" value="Principal">
+                        <div class="grid grid-cols-3 p-1 rounded-xl bg-zinc-950 border border-zinc-800 gap-1">
+                            <button type="button"
+                                    id="btn-bar-Principal"
+                                    onclick="selectBar('Principal')"
+                                    class="py-1.5 px-2 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] text-center truncate active:scale-95">
+                                Principal
+                            </button>
+                            <button type="button"
+                                    id="btn-bar-Subterraneo"
+                                    onclick="selectBar('Subterraneo')"
+                                    class="py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white text-center truncate active:scale-95">
+                                Subterráneo
+                            </button>
+                            <button type="button"
+                                    id="btn-bar-Tienda"
+                                    onclick="selectBar('Tienda')"
+                                    class="py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white text-center truncate active:scale-95">
+                                Tienda
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- 3. Monto Cobrado (Compacto y Prominente) -->
                     <div>
-                        <label for="bar_name" class="block text-xs font-semibold text-zinc-300 mb-1">Barra / Punto de Venta</label>
-                        <select name="bar_name" id="bar_name" required 
-                                class="w-full text-xs font-semibold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                            <option value="Principal" class="bg-zinc-950">Barra Kelly (Piso Principal)</option>
-                            <option value="Subterraneo" class="bg-zinc-950">Barra Ariel (Subterráneo)</option>
-                            <option value="Tienda" class="bg-zinc-950">Tienda</option>
-                        </select>
+                        <label for="amount" class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Monto Cobrado</label>
+                        <div class="inline-flex items-center rounded-xl bg-zinc-950 border border-zinc-800 px-3.5 py-1.5 focus-within:border-[#F5B81C] focus-within:ring-1 focus-within:ring-[#F5B81C]/40 transition-all">
+                            <span class="text-sm font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
+                            <input type="number" step="0.5" name="amount" id="amount" required placeholder="0.00"
+                                   class="w-36 text-xl font-mono font-black bg-transparent border-0 text-white placeholder-zinc-600 focus:outline-none p-0">
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="amount" class="block text-xs font-semibold text-zinc-300 mb-1">Monto Cobrado (Bs.)</label>
-                        <input type="number" step="0.5" name="amount" id="amount" required placeholder="0.00"
-                               class="w-full text-sm font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:border-[#F5B81C]">
+                    <!-- 4. Notas o N° Voucher (Desplegable y Opcional) -->
+                    <div class="pt-1 border-t border-zinc-800/60">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-zinc-400">Notas (opcional)</span>
+                            <button type="button" id="toggle-notes-btn" onclick="toggleNotesField()" class="inline-flex items-center gap-1 text-[11px] text-[#F5B81C] hover:text-[#e5ac18] font-bold transition-colors cursor-pointer">
+                                <svg id="notes-plus-icon" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <span id="notes-btn-text">Agregar</span>
+                            </button>
+                        </div>
+                        <div id="notes-field-container" class="hidden mt-2 transition-all duration-200">
+                            <input type="text" name="notes" id="notes" placeholder="Ej. Voucher #1234, Tarjeta BCP..."
+                                   class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="notes" class="block text-xs font-semibold text-zinc-300 mb-1">Notas o N° Voucher (Opcional)</label>
-                        <input type="text" name="notes" id="notes" placeholder="Ej. Voucher #1234, Tarjeta BCP..."
-                               class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
-                    </div>
-
-                    <button type="submit" class="w-full py-2.5 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all dilemo-btn cursor-pointer shadow-sm">
-                        + Registrar Factura / Tarjeta
+                    <button type="submit" class="w-full py-2.5 bg-[#F5B81C] text-black font-black text-xs uppercase tracking-wider rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all dilemo-btn cursor-pointer shadow-sm">
+                        + Registrar Factura
                     </button>
                 </form>
             </div>
@@ -212,15 +261,21 @@
                                 <th class="px-3 py-3 text-right w-16">Acción</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y theme-border font-sans">
+                        <tbody class="divide-y theme-border font-sans" id="invoices-table-body">
                             @forelse($invoices as $inv)
-                                <tr class="hover:bg-zinc-900/30 transition-colors">
+                                <tr id="invoice-row-{{ $inv->id }}" class="hover:bg-zinc-900/30 transition-all duration-200">
                                     <td class="px-3 py-2.5 text-center font-bold font-mono text-zinc-300">#{{ $inv->correlative_num }}</td>
                                     <td class="px-3.5 py-2.5">
                                         @if($inv->payment_method === 'tarjeta')
-                                            <span class="text-purple-400 font-semibold text-xs">Tarjeta</span>
+                                            <span class="inline-flex items-center gap-1 text-[#F5B81C] font-semibold text-xs">
+                                                <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                                Tarjeta
+                                            </span>
                                         @else
-                                            <span class="text-zinc-300 font-semibold text-xs">Efectivo</span>
+                                            <span class="inline-flex items-center gap-1 text-zinc-300 font-semibold text-xs">
+                                                <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                                Efectivo
+                                            </span>
                                         @endif
                                     </td>
                                     <td class="px-3.5 py-2.5 text-zinc-300 font-medium">
@@ -237,15 +292,15 @@
                                     </td>
                                     <td class="px-3.5 py-2.5 text-zinc-400 text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? '—' }}</td>
                                     <td class="px-3 py-2.5 text-right">
-                                        <form method="POST" action="{{ route('invoices.destroy', $inv) }}" onsubmit="return confirm('¿Eliminar factura?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-rose-400 hover:text-rose-300 font-semibold text-xs cursor-pointer">Borrar</button>
-                                        </form>
+                                        <button type="button" 
+                                                onclick="deleteInvoice({{ $inv->id }})" 
+                                                class="text-rose-400 hover:text-rose-300 font-semibold text-xs cursor-pointer transition-colors active:scale-95 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                                            Borrar
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
+                                <tr id="empty-invoices-row">
                                     <td colspan="8" class="px-4 py-8 text-center text-zinc-500 font-sans">
                                         No hay facturas registradas en esta noche.
                                     </td>
@@ -261,4 +316,92 @@
     @endif
 
 </div>
+
+<script>
+/* --- CONTROL DE FORMA DE PAGO (PÍLDORAS MODO IPHONE) --- */
+function selectPaymentMethod(method) {
+    document.getElementById('payment_method_input').value = method;
+    const btnCard = document.getElementById('btn-method-tarjeta');
+    const btnCash = document.getElementById('btn-method-efectivo');
+
+    if (method === 'tarjeta') {
+        btnCard.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] active:scale-95';
+        btnCash.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white active:scale-95';
+    } else {
+        btnCash.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] active:scale-95';
+        btnCard.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white active:scale-95';
+    }
+}
+
+/* --- CONTROL DE BARRA (PÍLDORAS MODO IPHONE) --- */
+function selectBar(bar) {
+    document.getElementById('bar_name_input').value = bar;
+    const bars = ['Principal', 'Subterraneo', 'Tienda'];
+    bars.forEach(b => {
+        const btn = document.getElementById('btn-bar-' + b);
+        if (btn) {
+            if (b === bar) {
+                btn.className = 'py-1.5 px-2 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] text-center truncate active:scale-95';
+            } else {
+                btn.className = 'py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white text-center truncate active:scale-95';
+            }
+        }
+    });
+}
+
+/* --- TOGGLE DE CAMPO NOTAS / VOUCHER --- */
+function toggleNotesField() {
+    const container = document.getElementById('notes-field-container');
+    const input = document.getElementById('notes');
+    const btnText = document.getElementById('notes-btn-text');
+    const icon = document.getElementById('notes-plus-icon');
+
+    if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        input.focus();
+        btnText.textContent = 'Ocultar';
+        icon.style.transform = 'rotate(45deg)';
+    } else {
+        container.classList.add('hidden');
+        btnText.textContent = 'Agregar';
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+/* --- ELIMINACIÓN ASINCRÓNICA SIN PARPADEO NI BANNERS VERDES --- */
+async function deleteInvoice(id) {
+    if (!confirm('¿Eliminar esta factura definitivamente?')) return;
+    const row = document.getElementById('invoice-row-' + id);
+    const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    try {
+        const res = await fetch('{{ url("/invoices") }}/' + id, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrf,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (res.ok) {
+            if (row) {
+                row.style.transition = 'all 0.25s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(14px)';
+                setTimeout(() => {
+                    row.remove();
+                    window.location.reload();
+                }, 220);
+            } else {
+                window.location.reload();
+            }
+        } else {
+            window.location.reload();
+        }
+    } catch (err) {
+        window.location.reload();
+    }
+}
+</script>
 @endsection

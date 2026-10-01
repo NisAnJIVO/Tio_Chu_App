@@ -119,6 +119,48 @@ class StaffPaymentAndHistoryTest extends TestCase
         ]);
     }
 
+    public function test_invoice_automatically_increments_correlative(): void
+    {
+        $session = NightSession::first();
+        $initialMax = (int) (\App\Models\Invoice::where('night_session_id', $session->id)->max('correlative_num') ?? 0);
+
+        $response = $this->actingAs($this->user)->post(route('invoices.store'), [
+            'night_session_id' => $session->id,
+            'payment_method' => 'efectivo',
+            'bar_name' => 'Principal',
+            'amount' => 150.00,
+        ]);
+
+        $this->assertDatabaseHas('invoices', [
+            'night_session_id' => $session->id,
+            'correlative_num' => $initialMax + 1,
+            'payment_method' => 'efectivo',
+            'amount' => 150.00,
+        ]);
+    }
+
+    public function test_can_delete_invoice_asynchronously(): void
+    {
+        $session = NightSession::first();
+        $inv = \App\Models\Invoice::create([
+            'night_session_id' => $session->id,
+            'correlative_num' => 99,
+            'payment_method' => 'tarjeta',
+            'amount' => 100.00,
+            'commission_rate' => 0.05,
+            'commission_amount' => 5.00,
+            'net_amount' => 95.00,
+        ]);
+
+        $response = $this->actingAs($this->user)->deleteJson(route('invoices.destroy', $inv));
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseMissing('invoices', [
+            'id' => $inv->id,
+        ]);
+    }
+
     public function test_qr_payment_page_loads_with_cobrantes_select(): void
     {
         $session = NightSession::first();
@@ -127,5 +169,30 @@ class StaffPaymentAndHistoryTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('BARTENDERS');
         $response->assertSee('MESEROS');
+        $response->assertSee('yasta.png');
+        $response->assertSee('yape.png');
+        $response->assertDontSee('(MOZO)');
+        $response->assertDontSee('(Mozo)');
+    }
+
+    public function test_can_delete_qr_payment_asynchronously(): void
+    {
+        $session = NightSession::first();
+        $qr = \App\Models\QrPayment::create([
+            'night_session_id' => $session->id,
+            'point_of_sale' => 'Barra Principal',
+            'operator_name' => 'ALVARO',
+            'bank_app' => 'YASTA',
+            'amount' => 50.00,
+            'is_confirmed' => true,
+        ]);
+
+        $response = $this->actingAs($this->user)->deleteJson(route('qrs.destroy', $qr));
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseMissing('qr_payments', [
+            'id' => $qr->id,
+        ]);
     }
 }

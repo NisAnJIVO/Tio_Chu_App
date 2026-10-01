@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -8,8 +8,22 @@
 
 @theme {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-mono: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* ========================================================
+   TIPOGRAFÍA ÚNICA OFICIAL: PLUS JAKARTA SANS
+   Unificación tipográfica absoluta en todos los módulos, sidebar, modales y tablas
+   ======================================================== */
+*, html, body, button, input, select, textarea, optgroup, table, th, td, span, p, h1, h2, h3, h4, h5, h6, a, div, label, dialog {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-mono {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
 
 /* ==========================================
    LIQUID GLASS & MESH GRADIENT UTILITIES
@@ -313,6 +327,84 @@ html.light .border-zinc-800,
 html.light .border-zinc-700 {
     border-color: #e2e8f0 !important;
 }
+
+/* ========================================================
+   POST-LOGIN ENTRANCE CHOREOGRAPHY (SILKY SMOOTH APPLE / IOS SPRING)
+   Se activa únicamente tras el inicio de sesión exitoso
+   ======================================================== */
+@keyframes sidebarSlideFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes contentSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardPopFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(38px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-entrance-sidebar {
+    animation: sidebarSlideFromLeft 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-header {
+    animation: contentSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-card-1 {
+    animation: cardPopFromBottom 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-card-2 {
+    animation: cardPopFromBottom 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-card-3 {
+    animation: cardPopFromBottom 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-card-4 {
+    animation: cardPopFromBottom 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-grid-left {
+    animation: cardPopFromBottom 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both;
+    will-change: transform, opacity;
+}
+
+.animate-entrance-grid-right {
+    animation: cardPopFromBottom 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
+    will-change: transform, opacity;
+}
+
 
 
 

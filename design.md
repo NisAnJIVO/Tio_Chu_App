@@ -95,26 +95,24 @@ Este documento define la identidad visual, estándares de experiencia de usuario
 
 ---
 
-## 8. Arquitectura del Dashboard — Híbrido Real TransGlobal + Dilemo + iOS
+## 8. Arquitectura del Dashboard — Minimalismo Sobrio iOS Pure Dark
 
+- **Paleta Sobria & Cero Arcoíris:**
+  - Erradicados colores chillones o mezclas saturadas (azules eléctricos, verdes estridentes, bordes multicolor).
+  - La interfaz se rige por: fondo negro `#000000`, tarjetas sólidas `#09090b` con bordes `#27272a` (`border-zinc-800/80`), números y valores monetarios en blanco puro nítido monospace con prefijo dorado ámbar oficial `#F5B81C`, y textos secundarios en zinc tenue.
+  - Íconos unificados en contenedores oscuros de bajo contraste (`bg-zinc-950 border border-zinc-800 text-zinc-300`).
 - **Política Estricta de Integridad:** 
   - **Cero Datos Falsos o Simulados:** Prohibido el uso de mapas de calor artificiales o métricas inventadas. Todo número, barra y estado proviene 100% de la base de datos real.
-  - **Cero Píldoras de Confetti IA:** Eliminadas las micro-píldoras aleatorias de colores (azul, verde, púrpura); la paleta se rige por el dorado oficial `#F5B81C`, zinc puro, verde para superávit y rojo para salidas.
-- **Modo Oscuro Oficial y Permanente:**
-  - Sin botones ni selectores de tema innecesarios; estética nocturna elegante y directa que no distrae al usuario.
 - **Lenguaje Claro y Natural para Personas Mayores (Don Ludo):**
-  - **Cero Jerga Contable o IA:** Prohibidas palabras técnicas abstractas como *"Superávit"*, *"Déficit"*, *"POS Neto"*, *"POS Bruto"*, *"Total Liquidado"*, *"Balance en Bóveda"*.
   - **Vocabulario Cotidiano y Directo:**
-    - `Total Vendido en Barras` (con detalle: Barra Principal y Subte).
-    - `Cobrado con Tarjeta` (con aclaración: Pasado por máquina: Bs. X).
-    - `Cobrado por QR` (con bancos: Yasta y Yape).
-    - `Dinero en Caja` (Plata a Favor / Faltante en Caja).
-    - `Venta en Cada Barra` (Barra Kelly en Piso Principal, Barra Ariel en Subterráneo, Tienda en Entrada/Guardarropa, Suma Total de las Barras).
-    - `Cuentas Claras: Entradas y Salidas` (dividido en *Todo el Dinero que Entró* vs *Todo lo que se Pagó*, y *Plata que Debe Quedar en Caja*).
+    - `Venta en Barras` (Barra Principal y Subte).
+    - `Tarjetas (Neto Banco)` (con detalle de importe bruto).
+    - `Cobros por QR` (Yasta y Yape).
+    - `Efectivo en Caja` (Plata a favor / Faltante).
+    - `Ventas por Barra` (Barra Kelly, Barra Ariel, Tienda).
+    - `Cuentas de la Noche` (Ingresos de Noche vs Egresos y Pagos).
 - **Tarjetas 100% Estáticas:**
-  - Las tarjetas no tienen saltos ni traslaciones `hover`. Solo los botones de acción reaccionan al cursor (`.dilemo-btn`).
-- **Distribución Estructural Compacta (Cero Scroll en Pantalla):**
-  - Todo el contenido del Resumen General encaja limpiamente en la altura de una pantalla normal de trabajo sin forzar scroll vertical.
+  - Sin saltos ni traslaciones molestas al pasar el mouse. Los botones de acción responden de forma táctil con micro-animaciones sobrias (`active:scale-95`).
 
 ### 9. Rediseño Maestro de Bodega Central (Almacén de Bebidas)
 - **Vista Híbrida Inteligente (Tabla Ejecutiva vs Tarjetas):**
@@ -303,6 +301,184 @@ Este documento define la identidad visual, estándares de experiencia de usuario
   - Compatibilidad total con subida de nuevos archivos (`enctype="multipart/form-data"` hacia `public/images/drinks/`).
   - Vista previa en tiempo real con `FileReader` antes del guardado.
   - Malla interactiva del catálogo preexistente con miniaturas cuadradas y resaltado activo en dorado oficial `#F5B81C`.
+
+---
+
+### 20. Rediseño Maestro de Facturas & Tarjetas (Píldoras Switch iOS & Autoincremental)
+- **Eliminación Definitiva de Banners Verdes:**
+  - Sustitución de alertas estáticas que empujaban el contenido por un toast flotante ultradiscreto en la esquina inferior derecha (`#flash-success-toast` con pastilla oscura, punto dorado ámbar `#F5B81C` y auto-dismiss a los 2.4s).
+  - Eliminación asincrónica vía `fetch(DELETE)` para borrar filas en vivo con transición suave (`opacity: 0, transform: translateX(14px)`) sin recarga de página.
+- **Número de Factura 100% Autoincremental y Automático:**
+  - Erradicado el campo de texto editable innecesario.
+  - El sistema calcula y muestra una insignia compacta `#N` en la cabecera del formulario y asigna el correlativo siguiente automáticamente tanto en backend como frontend.
+- **Selectores en Formato Píldoras Switch (Segmented Control iPhone):**
+  - **Forma de Pago:** Píldoras interactivas `Tarjeta` y `Efectivo` con animación de estado activo en dorado ámbar `#F5B81C` con texto negro.
+  - **Barra:** Renombrado de *"Barra / Punto de Venta"* a simplemente **"Barra"**, con 3 píldoras conmutables: `Principal`, `Subterráneo` y `Tienda`.
+- **Monto Cobrado Compacto y Prominente:**
+  - Sustitución del input largo que cruzaba la pantalla por un bloque monetario compacto (`w-36 font-mono font-black text-xl`) con prefijo integrado `Bs.` y foco dorado.
+- **Notas y Vouchers Desplegables Bajo Demanda:**
+  - Etiqueta *"Notas (opcional)"* con botón discreto `+ Agregar` que expande el campo únicamente si Don Ludo desea ingresar un número de voucher o detalle, manteniendo el formulario limpio por defecto.
+
+---
+
+### 21. Rediseño Maestro de Cobros por QR (Yasta / Yape)
+- **Switches Modo iPhone (Segmented Controls) para Formularios de Pocas Opciones:**
+  - **Punto de Venta:** Píldoras compactas (`Principal`, `Tienda`, `Subte`) en contenedor oscuro `bg-zinc-950 border border-zinc-800` con selección rápida e intuitiva.
+  - **Aplicación Bancaria:** Píldoras de selección directa con los **logos oficiales de Yasta y Yape** (`images/LogosQR/yasta.png` y `images/LogosQR/yape.png`) integrados en el switch para un reconocimiento visual instantáneo.
+- **Normalización Estricta de Roles (Eliminación de "MOZO"):**
+  - Todo el personal de atención al cliente está unificado formalmente bajo la denominación **MESERO**.
+  - Erradicado cualquier texto `(MOZO)` de las opciones y agrupadores, actualizando la base de datos y sanitizando la presentación en la vista.
+- **Selector de Cobrante Personalizado iOS Pure Dark (Erradicación del Select Nativo):**
+  - Eliminado el `<select>` nativo del navegador con su menú tosco y los textos con guiones (`-- SELECCIONAR PERSONAL --`).
+  - Sustituido por un **Popover Flotante iOS Pure Dark** (`#cobrante-menu`):
+    - Trigger con etiqueta sobria **"Cobrante"**, dot indicador dorado y flecha chevron animada.
+    - Buscador integrado en tiempo real (`#cobrante-search`) para encontrar a cualquier mesero o bartender en 1 tecla.
+    - Avatares con iniciales, agrupadores sobrios en dorado (`BARTENDERS`, `MESEROS`, `REFUERZOS`) y checkmarks activos.
+    - Al seleccionar, el foco se transfiere automáticamente al campo de Monto para máxima agilidad operativa.
+- **Monto Cobrado Compacto y Directo:**
+  - Campo numérico monoespaciado en blanco nítido con prefijo dorado `Bs.` integrado y botón directo `Cobrar`.
+- **Eliminación Asincrónica sin Parpadeo (Zero Reload):**
+  - Las anulaciones o eliminaciones de cobros QR en las 3 columnas de auditoría (*Barra Kelly*, *Tienda*, *Barra Ariel*) se procesan de forma asincrónica con desvanecimiento suave de la fila.
+
+---
+
+### 22. Rediseño Maestro de Cierre de Caja (Arqueo Ejecutivo Compacto & Cero Scroll)
+- **Erradicación de Relleno de "IA Generativa" y Textos Redundantes:**
+  - Eliminados todos los títulos artificiales, subtítulos explicativos y oraciones pretenciosas (*"Arqueo final de la noche: entradas, salidas..."*, *"1. Todo el Dinero que Entró"*, *"4 Fuentes"*, *"Egresos del Turno"*, *"Salidas reales efectuadas"*, *"Avance de liquidación..."*).
+  - La interfaz va directo a las cifras operativas esenciales que Don Ludo necesita consultar en 1 segundo.
+- **Distribución de Pantalla Única (Zero Scroll Vertical):**
+  - **Cuadrícula en 2 Columnas Horizontales (`lg:col-span-7` vs `lg:col-span-5`):** Toda la información cabe en el viewport estándar (~550px de altura total) sin obligar al usuario a hacer scroll infinito.
+  - **Columna Izquierda (Matriz de Arqueo):**
+    - Indicador central prominente de **Plata en Caja** (`text-2xl sm:text-3xl font-mono font-black text-white` con `Bs.` dorado `#F5B81C`) y micro-balance de Entradas vs Salidas.
+    - Desglose paralelo de Entradas (*Tarjetas Neto*, *QR Yasta*, *QR Yape*, *Efectivo en Mano*) y Salidas (*Pago Personal*, *Gastos de Turno*) con filas compactas de 28px de altura y tipografía de alto contraste.
+  - **Columna Derecha (Personal & Gastos):**
+    - **Personal:** Ficha ultra compacta con 3 métricas (*Pagado*, *Planilla*, *Por Pagar*) y botón rápido a Drawer lateral.
+    - **Gastos:** Formulario en una sola línea horizontal (switch *Interno*/*Externo*, descripción, monto y botón `+`) junto a una mini-tabla con scroll interno suave (`max-h-[130px]`) que no desplaza la pantalla general.
+- **Modal Deslizante (Slide-Over Drawer `#staff-drawer`):**
+  - Mantiene la nómina de trabajadores fuera del lienzo principal, desplegándose suavemente desde la derecha únicamente bajo demanda (`Ver personal de turno →`).
+  - Buscador en vivo, avatares, cargos estandarizados a `MESERO` (cero `MOZO`), montos monoespaciados y estado de pago en píldora (`Pagado` / `Pendiente`).
+- **Eliminación Asincrónica de Gastos Operativos:**
+  - Anulación de gastos en tiempo real mediante `fetch(DELETE)` con animación suave sin recarga de pantalla.
+
+---
+
+### 23. Rediseño Maestro de Pagos al Personal (Planilla Nocturna Limpia de IA)
+- **Erradicación de Relleno Generativo de IA:**
+  - Erradicadas las frases artificiales y sobre-explicativas (*"Planilla & Jornales"*, *"Liquidación Nocturna"*, *"Registro de jornales, control de pagos en efectivo..."*, *"Auditoría & Planilla"*, *"Control de Deudas..."*).
+  - Título limpio y directo: **Pagos al Personal**.
+- **Supresión de Tarifas Promedio Falsas:**
+  - Eliminados los textos estáticos e inventados como *"Tarifa promedio: Bs. 100 - 110"*. El desglose por área muestra datos 100% reales de la base de datos (conteo de personas y monto total).
+- **Tipografía y Legibilidad de Alto Contraste para Don Ludo:**
+  - Nombre del trabajador en `text-sm sm:text-base font-bold text-white uppercase`.
+  - Roles normalizados y limpios (`MESERO`, sin `MOZO`).
+  - Inputs de monto monetario en `text-base font-mono font-black text-white` con foco dorado `#F5B81C`.
+  - Checkboxes cómodos (`w-5 h-5 accent-[#F5B81C]`).
+- **Drawer de Edición por Área Depurado:**
+  - Eliminados los subtítulos redundantes bajo cada cargo (*"Atención de meseros"*, *"Aseo y mantenimiento"*, *"Puerta y orden"*, *"Barra Kelly y Ariel"*), conservando etiquetas directas y claras.
+
+---
+
+### 24. Rediseño Maestro de Personal y Turnos (Tipografía Oficial Plus Jakarta Sans & Cero IA)
+- **Erradicación de Relleno Generativo de IA:**
+  - Eliminados textos superfluos como *"Cuadrilla Nocturna"*, *"Tío Chu Club"* y *"Nómina de trabajadores, meseros, barra y seguridad con jornales por turno"*.
+  - Cabecera limpia con ícono dorado oficial `#F5B81C` y título directo: **Personal y Turnos**.
+- **Normalización de Tipografía Oficial (`font-sans` Plus Jakarta Sans):**
+  - Corregido el uso excesivo de `font-mono` que daba apariencia de terminal de código a las pestañas y tablas.
+  - Pestañas por día (*Viernes*, *Sábado*, *Domingo*, *Todos*), encabezados de tabla, pastillas de días de trabajo y estados ahora usan la tipografía oficial sans-serif limpia.
+  - `font-mono` queda reservado estrictamente para importes monetarios (*Bs. 100.00*) y campos numéricos.
+
+---
+
+### 25. Rediseño Maestro de Historial de Pagos y Deudas (Tarjetas Compactas & Cero Gimmicks de IA)
+- **Malla de Tarjetas Compactas (Compact Cards Grid):**
+  - Vista demostrativa y de auditoría gerencial con disposición compacta de alta densidad (`grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3`).
+  - Tarjetas estilizadas en Pure Dark iOS (`#09090b`, borde `border-zinc-800/80`, padding reducido `p-3.5`).
+- **Erradicación de Efectos Pulsantes de IA (`animate-pulse`) y Colores Chillones:**
+  - Eliminados todos los puntos parpadeantes y semáforos verdes/rojos saturados estilo plantilla de IA.
+  - Paleta sobria con pastillas neutras (`bg-zinc-950 border border-zinc-800 text-zinc-300`), indicadores estáticos y acentos dorados oficiales `#F5B81C`.
+- **Filtro Rápido Segmentado en Tiempo Real:**
+  - Píldoras conmutables (*Todos*, *Con Deuda*, *Al Día*) con buscador instantáneo sin recargar la página.
+- **Acción Rápida de Liquidación Asincrónica:**
+  - Botón dorado `#F5B81C` `Pagar Jornal` en las tarjetas con saldo pendiente, con actualización en vivo del estado y los KPIs de deuda sin parpadeos.
+
+---
+
+### 26. Unificación Tipográfica Absoluta: Plus Jakarta Sans (Cero Fuentes Mixtas)
+- **Fuente Única Oficial del Sistema:**
+  - Se eliminó `JetBrains Mono` y cualquier otra tipografía que fragmentaba la identidad visual del sistema.
+  - La fuente de **Resumen General** (`Plus Jakarta Sans`) es ahora la **única tipografía** en todo el software: sidebar, modales, drawers, tarjetas, tablas, formularios e inputs.
+- **Normalización de `--font-mono`:**
+  - Se mapeó `--font-mono` a `Plus Jakarta Sans` con activación de números tabulares (`font-feature-settings: "tnum" 1, "lnum" 1;`).
+  - Esto garantiza que los importes monetarios y columnas numéricas mantengan su perfecta alineación contable sin recurrir a una fuente monoespaciada distinta que rompa la armonía tipográfica.
+
+---
+
+### 27. Módulo de Administración de Usuarios & Caducidad de Sesión por Puerto
+- **Control Centralizado de Cuentas de Acceso:**
+  - Enlace directo en el sidebar en la sección de **Gestión**: `Usuarios`.
+  - Don Ludo puede crear nuevas cuentas autorizadas (Nombre, Correo, Contraseña) mediante un slide-over drawer minimalista (`drawer-panel`).
+  - Las nuevas cuentas quedan inmediatamente habilitadas para iniciar sesión en la pantalla de bienvenida.
+  - Edición de credenciales y protección estricta contra eliminación accidental de la cuenta activa o de Don Ludo.
+- **Caducidad Estricta de Sesión (`SESSION_EXPIRE_ON_CLOSE`):**
+  - Se configuró la expiración de sesión inmediata al cerrar la pestaña/navegador o reiniciar el puerto/servidor (`expire_on_close = true`).
+  - Se eliminó la persistencia de cookies *"remember me"* para garantizar que al abrir el puerto `8000` el sistema obligue a pasar por la pantalla de login.
+
+---
+
+### 28. Coreografía de Entrada Post-Login (Apple / iOS Spring Motion)
+- **Activación Exclusiva Post-Login (Zero Repetición en Navegación):**
+  - Controlado por flash de sesión de Laravel (`session()->flash('animate_entrance', true)`) generado al autenticarse en `AuthController::login()`.
+  - Se reproduce **única y exclusivamente** la primera vez que Don Ludo inicia sesión y aterriza en el Dashboard. Al navegar entre módulos o recargar la página, la sesión flash se consume y la interfaz carga de forma instantánea sin animaciones repetitivas.
+- **Secuencia y Coreografía Escalonada (Staggered Motion):**
+  - **Sidebar:** Se despliega fluidamente desde el borde izquierdo (`translateX(-100%)` a `translateX(0)`) con curva de aceleración/desaceleración Apple (`cubic-bezier(0.16, 1, 0.3, 1)` durante 0.75s).
+  - **Cabecera de Noche:** Se eleva suavemente desde abajo (`translateY(28px)` a `0`) tras un retraso sutil de 0.08s.
+  - **Tarjetas KPI Escalonadas:** Las 4 tarjetas de métricas (*Venta en Barras*, *Tarjetas POS*, *Cobros QR*, *Efectivo en Caja*) emergen desde abajo con un desfase progresivo (0.16s, 0.24s, 0.32s, 0.40s) creando un efecto de armado visual de alta gama.
+  - **Cuadro Operativo Inferior:** La distribución de ventas por barra y el balance de cuentas se ensamblan al final (0.48s y 0.54s) completando la experiencia visual en menos de 1 segundo.
+
+---
+
+### 29. Buscador en Tiempo Real por Nombre en Personal, Turnos y Planillas
+- **Filtrado Instantáneo Zero-Reload (Client-Side):**
+  - En la vista principal **Personal y Turnos** (`staff.index`), se integró un buscador minimalista con icono SVG y botón de limpieza rápida `&times;`.
+  - Filtra instantáneamente por **nombre del trabajador**, **cargo/rol** y **área asignada** a medida que se teclea (`oninput`).
+  - Actualiza en vivo el contador de integrantes visibles (`Mostrando N integrantes`) y muestra un estado vacío elegante si no hay coincidencias.
+- **Buscador en Planilla de Turno (`staffPayments.index`):**
+  - En la cabecera de la tabla de pagos por turno se incorporó un buscador homólogo que permite localizar rápidamente a cualquier mesero, bartender o seguridad en planillas extensas.
+  - Compatible con atajo de teclado `Escape` para limpiar el filtro al instante.
+
+---
+
+### 30. Separación Visual Estricta: Identidad del Personal vs Cifras Financieras (Historial de Pagos)
+- **Eliminación de Ambigüedad entre Persona y Montos:**
+  - En [`resources/views/payment_history/index.blade.php`](file:///c:/Users/Usuario/Desktop/Tio%20Chu/resources/views/payment_history/index.blade.php), se dividió cada tarjeta de trabajador en 3 compartimentos jerárquicos independientes:
+    1. **Cabecera de Identidad:** Avatar con inicial, nombre del trabajador en mayúsculas grandes, cargo formal (`MESERO`, `BARTENDER`, `SEGURIDAD`), teléfono y píldora de estado cromática (`Por Pagar` en dorado `#F5B81C` vs `Pagado esa noche` en verde esmeralda).
+    2. **Faja Financiera Bicolor:** Cuadrícula de 2 columnas con etiquetas explícitas que diferencian sin lugar a duda el **Jornal Fijo Asignado** (monto neutro de referencia) de la **Deuda Pendiente / Se le debe:** (destacada en dorado prominente).
+    3. **Botón de Acción Directo:** Botón ancho y claro *"Pagar Jornal (Bs. X.XX)"* con icono y monto explícito para evitar cualquier error de cobro por parte de Don Ludo.
+- **Diferenciación Semántica en Tarjetas KPI Superiores:**
+  - **Deuda de la Noche:** Resaltada con borde dorado `#F5B81C`, número grande en oro y etiqueta de alerta.
+  - **Pagado esa Noche:** Resaltada con número grande en verde esmeralda (`text-emerald-400`) para certificar dinero ya desembolsado.
+  - **Planilla de Turno:** Fondo neutro con total global asignado.
+
+---
+
+### 31. Estabilización y Congelamiento de Dimensiones en Personal y Turnos
+- **Bloqueo de Columnas con `table-fixed` & `<colgroup>`:**
+  - En [`resources/views/staff/index.blade.php`](file:///c:/Users/Usuario/Desktop/Tio%20Chu/resources/views/staff/index.blade.php), se configuró `table-layout: fixed` con porcentajes inmutables por columna:
+    `N°: 5%`, `Trabajador: 27%`, `Contacto: 18%`, `Cargo: 17%`, `Área: 17%`, `Jornal: 10%`, `Acción: 6%`.
+  - Impide que el ancho de la tabla o de las columnas cambie o se mueva al alternar entre *Viernes*, *Sábado*, *Domingo* y *Todos*, independientemente de la longitud de los nombres o la cantidad de filas.
+- **Dimensiones Uniformes en Pestañas y Contenedor:**
+  - Se estableció un ancho mínimo fijo en las 4 pestañas de días (`min-w-[110px] text-center`) y una altura mínima de referencia en el contenedor de tabla (`min-h-[540px]`), garantizando que la estructura visual permanezca firme y estática en todo momento.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

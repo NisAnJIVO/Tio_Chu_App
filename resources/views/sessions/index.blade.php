@@ -129,7 +129,7 @@
                             <td class="px-5 py-4 font-mono font-bold text-white text-sm">
                                 <div class="flex items-center gap-2.5">
                                     @if($isOpen)
-                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                                     @else
                                         <span class="w-2 h-2 rounded-full bg-zinc-600"></span>
                                     @endif
@@ -150,7 +150,7 @@
                             <td class="px-5 py-4 text-center">
                                 @if($isOpen)
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                         Abierta
                                     </span>
                                 @else

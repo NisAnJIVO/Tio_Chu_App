@@ -7,11 +7,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
         <div>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider bg-zinc-900 border border-zinc-800 text-[#F5B81C] mb-1">
-                Cuadrilla Nocturna
-            </span>
             <h2 class="text-xl font-black text-white tracking-tight">Registrar Personal</h2>
-            <p class="text-xs text-zinc-400 mt-0.5">Nuevo integrante del equipo de trabajo y turnos de Don Ludo.</p>
         </div>
         <a href="{{ route('staff.index') }}" 
            class="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">

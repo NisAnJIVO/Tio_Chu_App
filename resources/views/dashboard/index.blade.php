@@ -21,42 +21,44 @@
     $staffPaid = $closing->total_staff_paid ?? 0;
 @endphp
 
-<div class="h-full flex-1 flex flex-col justify-between gap-4 max-w-7xl mx-auto w-full">
+<div class="space-y-4 max-w-7xl mx-auto w-full pb-8">
 
     <!-- ========================================================
-         1. BARRA DE CONTROL DE TURNO (CÓMODA Y VISIBLE)
+         1. CABECERA PRINCIPAL: ESTADO DE NOCHE & SELECTOR
          ======================================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3 rounded-2xl theme-card border theme-border shadow-sm shrink-0">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm {{ session('animate_entrance') ? 'animate-entrance-header' : '' }}">
         
         <!-- Izquierda: Estado de la Noche & Selector -->
         <div class="flex flex-wrap items-center gap-3">
             @if($session)
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800">
-                    <span class="w-2.5 h-2.5 rounded-full {{ $session->isOpen() ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500' }}"></span>
-                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-emerald-400' : 'text-zinc-400' }}">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500' : 'bg-zinc-600' }}"></span>
+                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-200' : 'text-zinc-500' }}">
                         {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
                     </span>
                 </div>
 
-                <span class="text-sm font-black theme-text-primary uppercase tracking-tight">
-                    {{ $session->day_name }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}
-                </span>
+                <div class="flex items-center gap-1.5 text-sm font-black text-white uppercase tracking-tight font-sans">
+                    <span>{{ $session->day_name }}</span>
+                    <span class="text-zinc-500">•</span>
+                    <span class="font-mono text-zinc-300">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
+                </div>
             @endif
 
-            <!-- Selector de Noche -->
+            <!-- Selector de Noche en Píldora -->
             @if($allSessions->isNotEmpty())
                 <form method="GET" action="{{ route('dashboard') }}" class="flex items-center">
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors">
-                        <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors">
+                        <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-bold theme-text-primary focus:outline-none focus:ring-0 cursor-pointer pr-1">
+                                class="bg-transparent border-0 text-xs font-bold text-zinc-300 focus:outline-none cursor-pointer pr-1">
                             @foreach($allSessions as $s)
                                 <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white">
-                                    {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}
+                                    {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
                                 </option>
                             @endforeach
                         </select>
@@ -65,15 +67,15 @@
             @endif
         </div>
 
-        <!-- Derecha: Botón Directo para Aperturar Noche -->
+        <!-- Derecha: Botón Aperturar Noche -->
         <div class="flex items-center gap-2 shrink-0">
             <a href="{{ route('sessions.create') }}" 
-               class="px-4 py-2 rounded-full bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 shrink-0 shadow-sm dilemo-btn">
+               class="px-4 py-2 rounded-xl bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 shrink-0 shadow-sm active:scale-95">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
-                <span>Aperturar Nueva Noche</span>
+                <span>Aperturar Noche</span>
             </a>
         </div>
 
@@ -81,96 +83,105 @@
 
     @if(!$session)
         <!-- Estado Vacío -->
-        <div class="flex-1 p-10 text-center rounded-2xl theme-card border theme-border flex flex-col items-center justify-center">
-            <h3 class="text-base font-black uppercase tracking-wider theme-text-primary">No hay noches de evento registradas</h3>
-            <p class="text-sm theme-text-secondary mt-1 mb-5">Apertura una nueva noche para comenzar a ver el resumen de dinero.</p>
-            <a href="{{ route('sessions.create') }}" class="px-5 py-2.5 rounded-full bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all dilemo-btn">
+        <div class="p-12 text-center rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col items-center justify-center {{ session('animate_entrance') ? 'animate-entrance-card-1' : '' }}">
+            <div class="w-12 h-12 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-600 mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                </svg>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
+            <p class="text-xs text-zinc-400 mt-1 mb-5">Apertura una nueva jornada para ver el resumen de caja, ventas y personal.</p>
+            <a href="{{ route('sessions.create') }}" class="px-5 py-2.5 rounded-xl bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all active:scale-95 shadow-sm">
                 + Aperturar Nueva Noche
             </a>
         </div>
     @else
 
         <!-- ========================================================
-             2. 4 TARJETAS PRINCIPALES: GRANDES, CÓMODAS Y CLARAS
+             2. 4 TARJETAS KPI RESUMEN: MINIMALISTAS & ELEGANTES
              ======================================================== -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             
-            <!-- TARJETA 1: Total Vendido en Barras -->
-            <div class="p-5 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <!-- TARJETA 1: Venta Total en Barras -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-1' : '' }}">
                 <div class="min-w-0">
-                    <span class="text-xs font-black uppercase tracking-wider theme-text-secondary block truncate">
-                        Total Vendido en Barras
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Venta en Barras
                     </span>
-                    <div class="text-3xl font-black theme-text-primary tracking-tight mt-1 font-sans truncate">
-                        <span class="text-base text-[#F5B81C] mr-0.5 font-bold">Bs.</span>{{ number_format($barTotal, 2) }}
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($barTotal, 2) }}
                     </div>
-                    <span class="text-xs font-semibold theme-text-secondary block mt-1">Barra Principal y Subte</span>
+                    <span class="text-[10px] text-zinc-500 font-medium block mt-0.5 truncate">Principal y Subterráneo</span>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0 ml-3">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <path d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5 text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- TARJETA 2: Cobrado con Tarjeta -->
-            <div class="p-5 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <!-- TARJETA 2: Cobros por Tarjeta (POS) -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-2' : '' }}">
                 <div class="min-w-0">
-                    <span class="text-xs font-black uppercase tracking-wider theme-text-secondary block truncate">
-                        Cobrado con Tarjeta
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Tarjetas (Neto Banco)
                     </span>
-                    <div class="text-3xl font-black theme-text-primary tracking-tight mt-1 font-sans truncate">
-                        <span class="text-base text-blue-400 mr-0.5 font-bold">Bs.</span>{{ number_format($posNet, 2) }}
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($posNet, 2) }}
                     </div>
-                    <span class="text-xs font-semibold theme-text-secondary block mt-1">Pasado por máquina: Bs. {{ number_format($posGross, 2) }}</span>
+                    <span class="text-[10px] text-zinc-500 font-medium block mt-0.5 truncate">
+                        Bruto: Bs. {{ number_format($posGross, 2) }}
+                    </span>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-blue-400 shrink-0 ml-3">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect width="20" height="14" x="2" y="5" rx="2"/>
                         <line x1="2" x2="22" y1="10" y2="10"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- TARJETA 3: Cobrado por QR -->
-            <div class="p-5 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <!-- TARJETA 3: Cobros por QR -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-3' : '' }}">
                 <div class="min-w-0">
-                    <span class="text-xs font-black uppercase tracking-wider theme-text-secondary block truncate">
-                        Cobrado por QR
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Cobros por QR
                     </span>
-                    <div class="text-3xl font-black theme-text-primary tracking-tight mt-1 font-sans truncate">
-                        <span class="text-base text-emerald-400 mr-0.5 font-bold">Bs.</span>{{ number_format($qrTotal, 2) }}
+                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                        <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($qrTotal, 2) }}
                     </div>
-                    <span class="text-xs font-semibold theme-text-secondary block mt-1">Bancos Yasta y Yape</span>
+                    <span class="text-[10px] text-zinc-500 font-medium block mt-0.5 truncate">Yasta y Yape</span>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-emerald-400 shrink-0 ml-3">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <rect width="5" height="5" x="3" y="3" rx="1"/>
-                        <rect width="5" height="5" x="16" y="3" rx="1"/>
-                        <rect width="5" height="5" x="3" y="16" rx="1"/>
-                        <path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7"/>
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect width="6" height="6" x="3" y="3" rx="1"/>
+                        <rect width="6" height="6" x="15" y="3" rx="1"/>
+                        <rect width="6" height="6" x="3" y="15" rx="1"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- TARJETA 4: Dinero en Caja -->
-            <div class="p-5 rounded-2xl theme-card border {{ $netCash >= 0 ? 'border-emerald-500/40' : 'border-rose-500/40' }} flex items-center justify-between shadow-sm">
+            <!-- TARJETA 4: Dinero en Caja (Balance Neto) -->
+            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-4' : '' }}">
                 <div class="min-w-0">
-                    <span class="text-xs font-black uppercase tracking-wider {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} block truncate">
-                        Dinero en Caja
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                        Efectivo en Caja
                     </span>
-                    <div class="text-3xl font-black {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} tracking-tight mt-1 font-sans truncate">
-                        <span class="text-base mr-0.5 font-bold">Bs.</span>{{ number_format($netCash, 2) }}
+                    <div class="text-2xl font-black font-mono tracking-tight mt-1 truncate {{ $netCash >= 0 ? 'text-white' : 'text-rose-400' }}">
+                        <span class="text-xs font-sans font-bold mr-0.5 {{ $netCash >= 0 ? 'text-[#F5B81C]' : 'text-rose-400' }}">Bs.</span>{{ number_format($netCash, 2) }}
                     </div>
-                    <span class="text-xs font-semibold theme-text-secondary block mt-1">
-                        {{ $netCash >= 0 ? 'Plata a Favor' : 'Faltante en Caja' }}
+                    <span class="text-[10px] font-medium block mt-0.5 truncate {{ $netCash >= 0 ? 'text-zinc-500' : 'text-rose-400' }}">
+                        {{ $netCash >= 0 ? 'Plata a favor en mano' : 'Faltante de caja' }}
                     </span>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} shrink-0 ml-3">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center shrink-0 ml-3 {{ $netCash >= 0 ? 'text-zinc-300' : 'text-rose-400' }}">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect width="18" height="18" x="3" y="3" rx="3"/>
                         <circle cx="12" cy="12" r="3"/>
-                        <path d="m14.5 9.5-5 5"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.5 9.5-5 5"/>
                     </svg>
                 </div>
             </div>
@@ -178,151 +189,146 @@
         </div>
 
         <!-- ========================================================
-             3. PANEL PRINCIPAL: DISTRIBUIDO AL PANTALLAZO COMPLETO
+             3. CUADRO OPERATIVO: DISTRIBUCIÓN POR BARRA Y CUENTAS
              ======================================================== -->
-        <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
-            <!-- Columna Izquierda (4 Cols): Venta en Cada Barra -->
-            <div class="lg:col-span-4 p-5 rounded-2xl theme-card border theme-border flex flex-col justify-between shadow-sm h-full">
-                <div class="flex items-center justify-between border-b theme-border pb-3">
-                    <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
-                        Venta en Cada Barra
+            <!-- Columna Izquierda (4 Cols): Ventas por Barra -->
+            <div class="lg:col-span-4 p-5 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-grid-left' : '' }}">
+                <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3 mb-3">
+                    <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
+                        Ventas por Barra
                     </h2>
                     <a href="{{ route('sales.index', ['session_id' => $session->id]) }}" 
-                       class="text-xs font-bold text-[#F5B81C] hover:underline dilemo-btn">
-                        Ver Detalle &rarr;
+                       class="text-xs font-bold text-[#F5B81C] hover:underline flex items-center gap-1">
+                        <span>Ver Barras</span>
+                        <span>&rarr;</span>
                     </a>
                 </div>
 
-                <div class="flex-1 flex flex-col justify-around py-3 gap-2.5">
-                    <!-- Barra Kelly -->
-                    <div class="p-3.5 rounded-xl theme-surface border theme-border flex items-center justify-between">
+                <div class="space-y-2.5 flex-1">
+                    <!-- Barra Kelly (Principal) -->
+                    <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
                         <div>
-                            <span class="font-bold text-sm theme-text-primary block">Barra Kelly</span>
-                            <span class="text-xs text-[#F5B81C] font-semibold">Piso Principal</span>
+                            <span class="font-bold text-xs text-white block">Barra Kelly</span>
+                            <span class="text-[10px] text-zinc-500 font-medium">Piso Principal</span>
                         </div>
-                        <span class="font-black theme-text-primary font-mono text-base">
+                        <span class="font-black text-white font-mono text-sm">
                             Bs. {{ number_format($salesKelly, 2) }}
                         </span>
                     </div>
 
-                    <!-- Barra Ariel -->
-                    <div class="p-3.5 rounded-xl theme-surface border theme-border flex items-center justify-between">
+                    <!-- Barra Ariel (Subte) -->
+                    <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
                         <div>
-                            <span class="font-bold text-sm theme-text-primary block">Barra Ariel</span>
-                            <span class="text-xs text-blue-400 font-semibold">Subterráneo</span>
+                            <span class="font-bold text-xs text-white block">Barra Ariel</span>
+                            <span class="text-[10px] text-zinc-500 font-medium">Subterráneo</span>
                         </div>
-                        <span class="font-black theme-text-primary font-mono text-base">
+                        <span class="font-black text-white font-mono text-sm">
                             Bs. {{ number_format($salesAriel, 2) }}
                         </span>
                     </div>
 
-                    <!-- Tienda Entrada -->
-                    <div class="p-3.5 rounded-xl theme-surface border theme-border flex items-center justify-between">
+                    <!-- Tienda / Guardarropa -->
+                    <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
                         <div>
-                            <span class="font-bold text-sm theme-text-primary block">Tienda</span>
-                            <span class="text-xs text-emerald-400 font-semibold">Entrada / Guardarropa</span>
+                            <span class="font-bold text-xs text-white block">Tienda</span>
+                            <span class="text-[10px] text-zinc-500 font-medium">Entrada / Guardarropa</span>
                         </div>
-                        <span class="font-black theme-text-primary font-mono text-base">
+                        <span class="font-black text-white font-mono text-sm">
                             Bs. {{ number_format($salesTienda, 2) }}
                         </span>
                     </div>
                 </div>
 
-                <!-- Suma Total de las Barras -->
-                <div class="pt-3 border-t theme-border flex items-center justify-between">
-                    <span class="theme-text-secondary font-bold uppercase tracking-wider text-xs">Suma Total de las Barras</span>
-                    <span class="font-black text-[#F5B81C] font-mono text-lg">Bs. {{ number_format($barTotal, 2) }}</span>
+                <!-- Total Barras -->
+                <div class="pt-3.5 mt-3 border-t border-zinc-800/80 flex items-center justify-between">
+                    <span class="text-zinc-400 font-bold uppercase tracking-wider text-[11px]">Total Barras</span>
+                    <span class="font-black text-[#F5B81C] font-mono text-base">Bs. {{ number_format($barTotal, 2) }}</span>
                 </div>
             </div>
 
-            <!-- Columna Derecha (8 Cols): Cuentas Claras (Dinero que Entró vs Lo que se Pagó) -->
-            <div class="lg:col-span-8 p-5 rounded-2xl theme-card border theme-border flex flex-col justify-between shadow-sm h-full">
+            <!-- Columna Derecha (8 Cols): Balance de Noche (Ingresos vs Egresos) -->
+            <div class="lg:col-span-8 p-5 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-grid-right' : '' }}">
                 
-                <!-- Encabezado de Cuentas Claras -->
-                <div class="flex items-center justify-between border-b theme-border pb-3">
-                    <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
-                        Cuentas Claras: Entradas y Salidas
+                <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3 mb-3">
+                    <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
+                        Cuentas de la Noche
                     </h2>
                     <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" 
-                       class="text-xs font-bold text-[#F5B81C] hover:underline dilemo-btn">
-                        Ver Detalle &rarr;
+                       class="text-xs font-bold text-[#F5B81C] hover:underline flex items-center gap-1">
+                        <span>Ver Cierre</span>
+                        <span>&rarr;</span>
                     </a>
                 </div>
 
-                <!-- Doble Columna: Lo que Entró vs Lo que se Pagó -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 py-3">
+                <!-- Dos Columnas: Entradas vs Salidas -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 flex-1">
                     
-                    <!-- Lado 1: Todo el Dinero que Entró -->
-                    <div class="p-4 rounded-xl theme-surface border theme-border flex flex-col justify-between">
-                        <div class="flex items-center justify-between border-b theme-border pb-2.5 mb-2">
-                            <span class="text-xs font-black text-emerald-400 uppercase tracking-wider">Todo el Dinero que Entró</span>
-                            <span class="font-black text-emerald-400 font-mono text-sm">+ Bs. {{ number_format($totalIncome, 2) }}</span>
+                    <!-- Lado 1: Ingresos -->
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex flex-col justify-between space-y-2.5">
+                        <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+                            <span class="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">Ingresos de Noche</span>
+                            <span class="font-black text-white font-mono text-xs">+ Bs. {{ number_format($totalIncome, 2) }}</span>
                         </div>
 
-                        <div class="flex-1 flex flex-col justify-around text-xs py-1">
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Ventas de las Barras</span>
-                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($barTotal, 2) }}</span>
+                        <div class="space-y-1.5 text-xs flex-1">
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Ventas en Barras</span>
+                                <span class="font-mono font-bold text-zinc-200">Bs. {{ number_format($barTotal, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Cobros con Tarjeta</span>
-                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($posNet, 2) }}</span>
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Cobros Tarjeta (Neto)</span>
+                                <span class="font-mono font-bold text-zinc-200">Bs. {{ number_format($posNet, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Cobros por QR (Yasta / Yape)</span>
-                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($qrTotal, 2) }}</span>
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Cobros QR</span>
+                                <span class="font-mono font-bold text-zinc-200">Bs. {{ number_format($qrTotal, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Ventas en Tienda (Entrada)</span>
-                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($salesTienda, 2) }}</span>
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Tienda / Entrada</span>
+                                <span class="font-mono font-bold text-zinc-200">Bs. {{ number_format($salesTienda, 2) }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Lado 2: Todo lo que se Pagó -->
-                    <div class="p-4 rounded-xl theme-surface border theme-border flex flex-col justify-between">
-                        <div class="flex items-center justify-between border-b theme-border pb-2.5 mb-2">
-                            <span class="text-xs font-black text-rose-400 uppercase tracking-wider">Todo lo que se Pagó</span>
-                            <span class="font-black text-rose-400 font-mono text-sm">- Bs. {{ number_format($totalExpenses, 2) }}</span>
+                    <!-- Lado 2: Egresos y Pagos -->
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex flex-col justify-between space-y-2.5">
+                        <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+                            <span class="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">Egresos y Pagos</span>
+                            <span class="font-black text-rose-400 font-mono text-xs">- Bs. {{ number_format($totalExpenses, 2) }}</span>
                         </div>
 
-                        <div class="flex-1 flex flex-col justify-around text-xs py-1">
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Sueldos del Personal (Cuadrilla)</span>
-                                <span class="font-bold text-rose-400 font-mono text-xs">Bs. {{ number_format($staffPaid, 2) }}</span>
+                        <div class="space-y-1.5 text-xs flex-1">
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Sueldos del Personal</span>
+                                <span class="font-mono font-bold text-zinc-200">Bs. {{ number_format($staffPaid, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Gastos y Compras de la Noche</span>
-                                <span class="font-bold text-rose-400 font-mono text-xs">Bs. {{ number_format($totalExpenses, 2) }}</span>
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Gastos y Compras</span>
+                                <span class="font-mono font-bold text-zinc-200">Bs. {{ number_format($totalExpenses, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between py-1">
-                                <span class="theme-text-secondary font-medium">Comisión Banco por Tarjetas (3.5%)</span>
-                                <span class="font-bold text-[#F5B81C] font-mono text-xs">Bs. {{ number_format($posCommission, 2) }}</span>
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-400 font-medium">Comisión Tarjetas (POS)</span>
+                                <span class="font-mono font-bold text-zinc-400">Bs. {{ number_format($posCommission, 2) }}</span>
                             </div>
-
-                            <div class="flex items-center justify-between py-1 opacity-70">
-                                <span class="theme-text-secondary text-[11px]">Encargado del Turno</span>
-                                <span class="font-bold theme-text-primary text-[11px]">{{ Auth::user()->name ?? 'Don Ludo' }}</span>
+                            <div class="flex items-center justify-between py-0.5">
+                                <span class="text-zinc-500 font-medium">Encargado</span>
+                                <span class="font-bold text-zinc-400">{{ Auth::user()->name ?? 'Don Ludo' }}</span>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Barra Inferior de Balance Final: Plata que Debe Quedar en Caja -->
-                <div class="pt-3 border-t theme-border flex items-center justify-between px-1">
-                    <span class="font-bold theme-text-secondary uppercase tracking-wider text-xs">Plata que Debe Quedar en Caja:</span>
-                    <div class="flex items-center gap-2.5">
-                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full {{ $netCash >= 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20' }}">
-                            {{ $netCash >= 0 ? 'Plata a Favor' : 'Faltante en Caja' }}
+                <!-- Barra Inferior de Efectivo en Mano -->
+                <div class="pt-3.5 mt-3 border-t border-zinc-800/80 flex items-center justify-between">
+                    <span class="font-bold text-zinc-400 uppercase tracking-wider text-[11px]">Efectivo Final en Caja</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $netCash >= 0 ? 'bg-zinc-950 text-zinc-300 border border-zinc-800' : 'bg-rose-500/10 text-rose-400 border border-rose-500/30' }}">
+                            {{ $netCash >= 0 ? 'En mano' : 'Faltante' }}
                         </span>
-                        <span class="font-black {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} font-mono text-lg">
+                        <span class="font-black font-mono text-base {{ $netCash >= 0 ? 'text-[#F5B81C]' : 'text-rose-400' }}">
                             Bs. {{ number_format($netCash, 2) }}
                         </span>
                     </div>
