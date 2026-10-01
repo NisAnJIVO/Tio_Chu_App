@@ -7,9 +7,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Tío Chu</title>
     
+    <!-- Favicon Oficial Tío Chu -->
+    <link rel="icon" type="image/png" href="{{ asset('images/LogoTioChu.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/LogoTioChu.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Respaldo CDN de GSAP para que funcione inmediatamente en cualquier máquina -->
@@ -21,6 +26,25 @@
             will-change: transform, opacity;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
+        }
+
+        /* Anular fondo blanco/celeste del autocompletado del navegador */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #09090b inset !important;
+            box-shadow: 0 0 0 1000px #09090b inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff !important;
+            border-color: #27272a !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        input:-webkit-autofill:focus {
+            border-color: #F5B81C !important;
+            -webkit-box-shadow: 0 0 0 1000px #09090b inset, 0 0 0 1px #F5B81C !important;
+            box-shadow: 0 0 0 1000px #09090b inset, 0 0 0 1px #F5B81C !important;
         }
     </style>
 </head>
@@ -40,7 +64,7 @@
     <!-- CONTENEDOR PRINCIPAL: PUERTAS Y ESCENARIO CENTRAL -->
     <div class="min-h-screen w-full relative overflow-hidden" style="background-color: #000000;">
         
-        <!-- ETAPA CENTRAL AL INICIAR SESIÓN: LOGO Y BARRITA DE CARGA AMARILLA (z-10, DETRÁS DE LAS PUERTAS) -->
+        <!-- ETAPA CENTRAL AL INICIAR SESIÓN: LOGO, BARRITA Y TEXTO 'BIENVENIDO' ESTILO IPHONE (z-10) -->
         <div id="submit-loading-stage" class="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none" style="background-color: #000000;">
             <div class="text-center px-4 flex flex-col items-center">
                 <img id="submit-logo" 
@@ -48,9 +72,62 @@
                      alt="Tío Chu" 
                      class="w-44 h-44 sm:w-56 sm:h-56 object-contain mx-auto select-none opacity-0">
                 
-                <!-- Barrita de carga minimalista en amarillo oficial -->
-                <div id="loading-bar-container" class="w-56 sm:w-64 h-1.5 bg-zinc-900 border border-zinc-800 rounded-full overflow-hidden mt-6 opacity-0">
-                    <div id="loading-bar-fill" class="h-full rounded-full w-0" style="background-color: #F5B81C;"></div>
+                <!-- Escenario de la Barrita que se transforma en Cursiva (Escala prominente y visible) -->
+                <div id="hello-stage" class="relative mt-6 flex items-center justify-center min-h-[140px] w-full max-w-xl sm:max-w-2xl px-4 select-none">
+                    
+                    <!-- 1. Barrita de carga inicial que se llena -->
+                    <div id="loading-bar-container" class="w-64 sm:w-80 h-1.5 bg-zinc-900 border border-zinc-800 rounded-full overflow-hidden opacity-0">
+                        <div id="loading-bar-fill" class="h-full rounded-full w-0" style="background-color: #F5B81C; box-shadow: 0 0 12px #F5B81C;"></div>
+                    </div>
+
+                    <!-- 2. Contenedor de la Caligrafía Cursiva 'Bienvenido' estilo iPhone Hello -->
+                    <div id="cursive-container" class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
+                        <svg viewBox="0 0 520 130" class="w-full max-w-[500px] sm:max-w-[580px] h-28 sm:h-36 overflow-visible">
+                            <defs>
+                                <!-- Máscara de revelado progresivo de izquierda a derecha -->
+                                <clipPath id="cursive-clip">
+                                    <rect id="cursive-rect" x="0" y="0" width="0" height="130" />
+                                </clipPath>
+                                <!-- Resplandor dorado suave -->
+                                <filter id="gold-glow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#F5B81C" flood-opacity="0.8"/>
+                                </filter>
+                            </defs>
+
+                            <!-- Trazo dibujado estilo letra carta grande y legible -->
+                            <text id="cursive-stroke"
+                                  x="260" y="88" 
+                                  text-anchor="middle"
+                                  fill="transparent"
+                                  stroke="#F5B81C"
+                                  stroke-width="3"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-dasharray="1600"
+                                  stroke-dashoffset="1600"
+                                  clip-path="url(#cursive-clip)"
+                                  filter="url(#gold-glow)"
+                                  style="font-family: 'Dancing Script', 'Sacramento', cursive; font-size: 96px; font-weight: 700; letter-spacing: 0.02em;">
+                                Bienvenido
+                            </text>
+
+                            <!-- Relleno dorado que florece cuando termina de escribirse -->
+                            <text id="cursive-fill"
+                                  x="260" y="88" 
+                                  text-anchor="middle"
+                                  fill="#F5B81C"
+                                  opacity="0"
+                                  clip-path="url(#cursive-clip)"
+                                  filter="url(#gold-glow)"
+                                  style="font-family: 'Dancing Script', 'Sacramento', cursive; font-size: 96px; font-weight: 700; letter-spacing: 0.02em;">
+                                Bienvenido
+                            </text>
+
+                            <!-- Chispa / Destello de luz dorada en la punta del trazo -->
+                            <circle id="pen-spark" cx="25" cy="80" r="4.5" fill="#FFFFFF" opacity="0" filter="url(#gold-glow)" />
+                        </svg>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -69,6 +146,8 @@
                              alt="Logo Tío Chu" 
                              class="w-40 h-40 sm:w-48 sm:h-48 md:w-52 md:h-52 object-contain mx-auto select-none">
                     </div>
+
+
 
                     @if($errors->any())
                         <div class="w-full mb-4 text-center">
@@ -90,7 +169,7 @@
                                    id="email" 
                                    required 
                                    autocomplete="username"
-                                   value="{{ old('email', 'DonLudo@gmail.com') }}"
+                                   value="{{ old('email') }}"
                                    placeholder="correo@ejemplo.com"
                                    class="w-full px-4 py-3 rounded-xl bg-black border border-zinc-800 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-colors">
                         </div>
@@ -105,7 +184,6 @@
                                    id="password" 
                                    required 
                                    autocomplete="current-password"
-                                   value="tiochu123"
                                    placeholder="••••••••"
                                    class="w-full px-4 py-3 rounded-xl bg-black border border-zinc-800 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-colors">
                         </div>
@@ -115,7 +193,6 @@
                             <label class="flex items-center gap-2 cursor-pointer select-none">
                                 <input type="checkbox" 
                                        name="remember" 
-                                       checked
                                        class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] focus:ring-0 focus:ring-offset-0 accent-[#F5B81C]">
                                 <span class="text-xs text-zinc-400">Recordar sesión</span>
                             </label>
@@ -147,22 +224,7 @@
 
     </div>
 
-    <!-- Toast de Notificación Sutil Minimalista -->
-    @if(session('success'))
-        <div id="toast-notification" 
-             class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-zinc-950/90 border border-white/10 text-zinc-400 text-xs shadow-2xl backdrop-blur-md pointer-events-none z-50 transition-opacity duration-300">
-            {{ session('success') }}
-        </div>
-        <script>
-            setTimeout(function() {
-                const toast = document.getElementById('toast-notification');
-                if (toast) {
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, 1800);
-        </script>
-    @endif
+
 
     <script>
         // Mantener sesión viva para evitar token CSRF vencido
@@ -260,10 +322,15 @@
                         submitBtn.classList.add('opacity-80', 'cursor-wait');
                     }
 
-                    // Asegurar estado inicial de la barrita y logo central
+                    // Asegurar estado inicial de la barrita y caligrafía cursiva
                     gsap.set('#submit-logo', { opacity: 0, scale: 0.85 });
-                    gsap.set('#loading-bar-container', { opacity: 0 });
+                    gsap.set('#loading-bar-container', { opacity: 0, scaleX: 1, filter: 'blur(0px)' });
                     gsap.set('#loading-bar-fill', { width: '0%' });
+                    gsap.set('#cursive-container', { opacity: 0 });
+                    gsap.set('#cursive-rect', { attr: { width: 0 } });
+                    gsap.set('#cursive-stroke', { strokeDashoffset: 1600 });
+                    gsap.set('#cursive-fill', { opacity: 0 });
+                    gsap.set('#pen-spark', { opacity: 0, attr: { cx: 25 } });
 
                     const exitTl = gsap.timeline({
                         onComplete: () => {
@@ -274,13 +341,13 @@
                     // 1. Las dos puertas se abren hacia los lados
                     exitTl.to('#left-panel', {
                         xPercent: -100,
-                        duration: 0.7,
+                        duration: 0.6,
                         ease: 'power3.inOut'
                     });
 
                     exitTl.to('#right-panel', {
                         xPercent: 100,
-                        duration: 0.7,
+                        duration: 0.6,
                         ease: 'power3.inOut'
                     }, "<");
 
@@ -288,26 +355,71 @@
                     exitTl.to('#submit-logo', {
                         opacity: 1,
                         scale: 1,
-                        duration: 0.5,
+                        duration: 0.4,
                         ease: 'power2.out'
-                    }, "-=0.4");
+                    }, "-=0.35");
 
-                    // 3. Aparece el contenedor de la barrita
+                    // 3. Aparece la barrita
                     exitTl.to('#loading-bar-container', {
                         opacity: 1,
-                        duration: 0.3,
+                        duration: 0.2,
+                        ease: 'power1.out'
+                    }, "-=0.15");
+
+                    // 4. La barrita amarilla se llena rápidamente
+                    exitTl.to('#loading-bar-fill', {
+                        width: '100%',
+                        duration: 0.45,
+                        ease: 'power2.inOut'
+                    });
+
+                    // 5. METAMORFOSIS: La barrita se disuelve y se convierte en el trazo de letra carta
+                    exitTl.to('#loading-bar-container', {
+                        opacity: 0,
+                        scaleX: 0.3,
+                        filter: 'blur(6px)',
+                        duration: 0.2,
+                        ease: 'power2.in'
+                    });
+
+                    // Activar el lienzo de caligrafía cursiva
+                    exitTl.set('#cursive-container', { opacity: 1 }, "-=0.08");
+                    exitTl.to('#pen-spark', { opacity: 1, duration: 0.1 }, "<");
+
+                    // 6. ANIMACIÓN IPHONE HELLO: La línea traza "Bienvenido" en letra carta de izquierda a derecha
+                    exitTl.to('#cursive-stroke', {
+                        strokeDashoffset: 0,
+                        duration: 1.15,
+                        ease: 'power2.inOut'
+                    }, "-=0.05");
+
+                    exitTl.to('#cursive-rect', {
+                        attr: { width: 520 },
+                        duration: 1.15,
+                        ease: 'power2.inOut'
+                    }, "<");
+
+                    exitTl.to('#pen-spark', {
+                        attr: { cx: 500 },
+                        duration: 1.15,
+                        ease: 'power2.inOut'
+                    }, "<");
+
+                    // 7. Al culminar el trazo, la caligrafía florece en amarillo dorado y la chispa se disuelve
+                    exitTl.to('#cursive-fill', {
+                        opacity: 1,
+                        duration: 0.35,
                         ease: 'power1.out'
                     }, "-=0.2");
 
-                    // 4. La barrita amarilla se llena suavemente de 0% a 100%
-                    exitTl.to('#loading-bar-fill', {
-                        width: '100%',
-                        duration: 1.1,
-                        ease: 'power1.inOut'
-                    });
+                    exitTl.to('#pen-spark', {
+                        opacity: 0,
+                        scale: 1.8,
+                        duration: 0.25
+                    }, "<");
 
-                    // 5. Breve pausa para contemplar la carga al 100% antes de redirigir
-                    exitTl.to({}, { duration: 0.15 });
+                    // 8. Breve pausa ágil tras leer "Bienvenido" antes del submit
+                    exitTl.to({}, { duration: 0.25 });
                 });
             }
         });

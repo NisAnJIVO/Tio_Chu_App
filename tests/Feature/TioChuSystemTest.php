@@ -54,6 +54,27 @@ class TioChuSystemTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Singani Casa Real Negro');
         $response->assertSee('Fernet Branca');
+        $response->assertSee('view-cards-container');
+        $response->assertSee('CasaRealNegro.png');
+    }
+
+    public function test_product_can_update_image_path(): void
+    {
+        $product = Product::first();
+        $response = $this->actingAs($this->user)->put(route('products.update', $product), [
+            'name' => $product->name,
+            'category' => $product->category,
+            'unit' => $product->unit,
+            'sale_price' => $product->sale_price,
+            'cost_price' => $product->cost_price,
+            'units_per_package' => $product->units_per_package,
+            'stock_warehouse' => $product->stock_warehouse,
+            'is_active' => 1,
+            'image_path' => 'images/drinks/CasaRealNegro.png',
+        ]);
+
+        $response->assertRedirect(route('products.index'));
+        $this->assertEquals('images/drinks/CasaRealNegro.png', $product->fresh()->image_path);
     }
 
     public function test_staff_module_lists_staff_members(): void

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -23,14 +25,27 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // Clave única por correo + IP para prevenir ataques de fuerza bruta
+        $throttleKey = Str::transliterate(Str::lower($credentials['email']) . '|' . $request->ip());
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Demasiados intentos fallidos. Por seguridad, intente de nuevo en {$seconds} segundos.",
+            ])->onlyInput('email');
+        }
+
         $remember = $request->boolean('remember');
 
         // Intentar autenticación con las credenciales ingresadas
         if (Auth::attempt($credentials, $remember)) {
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
             return redirect()->intended(route('dashboard'));
         }
+
+        RateLimiter::hit($throttleKey, 60);
 
         return back()->withErrors([
             'email' => 'Las credenciales proporcionadas son incorrectas.',

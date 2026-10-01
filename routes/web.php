@@ -14,11 +14,20 @@ use App\Http\Controllers\QrPaymentController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StaffPaymentController;
 use App\Http\Controllers\StoreSaleController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Rutas de Autenticación
+// Redirección de la raíz del sistema (a login si es invitado, a dashboard si está autenticado)
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
+})->name('root');
+
+// Rutas de Autenticación con Rate Limiting anti fuerza bruta
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Endpoint para refrescar el token CSRF (útil tras inactividad prolongada)
@@ -29,8 +38,8 @@ Route::get('/csrf-refresh', function () {
 // Rutas Protegidas del Sistema
 Route::middleware('auth')->group(function () {
 
-    // Redirección inicial al Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    // Dashboard principal
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // 1. Catálogo e Inventario Base (Módulo 2)
     Route::patch('products/{product}/quick-stock', [ProductController::class, 'updateQuickStock'])->name('products.quickStock');

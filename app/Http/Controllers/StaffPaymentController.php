@@ -113,6 +113,9 @@ class StaffPaymentController extends Controller
         if ($request->has('night_session_id')) {
             $session = NightSession::find($request->input('night_session_id'));
             if ($session && !$session->isOpen()) {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'No se pueden modificar pagos en una noche cerrada.'], 422);
+                }
                 return back()->with('error', 'No se pueden modificar pagos en una noche cerrada.');
             }
         }
@@ -127,6 +130,9 @@ class StaffPaymentController extends Controller
 
             $attendanceSession = $att->nightSession;
             if ($attendanceSession && !$attendanceSession->isOpen()) {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'No se pueden modificar pagos en una noche cerrada.'], 422);
+                }
                 return back()->with('error', 'No se pueden modificar pagos en una noche cerrada.');
             }
 
@@ -140,7 +146,15 @@ class StaffPaymentController extends Controller
             $this->sessionService->recalculateClosing($session);
         }
 
-        return back()->with('success', 'Planilla de pagos actualizada.');
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'totalPlanilla' => isset($session) && $session ? (float)$session->staffAttendances()->sum('pay_amount') : 0,
+                'totalPagado' => isset($session) && $session ? (float)$session->staffAttendances()->where('is_paid', true)->sum('pay_amount') : 0,
+            ]);
+        }
+
+        return back();
     }
 
     /**
@@ -237,6 +251,9 @@ class StaffPaymentController extends Controller
     {
         $session = $attendance->nightSession;
         if ($session && !$session->isOpen()) {
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'No se puede eliminar personal de una noche cerrada.'], 422);
+            }
             return back()->with('error', 'No se puede eliminar personal de una noche cerrada.');
         }
 
@@ -247,6 +264,15 @@ class StaffPaymentController extends Controller
             $this->sessionService->recalculateClosing($session);
         }
 
-        return back()->with('success', "{$name} eliminado de la planilla de esta noche.");
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'name' => $name,
+                'totalPlanilla' => $session ? (float)$session->staffAttendances()->sum('pay_amount') : 0,
+                'totalPagado' => $session ? (float)$session->staffAttendances()->where('is_paid', true)->sum('pay_amount') : 0,
+            ]);
+        }
+
+        return back();
     }
 }

@@ -19,7 +19,22 @@ class ProductController extends Controller
         $products = $query->orderBy('id')->get();
         $categories = Product::select('category')->distinct()->pluck('category');
 
-        return view('products.index', compact('products', 'categories', 'category'));
+        $drinkImages = [];
+        $drinksDir = public_path('images/drinks');
+        if (is_dir($drinksDir)) {
+            $files = scandir($drinksDir);
+            foreach ($files as $file) {
+                if ($file !== '.' && $file !== '..' && in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg', 'webp'])) {
+                    $drinkImages[] = [
+                        'filename' => $file,
+                        'path' => 'images/drinks/' . $file,
+                        'url' => asset('images/drinks/' . $file),
+                    ];
+                }
+            }
+        }
+
+        return view('products.index', compact('products', 'categories', 'category', 'drinkImages'));
     }
 
     public function create()
@@ -35,9 +50,20 @@ class ProductController extends Controller
             'sale_price' => 'required|numeric|min:0',
             'cost_price' => 'nullable|numeric|min:0',
             'unit' => 'required|string|max:50',
+            'image_path' => 'nullable|string|max:255',
             'units_per_package' => 'required|integer|min:1',
             'stock_warehouse' => 'required|integer|min:0',
+            'image' => 'nullable|image|max:5120',
         ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $file->move(public_path('images/drinks'), $filename);
+            $validated['image_path'] = 'images/drinks/' . $filename;
+        }
+
+        unset($validated['image']);
 
         $product = Product::create($validated);
         $this->syncStockBreakdown($product);
@@ -59,10 +85,21 @@ class ProductController extends Controller
             'sale_price' => 'required|numeric|min:0',
             'cost_price' => 'nullable|numeric|min:0',
             'unit' => 'required|string|max:50',
+            'image_path' => 'nullable|string|max:255',
             'units_per_package' => 'required|integer|min:1',
             'stock_warehouse' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
+            'image' => 'nullable|image|max:5120',
         ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $file->move(public_path('images/drinks'), $filename);
+            $validated['image_path'] = 'images/drinks/' . $filename;
+        }
+
+        unset($validated['image']);
 
         $product->update($validated);
         $this->syncStockBreakdown($product);

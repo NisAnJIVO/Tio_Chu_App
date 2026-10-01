@@ -1,207 +1,390 @@
-<!-- Sidebar de Tío Chu: 100% Estático, tipografía visible y legible, fondo negro puro -->
-<aside class="w-64 h-screen max-h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-hidden z-30 select-none border-r border-zinc-850" style="background-color: #000000; border-color: #1e1f24;">
+<!-- Script previo a renderizado para evitar parpadeo (FOUC) del sidebar al recargar -->
+<script>
+    (function() {
+        if (localStorage.getItem('tiochu_sidebar_collapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    })();
+</script>
+
+<style>
+    /* Transición suave para expandir / contraer */
+    #main-sidebar {
+        transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     
-    <!-- Cabecera de Marca Oficial -->
-    <div class="h-16 flex items-center px-4 justify-between border-b shrink-0" style="border-color: #1a1a1f;">
-        <div class="flex items-center gap-3 min-w-0">
-            <img src="{{ asset('images/LogoTioChu.png') }}" 
-                 alt="Logo Tío Chu" 
-                 class="w-10 h-10 object-contain shrink-0">
-            <div class="min-w-0">
-                <span class="text-base font-bold tracking-tight text-white block truncate uppercase">TÍO CHU</span>
-                <span class="text-xs text-zinc-500 block truncate">Gestión Operativa</span>
+    /* Estado colapsado (Solo Logos) */
+    html.sidebar-collapsed #main-sidebar {
+        width: 4.25rem !important;
+        min-width: 4.25rem !important;
+        max-width: 4.25rem !important;
+    }
+    html.sidebar-collapsed .sidebar-text,
+    html.sidebar-collapsed .sidebar-category,
+    html.sidebar-collapsed .sidebar-header-expanded,
+    html.sidebar-collapsed .sidebar-user-expanded,
+    html.sidebar-collapsed .sidebar-dot {
+        display: none !important;
+    }
+    html.sidebar-collapsed .sidebar-header-collapsed,
+    html.sidebar-collapsed .sidebar-user-collapsed,
+    html.sidebar-collapsed .sidebar-divider {
+        display: flex !important;
+    }
+    html.sidebar-collapsed .sidebar-item {
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    html.sidebar-collapsed .sidebar-item > div {
+        justify-content: center !important;
+    }
+
+    /* Scrollbar sutil y elegante cuando la pantalla se hace pequeña o con zoom */
+    #main-sidebar nav::-webkit-scrollbar {
+        width: 3px;
+    }
+    #main-sidebar nav::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    #main-sidebar nav::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 4px;
+    }
+    #main-sidebar nav::-webkit-scrollbar-thumb:hover {
+        background: #F5B81C;
+    }
+</style>
+
+<!-- Sidebar Tío Chu: Colapsable, Sin Relleno "Club & Bar", Letras Grandes & Sin Scroll -->
+<aside id="main-sidebar" 
+       class="w-64 h-screen max-h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-hidden z-30 select-none bg-black border-r border-zinc-800/80" 
+       style="width: 16rem; min-width: 16rem; max-width: 16rem; height: 100vh;">
+    
+    <!-- 1. Cabecera con Menú Hamburguesa -->
+    <div class="px-2.5 py-2.5 border-b border-zinc-800/80 shrink-0">
+        
+        <!-- Cabecera Expandida -->
+        <div class="sidebar-header-expanded p-2 rounded-xl bg-zinc-950/80 border border-zinc-800/90 flex items-center justify-between">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-8 h-8 shrink-0 rounded-lg overflow-hidden flex items-center justify-center bg-zinc-900 border border-zinc-800" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px;">
+                    <img src="{{ asset('images/LogoTioChu.png') }}" 
+                         alt="Logo Tío Chu" 
+                         class="w-full h-full object-contain p-0.5"
+                         style="width: 32px; height: 32px; object-fit: contain;">
+                </div>
+                <span class="text-sm font-black tracking-tight text-white block truncate uppercase font-sans">TÍO CHU</span>
+            </div>
+
+            <!-- Botón Hamburguesa (Hover Amarillo) -->
+            <button id="toggle-sidebar-btn" 
+                    type="button" 
+                    title="Colapsar menú"
+                    class="group/btn p-1.5 rounded-lg text-zinc-400 hover:text-[#F5B81C] hover:bg-[#F5B81C]/10 transition-colors duration-150 cursor-pointer shrink-0">
+                <svg class="w-5 h-5 transition-transform duration-150 group-hover/btn:scale-105" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <line x1="4" x2="20" y1="6" y2="6"/>
+                    <line x1="4" x2="20" y1="12" y2="12"/>
+                    <line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Cabecera Colapsada (Solo Hamburguesa + Mini Logo) -->
+        <div class="sidebar-header-collapsed hidden flex-col items-center justify-center gap-2 py-1">
+            <button id="toggle-sidebar-btn-collapsed" 
+                    type="button" 
+                    title="Expandir menú"
+                    class="group/btn p-2 rounded-lg text-zinc-400 hover:text-[#F5B81C] hover:bg-[#F5B81C]/10 transition-colors duration-150 cursor-pointer">
+                <svg class="w-5 h-5 transition-transform duration-150 group-hover/btn:scale-105" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <line x1="4" x2="20" y1="6" y2="6"/>
+                    <line x1="4" x2="20" y1="12" y2="12"/>
+                    <line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center bg-zinc-900 border border-zinc-800" style="width: 28px; height: 28px; min-width: 28px; min-height: 28px;">
+                <img src="{{ asset('images/LogoTioChu.png') }}" 
+                     alt="Logo Tío Chu" 
+                     class="w-full h-full object-contain p-0.5"
+                     style="width: 28px; height: 28px; object-fit: contain;">
             </div>
         </div>
-        @if(isset($currentSession) && $currentSession)
-            @if($currentSession->isOpen())
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    Abierta
-                </span>
-            @else
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-900 text-zinc-500 border border-zinc-800 shrink-0">
-                    Cerrada
-                </span>
-            @endif
-        @endif
+
     </div>
 
-    <!-- Navegación Natural y Compacta (Sin espacios vacíos artificiales) -->
-    <nav class="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+    <!-- 2. Menú de Navegación Compacto: Cabe en 100vh y se desplaza suavemente si hay zoom -->
+    <nav class="flex-1 px-2 py-2 space-y-2 overflow-y-auto overflow-x-hidden min-h-0 flex flex-col">
         
-        <!-- 0. Resumen General -->
-        <div>
+        <!-- Bloque 1: Operación -->
+        <div class="space-y-1">
+            <div class="sidebar-category px-2">
+                <span class="text-[9px] font-black uppercase tracking-widest text-[#F5B81C]/90">
+                    Operación
+                </span>
+            </div>
+            <div class="sidebar-divider hidden w-6 mx-auto my-1 border-t border-zinc-800/80"></div>
+
+            <!-- Resumen General -->
             <a href="{{ route('dashboard') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('dashboard') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('dashboard') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect width="7" height="9" x="3" y="3" rx="1"/>
-                    <rect width="7" height="5" x="14" y="3" rx="1"/>
-                    <rect width="7" height="9" x="14" y="12" rx="1"/>
-                    <rect width="7" height="5" x="3" y="16" rx="1"/>
-                </svg>
-                <span class="truncate">Resumen General</span>
+               title="Resumen General"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('dashboard') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('dashboard') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="7" height="9" x="3" y="3" rx="1.5"/>
+                        <rect width="7" height="5" x="14" y="3" rx="1.5"/>
+                        <rect width="7" height="9" x="14" y="12" rx="1.5"/>
+                        <rect width="7" height="5" x="3" y="16" rx="1.5"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Resumen General</span>
+                </div>
+                @if(request()->routeIs('dashboard'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
-        </div>
 
-        <!-- 1. Bodega & Licores -->
-        <div class="space-y-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Bodega & Licores</p>
-            
+            <!-- Bodega Central -->
             <a href="{{ route('products.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('products.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('products.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="m7.5 4.27 9 5.15"/>
-                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                    <path d="m3.3 7 8.7 5 8.7-5"/>
-                    <path d="M12 22V12"/>
-                </svg>
-                <span class="truncate">Inventario Bebidas</span>
+               title="Bodega Central"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('products.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('products.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        <polyline points="3.29 7 12 12 20.71 7"/>
+                        <line x1="12" x2="12" y1="22" y2="12"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Bodega Central</span>
+                </div>
+                @if(request()->routeIs('products.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
 
+            <!-- Inventario Barras -->
             <a href="{{ route('barInventory.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('barInventory.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('barInventory.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M4 6h16M4 12h16m-7 6h7"/>
-                    <path d="M4 18h4"/>
-                </svg>
-                <span class="truncate">Inventario Barras</span>
+               title="Inventario Barras"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('barInventory.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('barInventory.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 22h8"/>
+                        <path d="M12 15v7"/>
+                        <path d="m19 3-7 8-7-8h14z"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Inventario Barras</span>
+                </div>
+                @if(request()->routeIs('barInventory.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
 
+            <!-- Ventas por Barra -->
             <a href="{{ route('sales.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('sales.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('sales.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M3 3v18h18"/>
-                    <path d="m19 9-5 5-4-4-3 3"/>
-                </svg>
-                <span class="truncate">Ventas por Barra</span>
+               title="Ventas por Barra"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('sales.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('sales.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" x2="18" y1="20" y2="10"/>
+                        <line x1="12" x2="12" y1="20" y2="4"/>
+                        <line x1="6" x2="6" y1="20" y2="14"/>
+                        <line x1="2" x2="22" y1="20" y2="20"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Ventas por Barra</span>
+                </div>
+                @if(request()->routeIs('sales.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
         </div>
 
-        <!-- 2. Caja & Cobros -->
+        <!-- Bloque 2: Caja y Cobros -->
         <div class="space-y-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Recaudación</p>
-            
+            <div class="sidebar-category px-2">
+                <span class="text-[9px] font-black uppercase tracking-widest text-[#F5B81C]/90">
+                    Caja
+                </span>
+            </div>
+            <div class="sidebar-divider hidden w-6 mx-auto my-1 border-t border-zinc-800/80"></div>
+
+            <!-- Facturas & Tarjetas (Tarjeteos) -->
             <a href="{{ route('invoices.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('invoices.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('invoices.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect width="20" height="14" x="2" y="5" rx="2"/>
-                    <line x1="2" x2="22" y1="10" y2="10"/>
-                </svg>
-                <span class="truncate">Facturas & POS</span>
+               title="Facturas & Tarjetas"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('invoices.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('invoices.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        <line x1="2" x2="22" y1="10" y2="10"/>
+                        <path d="M6 15h4"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Facturas & Tarjetas</span>
+                </div>
+                @if(request()->routeIs('invoices.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
 
+            <!-- Cobros QR -->
             <a href="{{ route('qrs.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('qrs.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('qrs.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect width="5" height="5" x="3" y="3" rx="1"/>
-                    <rect width="5" height="5" x="16" y="3" rx="1"/>
-                    <rect width="5" height="5" x="3" y="16" rx="1"/>
-                    <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
-                    <path d="M21 21v.01"/>
-                    <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-                </svg>
-                <span class="truncate">Cobros QR</span>
+               title="Cobros QR"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('qrs.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('qrs.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        <rect width="5" height="5" x="16" y="3" rx="1"/>
+                        <rect width="5" height="5" x="3" y="16" rx="1"/>
+                        <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                        <path d="M21 21v.01"/>
+                        <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Cobros QR</span>
+                </div>
+                @if(request()->routeIs('qrs.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
 
+            <!-- Cierre de Caja -->
             <a href="{{ route('closing.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('closing.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('closing.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-                    <path d="M16 22h2a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v18"/>
-                    <path d="M8 12h8"/>
-                    <path d="M8 16h6"/>
-                </svg>
-                <span class="truncate">Cierre de Caja</span>
+               title="Cierre de Caja"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('closing.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('closing.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="3"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="m14.5 9.5-5 5"/>
+                        <path d="M6 6h.01M18 6h.01M6 18h.01M18 18h.01"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Cierre de Caja</span>
+                </div>
+                @if(request()->routeIs('closing.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
         </div>
 
-        <!-- 3. Personal & Turnos -->
+        <!-- Bloque 3: Gestión -->
         <div class="space-y-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Equipo</p>
-            
+            <div class="sidebar-category px-2">
+                <span class="text-[9px] font-black uppercase tracking-widest text-[#F5B81C]/90">
+                    Gestión
+                </span>
+            </div>
+            <div class="sidebar-divider hidden w-6 mx-auto my-1 border-t border-zinc-800/80"></div>
+
+            <!-- Personal y Turnos -->
             <a href="{{ route('staff.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('staff.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('staff.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <span class="truncate">Personal y Turnos</span>
+               title="Personal y Turnos"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('staff.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('staff.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Personal y Turnos</span>
+                </div>
+                @if(request()->routeIs('staff.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
 
+            <!-- Pagos Personal -->
             <a href="{{ route('staffPayments.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('staffPayments.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('staffPayments.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M11 15h2"/>
-                    <path d="M12 12v3"/>
-                    <path d="M2 17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10Z"/>
-                </svg>
-                <span class="truncate">Pagos Personal</span>
+               title="Pagos Personal"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('staffPayments.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('staffPayments.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="20" height="12" x="2" y="6" rx="2"/>
+                        <circle cx="12" cy="12" r="2"/>
+                        <path d="M6 12h.01M18 12h.01"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Pagos Personal</span>
+                </div>
+                @if(request()->routeIs('staffPayments.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
 
+            <!-- Historial de Pagos -->
             <a href="{{ route('paymentHistory.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('paymentHistory.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('paymentHistory.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                </svg>
-                <span class="truncate">Historial Pagos</span>
+               title="Historial Pagos"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('paymentHistory.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('paymentHistory.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Historial Pagos</span>
+                </div>
+                @if(request()->routeIs('paymentHistory.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
-        </div>
 
-        <!-- 4. Auditoría -->
-        <div>
+            <!-- Historial Noches -->
             <a href="{{ route('sessions.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('sessions.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('sessions.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                <span class="truncate">Historial de Noches</span>
+               title="Historial Noches"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('sessions.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('sessions.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Historial Noches</span>
+                </div>
+                @if(request()->routeIs('sessions.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
-        </div>
 
-        <!-- 5. Multimedia -->
-        <div>
+            <!-- Multimedia -->
             <a href="{{ route('media.index') }}" 
-               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('media.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
-                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('media.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                    <circle cx="9" cy="9" r="2"/>
-                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                </svg>
-                <span class="truncate">Multimedia</span>
+               title="Multimedia"
+               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('media.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('media.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2"/>
+                        <circle cx="9" cy="9" r="2"/>
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                    </svg>
+                    <span class="sidebar-text text-[13px] truncate">Multimedia</span>
+                </div>
+                @if(request()->routeIs('media.*'))
+                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
+                @endif
             </a>
         </div>
 
     </nav>
 
-    <!-- Pie del Sidebar: Usuario & Salida -->
-    <div class="p-3.5 border-t shrink-0" style="border-color: #1a1a1f;">
-        <div class="flex items-center justify-between">
+    <!-- 3. Base Ficha de Usuario -->
+    <div class="px-2.5 py-2 border-t border-zinc-800/80 shrink-0">
+        
+        <!-- Ficha de Usuario Expandida -->
+        <div class="sidebar-user-expanded p-2 rounded-xl bg-zinc-950/80 border border-zinc-800/90 flex items-center justify-between">
             <div class="flex items-center gap-2.5 min-w-0">
                 @if(Auth::user()?->avatar_url)
-                    <img src="{{ Auth::user()->avatar_url }}" 
-                         alt="{{ Auth::user()->name }}" 
-                         class="w-8 h-8 rounded-xl object-cover shrink-0 border border-zinc-850">
+                    <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-zinc-700" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; max-width: 32px; max-height: 32px;">
+                        <img src="{{ Auth::user()->avatar_url }}" 
+                             alt="{{ Auth::user()->name }}" 
+                             class="w-full h-full object-cover"
+                             style="width: 32px; height: 32px; object-fit: cover; display: block;">
+                    </div>
                 @else
-                    <div class="w-8 h-8 rounded-xl bg-zinc-900 text-zinc-200 font-semibold text-xs flex items-center justify-center shrink-0 border border-zinc-800">
+                    <div class="w-8 h-8 rounded-lg bg-[#F5B81C] text-black font-black text-xs flex items-center justify-center shrink-0 border border-zinc-700" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px;">
                         {{ strtoupper(substr(Auth::user()->name ?? 'D', 0, 1)) }}
                     </div>
                 @endif
 
-                <div class="truncate">
-                    <p class="text-xs font-semibold text-white truncate">{{ Auth::user()->name ?? 'Don Ludo' }}</p>
-                    <p class="text-[11px] text-zinc-500 truncate">{{ Auth::user()->email ?? 'admin@tiochu.com' }}</p>
+                <div class="truncate leading-tight">
+                    <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name ?? 'Don Ludo' }}</p>
+                    <p class="text-[10px] text-zinc-400 truncate">{{ Auth::user()->email ?? 'admin@tiochu.com' }}</p>
                 </div>
             </div>
+
+            <!-- Botón Salir Sutil -->
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" title="Cerrar sesión" 
-                        class="p-2 text-zinc-500 hover:text-white hover:bg-zinc-900 rounded-xl transition-colors cursor-pointer">
+                <button type="submit" 
+                        title="Cerrar sesión" 
+                        class="p-1.5 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                         <polyline points="16 17 21 12 16 7"/>
@@ -210,6 +393,50 @@
                 </button>
             </form>
         </div>
+
+        <!-- Ficha de Usuario Colapsada -->
+        <div class="sidebar-user-collapsed hidden flex-col items-center justify-center gap-1.5 py-1">
+            @if(Auth::user()?->avatar_url)
+                <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-zinc-700" title="{{ Auth::user()->name ?? 'Usuario' }}" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; max-width: 32px; max-height: 32px;">
+                    <img src="{{ Auth::user()->avatar_url }}" 
+                         alt="{{ Auth::user()->name }}" 
+                         class="w-full h-full object-cover"
+                         style="width: 32px; height: 32px; object-fit: cover; display: block;">
+                </div>
+            @else
+                <div class="w-8 h-8 rounded-lg bg-[#F5B81C] text-black font-black text-xs flex items-center justify-center shrink-0 border border-zinc-700" title="{{ Auth::user()->name ?? 'Usuario' }}" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px;">
+                    {{ strtoupper(substr(Auth::user()->name ?? 'D', 0, 1)) }}
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" 
+                        title="Cerrar sesión" 
+                        class="p-1 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
     </div>
 </aside>
 
+<script>
+    // Manejo interactivo del botón hamburguesa y persistencia
+    document.addEventListener('DOMContentLoaded', function() {
+        function toggleSidebar() {
+            const isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('tiochu_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+        }
+
+        const btnExpanded = document.getElementById('toggle-sidebar-btn');
+        const btnCollapsed = document.getElementById('toggle-sidebar-btn-collapsed');
+        if (btnExpanded) btnExpanded.addEventListener('click', toggleSidebar);
+        if (btnCollapsed) btnCollapsed.addEventListener('click', toggleSidebar);
+    });
+</script>

@@ -1,366 +1,335 @@
 @extends('layouts.app')
 
-@section('title', 'Resumen General & Caja')
+@section('title', 'Resumen General')
 
 @section('content')
-<div class="space-y-8 max-w-7xl mx-auto">
+@php
+    $salesKelly = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal') : 0;
+    $salesAriel = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal') : 0;
+    $salesTienda = $session ? (float) $session->storeSales()->sum('total_price') : 0;
+    $totalSales = $salesKelly + $salesAriel + $salesTienda;
 
-    <!-- ==========================================
-         CABECERA DEL DASHBOARD
-         ========================================== -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b" style="border-color: #1e212d;">
-        <div>
-            <div class="flex items-center gap-2 mb-1.5">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/20">
-                    Mando Central
-                </span>
-                <span class="text-zinc-600 text-xs">•</span>
-                <span class="text-xs text-zinc-400">Control de Turno en Tiempo Real</span>
-            </div>
-            <h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-white">
-                Resumen General & Arqueo de Caja
-            </h1>
-            <p class="text-xs text-zinc-400 mt-1 max-w-2xl">
-                Auditoría centralizada: ventas en barras, liquidación de tarjetero POS, transferencias QR, planilla y balance final de caja.
-            </p>
-        </div>
+    $netCash = $closing->net_cash_balance ?? 0;
+    $totalIncome = $closing->total_income ?? 0;
+    $totalExpenses = $closing->total_expenses ?? 0;
 
-        @if($allSessions->isNotEmpty())
-            <!-- Selector de Noche Destacado -->
-            <div class="p-2.5 rounded-2xl border flex items-center gap-3 shadow-lg" style="background-color: #12141c; border-color: #202330;">
-                <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border" style="background-color: rgba(245, 184, 28, 0.12); border-color: rgba(245, 184, 28, 0.25); color: #F5B81C;">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/>
-                        <line x1="8" y1="2" x2="8" y2="6"/>
-                        <line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
+    $qrTotal = $closing->total_qr ?? 0;
+    $posNet = $closing->total_pos_net ?? 0;
+    $posGross = $closing->total_pos_gross ?? 0;
+    $posCommission = $posGross - $posNet;
+    $barTotal = $closing->total_bar_sales ?? 0;
+    $staffPaid = $closing->total_staff_paid ?? 0;
+@endphp
+
+<div class="h-full flex-1 flex flex-col justify-between gap-4 max-w-7xl mx-auto w-full">
+
+    <!-- ========================================================
+         1. BARRA DE CONTROL DE TURNO (CÓMODA Y VISIBLE)
+         ======================================================== -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3 rounded-2xl theme-card border theme-border shadow-sm shrink-0">
+        
+        <!-- Izquierda: Estado de la Noche & Selector -->
+        <div class="flex flex-wrap items-center gap-3">
+            @if($session)
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800">
+                    <span class="w-2.5 h-2.5 rounded-full {{ $session->isOpen() ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500' }}"></span>
+                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-emerald-400' : 'text-zinc-400' }}">
+                        {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
+                    </span>
                 </div>
-                <form method="GET" action="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <div class="flex flex-col">
-                        <label for="session_id" class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Cambiar Noche:</label>
-                        <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-bold text-white focus:outline-none focus:ring-0 p-0 cursor-pointer pr-4">
+
+                <span class="text-sm font-black theme-text-primary uppercase tracking-tight">
+                    {{ $session->day_name }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}
+                </span>
+            @endif
+
+            <!-- Selector de Noche -->
+            @if($allSessions->isNotEmpty())
+                <form method="GET" action="{{ route('dashboard') }}" class="flex items-center">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors">
+                        <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                        </svg>
+                        <select name="session_id" onchange="this.form.submit()" 
+                                class="bg-transparent border-0 text-xs font-bold theme-text-primary focus:outline-none focus:ring-0 cursor-pointer pr-1">
                             @foreach($allSessions as $s)
-                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-[#12141c] text-white">
-                                    {{ $s->day_name }} {{ \Carbon\Carbon::parse($session_date ?? $s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'Abierta' : 'Cerrada' }})
+                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white">
+                                    {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </form>
-            </div>
-        @endif
+            @endif
+        </div>
+
+        <!-- Derecha: Botón Directo para Aperturar Noche -->
+        <div class="flex items-center gap-2 shrink-0">
+            <a href="{{ route('sessions.create') }}" 
+               class="px-4 py-2 rounded-full bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 shrink-0 shadow-sm dilemo-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                <span>Aperturar Nueva Noche</span>
+            </a>
+        </div>
+
     </div>
 
     @if(!$session)
         <!-- Estado Vacío -->
-        <div class="p-12 text-center rounded-2xl border shadow-xl" style="background-color: #12141c; border-color: #202330;">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center border" style="background-color: rgba(245, 184, 28, 0.12); border-color: rgba(245, 184, 28, 0.25); color: #F5B81C;">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <line x1="12" y1="5" x2="12" y2="19"/>
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-            </div>
-            <h3 class="text-base font-bold text-white">No hay noches de evento registradas</h3>
-            <p class="text-xs text-zinc-400 max-w-md mx-auto mt-1 mb-6">
-                Para liquidar ventas de barra, registrar los cobros por QR, el tarjetero POS y el personal, apertura una nueva noche de atención.
-            </p>
-            <a href="{{ route('sessions.create') }}" 
-               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F5B81C] text-black font-semibold text-xs shadow-lg shadow-[#F5B81C]/20 hover:bg-[#e5ac18] active:scale-95 transition-all">
-                <span>+ Aperturar Primera Noche</span>
+        <div class="flex-1 p-10 text-center rounded-2xl theme-card border theme-border flex flex-col items-center justify-center">
+            <h3 class="text-base font-black uppercase tracking-wider theme-text-primary">No hay noches de evento registradas</h3>
+            <p class="text-sm theme-text-secondary mt-1 mb-5">Apertura una nueva noche para comenzar a ver el resumen de dinero.</p>
+            <a href="{{ route('sessions.create') }}" class="px-5 py-2.5 rounded-full bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all dilemo-btn">
+                + Aperturar Nueva Noche
             </a>
         </div>
     @else
 
         <!-- ========================================================
-             4 TARJETAS KPI (ALTA VISIBILIDAD & CONTRASTE)
+             2. 4 TARJETAS PRINCIPALES: GRANDES, CÓMODAS Y CLARAS
              ======================================================== -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
             
-            <!-- KPI 1: Ventas en Barras -->
-            <div class="rounded-2xl border p-5 overflow-hidden group transition-all duration-200 shadow-xl" 
-                 style="background-color: #12141c; border-color: #202330;">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-wider text-zinc-400 font-semibold">1. Ventas en Barras</span>
-                    <a href="{{ route('sales.index', ['session_id' => $session->id]) }}" 
-                       class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/25 hover:bg-[#F5B81C] hover:text-black transition-all flex items-center gap-1 cursor-pointer">
-                        <span>Detalle</span>
-                        <span class="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-                    </a>
-                </div>
-                <div class="mt-4 text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-                    <span class="text-[#F5B81C] text-lg mr-1 font-semibold">Bs.</span>{{ number_format($closing->total_bar_sales ?? 0, 2) }}
-                </div>
-                <div class="mt-4 text-xs text-zinc-400 border-t pt-3 flex items-center justify-between" style="border-color: #1c1f2b;">
-                    <span>Liquidación física</span>
-                    <span class="text-[#F5B81C] font-semibold">Principal & Subte</span>
-                </div>
-            </div>
-
-            <!-- KPI 2: Tarjetas POS (Neto) -->
-            <div class="rounded-2xl border p-5 overflow-hidden group transition-all duration-200 shadow-xl" 
-                 style="background-color: #12141c; border-color: #202330;">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-wider text-zinc-400 font-semibold">2. Tarjetas POS (Neto)</span>
-                    <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                       class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/25 hover:bg-[#F5B81C] hover:text-black transition-all flex items-center gap-1 cursor-pointer">
-                        <span>Vouchers</span>
-                        <span class="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-                    </a>
-                </div>
-                <div class="mt-4 text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-                    <span class="text-[#F5B81C] text-lg mr-1 font-semibold">Bs.</span>{{ number_format($closing->total_pos_net ?? 0, 2) }}
-                </div>
-                <div class="mt-4 text-xs text-zinc-400 border-t pt-3 flex items-center justify-between" style="border-color: #1c1f2b;">
-                    <span>Total Bruto POS</span>
-                    <span class="text-zinc-300 font-medium">Bs. {{ number_format($closing->total_pos_gross ?? 0, 2) }}</span>
-                </div>
-            </div>
-
-            <!-- KPI 3: Cobros QR -->
-            <div class="rounded-2xl border p-5 overflow-hidden group transition-all duration-200 shadow-xl" 
-                 style="background-color: #12141c; border-color: #202330;">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-wider text-zinc-400 font-semibold">3. Cobros QR Totales</span>
-                    <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                       class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/25 hover:bg-[#F5B81C] hover:text-black transition-all flex items-center gap-1 cursor-pointer">
-                        <span>Ver QRs</span>
-                        <span class="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-                    </a>
-                </div>
-                <div class="mt-4 text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-                    <span class="text-[#F5B81C] text-lg mr-1 font-semibold">Bs.</span>{{ number_format($closing->total_qr ?? 0, 2) }}
-                </div>
-                <div class="mt-4 text-xs text-zinc-400 border-t pt-3 flex items-center justify-between" style="border-color: #1c1f2b;">
-                    <span>Yasta (Unión) / Yape (BCP)</span>
-                    <span class="text-emerald-400 font-semibold">100% Neto</span>
-                </div>
-            </div>
-
-            <!-- KPI 4: Balance Neto en Caja -->
-            @php
-                $netCash = $closing->net_cash_balance ?? 0;
-            @endphp
-            <div class="rounded-2xl border p-5 overflow-hidden group transition-all duration-200 shadow-xl" 
-                 style="background-color: #12141c; border-color: {{ $netCash >= 0 ? '#10b981' : '#f43f5e' }};">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs uppercase tracking-wider font-bold {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }}">
-                        4. Balance Neto en Caja
+            <!-- TARJETA 1: Total Vendido en Barras -->
+            <div class="p-5 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-xs font-black uppercase tracking-wider theme-text-secondary block truncate">
+                        Total Vendido en Barras
                     </span>
-                    <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" 
-                       class="px-2.5 py-1 rounded-lg text-xs font-semibold {{ $netCash >= 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500 hover:text-black' : 'bg-rose-500/10 text-rose-400 border border-rose-500/25 hover:bg-rose-500 hover:text-black' }} transition-all flex items-center gap-1 cursor-pointer">
-                        <span>Arqueo</span>
-                        <span class="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-                    </a>
+                    <div class="text-3xl font-black theme-text-primary tracking-tight mt-1 font-sans truncate">
+                        <span class="text-base text-[#F5B81C] mr-0.5 font-bold">Bs.</span>{{ number_format($barTotal, 2) }}
+                    </div>
+                    <span class="text-xs font-semibold theme-text-secondary block mt-1">Barra Principal y Subte</span>
                 </div>
-                <div class="mt-4 text-3xl lg:text-4xl font-extrabold tracking-tight {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }}">
-                    <span class="text-lg mr-1 font-semibold">Bs.</span>{{ number_format($netCash, 2) }}
+                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
+                    </svg>
                 </div>
-                <div class="mt-4 text-xs text-zinc-400 border-t pt-3 flex items-center justify-between" style="border-color: #1c1f2b;">
-                    <span>Ingresos - Egresos</span>
-                    <span class="text-xs font-bold {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }}">
-                        {{ $netCash >= 0 ? 'Superávit' : 'Déficit' }}
+            </div>
+
+            <!-- TARJETA 2: Cobrado con Tarjeta -->
+            <div class="p-5 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-xs font-black uppercase tracking-wider theme-text-secondary block truncate">
+                        Cobrado con Tarjeta
                     </span>
+                    <div class="text-3xl font-black theme-text-primary tracking-tight mt-1 font-sans truncate">
+                        <span class="text-base text-blue-400 mr-0.5 font-bold">Bs.</span>{{ number_format($posNet, 2) }}
+                    </div>
+                    <span class="text-xs font-semibold theme-text-secondary block mt-1">Pasado por máquina: Bs. {{ number_format($posGross, 2) }}</span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-blue-400 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        <line x1="2" x2="22" y1="10" y2="10"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- TARJETA 3: Cobrado por QR -->
+            <div class="p-5 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-xs font-black uppercase tracking-wider theme-text-secondary block truncate">
+                        Cobrado por QR
+                    </span>
+                    <div class="text-3xl font-black theme-text-primary tracking-tight mt-1 font-sans truncate">
+                        <span class="text-base text-emerald-400 mr-0.5 font-bold">Bs.</span>{{ number_format($qrTotal, 2) }}
+                    </div>
+                    <span class="text-xs font-semibold theme-text-secondary block mt-1">Bancos Yasta y Yape</span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-emerald-400 shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        <rect width="5" height="5" x="16" y="3" rx="1"/>
+                        <rect width="5" height="5" x="3" y="16" rx="1"/>
+                        <path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- TARJETA 4: Dinero en Caja -->
+            <div class="p-5 rounded-2xl theme-card border {{ $netCash >= 0 ? 'border-emerald-500/40' : 'border-rose-500/40' }} flex items-center justify-between shadow-sm">
+                <div class="min-w-0">
+                    <span class="text-xs font-black uppercase tracking-wider {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} block truncate">
+                        Dinero en Caja
+                    </span>
+                    <div class="text-3xl font-black {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} tracking-tight mt-1 font-sans truncate">
+                        <span class="text-base mr-0.5 font-bold">Bs.</span>{{ number_format($netCash, 2) }}
+                    </div>
+                    <span class="text-xs font-semibold theme-text-secondary block mt-1">
+                        {{ $netCash >= 0 ? 'Plata a Favor' : 'Faltante en Caja' }}
+                    </span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} shrink-0 ml-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect width="18" height="18" x="3" y="3" rx="3"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="m14.5 9.5-5 5"/>
+                    </svg>
                 </div>
             </div>
 
         </div>
 
         <!-- ========================================================
-             LIBRO MAYOR DE DOBLE ENTRADA (INGRESOS VS EGRESOS)
+             3. PANEL PRINCIPAL: DISTRIBUIDO AL PANTALLAZO COMPLETO
              ======================================================== -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-            <!-- Columna Izquierda: Ingresos Verificados -->
-            <div class="rounded-2xl border p-6 space-y-5 shadow-xl" style="background-color: #12141c; border-color: #202330;">
-                <div class="flex items-center justify-between border-b pb-3" style="border-color: #1e212d;">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Ingresos Verificados de la Noche</h3>
-                    </div>
-                    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-                        + Bs. {{ number_format($closing->total_income ?? 0, 2) }}
-                    </span>
+        <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            <!-- Columna Izquierda (4 Cols): Venta en Cada Barra -->
+            <div class="lg:col-span-4 p-5 rounded-2xl theme-card border theme-border flex flex-col justify-between shadow-sm h-full">
+                <div class="flex items-center justify-between border-b theme-border pb-3">
+                    <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
+                        Venta en Cada Barra
+                    </h2>
+                    <a href="{{ route('sales.index', ['session_id' => $session->id]) }}" 
+                       class="text-xs font-bold text-[#F5B81C] hover:underline dilemo-btn">
+                        Ver Detalle &rarr;
+                    </a>
                 </div>
 
-                <div class="space-y-3 text-xs">
-                    <div class="flex items-center justify-between p-3.5 rounded-xl border transition-colors" style="background-color: #0b0c12; border-color: #1c1f2b;">
-                        <span class="text-zinc-300 font-medium">Ventas Directas en Barras</span>
-                        <span class="font-bold text-white text-sm">Bs. {{ number_format($closing->total_bar_sales ?? 0, 2) }}</span>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3.5 rounded-xl border transition-colors" style="background-color: #0b0c12; border-color: #1c1f2b;">
-                        <div class="flex items-center gap-2">
-                            <span class="text-zinc-300 font-medium">Cobros por Tarjetero POS (Neto)</span>
-                            <span class="text-[10px] text-[#F5B81C] font-semibold bg-[#F5B81C]/10 px-1.5 py-0.5 rounded border border-[#F5B81C]/25">-3.5% com.</span>
+                <div class="flex-1 flex flex-col justify-around py-3 gap-2.5">
+                    <!-- Barra Kelly -->
+                    <div class="p-3.5 rounded-xl theme-surface border theme-border flex items-center justify-between">
+                        <div>
+                            <span class="font-bold text-sm theme-text-primary block">Barra Kelly</span>
+                            <span class="text-xs text-[#F5B81C] font-semibold">Piso Principal</span>
                         </div>
-                        <span class="font-bold text-white text-sm">Bs. {{ number_format($closing->total_pos_net ?? 0, 2) }}</span>
+                        <span class="font-black theme-text-primary font-mono text-base">
+                            Bs. {{ number_format($salesKelly, 2) }}
+                        </span>
                     </div>
 
-                    <div class="flex items-center justify-between p-3.5 rounded-xl border transition-colors" style="background-color: #0b0c12; border-color: #1c1f2b;">
-                        <span class="text-zinc-300 font-medium">Transferencias QR (Yasta / Yape)</span>
-                        <span class="font-bold text-white text-sm">Bs. {{ number_format($closing->total_qr ?? 0, 2) }}</span>
+                    <!-- Barra Ariel -->
+                    <div class="p-3.5 rounded-xl theme-surface border theme-border flex items-center justify-between">
+                        <div>
+                            <span class="font-bold text-sm theme-text-primary block">Barra Ariel</span>
+                            <span class="text-xs text-blue-400 font-semibold">Subterráneo</span>
+                        </div>
+                        <span class="font-black theme-text-primary font-mono text-base">
+                            Bs. {{ number_format($salesAriel, 2) }}
+                        </span>
                     </div>
 
-                    <div class="flex items-center justify-between p-3.5 rounded-xl border transition-colors" style="background-color: #0b0c12; border-color: #1c1f2b;">
-                        <span class="text-zinc-300 font-medium">Tienda de Entrada / Ventas Mostrador</span>
-                        <span class="font-bold text-white text-sm">Bs. {{ number_format($closing->total_store_sales ?? 0, 2) }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Columna Derecha: Egresos & Planilla Operativa -->
-            <div class="rounded-2xl border p-6 space-y-5 shadow-xl" style="background-color: #12141c; border-color: #202330;">
-                <div class="flex items-center justify-between border-b pb-3" style="border-color: #1e212d;">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.8)]"></span>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Egresos & Salidas de Caja</h3>
-                    </div>
-                    <span class="text-xs font-bold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20">
-                        - Bs. {{ number_format($closing->total_expenses ?? 0, 2) }}
-                    </span>
-                </div>
-
-                <div class="space-y-3 text-xs">
-                    <div class="flex items-center justify-between p-3.5 rounded-xl border transition-colors" style="background-color: #0b0c12; border-color: #1c1f2b;">
-                        <span class="text-zinc-300 font-medium">Planilla de Personal Pagada (Cuadrilla)</span>
-                        <span class="font-bold text-rose-300 text-sm">Bs. {{ number_format($closing->total_staff_paid ?? 0, 2) }}</span>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3.5 rounded-xl border transition-colors" style="background-color: #0b0c12; border-color: #1c1f2b;">
-                        <span class="text-zinc-300 font-medium">Gastos Operativos & Compras Inmediatas</span>
-                        <span class="font-bold text-rose-300 text-sm">Bs. {{ number_format($closing->total_expenses ?? 0, 2) }}</span>
-                    </div>
-
-                    <div class="p-3.5 rounded-xl border flex items-center justify-between" style="background-color: rgba(245, 184, 28, 0.05); border-color: rgba(245, 184, 28, 0.2);">
-                        <span class="text-xs text-zinc-300 font-medium">Retención Bancaria Estimada (POS):</span>
-                        <span class="font-bold text-[#F5B81C] text-sm">
-                            Bs. {{ number_format(($closing->total_pos_gross ?? 0) - ($closing->total_pos_net ?? 0), 2) }}
+                    <!-- Tienda Entrada -->
+                    <div class="p-3.5 rounded-xl theme-surface border theme-border flex items-center justify-between">
+                        <div>
+                            <span class="font-bold text-sm theme-text-primary block">Tienda</span>
+                            <span class="text-xs text-emerald-400 font-semibold">Entrada / Guardarropa</span>
+                        </div>
+                        <span class="font-black theme-text-primary font-mono text-base">
+                            Bs. {{ number_format($salesTienda, 2) }}
                         </span>
                     </div>
                 </div>
+
+                <!-- Suma Total de las Barras -->
+                <div class="pt-3 border-t theme-border flex items-center justify-between">
+                    <span class="theme-text-secondary font-bold uppercase tracking-wider text-xs">Suma Total de las Barras</span>
+                    <span class="font-black text-[#F5B81C] font-mono text-lg">Bs. {{ number_format($barTotal, 2) }}</span>
+                </div>
             </div>
 
-        </div>
+            <!-- Columna Derecha (8 Cols): Cuentas Claras (Dinero que Entró vs Lo que se Pagó) -->
+            <div class="lg:col-span-8 p-5 rounded-2xl theme-card border theme-border flex flex-col justify-between shadow-sm h-full">
+                
+                <!-- Encabezado de Cuentas Claras -->
+                <div class="flex items-center justify-between border-b theme-border pb-3">
+                    <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
+                        Cuentas Claras: Entradas y Salidas
+                    </h2>
+                    <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" 
+                       class="text-xs font-bold text-[#F5B81C] hover:underline dilemo-btn">
+                        Ver Detalle &rarr;
+                    </a>
+                </div>
 
-        <!-- ========================================================
-             MATRIZ DE ACCESOS RÁPIDOS A LOS MÓDULOS OPERATIVOS
-             ======================================================== -->
-        <div class="space-y-4">
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Acceso Directo a Módulos</h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-                <!-- 1. Tarjetero POS -->
-                <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                   class="rounded-2xl border p-5 shadow-xl transition-all duration-200 group flex flex-col justify-between hover:border-[#F5B81C]/50 hover:bg-[#161924]"
-                   style="background-color: #12141c; border-color: #202330;">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/15 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">Módulo 1</span>
-                            <span class="text-xs text-zinc-500 group-hover:text-[#F5B81C] group-hover:translate-x-1 transition-all">&rarr;</span>
+                <!-- Doble Columna: Lo que Entró vs Lo que se Pagó -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 py-3">
+                    
+                    <!-- Lado 1: Todo el Dinero que Entró -->
+                    <div class="p-4 rounded-xl theme-surface border theme-border flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b theme-border pb-2.5 mb-2">
+                            <span class="text-xs font-black text-emerald-400 uppercase tracking-wider">Todo el Dinero que Entró</span>
+                            <span class="font-black text-emerald-400 font-mono text-sm">+ Bs. {{ number_format($totalIncome, 2) }}</span>
                         </div>
-                        <h4 class="text-sm font-bold text-white group-hover:text-[#F5B81C] transition-colors">Tarjetero & POS</h4>
-                        <p class="text-xs text-zinc-400 mt-1">Registro de vouchers de tarjeta con retención automática del 3.5% de comisión.</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs text-zinc-400" style="border-color: #1c1f2b;">
-                        <span>Vouchers Procesados:</span>
-                        <span class="text-white font-semibold">{{ $closing->pos_invoices_count ?? 0 }} comprobantes</span>
-                    </div>
-                </a>
 
-                <!-- 2. Catálogo & Bodega -->
-                <a href="{{ route('products.index') }}" 
-                   class="rounded-2xl border p-5 shadow-xl transition-all duration-200 group flex flex-col justify-between hover:border-[#F5B81C]/50 hover:bg-[#161924]"
-                   style="background-color: #12141c; border-color: #202330;">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/15 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">Módulo 2</span>
-                            <span class="text-xs text-zinc-500 group-hover:text-[#F5B81C] group-hover:translate-x-1 transition-all">&rarr;</span>
-                        </div>
-                        <h4 class="text-sm font-bold text-white group-hover:text-[#F5B81C] transition-colors">Catálogo de Bebidas</h4>
-                        <p class="text-xs text-zinc-400 mt-1">Lista oficial de licores, cervezas, precios de barra y combos con mixers.</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs text-zinc-400" style="border-color: #1c1f2b;">
-                        <span>Inventario Total:</span>
-                        <span class="text-white font-semibold">Catálogo Maestro</span>
-                    </div>
-                </a>
+                        <div class="flex-1 flex flex-col justify-around text-xs py-1">
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Ventas de las Barras</span>
+                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($barTotal, 2) }}</span>
+                            </div>
 
-                <!-- 3. Personal & Asistencia -->
-                <a href="{{ route('staffPayments.index') }}" 
-                   class="rounded-2xl border p-5 shadow-xl transition-all duration-200 group flex flex-col justify-between hover:border-[#F5B81C]/50 hover:bg-[#161924]"
-                   style="background-color: #12141c; border-color: #202330;">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/15 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">Módulo 3</span>
-                            <span class="text-xs text-zinc-500 group-hover:text-[#F5B81C] group-hover:translate-x-1 transition-all">&rarr;</span>
-                        </div>
-                        <h4 class="text-sm font-bold text-white group-hover:text-[#F5B81C] transition-colors">Personal & Asistencia</h4>
-                        <p class="text-xs text-zinc-400 mt-1">Planilla de mozos, seguridad, bartenders y DJ con botón de pago a 1-clic.</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs text-zinc-400" style="border-color: #1c1f2b;">
-                        <span>Personal Asignado:</span>
-                        <span class="text-white font-semibold">Cuadrilla Activa</span>
-                    </div>
-                </a>
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Cobros con Tarjeta</span>
+                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($posNet, 2) }}</span>
+                            </div>
 
-                <!-- 4. Cobros QR -->
-                <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                   class="rounded-2xl border p-5 shadow-xl transition-all duration-200 group flex flex-col justify-between hover:border-[#F5B81C]/50 hover:bg-[#161924]"
-                   style="background-color: #12141c; border-color: #202330;">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/15 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">Módulo 4</span>
-                            <span class="text-xs text-zinc-500 group-hover:text-[#F5B81C] group-hover:translate-x-1 transition-all">&rarr;</span>
-                        </div>
-                        <h4 class="text-sm font-bold text-white group-hover:text-[#F5B81C] transition-colors">Transferencias QR</h4>
-                        <p class="text-xs text-zinc-400 mt-1">Control discriminado por banco (Yasta Banco Unión vs Yape Banco BCP) y punto de venta.</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs text-zinc-400" style="border-color: #1c1f2b;">
-                        <span>Canales Activos:</span>
-                        <span class="text-white font-semibold">Unión & BCP</span>
-                    </div>
-                </a>
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Cobros por QR (Yasta / Yape)</span>
+                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($qrTotal, 2) }}</span>
+                            </div>
 
-                <!-- 5. Resumen Cierre de Caja -->
-                <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" 
-                   class="rounded-2xl border p-5 shadow-xl transition-all duration-200 group flex flex-col justify-between hover:border-[#F5B81C]/50 hover:bg-[#161924]"
-                   style="background-color: #12141c; border-color: #202330;">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/15 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">Módulo 5</span>
-                            <span class="text-xs text-zinc-500 group-hover:text-[#F5B81C] group-hover:translate-x-1 transition-all">&rarr;</span>
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Ventas en Tienda (Entrada)</span>
+                                <span class="font-bold theme-text-primary font-mono text-xs">Bs. {{ number_format($salesTienda, 2) }}</span>
+                            </div>
                         </div>
-                        <h4 class="text-sm font-bold text-white group-hover:text-[#F5B81C] transition-colors">Cierre de Caja & Gastos</h4>
-                        <p class="text-xs text-zinc-400 mt-1">Arqueo definitivo de dinero físico, desglose bancario digital y gastos de la noche.</p>
                     </div>
-                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs text-zinc-400" style="border-color: #1c1f2b;">
-                        <span>Estado:</span>
-                        <span class="text-emerald-400 font-semibold">Balance al Día</span>
-                    </div>
-                </a>
 
-                <!-- 6. Ventas por Barra -->
-                <a href="{{ route('sales.index', ['session_id' => $session->id]) }}" 
-                   class="rounded-2xl border p-5 shadow-xl transition-all duration-200 group flex flex-col justify-between hover:border-[#F5B81C]/50 hover:bg-[#161924]"
-                   style="background-color: #12141c; border-color: #202330;">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[10px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/15 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">Módulo 6</span>
-                            <span class="text-xs text-zinc-500 group-hover:text-[#F5B81C] group-hover:translate-x-1 transition-all">&rarr;</span>
+                    <!-- Lado 2: Todo lo que se Pagó -->
+                    <div class="p-4 rounded-xl theme-surface border theme-border flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b theme-border pb-2.5 mb-2">
+                            <span class="text-xs font-black text-rose-400 uppercase tracking-wider">Todo lo que se Pagó</span>
+                            <span class="font-black text-rose-400 font-mono text-sm">- Bs. {{ number_format($totalExpenses, 2) }}</span>
                         </div>
-                        <h4 class="text-sm font-bold text-white group-hover:text-[#F5B81C] transition-colors">Ventas por Barra</h4>
-                        <p class="text-xs text-zinc-400 mt-1">Despacho de licores en Barra Kelly, Barra Ariel y Tienda con deducción de gaseosas/mixers.</p>
+
+                        <div class="flex-1 flex flex-col justify-around text-xs py-1">
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Sueldos del Personal (Cuadrilla)</span>
+                                <span class="font-bold text-rose-400 font-mono text-xs">Bs. {{ number_format($staffPaid, 2) }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Gastos y Compras de la Noche</span>
+                                <span class="font-bold text-rose-400 font-mono text-xs">Bs. {{ number_format($totalExpenses, 2) }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between py-1">
+                                <span class="theme-text-secondary font-medium">Comisión Banco por Tarjetas (3.5%)</span>
+                                <span class="font-bold text-[#F5B81C] font-mono text-xs">Bs. {{ number_format($posCommission, 2) }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between py-1 opacity-70">
+                                <span class="theme-text-secondary text-[11px]">Encargado del Turno</span>
+                                <span class="font-bold theme-text-primary text-[11px]">{{ Auth::user()->name ?? 'Don Ludo' }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mt-4 pt-3 border-t flex items-center justify-between text-xs text-zinc-400" style="border-color: #1c1f2b;">
-                        <span>Barras:</span>
-                        <span class="text-white font-semibold">3 Puntos de Venta</span>
+
+                </div>
+
+                <!-- Barra Inferior de Balance Final: Plata que Debe Quedar en Caja -->
+                <div class="pt-3 border-t theme-border flex items-center justify-between px-1">
+                    <span class="font-bold theme-text-secondary uppercase tracking-wider text-xs">Plata que Debe Quedar en Caja:</span>
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full {{ $netCash >= 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20' }}">
+                            {{ $netCash >= 0 ? 'Plata a Favor' : 'Faltante en Caja' }}
+                        </span>
+                        <span class="font-black {{ $netCash >= 0 ? 'text-emerald-400' : 'text-rose-400' }} font-mono text-lg">
+                            Bs. {{ number_format($netCash, 2) }}
+                        </span>
                     </div>
-                </a>
+                </div>
 
             </div>
+
         </div>
 
     @endif

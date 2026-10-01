@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="es" class="h-screen overflow-hidden bg-black" style="background-color: #000000;">
+<html lang="es" class="h-screen overflow-hidden dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Sistema de Gestión') — Discoteca Tío Chu</title>
+
+    <!-- Modo Oscuro Oficial Tío Chu -->
+    <script>
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        try { localStorage.removeItem('tiochu_theme'); } catch(e) {}
+    </script>
+
+    <!-- Favicon Oficial Tío Chu -->
+    <link rel="icon" type="image/png" href="{{ asset('images/LogoTioChu.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/LogoTioChu.png') }}">
 
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,26 +26,35 @@
     <!-- Scripts y Estilos Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-screen overflow-hidden font-sans antialiased text-zinc-100 selection:bg-[#F5B81C] selection:text-black" style="background-color: #000000;">
+<body class="h-screen overflow-hidden font-sans antialiased theme-text-primary selection:bg-[#F5B81C] selection:text-black theme-app-bg transition-colors duration-200">
 
-<div class="h-screen w-full flex overflow-hidden relative" style="background-color: #000000;">
-    <!-- Iluminación sutil de fondo -->
-    <div class="fixed -top-24 -left-24 w-[480px] h-[480px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
-    <div class="fixed top-1/3 -right-24 w-[540px] h-[540px] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none z-0"></div>
-
+<div class="h-screen w-full flex overflow-hidden relative theme-app-bg">
     <!-- Sidebar de Tío Chu (Estático y Fijo) -->
     @include('layouts.sidebar')
 
-    <!-- Main Content Area (Única área que hace scroll) -->
-    <main class="flex-1 h-screen overflow-y-auto relative z-10 p-6 lg:p-8" style="background-color: #090a0f;">
+    <!-- Main Content Area -->
+    <main class="flex-1 h-screen overflow-y-auto relative z-10 p-4 lg:p-6 theme-main-bg transition-colors duration-200 flex flex-col">
         <!-- Alertas Flash -->
         @if(session('success'))
-            <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 rounded-2xl flex items-center gap-2">
-                <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span>{{ session('success') }}</span>
+            <div id="flash-success-toast" class="mb-4 px-4 py-2.5 bg-zinc-900 border border-emerald-500/40 text-xs text-emerald-300 rounded-xl flex items-center justify-between gap-3 shadow-md transition-all duration-300">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span class="font-semibold">{{ session('success') }}</span>
+                </div>
+                <button type="button" onclick="document.getElementById('flash-success-toast')?.remove()" class="text-zinc-500 hover:text-white text-base leading-none cursor-pointer">&times;</button>
             </div>
+            <script>
+                setTimeout(function() {
+                    const toast = document.getElementById('flash-success-toast');
+                    if (toast) {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateY(-6px)';
+                        setTimeout(() => toast.remove(), 300);
+                    }
+                }, 3000);
+            </script>
         @endif
         @if($errors->any())
             <div class="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 rounded-2xl">
@@ -60,6 +81,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('form').forEach(function(form) {
         form.addEventListener('submit', async function(e) {
+            if (form.dataset.ajax === 'true' || form.getAttribute('data-ajax') === 'true') return;
+
             const method = (form.querySelector('[name="_method"]')?.value || form.method || 'GET').toUpperCase();
             if (method === 'GET') return;
 
@@ -86,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
 </script>
 </body>
 </html>

@@ -1,154 +1,193 @@
 @extends('layouts.app')
 
-@section('title', 'Ventas por Barra & Combos')
+@section('title', 'Ventas por Barra')
 
 @section('content')
-<div class="space-y-8 max-w-7xl mx-auto">
 
-    <!-- ==========================================
-         CABECERA DE LA VISTA (LIQUID GLASS)
-         ========================================== -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2 border-b border-white/10">
+<style>
+    /* Ocultar flechas de números nativas */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+    input[type=number] {
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+    }
+</style>
+
+<div class="space-y-4 max-w-7xl mx-auto w-full pb-8">
+
+    <!-- ========================================================
+         1. CABECERA PRINCIPAL: TÍTULO, NOCHE & ACCIÓN DE GUARDAR
+         ======================================================== -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-5 py-3.5 rounded-2xl theme-card border theme-border">
         <div>
-            <div class="flex items-center gap-2 mb-1.5">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-400/10 text-amber-300 border border-amber-400/30">
-                    Módulo 6 — Liquidación de Barras
-                </span>
-                <span class="text-zinc-600 text-xs">•</span>
-                <span class="text-xs text-zinc-400 font-mono">Consumo de Botellas & Cálculo de Combos</span>
-            </div>
-            <h2 class="text-2xl font-black tracking-tight text-white">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">
                 Ventas por Barra & Combos
-            </h2>
-            <p class="text-xs text-zinc-400 mt-1">
-                Control de licores por combo con deducción automática de sodas y despacho directo de Tienda.
+            </h1>
+            <p class="text-xs text-zinc-400 mt-0.5">
+                Liquidación de combos, consumo de botellas y recaudación por punto de venta
             </p>
         </div>
 
-        <!-- Selector de Noche -->
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <!-- Selector de Noche -->
             @if($allSessions->isNotEmpty())
-                <form method="GET" action="{{ route('sales.index') }}" class="glass-panel p-2 rounded-2xl border border-white/10 flex items-center gap-2">
+                <form method="GET" action="{{ route('sales.index') }}" class="flex items-center">
                     <input type="hidden" name="bar" value="{{ $selectedBar }}">
-                    <label for="session_id" class="text-xs text-zinc-400 font-medium pl-1">Noche:</label>
-                    <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                            class="glass-input text-xs font-mono font-bold rounded-xl px-2.5 py-1.5 text-zinc-100 cursor-pointer">
-                        @foreach($allSessions as $s)
-                            <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-[#12141c] text-zinc-100">
-                                {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors">
+                        <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                        </svg>
+                        <select name="session_id" id="session_id" onchange="this.form.submit()" 
+                                class="bg-transparent border-0 text-xs font-semibold text-white focus:outline-none cursor-pointer pr-1">
+                            @foreach($allSessions as $s)
+                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white">
+                                    {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </form>
+            @endif
+
+            <!-- Estado Noche Cerrada (Discreto) -->
+            @if($session && !$session->isOpen())
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400">
+                    <svg class="w-3.5 h-3.5 text-zinc-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span>Modo lectura</span>
+                    <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="text-[#F5B81C] hover:underline ml-1 font-semibold">Cierre &rarr;</a>
+                </div>
+            @endif
+
+            <!-- Botón Guardar en Cabecera (Para barras tradicionales) -->
+            @if($session && $session->isOpen() && $selectedBar !== 'Tienda')
+                <button type="submit" form="sales-form" class="px-4 py-1.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn shadow-sm">
+                    <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Guardar Ventas</span>
+                </button>
             @endif
         </div>
     </div>
 
     @if(!$session)
-        <div class="glass-panel border border-white/10 rounded-3xl p-12 text-center shadow-2xl">
-            <h3 class="text-base font-bold text-white">No hay noche seleccionada</h3>
-            <p class="text-xs text-zinc-400 mt-1 mb-6">Crea una noche para registrar las ventas.</p>
-            <a href="{{ route('sessions.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 text-xs font-bold rounded-xl hover:brightness-110 transition-all shadow-md shadow-amber-500/20">
-                + Crear Noche
+        <!-- Estado Vacío -->
+        <div class="p-12 text-center rounded-2xl theme-card border theme-border">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
+            <p class="text-xs text-zinc-400 mt-1 mb-4">Apertura una noche para registrar las ventas.</p>
+            <a href="{{ route('sessions.create') }}" class="px-4 py-2 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all dilemo-btn inline-block">
+                + Aperturar Nueva Noche
             </a>
         </div>
     @else
 
-        @if(!$session->isOpen())
-            <div class="glass-panel p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-xl flex items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">🔒</span>
-                    <div>
-                        <h4 class="text-xs font-black text-rose-300 uppercase tracking-wider font-mono">Noche Cerrada (Modo Solo Lectura)</h4>
-                        <p class="text-xs text-zinc-300 mt-0.5">Esta jornada fue finalizada en Cierre de Caja. Las ventas, despachos y variantes no pueden modificarse.</p>
-                    </div>
-                </div>
-                <a href="{{ route('closing.index', ['session_id' => $session->id]) }}" class="px-3.5 py-1.5 glass-card border border-rose-400/30 text-rose-300 hover:text-white hover:bg-rose-500/20 rounded-xl text-xs font-bold font-mono transition-all shrink-0">Ver en Cierre de Caja &rarr;</a>
+        <!-- ========================================================
+             2. SELECTOR DE PUNTOS DE VENTA (iOS SEGMENTED CONTROL)
+             ======================================================== -->
+        <div class="flex items-center justify-between p-2 rounded-2xl theme-card border theme-border">
+            <div class="inline-flex p-1 rounded-xl bg-zinc-950 border border-zinc-800">
+                @foreach($availableBars as $bar)
+                    @php
+                        $isSelected = $selectedBar === $bar;
+                        $isTienda = $bar === 'Tienda';
+                        $isKelly = str_contains($bar, 'Kelly');
+                        $badgeLabel = $isTienda ? 'Directo' : ($isKelly ? 'Piso Principal' : 'Subterráneo');
+                    @endphp
+                    <a href="{{ route('sales.index', ['session_id' => $session->id, 'bar' => $bar]) }}" 
+                       class="px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 cursor-pointer {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-sm' : 'text-zinc-400 hover:text-white' }}">
+                        <span>{{ $bar }}</span>
+                        <span class="text-[10px] font-medium opacity-75">({{ $badgeLabel }})</span>
+                    </a>
+                @endforeach
             </div>
-        @endif
 
-        <!-- Selector de Puntos de Venta (Liquid Glass Pills: Barra Kelly, Barra Ariel, Tienda) -->
-        <div class="flex items-center gap-2 glass-panel p-2 rounded-2xl border border-white/10 text-xs font-mono">
-            @foreach($availableBars as $bar)
-                <a href="{{ route('sales.index', ['session_id' => $session->id, 'bar' => $bar]) }}" 
-                   class="px-5 py-2 rounded-xl font-bold transition-all {{ $selectedBar === $bar ? 'bg-amber-400 text-zinc-950 shadow-md shadow-amber-400/20' : 'text-zinc-300 hover:text-white hover:bg-white/5' }}">
-                    {{ $bar }}
-                </a>
-            @endforeach
+            @if($selectedBar !== 'Tienda' && $session->isOpen())
+                <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')"
+                        class="px-3.5 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn">
+                    <span class="text-[#F5B81C] font-bold">+</span>
+                    <span>Nueva Soda en Catálogo</span>
+                </button>
+            @endif
         </div>
 
         @if($selectedBar === 'Tienda')
-            <!-- ========================================== -->
-            <!-- VISTA EXCLUSIVA PARA TIENDA (DESPACHO DIRECTO) -->
-            <!-- ========================================== -->
+            <!-- ======================================================== -->
+            <!-- VISTA EXCLUSIVA: TIENDA (DESPACHO DIRECTO) -->
+            <!-- ======================================================== -->
 
-            <!-- Resumen de Totales de Tienda -->
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div class="glass-card rounded-2xl p-6">
-                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Combos Despachados</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-white tracking-tight">
+            <!-- Métricas de Tienda (Sin Confetti) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                <div class="theme-card rounded-2xl p-5 border theme-border">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Combos Despachados</span>
+                    <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
                         {{ $totalStoreCombos }} <span class="text-xs font-sans text-zinc-400 font-normal">combos</span>
                     </div>
-                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">Salida directa de almacén</p>
+                    <p class="text-[11px] text-zinc-500 mt-1">Salida directa de almacén</p>
                 </div>
 
-                <div class="glass-panel-elevated rounded-2xl p-6 border border-amber-400/30">
-                    <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Total Recaudado Tienda</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-white tracking-tight">
-                        <span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($totalStoreRevenue, 2) }}
+                <div class="theme-card rounded-2xl p-5 border theme-border">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Total Recaudado Tienda</span>
+                    <div class="mt-2 text-2xl font-black font-mono text-[#F5B81C] tracking-tight">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalStoreRevenue, 2) }}
                     </div>
-                    <p class="text-[11px] text-zinc-400 mt-1 font-mono">Efectivo + QR</p>
+                    <p class="text-[11px] text-zinc-400 mt-1">Efectivo + Transferencias QR</p>
                 </div>
 
-                <div class="glass-card rounded-2xl p-6">
-                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">En Efectivo</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-emerald-400 tracking-tight">
-                        <span class="text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($totalStoreCash, 2) }}
+                <div class="theme-card rounded-2xl p-5 border theme-border">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">En Efectivo</span>
+                    <div class="mt-2 text-2xl font-black font-mono text-emerald-400 tracking-tight">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalStoreCash, 2) }}
                     </div>
-                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">Cobrado físicamente</p>
+                    <p class="text-[11px] text-zinc-500 mt-1">Cobrado físicamente en mano</p>
                 </div>
 
-                <div class="glass-card rounded-2xl p-6">
-                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">En QR</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-blue-400 tracking-tight">
-                        <span class="text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($totalStoreQr, 2) }}
+                <div class="theme-card rounded-2xl p-5 border theme-border">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">En QR (Yasta / Yape)</span>
+                    <div class="mt-2 text-2xl font-black font-mono text-blue-400 tracking-tight">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalStoreQr, 2) }}
                     </div>
-                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">Transferencias bancarias</p>
+                    <p class="text-[11px] text-zinc-500 mt-1">Transferencias bancarias</p>
                 </div>
             </div>
 
-            <!-- Formulario de Despacho Rápido de Combo en Tienda -->
-            <div class="glass-panel rounded-2xl p-6 shadow-2xl">
-                <div class="border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
+            <!-- Formulario de Despacho Rápido en Tienda -->
+            <div class="theme-card rounded-2xl p-5 border theme-border">
+                <div class="border-b theme-border pb-3 mb-4 flex items-center justify-between">
                     <div>
-                        <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
+                        <h2 class="text-sm font-bold text-white uppercase tracking-wider font-sans">
                             Despachar Combo en Tienda
-                        </h3>
+                        </h2>
                         <p class="text-xs text-zinc-400 mt-0.5">
-                            El mesero pide el combo, paga o muestra comprobante de QR, y la tienda despacha directo con desglose de pago.
+                            Registra el combo entregado al mesero con desglose inmediato de efectivo o QR
                         </p>
                     </div>
-                    <span class="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-zinc-300 font-mono border border-white/10">
-                        Despacho Inmediato
-                    </span>
                 </div>
 
                 <form method="POST" action="{{ route('sales.storeSales.store') }}" id="tienda-order-form" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                     @csrf
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
                         
                         <!-- Producto / Combo -->
                         <div class="sm:col-span-2">
-                            <label for="product_id" class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label for="product_id" class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Combo / Bebida Solicitada
                             </label>
                             <select name="product_id" id="product_id" required 
-                                    class="glass-input w-full text-xs font-bold rounded-xl px-3 py-2.5 cursor-pointer">
-                                <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Combo / Bebida --</option>
+                                    class="w-full text-xs font-bold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
+                                <option value="" disabled selected class="bg-zinc-950 text-zinc-400">-- Seleccionar Combo / Bebida --</option>
                                 @foreach($storeProducts as $prod)
-                                    <option value="{{ $prod->id }}" data-price="{{ $prod->sale_price }}" class="bg-[#12141c]">
+                                    <option value="{{ $prod->id }}" data-price="{{ $prod->sale_price }}" class="bg-zinc-950 text-white">
                                         {{ $prod->name }} (Bs. {{ number_format($prod->sale_price, 2) }})
                                     </option>
                                 @endforeach
@@ -157,62 +196,62 @@
 
                         <!-- Cantidad -->
                         <div>
-                            <label for="quantity" class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label for="quantity" class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Cantidad
                             </label>
                             <input type="number" name="quantity" id="quantity" value="1" min="1" required 
-                                   class="glass-input w-full text-xs font-mono font-bold rounded-xl px-3 py-2.5">
+                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                         <!-- Precio Unitario -->
                         <div>
-                            <label for="unit_price" class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label for="unit_price" class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Precio Unitario (Bs.)
                             </label>
                             <input type="number" step="0.5" name="unit_price" id="unit_price" value="0.00" min="0" required 
-                                   class="glass-input w-full text-xs font-mono font-bold rounded-xl px-3 py-2.5">
+                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                     </div>
 
                     <!-- Fila de Cobrante y Desglose de Pago -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 pt-3 border-t border-white/10 items-end">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5 pt-3 border-t theme-border items-end">
                         
                         <!-- Nombre del Cobrante / Mesero -->
                         <div class="md:col-span-2">
-                            <label for="cobrante_name" class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label for="cobrante_name" class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Nombre del Mesero / Cobrante
                             </label>
                             <input type="text" name="cobrante_name" id="cobrante_name" required placeholder="Ej. Juan, Mau, Ari..."
-                                   class="glass-input w-full text-xs uppercase rounded-xl px-3 py-2.5 placeholder-zinc-500">
+                                   class="w-full text-xs uppercase rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                         <!-- Total Calculado -->
                         <div>
-                            <label class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Total Pedido (Bs.)
                             </label>
-                            <div class="px-3 py-2.5 glass-panel rounded-xl text-amber-400 font-mono font-black text-sm" id="tienda-total-display">
+                            <div class="px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-[#F5B81C] font-mono font-bold text-sm" id="tienda-total-display">
                                 Bs. 0.00
                             </div>
                         </div>
 
                         <!-- Monto en Efectivo -->
                         <div>
-                            <label for="cash_amount" class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label for="cash_amount" class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Monto Efectivo (Bs.)
                             </label>
                             <input type="number" step="0.5" name="cash_amount" id="cash_amount" value="0.00" min="0" required 
-                                   class="glass-input w-full text-xs font-mono font-bold rounded-xl px-3 py-2.5 text-emerald-400">
+                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-emerald-400 focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                         <!-- Monto en QR -->
                         <div>
-                            <label for="qr_amount" class="block text-xs font-medium text-zinc-300 mb-1">
+                            <label for="qr_amount" class="block text-xs font-semibold text-zinc-300 mb-1">
                                 Monto QR (Bs.)
                             </label>
                             <input type="number" step="0.5" name="qr_amount" id="qr_amount" value="0.00" min="0" required 
-                                   class="glass-input w-full text-xs font-mono font-bold rounded-xl px-3 py-2.5 text-blue-400">
+                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-blue-400 focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                     </div>
@@ -220,33 +259,31 @@
                     <!-- Botones de ayuda rápida -->
                     <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
                         <div class="flex items-center gap-2">
-                            <span class="text-zinc-400 font-medium text-[11px]">Llenado Rápido:</span>
-                            <button type="button" id="btn-all-cash" class="px-3 py-1.5 glass-card rounded-lg text-xs font-bold text-emerald-400 cursor-pointer">
+                            <span class="text-zinc-500 font-semibold text-[11px]">Asignar:</span>
+                            <button type="button" id="btn-all-cash" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-800 text-emerald-400 hover:border-emerald-500/50 cursor-pointer">
                                 Todo Efectivo
                             </button>
-                            <button type="button" id="btn-all-qr" class="px-3 py-1.5 glass-card rounded-lg text-xs font-bold text-blue-400 cursor-pointer">
+                            <button type="button" id="btn-all-qr" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-800 text-blue-400 hover:border-blue-500/50 cursor-pointer">
                                 Todo QR
                             </button>
-                            <button type="button" id="btn-split-50" class="px-3 py-1.5 glass-card rounded-lg text-xs font-bold text-amber-300 cursor-pointer">
+                            <button type="button" id="btn-split-50" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-800 text-amber-300 hover:border-[#F5B81C]/50 cursor-pointer">
                                 50% Efectivo / 50% QR
                             </button>
                         </div>
 
                         <!-- Opciones de QR -->
-                        <div class="flex items-center gap-4" id="qr-options-box">
-                            <div class="flex items-center gap-1.5">
-                                <label for="bank_app" class="text-[11px] font-semibold text-zinc-300">Banco QR:</label>
-                                <select name="bank_app" id="bank_app" 
-                                        class="glass-input text-xs rounded-lg px-2.5 py-1 text-zinc-100 cursor-pointer">
-                                    <option value="YASTA" class="bg-[#12141c]">YASTA (Unión)</option>
-                                    <option value="YAPE" class="bg-[#12141c]">YAPE (BCP)</option>
-                                </select>
-                            </div>
+                        <div class="flex items-center gap-2" id="qr-options-box">
+                            <label for="bank_app" class="text-[11px] font-semibold text-zinc-400">Banco QR:</label>
+                            <select name="bank_app" id="bank_app" 
+                                    class="text-xs rounded-xl px-3 py-1 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
+                                <option value="YASTA" class="bg-zinc-950">YASTA (Unión)</option>
+                                <option value="YAPE" class="bg-zinc-950">YAPE (BCP)</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="pt-2 flex justify-end">
-                        <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-amber-500/20 cursor-pointer">
+                        <button type="submit" class="px-5 py-2.5 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] transition-all dilemo-btn cursor-pointer shadow-sm">
                             + Despachar y Registrar Venta
                         </button>
                     </div>
@@ -254,19 +291,19 @@
             </div>
 
             <!-- Tabla de Despachos Registrados en Tienda -->
-            <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
-                <div class="px-6 py-4 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-200 font-mono">
+            <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                <div class="px-5 py-3.5 border-b theme-border bg-zinc-950 flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300 font-sans">
                         Historial de Combos Despachados en Tienda ({{ $storeSales->count() }})
                     </h3>
-                    <span class="text-xs font-mono font-bold text-amber-400">
+                    <span class="text-xs font-mono font-bold text-[#F5B81C]">
                         Total Tienda: Bs. {{ number_format($totalStoreRevenue, 2) }}
                     </span>
                 </div>
 
-                <div class="overflow-x-auto max-h-[500px]">
-                    <table class="w-full text-xs text-left">
-                        <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0">
+                <div class="overflow-x-auto max-h-[480px]">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider sticky top-0">
                             <tr>
                                 <th class="px-4 py-3">Hora</th>
                                 <th class="px-4 py-3">Combo / Producto</th>
@@ -279,22 +316,22 @@
                                 <th class="px-3 py-3 text-right w-16">Acción</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5 font-mono">
+                        <tbody class="divide-y theme-border font-sans">
                             @forelse($storeSales as $ss)
-                                <tr class="hover:bg-white/[0.02]">
-                                    <td class="px-4 py-2.5 text-zinc-400">{{ \Carbon\Carbon::parse($ss->created_at)->format('H:i') }}</td>
-                                    <td class="px-4 py-2.5 font-bold text-zinc-100 font-sans">{{ $ss->product->name }}</td>
-                                    <td class="px-3 py-2.5 text-center font-bold text-amber-400">{{ $ss->quantity }}</td>
-                                    <td class="px-4 py-2.5 text-right text-zinc-300">Bs. {{ number_format($ss->unit_price, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-right font-black text-white">Bs. {{ number_format($ss->total_price, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-right text-emerald-400 font-bold">Bs. {{ number_format($ss->cash_amount, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-right text-blue-400 font-bold">Bs. {{ number_format($ss->qr_amount, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-zinc-300 font-sans uppercase font-medium">{{ $ss->cobrante_name }}</td>
+                                <tr class="hover:bg-zinc-900/30 transition-colors">
+                                    <td class="px-4 py-2.5 text-zinc-400 font-mono">{{ \Carbon\Carbon::parse($ss->created_at)->format('H:i') }}</td>
+                                    <td class="px-4 py-2.5 font-bold text-white">{{ $ss->product->name }}</td>
+                                    <td class="px-3 py-2.5 text-center font-bold font-mono text-[#F5B81C]">{{ $ss->quantity }}</td>
+                                    <td class="px-4 py-2.5 text-right font-mono text-zinc-300">Bs. {{ number_format($ss->unit_price, 2) }}</td>
+                                    <td class="px-4 py-2.5 text-right font-bold font-mono text-white">Bs. {{ number_format($ss->total_price, 2) }}</td>
+                                    <td class="px-4 py-2.5 text-right font-mono text-emerald-400 font-semibold">Bs. {{ number_format($ss->cash_amount, 2) }}</td>
+                                    <td class="px-4 py-2.5 text-right font-mono text-blue-400 font-semibold">Bs. {{ number_format($ss->qr_amount, 2) }}</td>
+                                    <td class="px-4 py-2.5 text-zinc-300 uppercase font-medium">{{ $ss->cobrante_name }}</td>
                                     <td class="px-3 py-2.5 text-right">
-                                            <form method="POST" action="{{ route('sales.storeSales.destroy', $ss) }}" onsubmit="return confirm('¿Eliminar despacho?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                                        <form method="POST" action="{{ route('sales.storeSales.destroy', $ss) }}" onsubmit="return confirm('¿Eliminar despacho?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-rose-400 hover:text-rose-300 font-bold text-xs cursor-pointer">Borrar</button>
+                                            <button type="submit" class="text-rose-400 hover:text-rose-300 font-semibold text-xs cursor-pointer">Borrar</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -311,68 +348,55 @@
             </div>
 
             <!-- ======================================================== -->
-            <!-- DETALLE DE COBROS DIGITALES EN TIENDA (QR & TARJETAS POS) -->
+            <!-- DETALLE DE COBROS DIGITALES EN TIENDA (QR & TARJETAS) -->
             <!-- ======================================================== -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 
-                <!-- 1. TABLA COBROS QR EN TIENDA -->
-                <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                    <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-sm shadow-blue-400/50"></span>
-                            <div>
-                                <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
-                                    Cobros QR en Tienda
-                                </h3>
-                                <p class="text-[11px] text-zinc-400">
-                                    Transferencias YASTA & YAPE registradas
-                                </p>
-                            </div>
+                <!-- Cobros QR en Tienda -->
+                <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                    <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
+                                Cobros QR en Tienda
+                            </h3>
+                            <p class="text-[11px] text-zinc-400">Transferencias YASTA & YAPE</p>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-mono font-black text-blue-400">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xs font-mono font-bold text-blue-400">
                                 Bs. {{ number_format($barTotalQr, 2) }}
                             </span>
                             <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                               class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-blue-400/30 text-blue-300 hover:bg-blue-500/20 transition-all">
-                                + Pagos QR &rarr;
+                               class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-blue-400 hover:text-white transition-all">
+                                Ver QR &rarr;
                             </a>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                        <table class="w-full text-xs text-left">
-                            <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                    <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
                                 <tr>
-                                    <th class="px-4 py-2.5">Cobrante / Mesero</th>
+                                    <th class="px-4 py-2.5">Cobrante</th>
                                     <th class="px-3 py-2.5 text-center">App</th>
                                     <th class="px-4 py-2.5">Ref / Comprobante</th>
                                     <th class="px-4 py-2.5 text-right">Monto (Bs.)</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/5 font-mono">
+                            <tbody class="divide-y theme-border font-sans">
                                 @forelse($barQrPayments as $qr)
-                                    <tr class="hover:bg-white/[0.02]">
-                                        <td class="px-4 py-2.5 font-sans font-medium text-zinc-200">
-                                            {{ $qr->operator_name ?? '—' }}
-                                        </td>
-                                        <td class="px-3 py-2.5 text-center">
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $qr->bank_app === 'YASTA' ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30' : 'bg-emerald-400/10 text-emerald-300 border border-emerald-400/30' }}">
+                                    <tr class="hover:bg-zinc-900/30">
+                                        <td class="px-4 py-2 text-zinc-200 font-medium">{{ $qr->operator_name ?? '—' }}</td>
+                                        <td class="px-3 py-2 text-center">
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-zinc-300">
                                                 {{ $qr->bank_app }}
                                             </span>
                                         </td>
-                                        <td class="px-4 py-2.5 text-zinc-400 text-[11px] truncate max-w-[120px]">
-                                            {{ $qr->reference_code ?? '—' }}
-                                        </td>
-                                        <td class="px-4 py-2.5 text-right font-black text-blue-400">
-                                            Bs. {{ number_format($qr->amount, 2) }}
-                                        </td>
+                                        <td class="px-4 py-2 text-zinc-400 text-[11px] truncate max-w-[120px] font-mono">{{ $qr->reference_code ?? '—' }}</td>
+                                        <td class="px-4 py-2 text-right font-bold font-mono text-blue-400">Bs. {{ number_format($qr->amount, 2) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
-                                            No hay cobros QR registrados para Tienda en esta jornada.
-                                        </td>
+                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay cobros QR registrados para Tienda.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -380,62 +404,47 @@
                     </div>
                 </div>
 
-                <!-- 2. TABLA TARJETAS / POS EN TIENDA -->
-                <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                    <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-sm shadow-purple-400/50"></span>
-                            <div>
-                                <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
-                                    Pagos con Tarjeta (POS) en Tienda
-                                </h3>
-                                <p class="text-[11px] text-zinc-400">
-                                    Registrados en Facturas y POS
-                                </p>
-                            </div>
+                <!-- Tarjetas POS en Tienda -->
+                <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                    <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
+                                Pagos Tarjeta (POS) en Tienda
+                            </h3>
+                            <p class="text-[11px] text-zinc-400">Facturas y cobro con tarjeta</p>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-mono font-black text-purple-400">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xs font-mono font-bold text-purple-400">
                                 Bs. {{ number_format($barTotalCard, 2) }}
                             </span>
                             <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                               class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-purple-400/30 text-purple-300 hover:bg-purple-500/20 transition-all">
-                                + Facturas & POS &rarr;
+                               class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-purple-400 hover:text-white transition-all">
+                                Ver Facturas &rarr;
                             </a>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                        <table class="w-full text-xs text-left">
-                            <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                    <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
                                 <tr>
                                     <th class="px-4 py-2.5 text-center"># Factura</th>
-                                    <th class="px-4 py-2.5">Detalle / Notas</th>
+                                    <th class="px-4 py-2.5">Detalle</th>
                                     <th class="px-4 py-2.5 text-right">Comisión</th>
                                     <th class="px-4 py-2.5 text-right">Monto Bruto</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/5 font-mono">
+                            <tbody class="divide-y theme-border font-sans">
                                 @forelse($barCardInvoices as $inv)
-                                    <tr class="hover:bg-white/[0.02]">
-                                        <td class="px-4 py-2.5 text-center text-zinc-400 font-bold">
-                                            #{{ $inv->correlative_num }}
-                                        </td>
-                                        <td class="px-4 py-2.5 font-sans text-zinc-300 text-[11px] truncate max-w-[140px]">
-                                            {{ $inv->notes ?? 'Pago Tarjeta POS' }}
-                                        </td>
-                                        <td class="px-4 py-2.5 text-right text-zinc-500 text-[11px]">
-                                            - Bs. {{ number_format($inv->commission_amount, 2) }}
-                                        </td>
-                                        <td class="px-4 py-2.5 text-right font-black text-purple-400">
-                                            Bs. {{ number_format($inv->amount, 2) }}
-                                        </td>
+                                    <tr class="hover:bg-zinc-900/30">
+                                        <td class="px-4 py-2 text-center text-zinc-400 font-mono font-bold">#{{ $inv->correlative_num }}</td>
+                                        <td class="px-4 py-2 text-zinc-300 text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? 'Pago Tarjeta POS' }}</td>
+                                        <td class="px-4 py-2 text-right text-zinc-500 text-[11px] font-mono">- Bs. {{ number_format($inv->commission_amount, 2) }}</td>
+                                        <td class="px-4 py-2 text-right font-bold font-mono text-purple-400">Bs. {{ number_format($inv->amount, 2) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
-                                            No hay pagos con tarjeta registrados para Tienda en esta jornada.
-                                        </td>
+                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay pagos con tarjeta registrados para Tienda.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -513,170 +522,163 @@
 
         @else
             <!-- ======================================================== -->
-            <!-- VISTA DE BARRAS TRADICIONALES (BARRA PRINCIPAL Y SUBTE) -->
+            <!-- VISTA DE BARRAS TRADICIONALES (KELLY & ARIEL) -->
             <!-- ======================================================== -->
 
-            <!-- Resumen de Totales del Punto de Venta Actual -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Total Recaudado en Bebidas -->
-                <div class="glass-panel-elevated rounded-2xl p-6 border border-amber-400/30">
+            <!-- Métricas Claras de la Barra para Don Ludo -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                
+                <!-- Total Bebidas Liquidado -->
+                <div class="theme-card rounded-2xl p-5 border theme-border">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Total Bebidas</span>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-400/10 text-amber-300 border border-amber-400/20">{{ $selectedBar }}</span>
+                        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total Bebidas</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-zinc-950 border border-zinc-800 text-zinc-400">{{ $selectedBar }}</span>
                     </div>
-                    <div class="mt-2 text-3xl font-black font-mono text-white tracking-tight" id="header-grand-total">
-                        <span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($grandTotalBar, 2) }}
+                    <div class="mt-2 text-2xl font-black font-mono text-[#F5B81C] tracking-tight" id="header-grand-total">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($grandTotalBar, 2) }}
                     </div>
-                    <p class="text-[11px] text-zinc-400 mt-1 font-mono">
-                        <span id="header-total-combos">{{ $totalLiquorCombos }} combos</span> (Bs. <span id="header-subtotal-combos-val">{{ number_format($subtotalLiquors, 2) }}</span>) + <span id="header-total-extras">{{ $totalMixerExtras }} extras</span> (Bs. <span id="header-subtotal-extras-val">{{ number_format($subtotalMixers, 2) }}</span>)
+                    <p class="text-[11px] text-zinc-400 mt-1 font-sans">
+                        <span id="header-total-combos" class="font-semibold text-white">{{ $totalLiquorCombos }} combos</span> (Bs. <span id="header-subtotal-combos-val">{{ number_format($subtotalLiquors, 2) }}</span>) + <span id="header-total-extras" class="font-semibold text-white">{{ $totalMixerExtras }} extras</span>
                     </p>
                 </div>
 
                 <!-- En QR (YASTA / YAPE) -->
-                <div class="glass-card rounded-2xl p-6 border border-blue-500/20">
+                <div class="theme-card rounded-2xl p-5 border theme-border">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Cobros QR</span>
-                        <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[10px] font-mono text-blue-400 hover:text-blue-300 transition-colors">Ver módulo &rarr;</a>
+                        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Cobrado por QR</span>
+                        <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[10px] font-semibold text-blue-400 hover:underline">Ver QR &rarr;</a>
                     </div>
-                    <div class="mt-2 text-3xl font-black font-mono text-blue-400 tracking-tight">
-                        <span class="text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($barTotalQr, 2) }}
+                    <div class="mt-2 text-2xl font-black font-mono text-blue-400 tracking-tight">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($barTotalQr, 2) }}
                     </div>
                     <p class="text-[11px] text-zinc-500 mt-1 font-mono">
                         YASTA: Bs. {{ number_format($barTotalQrYasta, 2) }} • YAPE: Bs. {{ number_format($barTotalQrYape, 2) }}
                     </p>
                 </div>
 
-                <!-- En Tarjeta / POS -->
-                <div class="glass-card rounded-2xl p-6 border border-purple-500/20">
+                <!-- En Tarjetas POS -->
+                <div class="theme-card rounded-2xl p-5 border theme-border">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Tarjetas (POS)</span>
-                        <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[10px] font-mono text-purple-400 hover:text-purple-300 transition-colors">Ver módulo &rarr;</a>
+                        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Tarjetas (POS)</span>
+                        <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[10px] font-semibold text-purple-400 hover:underline">Ver POS &rarr;</a>
                     </div>
-                    <div class="mt-2 text-3xl font-black font-mono text-purple-400 tracking-tight">
-                        <span class="text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($barTotalCard, 2) }}
+                    <div class="mt-2 text-2xl font-black font-mono text-purple-400 tracking-tight">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($barTotalCard, 2) }}
                     </div>
                     <p class="text-[11px] text-zinc-500 mt-1 font-mono">
                         Neto: Bs. {{ number_format($barTotalCardNet, 2) }} @if($barTotalCardCommission > 0)<span class="text-zinc-600">(Com. Bs. {{ number_format($barTotalCardCommission, 2) }})</span>@endif
                     </p>
                 </div>
 
-                <!-- Efectivo en Barra -->
-                <div class="glass-card rounded-2xl p-6 border border-emerald-500/20">
-                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Efectivo en Barra</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-emerald-400 tracking-tight">
-                        <span class="text-lg mr-0.5 font-sans">Bs.</span><span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
+                <!-- Efectivo en Mano en Barra -->
+                <div class="theme-card rounded-2xl p-5 border theme-border">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Efectivo en Barra</span>
+                    <div class="mt-2 text-2xl font-black font-mono text-emerald-400 tracking-tight">
+                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span><span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
                     </div>
-                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">
+                    <p class="text-[11px] text-zinc-500 mt-1 font-sans">
                         Dinero físico (Total − QR − Tarjetas)
                     </p>
                 </div>
             </div>
 
-            <!-- Barra de acciones: Botón Agregar Especial -->
-            <div class="flex justify-end mb-3">
-                <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')" @disabled(!$session->isOpen())
-                    class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-                    <span>+ Nueva Variante / Soda por Categoría</span>
-                </button>
-            </div>
-
-            <!-- Modal Registrar Variante / Especial en Catálogo -->
-            <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-md w-full shadow-2xl">
-                    <h3 class="text-sm font-black text-white uppercase tracking-wider mb-2">Registrar Variante Especial</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Define una soda/mixer especial para una categoría de tragos (ej: Sprite o Aquarius para Rones/Singanis).</p>
+            <!-- Modal: Registrar Variante Especial en Catálogo -->
+            <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                <div class="theme-card p-6 rounded-2xl border theme-border max-w-md w-full shadow-2xl">
+                    <div class="flex items-center justify-between border-b theme-border pb-3 mb-4">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider font-sans">Nueva Soda en Catálogo</h3>
+                        <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" class="text-zinc-400 hover:text-white text-base font-bold cursor-pointer">&times;</button>
+                    </div>
+                    <p class="text-xs text-zinc-400 mb-4">Define una soda especial para una categoría de tragos (ej: Sprite para Rones o Fernet).</p>
                     
                     <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                         @csrf
                         <div>
-                            <label class="block text-xs font-medium text-zinc-300 mb-1">Categoría del Trago</label>
-                            <select name="category" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
-                                <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Categoría --</option>
+                            <label class="block text-xs font-semibold text-zinc-300 mb-1">Categoría del Trago</label>
+                            <select name="category" required class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
+                                <option value="" disabled selected class="bg-zinc-950">-- Seleccionar Categoría --</option>
                                 @foreach($categories as $cat)
-                                    <option value="{{ $cat }}" class="bg-[#12141c]">{{ $cat }}</option>
+                                    <option value="{{ $cat }}" class="bg-zinc-950">{{ $cat }}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-medium text-zinc-300 mb-1">Nombre de la Variante / Soda</label>
+                            <label class="block text-xs font-semibold text-zinc-300 mb-1">Nombre de la Variante / Soda</label>
                             <input type="text" name="mixer_name" placeholder="Ej: Sprite 2.0L, Aquarius Pera" required 
-                                class="glass-input w-full text-xs rounded-xl px-3 py-2 text-white">
+                                   class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-medium text-zinc-300 mb-1">Producto Mixer para Descuento en Barra</label>
-                            <select name="product_id" required class="glass-input w-full text-xs rounded-xl px-3 py-2">
-                                <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Soda / Mixer en Almacén --</option>
+                            <label class="block text-xs font-semibold text-zinc-300 mb-1">Producto Mixer para Descuento en Barra</label>
+                            <select name="product_id" required class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
+                                <option value="" disabled selected class="bg-zinc-950">-- Seleccionar Soda / Mixer en Almacén --</option>
                                 @foreach($allMixerProducts as $mix)
-                                    <option value="{{ $mix->id }}" class="bg-[#12141c]">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
+                                    <option value="{{ $mix->id }}" class="bg-zinc-950">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="flex justify-end gap-2 pt-3">
                             <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" 
-                                    class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold cursor-pointer">Cancelar</button>
-                            <button type="submit" class="px-5 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 cursor-pointer">Guardar en Catálogo</button>
+                                    class="px-4 py-2 rounded-xl text-xs text-zinc-400 font-semibold bg-zinc-950 border border-zinc-800 hover:text-white cursor-pointer">Cancelar</button>
+                            <button type="submit" class="px-5 py-2 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer dilemo-btn">Guardar en Catálogo</button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Modal Asignar Mixers Especiales a la Fila de Venta -->
-            <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                <div class="glass-panel p-6 rounded-2xl border border-white/20 max-w-lg w-full shadow-2xl space-y-4">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <!-- Modal: Asignar Mixers Especiales a la Fila de Venta -->
+            <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                <div class="theme-card p-6 rounded-2xl border theme-border max-w-lg w-full shadow-2xl space-y-4">
+                    <div class="flex items-center justify-between border-b theme-border pb-3">
                         <div>
-                            <span class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold">Combos Especiales</span>
-                            <h3 class="text-base font-black text-white" id="modal-liquor-title">Licor</h3>
+                            <span class="text-[10px] uppercase tracking-wider text-[#F5B81C] font-bold block">Acompañamiento Alternativo</span>
+                            <h3 class="text-base font-bold text-white" id="modal-liquor-title">Licor</h3>
                         </div>
-                        <button type="button" onclick="closeSpecialModal()" class="text-zinc-400 hover:text-white text-lg font-bold cursor-pointer">✕</button>
+                        <button type="button" onclick="closeSpecialModal()" class="text-zinc-400 hover:text-white text-lg font-bold cursor-pointer">&times;</button>
                     </div>
 
-                    <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex items-center justify-between text-xs font-mono">
+                    <div class="bg-zinc-950 rounded-xl p-3 border border-zinc-800 flex items-center justify-between text-xs">
                         <div>
                             <span class="text-zinc-400">Total Combos Vendidos:</span>
-                            <span class="font-bold text-white ml-1 text-sm" id="modal-total-combos">0</span>
+                            <span class="font-bold text-white ml-1 text-sm font-mono" id="modal-total-combos">0</span>
                         </div>
                         <div>
-                            <span class="text-zinc-400">Mixer por Defecto:</span>
-                            <span class="font-bold text-amber-300 ml-1" id="modal-default-mixer-name">-</span>
+                            <span class="text-zinc-400">Soda por Defecto:</span>
+                            <span class="font-bold text-[#F5B81C] ml-1" id="modal-default-mixer-name">-</span>
                         </div>
                     </div>
 
                     <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
                         <p class="text-[11px] text-zinc-400">
-                            Asigna cuántos combos se despacharon con un mixer alternativo (se restarán automáticamente del mixer por defecto):
+                            Asigna cuántos combos salieron con un mixer alternativo (se restarán automáticamente de la soda por defecto):
                         </p>
                         
                         <div class="space-y-2">
                             @foreach($allMixerProducts as $mixer)
-                                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
+                                <div class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-all">
+                                    <span class="text-xs font-medium text-white">{{ $mixer->name }}</span>
                                     <div class="flex items-center gap-2">
-                                        <span class="w-2 h-2 rounded-full bg-amber-400/60"></span>
-                                        <span class="text-xs font-medium text-zinc-200">{{ $mixer->name }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <label class="text-[11px] text-zinc-400 font-mono">Combos:</label>
+                                        <label class="text-[11px] text-zinc-400">Combos:</label>
                                         <input type="number" min="0" value="0" 
                                                data-mixer-id="{{ $mixer->id }}" 
                                                data-mixer-name="{{ $mixer->name }}"
-                                               class="modal-special-qty glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white">
+                                               class="modal-special-qty w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold bg-black border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <div class="p-3 bg-amber-400/10 border border-amber-400/20 rounded-xl flex items-center justify-between text-xs font-mono">
-                        <span class="text-zinc-300">Mixers por defecto restantes:</span>
-                        <span class="font-bold text-amber-400 text-sm" id="modal-remaining-default">0</span>
+                    <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-between text-xs">
+                        <span class="text-zinc-300">Sodas por defecto restantes:</span>
+                        <span class="font-bold text-[#F5B81C] text-sm font-mono" id="modal-remaining-default">0</span>
                     </div>
 
-                    <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
-                        <button type="button" onclick="closeSpecialModal()" class="px-4 py-2 glass-card rounded-xl text-xs text-zinc-400 font-bold cursor-pointer">Cancelar</button>
-                        <button type="button" onclick="saveSpecialModal()" class="px-6 py-2 bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl hover:brightness-110 shadow-lg shadow-amber-500/20 cursor-pointer">Listo / Aplicar</button>
+                    <div class="flex justify-end gap-2 pt-2 border-t theme-border">
+                        <button type="button" onclick="closeSpecialModal()" class="px-4 py-2 rounded-xl text-xs text-zinc-400 font-semibold bg-zinc-950 border border-zinc-800 hover:text-white cursor-pointer">Cancelar</button>
+                        <button type="button" onclick="saveSpecialModal()" class="px-5 py-2 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer dilemo-btn">Listo / Aplicar</button>
                     </div>
                 </div>
             </div>
@@ -688,40 +690,40 @@
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
                 <input type="hidden" name="bar_name" value="{{ $selectedBar }}">
 
-                <div class="space-y-6">
+                <div class="space-y-4">
 
                     <!-- 1. TABLA DE LICORES (COMBOS) -->
-                    <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
-                        <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                    <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                        <div class="px-5 py-3.5 bg-zinc-950 border-b theme-border flex items-center justify-between">
                             <div>
-                                <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">1. Licores & Combos</h3>
-                                <p class="text-[11px] text-zinc-400">
-                                    Apertura y reposiciones sincronizadas desde <a href="{{ route('barInventory.index', ['session_id' => $session->id, 'bar' => $selectedBar]) }}" class="text-amber-400 font-bold underline hover:text-amber-300">Inventario de Barras</a>. Cada combo incluye su soda (Gins incluyen <strong>2 Aguas Tónicas</strong>). Puedes cambiar acompañamiento con el botón <strong>+ Especial</strong>.
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">1. Licores & Combos</h3>
+                                <p class="text-[11px] text-zinc-400 mt-0.5">
+                                    Stock inicial sincronizado desde <a href="{{ route('barInventory.index', ['session_id' => $session->id, 'bar' => $selectedBar]) }}" class="text-[#F5B81C] hover:underline font-semibold">Inventario de Barras</a>. Cada combo incluye su soda (Gins incluyen 2 tónicas).
                                 </p>
                             </div>
-                            <span class="text-xs font-mono font-bold text-amber-400" id="badge-liquor-subtotal">
+                            <span class="text-xs font-mono font-bold text-[#F5B81C]" id="badge-liquor-subtotal">
                                 Subtotal: Bs. {{ number_format($subtotalLiquors, 2) }}
                             </span>
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left" id="table-liquors">
-                                <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider">
+                            <table class="w-full text-xs text-left border-collapse" id="table-liquors">
+                                <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                     <tr>
-                                        <th class="px-4 py-3 w-10 text-center">N°</th>
-                                        <th class="px-4 py-3">Licor</th>
-                                        <th class="px-4 py-3">Mixer Incluido</th>
-                                        <th class="px-3 py-3 text-center">Especiales</th>
-                                        <th class="px-2 py-3 w-20 text-center">Paquete</th>
-                                        <th class="px-2 py-3 w-20 text-center">Unidad</th>
-                                        <th class="px-4 py-3 w-20 text-center">Total Inicial</th>
-                                        <th class="px-2 py-3 w-20 text-center">Saldo</th>
-                                        <th class="px-4 py-3 w-24 text-center font-bold text-amber-400">Combos Vendidos</th>
+                                        <th class="px-3 py-3 w-8 text-center">N°</th>
+                                        <th class="px-4 py-3">Licor / Presentación</th>
+                                        <th class="px-4 py-3">Acompañamiento</th>
+                                        <th class="px-3 py-3 text-center">Especial</th>
+                                        <th class="px-2 py-3 w-16 text-center">Cajas</th>
+                                        <th class="px-2 py-3 w-16 text-center">Sueltas</th>
+                                        <th class="px-3 py-3 w-20 text-center">Total Inicial</th>
+                                        <th class="px-3 py-3 w-24 text-center">Saldo al Cierre</th>
+                                        <th class="px-4 py-3 w-24 text-center font-bold text-[#F5B81C]">Combos Vendidos</th>
                                         <th class="px-4 py-3 w-28 text-right">Precio Combo</th>
                                         <th class="px-4 py-3 w-32 text-right">Subtotal (Bs.)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-white/5 font-mono">
+                                <tbody class="divide-y theme-border font-sans">
                                     @forelse($liquorSales as $index => $sale)
                                         @php
                                             $mixerInfo = $mapping[$sale->product_id] ?? null;
@@ -751,7 +753,7 @@
                                             $badgeText = count($badgeParts) > 0 ? implode(', ', $badgeParts) : '+ Especial';
                                             $hasSpecials = count($badgeParts) > 0;
                                         @endphp
-                                        <tr class="hover:bg-white/[0.02] liquor-row" 
+                                        <tr class="hover:bg-zinc-900/30 transition-colors liquor-row" 
                                             data-row-id="{{ $sale->id }}" 
                                             data-product-id="{{ $sale->product_id }}"
                                             data-product-name="{{ $sale->product->name }}"
@@ -759,18 +761,19 @@
                                             data-mixer-id="{{ $mixerId }}"
                                             data-mixer-name="{{ $mixerName }}"
                                             data-mixer-ratio="{{ $mixerRatio }}">
-                                            <td class="px-4 py-2.5 text-center text-zinc-500 font-bold">{{ $index + 1 }}</td>
-                                            <td class="px-4 py-2.5 font-bold text-white font-sans">
-                                                {{ $sale->product->name }}
+                                            <td class="px-3 py-2.5 text-center text-zinc-500 font-mono">{{ $index + 1 }}</td>
+                                            <td class="px-4 py-2.5">
+                                                <span class="font-bold text-white block">{{ $sale->product->name }}</span>
+                                                <span class="text-[11px] text-zinc-400 font-normal">{{ $sale->product->unit }} • {{ $sale->product->units_per_package ?? 1 }} unid/caja</span>
                                             </td>
-                                            <td class="px-4 py-2.5 text-zinc-400 text-[11px]">
-                                                <span class="inline-flex px-2 py-0.5 rounded-full {{ $mixerRatio == 2 ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30 font-bold' : 'bg-white/5 text-zinc-300' }}">
+                                            <td class="px-4 py-2.5 text-zinc-300 text-xs">
+                                                <span class="inline-flex px-2 py-0.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] font-medium">
                                                     + {{ $mixerName }}
                                                 </span>
                                             </td>
                                             
                                             <!-- BOTÓN INTERACTIVO DE MIXER ESPECIAL -->
-                                            <td class="px-3 py-1.5 text-center">
+                                            <td class="px-3 py-2 text-center">
                                                 <input type="hidden" 
                                                        name="sales[{{ $sale->id }}][selected_special_mixer]" 
                                                        id="input-specials-{{ $sale->id }}" 
@@ -779,35 +782,34 @@
                                                 <button type="button" 
                                                         onclick="openSpecialModal({{ $sale->id }})" 
                                                         id="btn-special-{{ $sale->id }}"
-                                                        class="px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer border {{ $hasSpecials ? 'bg-amber-400/20 text-amber-300 border-amber-400/40 shadow-sm' : 'bg-white/5 hover:bg-white/10 text-zinc-400 border-white/10 hover:text-white' }}">
-                                                    <span class="text-amber-400 font-black">+</span>
-                                                    <span id="badge-special-{{ $sale->id }}">{{ $badgeText }}</span>
+                                                        class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border {{ $hasSpecials ? 'bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white' }}">
+                                                    <span>{{ $badgeText }}</span>
                                                 </button>
                                             </td>
 
-                                            <td class="px-2 py-1.5 text-center">
+                                            <td class="px-2 py-2 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][packages]" value="{{ $sale->packages }}" min="0"
-                                                       class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white input-packages">
+                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-packages">
                                             </td>
-                                            <td class="px-2 py-1.5 text-center">
+                                            <td class="px-2 py-2 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][units]" value="{{ $sale->units }}" min="0"
-                                                       class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white input-units">
+                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-units">
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-bold text-zinc-200 cell-total-initial">
+                                            <td class="px-3 py-2.5 text-center font-bold font-mono text-zinc-300 cell-total-initial">
                                                 {{ $sale->total_initial }}
                                             </td>
-                                            <td class="px-2 py-1.5 text-center">
+                                            <td class="px-3 py-2 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][saldo]" value="{{ $sale->saldo }}" min="0"
-                                                       class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300 input-saldo">
+                                                       class="w-16 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-saldo">
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-black text-amber-400 text-sm cell-vendido">
+                                            <td class="px-4 py-2.5 text-center font-black font-mono text-[#F5B81C] text-base cell-vendido">
                                                 {{ $sale->vendido }}
                                             </td>
-                                            <td class="px-2 py-1.5 text-right">
+                                            <td class="px-4 py-2 text-right">
                                                 <input type="number" step="0.5" name="sales[{{ $sale->id }}][unit_price]" value="{{ $sale->unit_price }}" min="0"
-                                                       class="glass-input w-24 text-right rounded-lg px-2 py-1 text-xs font-mono font-bold text-zinc-200 input-price">
+                                                       class="w-20 text-right rounded-lg px-2 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-price">
                                             </td>
-                                            <td class="px-4 py-2.5 text-right font-black text-white cell-subtotal">
+                                            <td class="px-4 py-2.5 text-right font-bold font-mono text-white cell-subtotal">
                                                 Bs. {{ number_format($sale->subtotal, 2) }}
                                             </td>
                                         </tr>
@@ -817,12 +819,12 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
-                                <tfoot class="bg-white/[0.03] border-t border-white/10 font-bold text-xs text-white">
+                                <tfoot class="bg-zinc-950 border-t theme-border font-bold text-xs text-white">
                                     <tr>
-                                        <td colspan="8" class="px-4 py-3 text-right uppercase tracking-wider font-mono">Subtotal Combos:</td>
-                                        <td class="px-4 py-3 text-center font-mono font-black text-amber-400 text-sm" id="tfoot-liquor-vendido">{{ $totalLiquorCombos }}</td>
+                                        <td colspan="8" class="px-4 py-3 text-right uppercase tracking-wider font-sans">Subtotal Combos:</td>
+                                        <td class="px-4 py-3 text-center font-mono font-black text-[#F5B81C] text-base" id="tfoot-liquor-vendido">{{ $totalLiquorCombos }}</td>
                                         <td></td>
-                                        <td class="px-4 py-3 text-right font-mono font-black text-amber-400 text-sm" id="tfoot-liquor-subtotal">Bs. {{ number_format($subtotalLiquors, 2) }}</td>
+                                        <td class="px-4 py-3 text-right font-mono font-black text-[#F5B81C] text-sm" id="tfoot-liquor-subtotal">Bs. {{ number_format($subtotalLiquors, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -830,75 +832,75 @@
                     </div>
 
                     <!-- 2. TABLA DE MIXERS / SODAS (EXTRAS) -->
-                    <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
-                        <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                    <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                        <div class="px-5 py-3.5 bg-zinc-950 border-b theme-border flex items-center justify-between">
                             <div>
-                                <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">2. Mixers, Sodas & Aguas (Control de Extras)</h3>
-                                <p class="text-[11px] text-zinc-400">
-                                    Las sodas consumidas que pertenecen a los combos se descuentan automáticamente (incluyendo variantes especiales). Solo las adicionales (extras) se cobran.
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">2. Mixers, Sodas & Aguas (Control de Extras)</h3>
+                                <p class="text-[11px] text-zinc-400 mt-0.5">
+                                    Las sodas de combos se descuentan solas. Solo las botellas adicionales (extras) se cobran.
                                 </p>
                             </div>
-                            <span class="text-xs font-mono font-bold text-amber-400" id="badge-mixer-subtotal">
+                            <span class="text-xs font-mono font-bold text-[#F5B81C]" id="badge-mixer-subtotal">
                                 Subtotal Extras: Bs. {{ number_format($subtotalMixers, 2) }}
                             </span>
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left" id="table-mixers">
-                                <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider">
+                            <table class="w-full text-xs text-left border-collapse" id="table-mixers">
+                                <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                     <tr>
-                                        <th class="px-4 py-3 w-10 text-center">N°</th>
+                                        <th class="px-3 py-3 w-8 text-center">N°</th>
                                         <th class="px-4 py-3">Mixer / Soda</th>
-                                        <th class="px-2 py-3 w-20 text-center">Paquete</th>
-                                        <th class="px-2 py-3 w-20 text-center">Unidad</th>
-                                        <th class="px-4 py-3 w-20 text-center">Total Inicial</th>
-                                        <th class="px-2 py-3 w-20 text-center">Saldo</th>
+                                        <th class="px-2 py-3 w-16 text-center">Cajas</th>
+                                        <th class="px-2 py-3 w-16 text-center">Sueltas</th>
+                                        <th class="px-3 py-3 w-20 text-center">Total Inicial</th>
+                                        <th class="px-3 py-3 w-24 text-center">Saldo al Cierre</th>
                                         <th class="px-4 py-3 w-20 text-center">Consumidas</th>
-                                        <th class="px-4 py-3 w-28 text-center text-zinc-400">En Combos</th>
-                                        <th class="px-4 py-3 w-24 text-center font-bold text-amber-400">Extras</th>
+                                        <th class="px-4 py-3 w-24 text-center text-zinc-400">En Combos</th>
+                                        <th class="px-4 py-3 w-20 text-center font-bold text-[#F5B81C]">Extras</th>
                                         <th class="px-4 py-3 w-28 text-right">Precio Extra</th>
                                         <th class="px-4 py-3 w-32 text-right">Total Extras (Bs.)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-white/5 font-mono">
+                                <tbody class="divide-y theme-border font-sans">
                                     @forelse($mixerSales as $index => $sale)
-                                        <tr class="hover:bg-white/[0.02] mixer-row" 
+                                        <tr class="hover:bg-zinc-900/30 transition-colors mixer-row" 
                                             data-row-id="{{ $sale->id }}" 
                                             data-units-per-pkg="{{ $sale->product->units_per_package ?? 1 }}"
                                             data-product-id="{{ $sale->product_id }}">
-                                            <td class="px-4 py-2.5 text-center text-zinc-500 font-bold">{{ $index + 1 }}</td>
-                                            <td class="px-4 py-2.5 font-bold text-white font-sans">
+                                            <td class="px-3 py-2.5 text-center text-zinc-500 font-mono">{{ $index + 1 }}</td>
+                                            <td class="px-4 py-2.5 font-bold text-white">
                                                 {{ $sale->product->name }}
                                             </td>
-                                            <td class="px-2 py-1.5 text-center">
+                                            <td class="px-2 py-2 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][packages]" value="{{ $sale->packages }}" min="0"
-                                                       class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white input-packages">
+                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-packages">
                                             </td>
-                                            <td class="px-2 py-1.5 text-center">
+                                            <td class="px-2 py-2 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][units]" value="{{ $sale->units }}" min="0"
-                                                       class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-white input-units">
+                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-units">
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-bold text-zinc-200 cell-total-initial">
+                                            <td class="px-3 py-2.5 text-center font-bold font-mono text-zinc-300 cell-total-initial">
                                                 {{ $sale->total_initial }}
                                             </td>
-                                            <td class="px-2 py-1.5 text-center">
+                                            <td class="px-3 py-2 text-center">
                                                 <input type="number" name="sales[{{ $sale->id }}][saldo]" value="{{ $sale->saldo }}" min="0"
-                                                       class="glass-input w-16 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300 input-saldo">
+                                                       class="w-16 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-saldo">
                                             </td>
-                                            <td class="px-4 py-2.5 text-center text-zinc-200 cell-consumido">
+                                            <td class="px-4 py-2.5 text-center font-mono text-zinc-300 cell-consumido">
                                                 {{ $sale->vendido }}
                                             </td>
-                                            <td class="px-4 py-2.5 text-center text-zinc-400 cell-included">
+                                            <td class="px-4 py-2.5 text-center font-mono text-zinc-400 cell-included">
                                                 {{ $sale->included_in_combos ?? 0 }}
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-black text-amber-400 cell-extras">
+                                            <td class="px-4 py-2.5 text-center font-black font-mono text-[#F5B81C] text-base cell-extras">
                                                 {{ $sale->extras ?? 0 }}
                                             </td>
-                                            <td class="px-2 py-1.5 text-right">
+                                            <td class="px-4 py-2 text-right">
                                                 <input type="number" step="0.5" name="sales[{{ $sale->id }}][unit_price]" value="{{ $sale->unit_price }}" min="0"
-                                                       class="glass-input w-24 text-right rounded-lg px-2 py-1 text-xs font-mono font-bold text-zinc-200 input-price">
+                                                       class="w-20 text-right rounded-lg px-2 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-price">
                                             </td>
-                                            <td class="px-4 py-2.5 text-right font-black text-white cell-subtotal">
+                                            <td class="px-4 py-2.5 text-right font-bold font-mono text-white cell-subtotal">
                                                 Bs. {{ number_format($sale->subtotal, 2) }}
                                             </td>
                                         </tr>
@@ -908,14 +910,14 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
-                                <tfoot class="bg-white/[0.03] border-t border-white/10 font-bold text-xs text-white">
+                                <tfoot class="bg-zinc-950 border-t theme-border font-bold text-xs text-white">
                                     <tr>
-                                        <td colspan="6" class="px-4 py-3 text-right uppercase tracking-wider font-mono">Totales Mixers:</td>
+                                        <td colspan="6" class="px-4 py-3 text-right uppercase tracking-wider font-sans">Totales Mixers:</td>
                                         <td class="px-4 py-3 text-center font-mono font-bold" id="tfoot-mixer-consumido">{{ $totalMixerConsumed }}</td>
                                         <td></td>
-                                        <td class="px-4 py-3 text-center font-mono font-black text-amber-400" id="tfoot-mixer-extras">{{ $totalMixerExtras }}</td>
+                                        <td class="px-4 py-3 text-center font-mono font-black text-[#F5B81C] text-base" id="tfoot-mixer-extras">{{ $totalMixerExtras }}</td>
                                         <td></td>
-                                        <td class="px-4 py-3 text-right font-mono font-black text-amber-400" id="tfoot-mixer-subtotal">Bs. {{ number_format($subtotalMixers, 2) }}</td>
+                                        <td class="px-4 py-3 text-right font-mono font-black text-[#F5B81C] text-sm" id="tfoot-mixer-subtotal">Bs. {{ number_format($subtotalMixers, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -923,68 +925,55 @@
                     </div>
 
                     <!-- ======================================================== -->
-                    <!-- DETALLE DE COBROS DIGITALES (QR Y TARJETAS POS DE ESTA BARRA) -->
+                    <!-- DETALLE DE COBROS DIGITALES (QR Y TARJETAS POS) -->
                     <!-- ======================================================== -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         
-                        <!-- 1. TABLA COBROS QR DE ESTA BARRA -->
-                        <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                            <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-sm shadow-blue-400/50"></span>
-                                    <div>
-                                        <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
-                                            Cobros QR en {{ $selectedBar }}
-                                        </h3>
-                                        <p class="text-[11px] text-zinc-400">
-                                            Transferencias YASTA & YAPE registradas
-                                        </p>
-                                    </div>
+                        <!-- 1. TABLA COBROS QR EN ESTA BARRA -->
+                        <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                            <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
+                                        Cobros QR en {{ $selectedBar }}
+                                    </h3>
+                                    <p class="text-[11px] text-zinc-400">Transferencias YASTA & YAPE</p>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-mono font-black text-blue-400">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-xs font-mono font-bold text-blue-400">
                                         Bs. {{ number_format($barTotalQr, 2) }}
                                     </span>
                                     <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                                       class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-blue-400/30 text-blue-300 hover:bg-blue-500/20 transition-all">
-                                        + Pagos QR &rarr;
+                                       class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-blue-400 hover:text-white transition-all">
+                                        Ver QR &rarr;
                                     </a>
                                 </div>
                             </div>
 
-                            <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                                <table class="w-full text-xs text-left">
-                                    <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                            <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                                <table class="w-full text-xs text-left border-collapse">
+                                    <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
                                         <tr>
-                                            <th class="px-4 py-2.5">Cobrante / Mesero</th>
+                                            <th class="px-4 py-2.5">Cobrante</th>
                                             <th class="px-3 py-2.5 text-center">App</th>
                                             <th class="px-4 py-2.5">Ref / Comprobante</th>
                                             <th class="px-4 py-2.5 text-right">Monto (Bs.)</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-white/5 font-mono">
+                                    <tbody class="divide-y theme-border font-sans">
                                         @forelse($barQrPayments as $qr)
-                                            <tr class="hover:bg-white/[0.02]">
-                                                <td class="px-4 py-2.5 font-sans font-medium text-zinc-200">
-                                                    {{ $qr->operator_name ?? '—' }}
-                                                </td>
-                                                <td class="px-3 py-2.5 text-center">
-                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $qr->bank_app === 'YASTA' ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30' : 'bg-emerald-400/10 text-emerald-300 border border-emerald-400/30' }}">
+                                            <tr class="hover:bg-zinc-900/30">
+                                                <td class="px-4 py-2 text-zinc-200 font-medium">{{ $qr->operator_name ?? '—' }}</td>
+                                                <td class="px-3 py-2 text-center">
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-zinc-300">
                                                         {{ $qr->bank_app }}
                                                     </span>
                                                 </td>
-                                                <td class="px-4 py-2.5 text-zinc-400 text-[11px] truncate max-w-[120px]">
-                                                    {{ $qr->reference_code ?? '—' }}
-                                                </td>
-                                                <td class="px-4 py-2.5 text-right font-black text-blue-400">
-                                                    Bs. {{ number_format($qr->amount, 2) }}
-                                                </td>
+                                                <td class="px-4 py-2 text-zinc-400 text-[11px] truncate max-w-[120px] font-mono">{{ $qr->reference_code ?? '—' }}</td>
+                                                <td class="px-4 py-2 text-right font-bold font-mono text-blue-400">Bs. {{ number_format($qr->amount, 2) }}</td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
-                                                    No hay cobros QR registrados para esta barra en esta jornada.
-                                                </td>
+                                                <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay cobros QR registrados para esta barra.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -992,62 +981,47 @@
                             </div>
                         </div>
 
-                        <!-- 2. TABLA TARJETAS / POS DE ESTA BARRA -->
-                        <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                            <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-sm shadow-purple-400/50"></span>
-                                    <div>
-                                        <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
-                                            Pagos con Tarjeta (POS) en {{ $selectedBar }}
-                                        </h3>
-                                        <p class="text-[11px] text-zinc-400">
-                                            Registrados en Facturas y POS
-                                        </p>
-                                    </div>
+                        <!-- 2. TABLA TARJETAS POS EN ESTA BARRA -->
+                        <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                            <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
+                                        Pagos con Tarjeta (POS) en {{ $selectedBar }}
+                                    </h3>
+                                    <p class="text-[11px] text-zinc-400">Facturas y cobro con tarjeta</p>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-mono font-black text-purple-400">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-xs font-mono font-bold text-purple-400">
                                         Bs. {{ number_format($barTotalCard, 2) }}
                                     </span>
                                     <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                                       class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-purple-400/30 text-purple-300 hover:bg-purple-500/20 transition-all">
-                                        + Facturas & POS &rarr;
+                                       class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-purple-400 hover:text-white transition-all">
+                                        Ver POS &rarr;
                                     </a>
                                 </div>
                             </div>
 
-                            <div class="overflow-x-auto max-h-64 overflow-y-auto">
-                                <table class="w-full text-xs text-left">
-                                    <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                            <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                                <table class="w-full text-xs text-left border-collapse">
+                                    <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
                                         <tr>
                                             <th class="px-4 py-2.5 text-center"># Factura</th>
-                                            <th class="px-4 py-2.5">Detalle / Notas</th>
+                                            <th class="px-4 py-2.5">Detalle</th>
                                             <th class="px-4 py-2.5 text-right">Comisión</th>
                                             <th class="px-4 py-2.5 text-right">Monto Bruto</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-white/5 font-mono">
+                                    <tbody class="divide-y theme-border font-sans">
                                         @forelse($barCardInvoices as $inv)
-                                            <tr class="hover:bg-white/[0.02]">
-                                                <td class="px-4 py-2.5 text-center text-zinc-400 font-bold">
-                                                    #{{ $inv->correlative_num }}
-                                                </td>
-                                                <td class="px-4 py-2.5 font-sans text-zinc-300 text-[11px] truncate max-w-[140px]">
-                                                    {{ $inv->notes ?? 'Pago Tarjeta POS' }}
-                                                </td>
-                                                <td class="px-4 py-2.5 text-right text-zinc-500 text-[11px]">
-                                                    - Bs. {{ number_format($inv->commission_amount, 2) }}
-                                                </td>
-                                                <td class="px-4 py-2.5 text-right font-black text-purple-400">
-                                                    Bs. {{ number_format($inv->amount, 2) }}
-                                                </td>
+                                            <tr class="hover:bg-zinc-900/30">
+                                                <td class="px-4 py-2 text-center text-zinc-400 font-mono font-bold">#{{ $inv->correlative_num }}</td>
+                                                <td class="px-4 py-2 text-zinc-300 text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? 'Pago Tarjeta POS' }}</td>
+                                                <td class="px-4 py-2 text-right text-zinc-500 text-[11px] font-mono">- Bs. {{ number_format($inv->commission_amount, 2) }}</td>
+                                                <td class="px-4 py-2 text-right font-bold font-mono text-purple-400">Bs. {{ number_format($inv->amount, 2) }}</td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
-                                                    No hay pagos con tarjeta registrados para esta barra en esta jornada.
-                                                </td>
+                                                <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay pagos con tarjeta registrados para esta barra.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -1057,17 +1031,38 @@
 
                     </div>
 
-                    <!-- Barra de Acciones y Guardado en Liquid Glass -->
-                    <div class="p-6 glass-panel-elevated rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-amber-400/30">
-                        <div class="text-sm font-mono text-zinc-300">
-                            <span class="font-bold font-sans">Total Bebidas Liquidado en {{ $selectedBar }}:</span>
-                            <span class="text-2xl font-black text-amber-400 ml-2" id="footer-grand-total">
-                                Bs. {{ number_format($grandTotalBar, 2) }}
-                            </span>
+                    <!-- Pie de Formulario Estático con Guardado (Sin Toasts) -->
+                    <div class="p-4 rounded-2xl theme-card border theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-xs text-zinc-400 block font-normal">Total Bebidas Liquidado en {{ $selectedBar }}:</span>
+                                <span class="text-lg font-bold font-mono text-white" id="footer-grand-total">
+                                    Bs. {{ number_format($grandTotalBar, 2) }}
+                                </span>
+                            </div>
                         </div>
-                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 text-xs font-black rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-amber-500/25 cursor-pointer uppercase tracking-wider">
-                            Guardar Cambios de {{ $selectedBar }}
-                        </button>
+
+                        @if($session->isOpen())
+                            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-2 dilemo-btn cursor-pointer shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span>Guardar Cambios de {{ $selectedBar }}</span>
+                            </button>
+                        @else
+                            <div class="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-semibold flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                                <span>Noche cerrada (solo lectura)</span>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -1124,10 +1119,10 @@
                 const remEl = document.getElementById('modal-remaining-default');
                 remEl.textContent = remaining;
                 if (specialSum > totalCombos) {
-                    remEl.className = 'font-bold text-rose-400 text-sm';
+                    remEl.className = 'font-bold text-rose-400 text-sm font-mono';
                     remEl.textContent = `${remaining} (¡Excede los combos!)`;
                 } else {
-                    remEl.className = 'font-bold text-amber-400 text-sm';
+                    remEl.className = 'font-bold text-[#F5B81C] text-sm font-mono';
                 }
             }
 
@@ -1169,10 +1164,10 @@
 
                 if (badgeParts.length > 0) {
                     badgeEl.textContent = badgeParts.join(', ');
-                    btnEl.className = 'px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer border bg-amber-400/20 text-amber-300 border-amber-400/40 shadow-sm';
+                    btnEl.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50';
                 } else {
                     badgeEl.textContent = '+ Especial';
-                    btnEl.className = 'px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer border bg-white/5 hover:bg-white/10 text-zinc-400 border-white/10 hover:text-white';
+                    btnEl.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white';
                 }
 
                 closeSpecialModal();
@@ -1302,7 +1297,7 @@
                     if (tfootMixerSubtotal) tfootMixerSubtotal.textContent = 'Bs. ' + subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                     const headerGrandTotal = document.getElementById('header-grand-total');
-                    if (headerGrandTotal) headerGrandTotal.innerHTML = `<span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    if (headerGrandTotal) headerGrandTotal.innerHTML = `<span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
                     const headerBarCash = document.getElementById('header-bar-cash');
                     if (headerBarCash) headerBarCash.textContent = cashRemaining.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

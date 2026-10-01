@@ -43,7 +43,7 @@ class StaffSeeder extends Seeder
             [
                 'name' => 'ALEX(S)',
                 'role' => 'Seguridad',
-                'assigned_bar' => 'Seguridad / Puerta',
+                'assigned_bar' => 'Seguridad',
                 'default_pay' => 120.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -164,8 +164,8 @@ class StaffSeeder extends Seeder
             // Mozos, Meseras y Personal de Atención (Fijos)
             [
                 'name' => 'MAURI',
-                'role' => 'Staff / Mesero',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Mesero',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -176,8 +176,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'DAYSI',
-                'role' => 'Staff / Limpieza',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Limpieza',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -188,8 +188,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'CLAUDIA',
-                'role' => 'Staff / Limpieza',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Limpieza',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -200,8 +200,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'DANIELA',
-                'role' => 'Staff / Limpieza',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Limpieza',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -212,8 +212,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'LILIANA',
-                'role' => 'Staff / Limpieza',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Limpieza',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -224,8 +224,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'CÉSAR',
-                'role' => 'Staff / Mesero',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Mesero',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -236,8 +236,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'ANAHI',
-                'role' => 'Staff / Limpieza',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Limpieza',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -248,8 +248,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'PEPE',
-                'role' => 'Staff / Mesero',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Mesero',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -260,8 +260,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'MAURICIO',
-                'role' => 'Staff / Mesero',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Mesero',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -272,8 +272,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'ANDRÉ',
-                'role' => 'Staff / Mesero',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Mesero',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -284,8 +284,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'JOSÉ',
-                'role' => 'Staff / Mesero',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Mesero',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -296,8 +296,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'KAREN',
-                'role' => 'Staff / Limpieza',
-                'assigned_bar' => 'Pista / Mozos',
+                'role' => 'Limpieza',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => true,
                 'works_saturday' => true,
@@ -310,8 +310,8 @@ class StaffSeeder extends Seeder
             // Refuerzos Exclusivos de Sábado (Noche Fuerte)
             [
                 'name' => 'ALAM',
-                'role' => 'Staff / Refuerzo Sábado',
-                'assigned_bar' => 'Pista Sábado',
+                'role' => 'Refuerzo Sábado',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -322,8 +322,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'ALEJANDRO',
-                'role' => 'Staff / Refuerzo Sábado',
-                'assigned_bar' => 'Pista Sábado',
+                'role' => 'Refuerzo Sábado',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -334,8 +334,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'JHERSON',
-                'role' => 'Staff / Refuerzo Sábado',
-                'assigned_bar' => 'Pista Sábado',
+                'role' => 'Refuerzo Sábado',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -346,8 +346,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'JHOSELIN',
-                'role' => 'Staff / Refuerzo Sábado',
-                'assigned_bar' => 'Pista Sábado',
+                'role' => 'Refuerzo Sábado',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -358,8 +358,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'SAIDA',
-                'role' => 'Staff / Refuerzo Sábado',
-                'assigned_bar' => 'Pista Sábado',
+                'role' => 'Refuerzo Sábado',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 100.00,
                 'works_friday' => false,
                 'works_saturday' => true,
@@ -372,8 +372,8 @@ class StaffSeeder extends Seeder
             // Refuerzos Domingo
             [
                 'name' => 'JULIETA',
-                'role' => 'Staff / Domingo',
-                'assigned_bar' => 'Pista Domingo',
+                'role' => 'Refuerzo Domingo',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 110.00,
                 'works_friday' => false,
                 'works_saturday' => false,
@@ -384,8 +384,8 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'ZAIDA',
-                'role' => 'Staff / Domingo',
-                'assigned_bar' => 'Pista Domingo',
+                'role' => 'Refuerzo Domingo',
+                'assigned_bar' => 'Meseros',
                 'default_pay' => 110.00,
                 'works_friday' => false,
                 'works_saturday' => false,

@@ -130,6 +130,20 @@ class PaymentHistoryController extends Controller
         }
 
         $workerName = $attendance->staff->name ?? 'Personal';
+
+        if ($request->wantsJson() || $request->ajax()) {
+            $session = $attendance->nightSession;
+            $unpaid = $session ? (float)$session->staffAttendances()->where('is_paid', false)->sum('pay_amount') : 0;
+            $paid = $session ? (float)$session->staffAttendances()->where('is_paid', true)->sum('pay_amount') : 0;
+            return response()->json([
+                'success' => true,
+                'workerName' => $workerName,
+                'amount' => (float)$attendance->pay_amount,
+                'totalDeuda' => $unpaid,
+                'totalPagado' => $paid,
+            ]);
+        }
+
         return back()->with('success', "Se registró el pago de Bs. " . number_format($attendance->pay_amount, 2) . " para {$workerName}. Deuda saldada.");
     }
 }
