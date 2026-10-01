@@ -1,0 +1,8860 @@
+{
+  "2026-09-04": {
+    "cierre": {
+      "ariel_tarjeta": 0.0,
+      "ariel_qr": 0.0,
+      "ariel_efectivo": 0.0,
+      "ariel_total": 0.0,
+      "tienda_tarjeta": 0.0,
+      "tienda_qr": 0.0,
+      "tienda_efectivo": 0.0,
+      "tienda_total": 0.0,
+      "kelly_tarjeta": 2445.0,
+      "kelly_qr": 4642.0,
+      "kelly_personal": 1300.0,
+      "kelly_efectivo": 550.0,
+      "kelly_total": 8937.0,
+      "total_efectivo": 550.0
+    },
+    "facturas": [
+      {
+        "num": 1,
+        "card": 250.0,
+        "cash": 0
+      },
+      {
+        "num": 2,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 3,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 4,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 5,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 6,
+        "card": 280.0,
+        "cash": 0
+      },
+      {
+        "num": 7,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 8,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 9,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 10,
+        "card": 150.0,
+        "cash": 0
+      },
+      {
+        "num": 11,
+        "card": 75.0,
+        "cash": 0
+      },
+      {
+        "num": 12,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 13,
+        "card": 420.0,
+        "cash": 0
+      },
+      {
+        "num": 14,
+        "card": 150.0,
+        "cash": 0
+      },
+      {
+        "num": 15,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 16,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 17,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 18,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 19,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 20,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 21,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 22,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 23,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 24,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 25,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 26,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 27,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 28,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 29,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 30,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 31,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 32,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 33,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 34,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 35,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 36,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 37,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 38,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 39,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 40,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 41,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 42,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 43,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 44,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 45,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 46,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 47,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 48,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 49,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 50,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 51,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 52,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 53,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 54,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 55,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 56,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 57,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 58,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 59,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 60,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 61,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 62,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 63,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 64,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 65,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 66,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 67,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 68,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 69,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 70,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 71,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 72,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 73,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 74,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 75,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 76,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 77,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 78,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 79,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 80,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 81,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 82,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 83,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 84,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 85,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 86,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 87,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 88,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 89,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 90,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 91,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 92,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 93,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 94,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 95,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 96,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 97,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 98,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 99,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 100,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 101,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 102,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 103,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 104,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 105,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 106,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 107,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 108,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 109,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 110,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 111,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 112,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 113,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 114,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 115,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 116,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 117,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 118,
+        "card": 2445.0,
+        "cash": 0
+      }
+    ],
+    "total_card_facturas": 4890.0,
+    "total_cash_facturas": 0,
+    "personal": [
+      {
+        "name": "ALEXI(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "ARIEL(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RODRIGO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "JAZ(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "MAYLEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "KELLY",
+        "pay": 100.0
+      },
+      {
+        "name": "MAURI",
+        "pay": 100.0
+      },
+      {
+        "name": "ARIEL",
+        "pay": 100.0
+      },
+      {
+        "name": "PEPE",
+        "pay": 100.0
+      },
+      {
+        "name": "CLAUDIA",
+        "pay": 100.0
+      },
+      {
+        "name": "DAYSI",
+        "pay": 100.0
+      },
+      {
+        "name": "LILIANA",
+        "pay": 100.0
+      }
+    ],
+    "total_personal_pay": 1300.0,
+    "qrs": [
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 172.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 70.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 70.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 200.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 420.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 420.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 95.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 160.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 140.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 570.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 4642.0,
+        "cobrante": ""
+      }
+    ],
+    "total_qr": 11034.0,
+    "total_qr_kelly": 10914.0,
+    "total_qr_tienda": 0,
+    "total_qr_subte": 120.0
+  },
+  "2026-09-05": {
+    "cierre": {
+      "ariel_tarjeta": 60.0,
+      "ariel_qr": 4198.0,
+      "ariel_efectivo": 387.0,
+      "ariel_total": 4645.0,
+      "tienda_tarjeta": 700.0,
+      "tienda_qr": 11009.0,
+      "tienda_efectivo": 2286.0,
+      "tienda_total": 13995.0,
+      "kelly_tarjeta": 2145.0,
+      "kelly_qr": 16475.0,
+      "kelly_personal": 1050.0,
+      "kelly_efectivo": 0.0,
+      "kelly_total": 19560.0,
+      "total_efectivo": 1553.0
+    },
+    "facturas": [
+      {
+        "num": 1,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 2,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 3,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 4,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 5,
+        "card": 250.0,
+        "cash": 0
+      },
+      {
+        "num": 6,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 7,
+        "card": 6.0,
+        "cash": 0
+      },
+      {
+        "num": 8,
+        "card": 50.0,
+        "cash": 0
+      },
+      {
+        "num": 9,
+        "card": 404.0,
+        "cash": 0
+      },
+      {
+        "num": 10,
+        "card": 90.0,
+        "cash": 0
+      },
+      {
+        "num": 11,
+        "card": 40.0,
+        "cash": 0
+      },
+      {
+        "num": 12,
+        "card": 50.0,
+        "cash": 0
+      },
+      {
+        "num": 13,
+        "card": 50.0,
+        "cash": 0
+      },
+      {
+        "num": 14,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 15,
+        "card": 50.0,
+        "cash": 0
+      },
+      {
+        "num": 16,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 17,
+        "card": 400.0,
+        "cash": 0
+      },
+      {
+        "num": 18,
+        "card": 10.0,
+        "cash": 0
+      },
+      {
+        "num": 19,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 20,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 21,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 22,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 23,
+        "card": 50.0,
+        "cash": 0
+      },
+      {
+        "num": 24,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 25,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 26,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 27,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 28,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 29,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 30,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 31,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 32,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 33,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 34,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 35,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 36,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 37,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 38,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 39,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 40,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 41,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 42,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 43,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 44,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 45,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 46,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 47,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 48,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 49,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 50,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 51,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 52,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 53,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 54,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 55,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 56,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 57,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 58,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 59,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 60,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 61,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 62,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 63,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 64,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 65,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 66,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 67,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 68,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 69,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 70,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 71,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 72,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 73,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 74,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 75,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 76,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 77,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 78,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 79,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 80,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 81,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 82,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 83,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 84,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 85,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 86,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 87,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 88,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 89,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 90,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 91,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 92,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 93,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 94,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 95,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 96,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 97,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 98,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 99,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 100,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 101,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 102,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 103,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 104,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 105,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 106,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 107,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 108,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 109,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 110,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 111,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 112,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 113,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 114,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 115,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 116,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 117,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 118,
+        "card": 2905.0,
+        "cash": 0
+      }
+    ],
+    "total_card_facturas": 5810.0,
+    "total_cash_facturas": 0,
+    "personal": [
+      {
+        "name": "ALEX(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "MAYLEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RICO(S)",
+        "pay": 130.0
+      },
+      {
+        "name": "ENMANUEL(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RODRIGO(S)",
+        "pay": 130.0
+      },
+      {
+        "name": "LUIS(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "KELLY",
+        "pay": 110.0
+      },
+      {
+        "name": "MAURI",
+        "pay": 110.0
+      },
+      {
+        "name": "ARIEL",
+        "pay": 110.0
+      },
+      {
+        "name": "PEPE",
+        "pay": 110.0
+      },
+      {
+        "name": "JOSÉ",
+        "pay": 110.0
+      },
+      {
+        "name": "ANDRÈ",
+        "pay": 110.0
+      },
+      {
+        "name": "ANAHI",
+        "pay": 120.0
+      },
+      {
+        "name": "DAYSI",
+        "pay": 110.0
+      },
+      {
+        "name": "CLAUDIA",
+        "pay": 110.0
+      },
+      {
+        "name": "DANIELA",
+        "pay": 110.0
+      },
+      {
+        "name": "LILIANA",
+        "pay": 110.0
+      },
+      {
+        "name": "ALEJANDRO",
+        "pay": 100.0
+      }
+    ],
+    "total_personal_pay": 2060.0,
+    "qrs": [
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 550.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 49.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 264.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 500.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 27.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 930.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 180.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 180.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 390.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 110.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 380.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 600.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 200.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 38.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 760.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 410.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 399.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 41.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 49.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 940.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 260.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 160.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 70.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 75.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 350.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 80.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 570.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 54.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 6.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "aixa"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 5.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 350.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 320.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 15.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 420.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 16475.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 11009.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 4198.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 45.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 5.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 270.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 420.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 320.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      }
+    ],
+    "total_qr": 65159.0,
+    "total_qr_kelly": 34745.0,
+    "total_qr_tienda": 22018.0,
+    "total_qr_subte": 8396.0
+  },
+  "2026-09-06": {
+    "cierre": {
+      "ariel_tarjeta": 0.0,
+      "ariel_qr": 390.0,
+      "ariel_efectivo": 175.0,
+      "ariel_total": 565.0,
+      "tienda_tarjeta": 0.0,
+      "tienda_qr": 0.0,
+      "tienda_efectivo": 0.0,
+      "tienda_total": 0.0,
+      "kelly_tarjeta": 2305.0,
+      "kelly_qr": 9123.0,
+      "kelly_personal": 1600.0,
+      "kelly_efectivo": 2300.0,
+      "kelly_total": 15628.0,
+      "total_efectivo": 2475.0
+    },
+    "facturas": [
+      {
+        "num": 1,
+        "card": 60.0,
+        "cash": 690.0
+      },
+      {
+        "num": 2,
+        "card": 230.0,
+        "cash": 500.0
+      },
+      {
+        "num": 3,
+        "card": 25.0,
+        "cash": 250.0
+      },
+      {
+        "num": 4,
+        "card": 230.0,
+        "cash": 480.0
+      },
+      {
+        "num": 5,
+        "card": 50.0,
+        "cash": 230.0
+      },
+      {
+        "num": 6,
+        "card": 50.0,
+        "cash": 230.0
+      },
+      {
+        "num": 7,
+        "card": 110.0,
+        "cash": 230.0
+      },
+      {
+        "num": 8,
+        "card": 120.0,
+        "cash": 460.0
+      },
+      {
+        "num": 9,
+        "card": 25.0,
+        "cash": 250.0
+      },
+      {
+        "num": 10,
+        "card": 60.0,
+        "cash": 500.0
+      },
+      {
+        "num": 11,
+        "card": 300.0,
+        "cash": 690.0
+      },
+      {
+        "num": 12,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 13,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 14,
+        "card": 250.0,
+        "cash": 0
+      },
+      {
+        "num": 15,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 16,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 17,
+        "card": 300.0,
+        "cash": 0
+      },
+      {
+        "num": 18,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 19,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 20,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 21,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 22,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 23,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 24,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 25,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 26,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 27,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 28,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 29,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 30,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 31,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 32,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 33,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 34,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 35,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 36,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 37,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 38,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 39,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 40,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 41,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 42,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 43,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 44,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 45,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 46,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 47,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 48,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 49,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 50,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 51,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 52,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 53,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 54,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 55,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 56,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 57,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 58,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 59,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 60,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 61,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 62,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 63,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 64,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 65,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 66,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 67,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 68,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 69,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 70,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 71,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 72,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 73,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 74,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 75,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 76,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 77,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 78,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 79,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 80,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 81,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 82,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 83,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 84,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 85,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 86,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 87,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 88,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 89,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 90,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 91,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 92,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 93,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 94,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 95,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 96,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 97,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 98,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 99,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 100,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 101,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 102,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 103,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 104,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 105,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 106,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 107,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 108,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 109,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 110,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 111,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 112,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 113,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 114,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 115,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 116,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 117,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 118,
+        "card": 2305.0,
+        "cash": 4510.0
+      },
+      {
+        "num": 122,
+        "card": 12165.0,
+        "cash": 0
+      }
+    ],
+    "total_card_facturas": 16775.0,
+    "total_cash_facturas": 9020.0,
+    "personal": [
+      {
+        "name": "ALEX(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "ARIEL(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "LUIS(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "MAYLEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RICO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RODRIGO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "KELLY",
+        "pay": 110.0
+      },
+      {
+        "name": "MAURI",
+        "pay": 110.0
+      },
+      {
+        "name": "ARIEL",
+        "pay": 110.0
+      },
+      {
+        "name": "PEPE",
+        "pay": 110.0
+      },
+      {
+        "name": "ANDRÈ",
+        "pay": 110.0
+      },
+      {
+        "name": "CLAUDIA",
+        "pay": 110.0
+      },
+      {
+        "name": "DANIELA",
+        "pay": 110.0
+      },
+      {
+        "name": "DAYSI",
+        "pay": 110.0
+      }
+    ],
+    "total_personal_pay": 1600.0,
+    "qrs": [
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 80.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ariel"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 490.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 350.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 255.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 45.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 55.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 198.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 6.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 9223.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 390.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 213.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 37.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "?"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 160.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 49.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 45.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "deuda"
+      }
+    ],
+    "total_qr": 20666.0,
+    "total_qr_kelly": 19846.0,
+    "total_qr_tienda": 40.0,
+    "total_qr_subte": 780.0
+  },
+  "2026-09-11": {
+    "cierre": {
+      "ariel_tarjeta": 0.0,
+      "ariel_qr": 985.0,
+      "ariel_efectivo": 830.0,
+      "ariel_total": 1815.0,
+      "tienda_tarjeta": 520.0,
+      "tienda_qr": 3215.0,
+      "tienda_efectivo": 1270.0,
+      "tienda_total": 5005.0,
+      "kelly_tarjeta": 1309.0,
+      "kelly_qr": 14489.0,
+      "kelly_personal": 1300.0,
+      "kelly_efectivo": 5434.0,
+      "kelly_total": 22532.0,
+      "total_efectivo": 7534.0
+    },
+    "facturas": [
+      {
+        "num": 1,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 2,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 3,
+        "card": 280.0,
+        "cash": 0
+      },
+      {
+        "num": 4,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 5,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 6,
+        "card": 4.0,
+        "cash": 0
+      },
+      {
+        "num": 7,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 8,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 9,
+        "card": 70.0,
+        "cash": 0
+      },
+      {
+        "num": 10,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 11,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 12,
+        "card": 280.0,
+        "cash": 0
+      },
+      {
+        "num": 13,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 14,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 15,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 16,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 17,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 18,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 19,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 20,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 21,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 22,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 23,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 24,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 25,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 26,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 27,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 28,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 29,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 30,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 31,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 32,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 33,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 34,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 35,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 36,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 37,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 38,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 39,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 40,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 41,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 42,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 43,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 44,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 45,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 46,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 47,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 48,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 49,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 50,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 51,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 52,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 53,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 54,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 55,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 56,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 57,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 58,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 59,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 60,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 61,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 62,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 63,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 64,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 65,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 66,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 67,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 68,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 69,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 70,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 71,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 72,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 73,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 74,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 75,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 76,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 77,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 78,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 79,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 80,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 81,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 82,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 83,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 84,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 85,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 86,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 87,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 88,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 89,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 90,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 91,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 92,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 93,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 94,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 95,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 96,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 97,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 98,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 99,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 100,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 101,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 102,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 103,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 104,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 105,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 106,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 107,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 108,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 109,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 110,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 111,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 112,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 113,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 114,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 115,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 116,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 117,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 118,
+        "card": 1829.0,
+        "cash": 0
+      }
+    ],
+    "total_card_facturas": 3658.0,
+    "total_cash_facturas": 0,
+    "personal": [
+      {
+        "name": "ALEXI(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "ARIEL(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "LUIS(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "JAZ(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "MAYLEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "KELLY",
+        "pay": 100.0
+      },
+      {
+        "name": "MAURI",
+        "pay": 100.0
+      },
+      {
+        "name": "ARIEL",
+        "pay": 100.0
+      },
+      {
+        "name": "MAURICIO",
+        "pay": 100.0
+      },
+      {
+        "name": "CLAUDIA",
+        "pay": 100.0
+      },
+      {
+        "name": "DAYSI",
+        "pay": 100.0
+      },
+      {
+        "name": "DANIELA",
+        "pay": 100.0
+      }
+    ],
+    "total_personal_pay": 1300.0,
+    "qrs": [
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 840.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 5.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 560.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 260.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 160.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 520.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 420.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 255.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 1100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 170.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 5.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 41.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 650.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 140.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 180.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 180.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 440.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 14489.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 3215.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 985.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 140.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 690.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 520.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 23.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 265.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      }
+    ],
+    "total_qr": 39428.0,
+    "total_qr_kelly": 31028.0,
+    "total_qr_tienda": 6430.0,
+    "total_qr_subte": 1970.0
+  },
+  "2026-09-12": {
+    "cierre": {
+      "ariel_tarjeta": 835.0,
+      "ariel_qr": 3638.0,
+      "ariel_efectivo": 507.0,
+      "ariel_total": 4980.0,
+      "tienda_tarjeta": 1855.0,
+      "tienda_qr": 22738.0,
+      "tienda_efectivo": 9112.0,
+      "tienda_total": 35965.0,
+      "kelly_tarjeta": 3825.0,
+      "kelly_qr": 18382.0,
+      "kelly_personal": 0.0,
+      "kelly_efectivo": 1966.0,
+      "kelly_total": 24173.0,
+      "total_efectivo": 11585.0
+    },
+    "facturas": [
+      {
+        "num": 1,
+        "card": 20.0,
+        "cash": 0
+      },
+      {
+        "num": 2,
+        "card": 180.0,
+        "cash": 0
+      },
+      {
+        "num": 3,
+        "card": 10.0,
+        "cash": 0
+      },
+      {
+        "num": 4,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 5,
+        "card": 150.0,
+        "cash": 0
+      },
+      {
+        "num": 6,
+        "card": 90.0,
+        "cash": 0
+      },
+      {
+        "num": 7,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 8,
+        "card": 115.0,
+        "cash": 0
+      },
+      {
+        "num": 9,
+        "card": 280.0,
+        "cash": 0
+      },
+      {
+        "num": 10,
+        "card": 460.0,
+        "cash": 0
+      },
+      {
+        "num": 11,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 12,
+        "card": 530.0,
+        "cash": 0
+      },
+      {
+        "num": 13,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 14,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 15,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 16,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 17,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 18,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 19,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 20,
+        "card": 300.0,
+        "cash": 0
+      },
+      {
+        "num": 21,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 22,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 23,
+        "card": 10.0,
+        "cash": 0
+      },
+      {
+        "num": 24,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 25,
+        "card": 100.0,
+        "cash": 0
+      },
+      {
+        "num": 26,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 27,
+        "card": 95.0,
+        "cash": 0
+      },
+      {
+        "num": 28,
+        "card": 450.0,
+        "cash": 0
+      },
+      {
+        "num": 29,
+        "card": 400.0,
+        "cash": 0
+      },
+      {
+        "num": 30,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 31,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 32,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 33,
+        "card": 50.0,
+        "cash": 0
+      },
+      {
+        "num": 34,
+        "card": 250.0,
+        "cash": 0
+      },
+      {
+        "num": 35,
+        "card": 240.0,
+        "cash": 0
+      },
+      {
+        "num": 36,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 37,
+        "card": 230.0,
+        "cash": 0
+      },
+      {
+        "num": 38,
+        "card": 90.0,
+        "cash": 0
+      },
+      {
+        "num": 39,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 40,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 41,
+        "card": 10.0,
+        "cash": 0
+      },
+      {
+        "num": 42,
+        "card": 520.0,
+        "cash": 0
+      },
+      {
+        "num": 43,
+        "card": 90.0,
+        "cash": 0
+      },
+      {
+        "num": 44,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 45,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 46,
+        "card": 25.0,
+        "cash": 0
+      },
+      {
+        "num": 47,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 48,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 49,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 50,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 51,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 52,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 53,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 54,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 55,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 56,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 57,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 58,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 59,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 60,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 61,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 62,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 63,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 64,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 65,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 66,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 67,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 68,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 69,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 70,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 71,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 72,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 73,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 74,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 75,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 76,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 77,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 78,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 79,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 80,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 81,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 82,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 83,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 84,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 85,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 86,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 87,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 88,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 89,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 90,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 91,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 92,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 93,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 94,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 95,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 96,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 97,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 98,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 99,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 100,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 101,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 102,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 103,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 104,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 105,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 106,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 107,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 108,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 109,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 110,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 111,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 112,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 113,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 114,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 115,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 116,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 117,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 118,
+        "card": 6515.0,
+        "cash": 0
+      }
+    ],
+    "total_card_facturas": 13030.0,
+    "total_cash_facturas": 0,
+    "personal": [
+      {
+        "name": "ALEX(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "ARIEL(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RUBEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "MAYLEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RICO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "LUCHO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RODRIGO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "LUIS(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "KELLY",
+        "pay": 100.0
+      },
+      {
+        "name": "MAURI",
+        "pay": 100.0
+      },
+      {
+        "name": "ARIEL",
+        "pay": 100.0
+      },
+      {
+        "name": "MAURICIO",
+        "pay": 100.0
+      },
+      {
+        "name": "ALAM",
+        "pay": 100.0
+      },
+      {
+        "name": "JOSÉ",
+        "pay": 100.0
+      },
+      {
+        "name": "ANDRÈ",
+        "pay": 100.0
+      },
+      {
+        "name": "ANAHI",
+        "pay": 100.0
+      },
+      {
+        "name": "DAYSI",
+        "pay": 100.0
+      },
+      {
+        "name": "CLAUDIA",
+        "pay": 100.0
+      },
+      {
+        "name": "KAREN",
+        "pay": 100.0
+      },
+      {
+        "name": "LILIANA",
+        "pay": 100.0
+      },
+      {
+        "name": "ALEJANDRO",
+        "pay": 100.0
+      }
+    ],
+    "total_personal_pay": 2260.0,
+    "qrs": [
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 18.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 720.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 850.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 350.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 115.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 332.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 520.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 70.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 340.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 470.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 410.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 264.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 322.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 345.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 114.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 330.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 115.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 260.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 340.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 710.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 210.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 540.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 600.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 570.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 430.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 520.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 315.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 184.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 270.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 5.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 560.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 530.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 210.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 18382.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 22738.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 3638.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 305.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 570.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 510.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 410.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 140.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 160.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 570.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 85.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 210.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "alam"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "josé"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 1200.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Tienda",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "aixa"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 85.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 400.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 150.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 220.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 45.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 4.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 75.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 45.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 220.0,
+        "cobrante": "mau"
+      }
+    ],
+    "total_qr": 91531.0,
+    "total_qr_kelly": 38779.0,
+    "total_qr_tienda": 45476.0,
+    "total_qr_subte": 7276.0
+  },
+  "2026-09-13": {
+    "cierre": {
+      "ariel_tarjeta": 860.0,
+      "ariel_qr": 415.0,
+      "ariel_efectivo": 25.0,
+      "ariel_total": 1300.0,
+      "tienda_tarjeta": 0.0,
+      "tienda_qr": 0.0,
+      "tienda_efectivo": 0.0,
+      "tienda_total": 0.0,
+      "kelly_tarjeta": 2020.0,
+      "kelly_qr": 19127.0,
+      "kelly_personal": 1610.0,
+      "kelly_efectivo": 3874.0,
+      "kelly_total": 26631.0,
+      "total_efectivo": 3899.0
+    },
+    "facturas": [
+      {
+        "num": 1,
+        "card": 250.0,
+        "cash": 250.0
+      },
+      {
+        "num": 2,
+        "card": 230.0,
+        "cash": 460.0
+      },
+      {
+        "num": 3,
+        "card": 230.0,
+        "cash": 230.0
+      },
+      {
+        "num": 4,
+        "card": 230.0,
+        "cash": 250.0
+      },
+      {
+        "num": 5,
+        "card": 300.0,
+        "cash": 250.0
+      },
+      {
+        "num": 6,
+        "card": 120.0,
+        "cash": 250.0
+      },
+      {
+        "num": 7,
+        "card": 130.0,
+        "cash": 230.0
+      },
+      {
+        "num": 8,
+        "card": 100.0,
+        "cash": 230.0
+      },
+      {
+        "num": 9,
+        "card": 230.0,
+        "cash": 230.0
+      },
+      {
+        "num": 10,
+        "card": 240.0,
+        "cash": 460.0
+      },
+      {
+        "num": 11,
+        "card": 250.0,
+        "cash": 0
+      },
+      {
+        "num": 12,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 13,
+        "card": 60.0,
+        "cash": 0
+      },
+      {
+        "num": 14,
+        "card": 100.0,
+        "cash": 0
+      },
+      {
+        "num": 15,
+        "card": 30.0,
+        "cash": 0
+      },
+      {
+        "num": 16,
+        "card": 140.0,
+        "cash": 0
+      },
+      {
+        "num": 17,
+        "card": 120.0,
+        "cash": 0
+      },
+      {
+        "num": 18,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 19,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 20,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 21,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 22,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 23,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 24,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 25,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 26,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 27,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 28,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 29,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 30,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 31,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 32,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 33,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 34,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 35,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 36,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 37,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 38,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 39,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 40,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 41,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 42,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 43,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 44,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 45,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 46,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 47,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 48,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 49,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 50,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 51,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 52,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 53,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 54,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 55,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 56,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 57,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 58,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 59,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 60,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 61,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 62,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 63,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 64,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 65,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 66,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 67,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 68,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 69,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 70,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 71,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 72,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 73,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 74,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 75,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 76,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 77,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 78,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 79,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 80,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 81,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 82,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 83,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 84,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 85,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 86,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 87,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 88,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 89,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 90,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 91,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 92,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 93,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 94,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 95,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 96,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 97,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 98,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 99,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 100,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 101,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 102,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 103,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 104,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 105,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 106,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 107,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 108,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 109,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 110,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 111,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 112,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 113,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 114,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 115,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 116,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 117,
+        "card": 0,
+        "cash": 0
+      },
+      {
+        "num": 118,
+        "card": 2880.0,
+        "cash": 2840.0
+      },
+      {
+        "num": 122,
+        "card": 14064.0,
+        "cash": 0
+      }
+    ],
+    "total_card_facturas": 19824.0,
+    "total_cash_facturas": 5680.0,
+    "personal": [
+      {
+        "name": "ALEX(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "ARIEL(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "LUIS(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "MAYLEN(S)",
+        "pay": 130.0
+      },
+      {
+        "name": "RICO(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "RUBEN(S)",
+        "pay": 120.0
+      },
+      {
+        "name": "KELLY",
+        "pay": 110.0
+      },
+      {
+        "name": "MAURI",
+        "pay": 110.0
+      },
+      {
+        "name": "ARIEL",
+        "pay": 110.0
+      },
+      {
+        "name": "MAURICIO",
+        "pay": 110.0
+      },
+      {
+        "name": "ANDRÈ",
+        "pay": 110.0
+      },
+      {
+        "name": "DAYSI",
+        "pay": 110.0
+      },
+      {
+        "name": "ANAHI",
+        "pay": 110.0
+      },
+      {
+        "name": "DANIELA",
+        "pay": 110.0
+      }
+    ],
+    "total_personal_pay": 1610.0,
+    "qrs": [
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 70.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 260.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 140.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 20.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 12.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 560.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 500.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 95.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 740.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 80.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 200.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 90.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 600.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 140.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 35.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 480.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 460.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 200.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 500.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 5.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 75.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 19127.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Subte",
+        "app": "YASTA",
+        "amount": 415.0,
+        "cobrante": ""
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 130.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 120.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 6.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 160.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 490.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 200.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 370.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 580.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 100.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 94.0,
+        "cobrante": "ari"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 75.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 240.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 300.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 175.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 50.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 60.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 230.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 280.0,
+        "cobrante": "andré"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 250.0,
+        "cobrante": "pepe"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 40.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "mau"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 25.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 30.0,
+        "cobrante": "kelly"
+      },
+      {
+        "pos": "Barra Principal",
+        "app": "YASTA",
+        "amount": 10.0,
+        "cobrante": "mau"
+      }
+    ],
+    "total_qr": 41069.0,
+    "total_qr_kelly": 40239.0,
+    "total_qr_tienda": 0,
+    "total_qr_subte": 830.0
+  }
+}
