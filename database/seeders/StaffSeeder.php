@@ -164,7 +164,7 @@ class StaffSeeder extends Seeder
             // Mozos, Meseras y Personal de Atención (Fijos)
             [
                 'name' => 'MAURI',
-                'role' => 'Staff / Mozo',
+                'role' => 'Staff / Mesero',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -176,7 +176,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'DAYSI',
-                'role' => 'Staff / Mesera',
+                'role' => 'Staff / Limpieza',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -188,7 +188,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'CLAUDIA',
-                'role' => 'Staff / Mesera',
+                'role' => 'Staff / Limpieza',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -200,7 +200,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'DANIELA',
-                'role' => 'Staff / Mesera',
+                'role' => 'Staff / Limpieza',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -212,7 +212,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'LILIANA',
-                'role' => 'Staff / Mesera',
+                'role' => 'Staff / Limpieza',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -224,7 +224,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'CÉSAR',
-                'role' => 'Staff / Mozo',
+                'role' => 'Staff / Mesero',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -236,7 +236,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'ANAHI',
-                'role' => 'Staff / Mesera',
+                'role' => 'Staff / Limpieza',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -248,7 +248,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'PEPE',
-                'role' => 'Staff / Mozo',
+                'role' => 'Staff / Mesero',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -260,7 +260,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'MAURICIO',
-                'role' => 'Staff / Mozo',
+                'role' => 'Staff / Mesero',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,
@@ -272,7 +272,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'ANDRÉ',
-                'role' => 'Staff / Mozo',
+                'role' => 'Staff / Mesero',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => false,
@@ -284,7 +284,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'JOSÉ',
-                'role' => 'Staff / Mozo',
+                'role' => 'Staff / Mesero',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => false,
@@ -296,7 +296,7 @@ class StaffSeeder extends Seeder
             ],
             [
                 'name' => 'KAREN',
-                'role' => 'Staff / Mesera',
+                'role' => 'Staff / Limpieza',
                 'assigned_bar' => 'Pista / Mozos',
                 'default_pay' => 100.00,
                 'works_friday' => true,

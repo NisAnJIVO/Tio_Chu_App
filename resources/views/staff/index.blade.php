@@ -168,8 +168,8 @@
                 </label>
                 <select name="role" id="c_role" required
                         class="glass-input w-full px-4 py-3 rounded-xl text-sm text-white bg-zinc-900/90 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all">
-                    <option value="Staff / Mozo" class="bg-zinc-900">Staff / Mozo</option>
-                    <option value="Staff / Mesera" class="bg-zinc-900">Staff / Mesera</option>
+                    <option value="Staff / Mesero" class="bg-zinc-900">Staff / Mesero</option>
+                    <option value="Staff / Limpieza" class="bg-zinc-900">Staff / Limpieza</option>
                     <option value="Seguridad" class="bg-zinc-900">Seguridad (S)</option>
                     <option value="Bartender Principal" class="bg-zinc-900">Bartender Principal</option>
                     <option value="Bartender Subterráneo" class="bg-zinc-900">Bartender Subterráneo</option>
@@ -297,8 +297,8 @@
                 </label>
                 <select name="role" id="e_role" required
                         class="glass-input w-full px-4 py-3 rounded-xl text-sm text-white bg-zinc-900/90 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all">
-                    <option value="Staff / Mozo" class="bg-zinc-900">Staff / Mozo</option>
-                    <option value="Staff / Mesera" class="bg-zinc-900">Staff / Mesera</option>
+                    <option value="Staff / Mesero" class="bg-zinc-900">Staff / Mesero</option>
+                    <option value="Staff / Limpieza" class="bg-zinc-900">Staff / Limpieza</option>
                     <option value="Seguridad" class="bg-zinc-900">Seguridad (S)</option>
                     <option value="Bartender Principal" class="bg-zinc-900">Bartender Principal</option>
                     <option value="Bartender Subterráneo" class="bg-zinc-900">Bartender Subterráneo</option>

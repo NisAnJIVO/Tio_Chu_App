@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('bar_sales', function (Blueprint $table) {
-            $table->text('selected_special_mixer')->nullable()->after('added_units');
-        });
+        if (!Schema::hasColumn('bar_sales', 'selected_special_mixer')) {
+            Schema::table('bar_sales', function (Blueprint $table) {
+                $table->text('selected_special_mixer')->nullable()->after('added_units');
+            });
+        }
     }
 
     /**

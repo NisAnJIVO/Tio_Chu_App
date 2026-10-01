@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NightSessionController;
+use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QrPaymentController;
 use App\Http\Controllers\StaffController;
@@ -82,9 +83,16 @@ Route::middleware('auth')->group(function () {
     Route::prefix('staff-payments')->name('staffPayments.')->group(function () {
         Route::get('/', [StaffPaymentController::class, 'index'])->name('index');
         Route::put('/update', [StaffPaymentController::class, 'update'])->name('update');
+        Route::put('/update-batch-wage', [StaffPaymentController::class, 'updateBatchWage'])->name('updateBatchWage');
         Route::post('/mark-all-paid/{session}', [StaffPaymentController::class, 'markAllPaid'])->name('markAllPaid');
         Route::post('/store', [StaffPaymentController::class, 'store'])->name('store');
         Route::delete('/{attendance}', [StaffPaymentController::class, 'destroy'])->name('destroy');
+    });
+
+    // 7.5 Historial de Pagos y Deudas del Personal
+    Route::prefix('payment-history')->name('paymentHistory.')->group(function () {
+        Route::get('/', [PaymentHistoryController::class, 'index'])->name('index');
+        Route::post('/pay-single/{attendance}', [PaymentHistoryController::class, 'paySingle'])->name('paySingle');
     });
 
     // 8. Cierre de Caja y Gastos (Módulo 5)

@@ -143,6 +143,49 @@ class StaffPaymentController extends Controller
         return back()->with('success', 'Planilla de pagos actualizada.');
     }
 
+    /**
+     * Modificar sueldos de manera general por categoría (meseros, limpieza, seguridades, barra)
+     * solo para el personal de esa noche.
+     */
+    public function updateBatchWage(Request $request)
+    {
+        $validated = $request->validate([
+            'night_session_id' => 'required|exists:night_sessions,id',
+            'wages' => 'required|array',
+            'wages.meseros' => 'nullable|numeric|min:0',
+            'wages.limpieza' => 'nullable|numeric|min:0',
+            'wages.seguridades' => 'nullable|numeric|min:0',
+            'wages.barra' => 'nullable|numeric|min:0',
+        ]);
+
+        $session = NightSession::findOrFail($validated['night_session_id']);
+        if (!$session->isOpen()) {
+            return back()->with('error', 'No se pueden modificar sueldos en una noche cerrada.');
+        }
+
+        $wages = $validated['wages'];
+        $attendances = StaffAttendance::with('staff')
+            ->where('night_session_id', $session->id)
+            ->get();
+
+        $updatedCount = 0;
+        foreach ($attendances as $att) {
+            if (!$att->staff) continue;
+            $cat = $att->staff->getRoleCategory(); // 'meseros', 'limpieza', 'seguridades', 'barra'
+
+            if (isset($wages[$cat]) && $wages[$cat] !== null && $wages[$cat] !== '') {
+                $att->update([
+                    'pay_amount' => (float)$wages[$cat],
+                ]);
+                $updatedCount++;
+            }
+        }
+
+        $this->sessionService->recalculateClosing($session);
+
+        return back()->with('success', "Se actualizaron los sueldos de {$updatedCount} trabajadores para esta noche.");
+    }
+
     public function markAllPaid(Request $request, NightSession $session)
     {
         if (!$session->isOpen()) {

@@ -139,6 +139,15 @@
                 </svg>
                 <span class="truncate">Pagos Personal</span>
             </a>
+
+            <a href="{{ route('paymentHistory.index') }}" 
+               class="flex items-center gap-3 px-3 py-2 text-sm rounded-xl transition-colors {{ request()->routeIs('paymentHistory.*') ? 'bg-zinc-900 text-[#F5B81C] font-semibold border-l-2 border-[#F5B81C]' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/50' }}">
+                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('paymentHistory.*') ? 'text-[#F5B81C]' : 'text-zinc-500' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span class="truncate">Historial Pagos</span>
+            </a>
         </div>
 
         <!-- 4. Auditoría -->

@@ -126,6 +126,16 @@
                     </div>
 
                     <div>
+                        <label for="bar_name" class="block text-xs font-medium text-zinc-300 mb-1">Barra / Punto de Venta</label>
+                        <select name="bar_name" id="bar_name" required 
+                                class="glass-input w-full text-xs font-bold rounded-xl px-3.5 py-2.5 cursor-pointer">
+                            <option value="Principal" class="bg-[#12141c]">Principal (Barra Kelly)</option>
+                            <option value="Subterraneo" class="bg-[#12141c]">Subterráneo (Barra Ariel)</option>
+                            <option value="Tienda" class="bg-[#12141c]">Tienda</option>
+                        </select>
+                    </div>
+
+                    <div>
                         <label for="amount" class="block text-xs font-medium text-zinc-300 mb-1">Monto de la Factura (Bs.)</label>
                         <input type="number" step="0.5" name="amount" id="amount" required placeholder="0.00"
                                class="glass-input w-full text-sm font-mono font-black rounded-xl px-3.5 py-2.5 text-amber-400">
@@ -158,36 +168,42 @@
                     <table class="w-full text-xs text-left">
                         <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0">
                             <tr>
-                                <th class="px-4 py-3 w-12 text-center">N°</th>
-                                <th class="px-4 py-3">Método</th>
-                                <th class="px-4 py-3 text-right">Monto Bruto</th>
-                                <th class="px-4 py-3 text-right">Comisión</th>
-                                <th class="px-4 py-3 text-right">Neto Recibido</th>
-                                <th class="px-4 py-3">Notas</th>
-                                <th class="px-4 py-3 text-right w-16">Acción</th>
+                                <th class="px-3.5 py-3 w-10 text-center">N°</th>
+                                <th class="px-3.5 py-3">Método</th>
+                                <th class="px-3.5 py-3">Barra</th>
+                                <th class="px-3.5 py-3 text-right">Monto Bruto</th>
+                                <th class="px-3.5 py-3 text-right">Comisión</th>
+                                <th class="px-3.5 py-3 text-right">Neto Recibido</th>
+                                <th class="px-3.5 py-3">Notas</th>
+                                <th class="px-3.5 py-3 text-right w-16">Acción</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5 font-mono">
                             @forelse($invoices as $inv)
                                 <tr class="hover:bg-white/[0.02]">
-                                    <td class="px-4 py-2.5 text-center font-bold text-zinc-100">{{ $inv->correlative_num }}</td>
-                                    <td class="px-4 py-2.5">
+                                    <td class="px-3.5 py-2.5 text-center font-bold text-zinc-100">{{ $inv->correlative_num }}</td>
+                                    <td class="px-3.5 py-2.5">
                                         @if($inv->payment_method === 'tarjeta')
                                             <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/25">TARJETA</span>
                                         @else
                                             <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-800 text-zinc-300">EFECTIVO</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-2.5 text-right font-bold text-white">
+                                    <td class="px-3.5 py-2.5">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/10 text-amber-300 border border-amber-400/25">
+                                            {{ $inv->bar_name ?? 'Principal' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3.5 py-2.5 text-right font-bold text-white">
                                         Bs. {{ number_format($inv->amount, 2) }}
                                     </td>
-                                    <td class="px-4 py-2.5 text-right text-rose-400 font-semibold">
+                                    <td class="px-3.5 py-2.5 text-right text-rose-400 font-semibold">
                                         {{ $inv->commission_amount > 0 ? '- Bs. ' . number_format($inv->commission_amount, 2) : '—' }}
                                     </td>
-                                    <td class="px-4 py-2.5 text-right font-extrabold text-amber-400">
+                                    <td class="px-3.5 py-2.5 text-right font-extrabold text-amber-400">
                                         Bs. {{ number_format($inv->net_amount, 2) }}
                                     </td>
-                                    <td class="px-4 py-2.5 text-zinc-400 font-sans">{{ $inv->notes ?? '—' }}</td>
+                                    <td class="px-3.5 py-2.5 text-zinc-400 font-sans">{{ $inv->notes ?? '—' }}</td>
                                     <td class="px-4 py-2.5 text-right">
                                         <form method="POST" action="{{ route('invoices.destroy', $inv) }}" onsubmit="return confirm('¿Eliminar factura?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                                             @csrf

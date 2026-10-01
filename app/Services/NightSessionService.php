@@ -43,35 +43,50 @@ class NightSessionService
     {
         $closing = CashClosing::firstOrCreate(['night_session_id' => $session->id]);
 
-        // Facturas
+        // Facturas (tarjetas — de cualquier barra)
         $cardInvoices = $session->invoices()->where('payment_method', 'tarjeta')->get();
         $cashInvoices = $session->invoices()->where('payment_method', 'efectivo')->get();
 
-        $totalCard = $cardInvoices->sum('amount');
+        $totalCard           = $cardInvoices->sum('amount');
         $totalCardCommission = $cardInvoices->sum('commission_amount');
-        $totalCardNet = $cardInvoices->sum('net_amount');
-        $totalCashInvoices = $cashInvoices->sum('amount');
+        $totalCardNet        = $cardInvoices->sum('net_amount');
+        $totalCashInvoices   = $cashInvoices->sum('amount');
 
-        // Pagos QR
-        $totalQrYasta = $session->qrPayments()->where('bank_app', 'YASTA')->sum('amount');
-        $totalQrYape = $session->qrPayments()->where('bank_app', 'YAPE')->sum('amount');
+        // Pagos QR globales
+        $totalQrYasta = (float) $session->qrPayments()->where('bank_app', 'YASTA')->sum('amount');
+        $totalQrYape  = (float) $session->qrPayments()->where('bank_app', 'YAPE')->sum('amount');
 
-        // Ventas por Barra y Tienda
-        $totalBarSales = $session->barSales()->where('bar_name', '!=', 'Tienda')->sum('subtotal')
-            + $session->storeSales()->sum('total_price');
+        // 1. Efectivo en Barra Kelly (Principal): Ventas Kelly - QR Kelly - Tarjeta Neto Kelly
+        $salesKelly = (float) $session->barSales()->whereIn('bar_name', ['Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal');
+        $qrKelly = (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount');
+        $cardNetKelly = (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('net_amount');
+        $cashKelly = max(0, $salesKelly - $qrKelly - $cardNetKelly);
+
+        // 2. Efectivo en Barra Ariel (Subte): Ventas Subte - QR Subte - Tarjeta Neto Subte
+        $salesSubte = (float) $session->barSales()->whereIn('bar_name', ['Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal');
+        $qrSubte = (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'])->sum('amount');
+        $cardNetSubte = (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('net_amount');
+        $cashSubte = max(0, $salesSubte - $qrSubte - $cardNetSubte);
+
+        // Efectivo total en Cierre de Caja = Suma de efectivos de las barras
+        $totalEfectivo = $cashKelly + $cashSubte;
+
+        // Ventas totales de referencia (barras + tienda)
+        $totalBarSales = (float) $session->barSales()->where('bar_name', '!=', 'Tienda')->sum('subtotal')
+            + (float) $session->storeSales()->sum('total_price');
 
         // Personal
-        $totalStaffPaid = $session->staffAttendances()->where('is_paid', true)->sum('pay_amount');
+        $totalStaffPaid = (float) $session->staffAttendances()->where('is_paid', true)->sum('pay_amount');
 
         // Gastos
-        $totalExpenses = $session->expenses()->sum('amount');
+        $totalExpenses = (float) $session->expenses()->sum('amount');
 
-        // Ingresos extras de Tienda (Guardarropa y Snacks)
+        // Ingresos extras de Tienda (Guardarropa y Snacks) — se mantienen guardados pero no se suman al cuadre
         $totalGuardarropa = (float)($closing->total_guardarropa ?? 0);
-        $totalSnacks = (float)($closing->total_snacks ?? 0);
+        $totalSnacks      = (float)($closing->total_snacks ?? 0);
 
-        // Total Ingresos Registrados (Tarjeta Neto + QRs + Efectivo + Guardarropa + Snacks)
-        $totalIngresos = $totalCardNet + $totalQrYasta + $totalQrYape + $totalCashInvoices + $totalGuardarropa + $totalSnacks;
+        // Total Ingresos = Tarjeta Neto + QR YASTA + QR YAPE + Efectivo Barras
+        $totalIngresos = $totalCardNet + $totalQrYasta + $totalQrYape + $totalEfectivo;
 
         // Total Egresos (Personal + Gastos)
         $totalEgresos = $totalStaffPaid + $totalExpenses;
@@ -80,18 +95,18 @@ class NightSessionService
         $netCashClosing = $totalIngresos - $totalEgresos;
 
         $closing->update([
-            'total_card' => $totalCard,
+            'total_card'            => $totalCard,
             'total_card_commission' => $totalCardCommission,
-            'total_card_net' => $totalCardNet,
-            'total_cash_invoices' => $totalCashInvoices,
-            'total_qr_yasta' => $totalQrYasta,
-            'total_qr_yape' => $totalQrYape,
-            'total_bar_sales' => $totalBarSales,
-            'total_guardarropa' => $totalGuardarropa,
-            'total_snacks' => $totalSnacks,
-            'total_staff_paid' => $totalStaffPaid,
-            'total_expenses' => $totalExpenses,
-            'net_cash_closing' => $netCashClosing,
+            'total_card_net'        => $totalCardNet,
+            'total_cash_invoices'   => $totalEfectivo,  // reutilizamos este campo para el efectivo calculado
+            'total_qr_yasta'        => $totalQrYasta,
+            'total_qr_yape'         => $totalQrYape,
+            'total_bar_sales'       => $totalBarSales,
+            'total_guardarropa'     => $totalGuardarropa,
+            'total_snacks'          => $totalSnacks,
+            'total_staff_paid'      => $totalStaffPaid,
+            'total_expenses'        => $totalExpenses,
+            'net_cash_closing'      => $netCashClosing,
         ]);
 
         return $closing;

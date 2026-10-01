@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\NightSession;
 use App\Models\QrPayment;
+use App\Models\Staff;
 use App\Services\NightSessionService;
 use Illuminate\Http\Request;
 
@@ -66,6 +67,21 @@ class QrPaymentController extends Controller
             $totalGeneral = $totalYasta + $totalYape;
         }
 
+        // Obtener personal activo filtrado: solo Meseros, Bartenders y Refuerzos
+        // Excluye explícitamente Limpieza y Seguridad
+        $cobrantesStaff = Staff::where('is_active', true)
+            ->where(function ($q) {
+                $q->where('role', 'like', '%mesero%')
+                  ->orWhere('role', 'like', '%mozo%')
+                  ->orWhere('role', 'like', '%refuerzo%')
+                  ->orWhere('role', 'like', '%bartender%')
+                  ->orWhere('role', 'like', '%barra%');
+            })
+            ->where('role', 'not like', '%limpieza%')
+            ->where('role', 'not like', '%seguridad%')
+            ->orderBy('name')
+            ->get();
+
         return view('qrs.index', compact(
             'session',
             'allSessions',
@@ -74,7 +90,8 @@ class QrPaymentController extends Controller
             'totalsByPos',
             'totalYasta',
             'totalYape',
-            'totalGeneral'
+            'totalGeneral',
+            'cobrantesStaff'
         ));
     }
 

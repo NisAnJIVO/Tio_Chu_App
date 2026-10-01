@@ -121,21 +121,16 @@
                                 <td class="py-2.5 text-right text-zinc-200">Bs. {{ number_format($closing->total_qr_yape ?? 0, 2) }}</td>
                             </tr>
                             <tr class="hover:bg-white/[0.02]">
-                                <td class="py-2.5 text-zinc-300 font-sans">Efectivo por Facturas</td>
-                                <td class="py-2.5 text-right text-zinc-200">Bs. {{ number_format($closing->total_cash_invoices ?? 0, 2) }}</td>
-                            </tr>
-                            <tr class="hover:bg-white/[0.02]">
-                                <td class="py-2.5 text-zinc-300 font-sans">Tienda: Guardarropa</td>
-                                <td class="py-2.5 text-right text-zinc-200">Bs. {{ number_format($closing->total_guardarropa ?? 0, 2) }}</td>
-                            </tr>
-                            <tr class="hover:bg-white/[0.02]">
-                                <td class="py-2.5 text-zinc-300 font-sans">Tienda: Snacks & Golosinas</td>
-                                <td class="py-2.5 text-right text-zinc-200">Bs. {{ number_format($closing->total_snacks ?? 0, 2) }}</td>
+                                <td class="py-2.5 font-sans">
+                                    <span class="text-zinc-300">Efectivo</span>
+                                    <span class="block text-[10px] text-zinc-500 font-mono">Suma de efectivos de Barra Principal y Subte</span>
+                                </td>
+                                <td class="py-2.5 text-right text-zinc-200 align-top">Bs. {{ number_format($closing->total_cash_invoices ?? 0, 2) }}</td>
                             </tr>
                             <tr class="border-t border-white/10 font-bold bg-white/[0.02]">
                                 <td class="py-3 px-3 text-white font-sans">Total Ingresos Recaudados</td>
                                 <td class="py-3 px-3 text-right text-emerald-400 font-black text-sm">
-                                    Bs. {{ number_format(($closing->total_card_net ?? 0) + ($closing->total_qr_yasta ?? 0) + ($closing->total_qr_yape ?? 0) + ($closing->total_cash_invoices ?? 0) + ($closing->total_guardarropa ?? 0) + ($closing->total_snacks ?? 0), 2) }}
+                                    Bs. {{ number_format(($closing->total_card_net ?? 0) + ($closing->total_qr_yasta ?? 0) + ($closing->total_qr_yape ?? 0) + ($closing->total_cash_invoices ?? 0), 2) }}
                                 </td>
                             </tr>
                         </tbody>

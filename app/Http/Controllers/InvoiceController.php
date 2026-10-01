@@ -65,6 +65,7 @@ class InvoiceController extends Controller
             'night_session_id' => 'required|exists:night_sessions,id',
             'correlative_num' => 'required|integer|min:1',
             'payment_method' => 'required|in:tarjeta,efectivo',
+            'bar_name' => 'nullable|string|in:Principal,Subterraneo,Tienda,subterraneo,tienda,principal',
             'amount' => 'required|numeric|min:0.01',
             'commission_rate' => 'nullable|numeric|min:0|max:1',
             'notes' => 'nullable|string|max:255',
@@ -77,10 +78,18 @@ class InvoiceController extends Controller
 
         $commissionRate = $validated['commission_rate'] ?? $session->pos_commission_rate;
 
+        // Normalizar nombre de barra
+        $barName = match(mb_strtolower(trim($validated['bar_name'] ?? 'Principal'))) {
+            'subterraneo', 'subte' => 'Subterráneo',
+            'tienda' => 'Tienda',
+            default => 'Principal',
+        };
+
         $invoice = new Invoice();
         $invoice->night_session_id = $session->id;
         $invoice->correlative_num = $validated['correlative_num'];
         $invoice->payment_method = $validated['payment_method'];
+        $invoice->bar_name = $barName;
         $invoice->amount = $validated['amount'];
         $invoice->commission_rate = $commissionRate;
         $invoice->notes = $validated['notes'] ?? null;

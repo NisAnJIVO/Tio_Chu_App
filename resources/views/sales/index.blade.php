@@ -310,6 +310,141 @@
                 </div>
             </div>
 
+            <!-- ======================================================== -->
+            <!-- DETALLE DE COBROS DIGITALES EN TIENDA (QR & TARJETAS POS) -->
+            <!-- ======================================================== -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- 1. TABLA COBROS QR EN TIENDA -->
+                <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                    <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-sm shadow-blue-400/50"></span>
+                            <div>
+                                <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
+                                    Cobros QR en Tienda
+                                </h3>
+                                <p class="text-[11px] text-zinc-400">
+                                    Transferencias YASTA & YAPE registradas
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-mono font-black text-blue-400">
+                                Bs. {{ number_format($barTotalQr, 2) }}
+                            </span>
+                            <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
+                               class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-blue-400/30 text-blue-300 hover:bg-blue-500/20 transition-all">
+                                + Pagos QR &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                                <tr>
+                                    <th class="px-4 py-2.5">Cobrante / Mesero</th>
+                                    <th class="px-3 py-2.5 text-center">App</th>
+                                    <th class="px-4 py-2.5">Ref / Comprobante</th>
+                                    <th class="px-4 py-2.5 text-right">Monto (Bs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 font-mono">
+                                @forelse($barQrPayments as $qr)
+                                    <tr class="hover:bg-white/[0.02]">
+                                        <td class="px-4 py-2.5 font-sans font-medium text-zinc-200">
+                                            {{ $qr->operator_name ?? '—' }}
+                                        </td>
+                                        <td class="px-3 py-2.5 text-center">
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $qr->bank_app === 'YASTA' ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30' : 'bg-emerald-400/10 text-emerald-300 border border-emerald-400/30' }}">
+                                                {{ $qr->bank_app }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-2.5 text-zinc-400 text-[11px] truncate max-w-[120px]">
+                                            {{ $qr->reference_code ?? '—' }}
+                                        </td>
+                                        <td class="px-4 py-2.5 text-right font-black text-blue-400">
+                                            Bs. {{ number_format($qr->amount, 2) }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
+                                            No hay cobros QR registrados para Tienda en esta jornada.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. TABLA TARJETAS / POS EN TIENDA -->
+                <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                    <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-sm shadow-purple-400/50"></span>
+                            <div>
+                                <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
+                                    Pagos con Tarjeta (POS) en Tienda
+                                </h3>
+                                <p class="text-[11px] text-zinc-400">
+                                    Registrados en Facturas y POS
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-mono font-black text-purple-400">
+                                Bs. {{ number_format($barTotalCard, 2) }}
+                            </span>
+                            <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
+                               class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-purple-400/30 text-purple-300 hover:bg-purple-500/20 transition-all">
+                                + Facturas & POS &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                                <tr>
+                                    <th class="px-4 py-2.5 text-center"># Factura</th>
+                                    <th class="px-4 py-2.5">Detalle / Notas</th>
+                                    <th class="px-4 py-2.5 text-right">Comisión</th>
+                                    <th class="px-4 py-2.5 text-right">Monto Bruto</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 font-mono">
+                                @forelse($barCardInvoices as $inv)
+                                    <tr class="hover:bg-white/[0.02]">
+                                        <td class="px-4 py-2.5 text-center text-zinc-400 font-bold">
+                                            #{{ $inv->correlative_num }}
+                                        </td>
+                                        <td class="px-4 py-2.5 font-sans text-zinc-300 text-[11px] truncate max-w-[140px]">
+                                            {{ $inv->notes ?? 'Pago Tarjeta POS' }}
+                                        </td>
+                                        <td class="px-4 py-2.5 text-right text-zinc-500 text-[11px]">
+                                            - Bs. {{ number_format($inv->commission_amount, 2) }}
+                                        </td>
+                                        <td class="px-4 py-2.5 text-right font-black text-purple-400">
+                                            Bs. {{ number_format($inv->amount, 2) }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
+                                            No hay pagos con tarjeta registrados para Tienda en esta jornada.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
             <!-- Scripts de Cálculo para Tienda -->
             <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -382,33 +517,58 @@
             <!-- ======================================================== -->
 
             <!-- Resumen de Totales del Punto de Venta Actual -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="glass-card rounded-2xl p-6">
-                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Combos Vendidos (Licores)</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-white" id="header-total-combos">
-                        {{ $totalLiquorCombos }} <span class="text-xs font-sans text-zinc-400 font-normal">combos</span>
-                    </div>
-                    <p class="text-xs text-amber-400 mt-1 font-mono font-bold" id="header-subtotal-combos">
-                        Subtotal: Bs. {{ number_format($subtotalLiquors, 2) }}
-                    </p>
-                </div>
-
-                <div class="glass-card rounded-2xl p-6">
-                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Sodas / Mixers Extras</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-white" id="header-total-extras">
-                        {{ $totalMixerExtras }} <span class="text-xs font-sans text-zinc-400 font-normal">extras</span>
-                    </div>
-                    <p class="text-xs text-amber-400 mt-1 font-mono font-bold" id="header-subtotal-extras">
-                        Subtotal: Bs. {{ number_format($subtotalMixers, 2) }}
-                    </p>
-                </div>
-
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Total Recaudado en Bebidas -->
                 <div class="glass-panel-elevated rounded-2xl p-6 border border-amber-400/30">
-                    <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Total Bebidas en {{ $selectedBar }}</span>
-                    <div class="mt-2 text-3xl font-black font-mono text-white" id="header-grand-total">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Total Bebidas</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-400/10 text-amber-300 border border-amber-400/20">{{ $selectedBar }}</span>
+                    </div>
+                    <div class="mt-2 text-3xl font-black font-mono text-white tracking-tight" id="header-grand-total">
                         <span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($grandTotalBar, 2) }}
                     </div>
-                    <p class="text-xs text-zinc-400 mt-1 font-mono">Combos + Sodas adicionales</p>
+                    <p class="text-[11px] text-zinc-400 mt-1 font-mono">
+                        <span id="header-total-combos">{{ $totalLiquorCombos }} combos</span> (Bs. <span id="header-subtotal-combos-val">{{ number_format($subtotalLiquors, 2) }}</span>) + <span id="header-total-extras">{{ $totalMixerExtras }} extras</span> (Bs. <span id="header-subtotal-extras-val">{{ number_format($subtotalMixers, 2) }}</span>)
+                    </p>
+                </div>
+
+                <!-- En QR (YASTA / YAPE) -->
+                <div class="glass-card rounded-2xl p-6 border border-blue-500/20">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Cobros QR</span>
+                        <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[10px] font-mono text-blue-400 hover:text-blue-300 transition-colors">Ver módulo &rarr;</a>
+                    </div>
+                    <div class="mt-2 text-3xl font-black font-mono text-blue-400 tracking-tight">
+                        <span class="text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($barTotalQr, 2) }}
+                    </div>
+                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">
+                        YASTA: Bs. {{ number_format($barTotalQrYasta, 2) }} • YAPE: Bs. {{ number_format($barTotalQrYape, 2) }}
+                    </p>
+                </div>
+
+                <!-- En Tarjeta / POS -->
+                <div class="glass-card rounded-2xl p-6 border border-purple-500/20">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Tarjetas (POS)</span>
+                        <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[10px] font-mono text-purple-400 hover:text-purple-300 transition-colors">Ver módulo &rarr;</a>
+                    </div>
+                    <div class="mt-2 text-3xl font-black font-mono text-purple-400 tracking-tight">
+                        <span class="text-lg mr-0.5 font-sans">Bs.</span>{{ number_format($barTotalCard, 2) }}
+                    </div>
+                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">
+                        Neto: Bs. {{ number_format($barTotalCardNet, 2) }} @if($barTotalCardCommission > 0)<span class="text-zinc-600">(Com. Bs. {{ number_format($barTotalCardCommission, 2) }})</span>@endif
+                    </p>
+                </div>
+
+                <!-- Efectivo en Barra -->
+                <div class="glass-card rounded-2xl p-6 border border-emerald-500/20">
+                    <span class="text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Efectivo en Barra</span>
+                    <div class="mt-2 text-3xl font-black font-mono text-emerald-400 tracking-tight">
+                        <span class="text-lg mr-0.5 font-sans">Bs.</span><span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
+                    </div>
+                    <p class="text-[11px] text-zinc-500 mt-1 font-mono">
+                        Dinero físico (Total − QR − Tarjetas)
+                    </p>
                 </div>
             </div>
 
@@ -762,6 +922,141 @@
                         </div>
                     </div>
 
+                    <!-- ======================================================== -->
+                    <!-- DETALLE DE COBROS DIGITALES (QR Y TARJETAS POS DE ESTA BARRA) -->
+                    <!-- ======================================================== -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        <!-- 1. TABLA COBROS QR DE ESTA BARRA -->
+                        <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                            <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-sm shadow-blue-400/50"></span>
+                                    <div>
+                                        <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
+                                            Cobros QR en {{ $selectedBar }}
+                                        </h3>
+                                        <p class="text-[11px] text-zinc-400">
+                                            Transferencias YASTA & YAPE registradas
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-mono font-black text-blue-400">
+                                        Bs. {{ number_format($barTotalQr, 2) }}
+                                    </span>
+                                    <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
+                                       class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-blue-400/30 text-blue-300 hover:bg-blue-500/20 transition-all">
+                                        + Pagos QR &rarr;
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                                        <tr>
+                                            <th class="px-4 py-2.5">Cobrante / Mesero</th>
+                                            <th class="px-3 py-2.5 text-center">App</th>
+                                            <th class="px-4 py-2.5">Ref / Comprobante</th>
+                                            <th class="px-4 py-2.5 text-right">Monto (Bs.)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5 font-mono">
+                                        @forelse($barQrPayments as $qr)
+                                            <tr class="hover:bg-white/[0.02]">
+                                                <td class="px-4 py-2.5 font-sans font-medium text-zinc-200">
+                                                    {{ $qr->operator_name ?? '—' }}
+                                                </td>
+                                                <td class="px-3 py-2.5 text-center">
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $qr->bank_app === 'YASTA' ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30' : 'bg-emerald-400/10 text-emerald-300 border border-emerald-400/30' }}">
+                                                        {{ $qr->bank_app }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2.5 text-zinc-400 text-[11px] truncate max-w-[120px]">
+                                                    {{ $qr->reference_code ?? '—' }}
+                                                </td>
+                                                <td class="px-4 py-2.5 text-right font-black text-blue-400">
+                                                    Bs. {{ number_format($qr->amount, 2) }}
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
+                                                    No hay cobros QR registrados para esta barra en esta jornada.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. TABLA TARJETAS / POS DE ESTA BARRA -->
+                        <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                            <div class="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-sm shadow-purple-400/50"></span>
+                                    <div>
+                                        <h3 class="text-xs font-bold text-zinc-100 uppercase tracking-wider font-mono">
+                                            Pagos con Tarjeta (POS) en {{ $selectedBar }}
+                                        </h3>
+                                        <p class="text-[11px] text-zinc-400">
+                                            Registrados en Facturas y POS
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-mono font-black text-purple-400">
+                                        Bs. {{ number_format($barTotalCard, 2) }}
+                                    </span>
+                                    <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
+                                       class="px-2.5 py-1 text-[10px] font-mono font-bold glass-card rounded-lg border border-purple-400/30 text-purple-300 hover:bg-purple-500/20 transition-all">
+                                        + Facturas & POS &rarr;
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-white/[0.04] border-b border-white/10 text-zinc-400 font-mono uppercase text-[10px] tracking-wider sticky top-0 backdrop-blur-md">
+                                        <tr>
+                                            <th class="px-4 py-2.5 text-center"># Factura</th>
+                                            <th class="px-4 py-2.5">Detalle / Notas</th>
+                                            <th class="px-4 py-2.5 text-right">Comisión</th>
+                                            <th class="px-4 py-2.5 text-right">Monto Bruto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/5 font-mono">
+                                        @forelse($barCardInvoices as $inv)
+                                            <tr class="hover:bg-white/[0.02]">
+                                                <td class="px-4 py-2.5 text-center text-zinc-400 font-bold">
+                                                    #{{ $inv->correlative_num }}
+                                                </td>
+                                                <td class="px-4 py-2.5 font-sans text-zinc-300 text-[11px] truncate max-w-[140px]">
+                                                    {{ $inv->notes ?? 'Pago Tarjeta POS' }}
+                                                </td>
+                                                <td class="px-4 py-2.5 text-right text-zinc-500 text-[11px]">
+                                                    - Bs. {{ number_format($inv->commission_amount, 2) }}
+                                                </td>
+                                                <td class="px-4 py-2.5 text-right font-black text-purple-400">
+                                                    Bs. {{ number_format($inv->amount, 2) }}
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="px-4 py-6 text-center text-zinc-500 font-sans text-xs">
+                                                    No hay pagos con tarjeta registrados para esta barra en esta jornada.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <!-- Barra de Acciones y Guardado en Liquid Glass -->
                     <div class="p-6 glass-panel-elevated rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-amber-400/30">
                         <div class="text-sm font-mono text-zinc-300">
@@ -780,6 +1075,8 @@
 
             <!-- Script Reactivo para Combos, Deducción Automática y Mixers Especiales -->
             <script>
+            const barQrTotal = {{ (float)$barTotalQr }};
+            const barCardNetTotal = {{ (float)$barTotalCardNet }};
             let currentActiveRowId = null;
 
             function openSpecialModal(rowId) {
@@ -969,22 +1266,49 @@
                     });
 
                     const grandTotal = subtotalLiquors + subtotalMixers;
+                    const cashRemaining = Math.max(0, grandTotal - barQrTotal - barCardNetTotal);
 
-                    document.getElementById('header-total-combos').innerHTML = `${totalLiquorCombos} <span class="text-xs font-sans text-zinc-400 font-normal">combos</span>`;
-                    document.getElementById('header-subtotal-combos').textContent = 'Subtotal: Bs. ' + subtotalLiquors.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    document.getElementById('badge-liquor-subtotal').textContent = 'Subtotal: Bs. ' + subtotalLiquors.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    document.getElementById('tfoot-liquor-vendido').textContent = totalLiquorCombos;
-                    document.getElementById('tfoot-liquor-subtotal').textContent = 'Bs. ' + subtotalLiquors.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const headerCombos = document.getElementById('header-total-combos');
+                    if (headerCombos) headerCombos.textContent = `${totalLiquorCombos} combos`;
 
-                    document.getElementById('header-total-extras').innerHTML = `${totalMixerExtras} <span class="text-xs font-sans text-zinc-400 font-normal">extras</span>`;
-                    document.getElementById('header-subtotal-extras').textContent = 'Subtotal: Bs. ' + subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    document.getElementById('badge-mixer-subtotal').textContent = 'Subtotal Extras: Bs. ' + subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    document.getElementById('tfoot-mixer-consumido').textContent = totalMixerConsumed;
-                    document.getElementById('tfoot-mixer-extras').textContent = totalMixerExtras;
-                    document.getElementById('tfoot-mixer-subtotal').textContent = 'Bs. ' + subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const headerSubtotalCombosVal = document.getElementById('header-subtotal-combos-val');
+                    if (headerSubtotalCombosVal) headerSubtotalCombosVal.textContent = subtotalLiquors.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-                    document.getElementById('header-grand-total').innerHTML = `<span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    document.getElementById('footer-grand-total').textContent = 'Bs. ' + grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const badgeLiquorSubtotal = document.getElementById('badge-liquor-subtotal');
+                    if (badgeLiquorSubtotal) badgeLiquorSubtotal.textContent = 'Subtotal: Bs. ' + subtotalLiquors.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const tfootLiquorVendido = document.getElementById('tfoot-liquor-vendido');
+                    if (tfootLiquorVendido) tfootLiquorVendido.textContent = totalLiquorCombos;
+
+                    const tfootLiquorSubtotal = document.getElementById('tfoot-liquor-subtotal');
+                    if (tfootLiquorSubtotal) tfootLiquorSubtotal.textContent = 'Bs. ' + subtotalLiquors.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const headerExtras = document.getElementById('header-total-extras');
+                    if (headerExtras) headerExtras.textContent = `${totalMixerExtras} extras`;
+
+                    const headerSubtotalExtrasVal = document.getElementById('header-subtotal-extras-val');
+                    if (headerSubtotalExtrasVal) headerSubtotalExtrasVal.textContent = subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const badgeMixerSubtotal = document.getElementById('badge-mixer-subtotal');
+                    if (badgeMixerSubtotal) badgeMixerSubtotal.textContent = 'Subtotal Extras: Bs. ' + subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const tfootMixerConsumido = document.getElementById('tfoot-mixer-consumido');
+                    if (tfootMixerConsumido) tfootMixerConsumido.textContent = totalMixerConsumed;
+
+                    const tfootMixerExtras = document.getElementById('tfoot-mixer-extras');
+                    if (tfootMixerExtras) tfootMixerExtras.textContent = totalMixerExtras;
+
+                    const tfootMixerSubtotal = document.getElementById('tfoot-mixer-subtotal');
+                    if (tfootMixerSubtotal) tfootMixerSubtotal.textContent = 'Bs. ' + subtotalMixers.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const headerGrandTotal = document.getElementById('header-grand-total');
+                    if (headerGrandTotal) headerGrandTotal.innerHTML = `<span class="text-amber-400 text-lg mr-0.5 font-sans">Bs.</span>${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                    const headerBarCash = document.getElementById('header-bar-cash');
+                    if (headerBarCash) headerBarCash.textContent = cashRemaining.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                    const footerGrandTotal = document.getElementById('footer-grand-total');
+                    if (footerGrandTotal) footerGrandTotal.textContent = 'Bs. ' + grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 };
 
                 document.querySelectorAll('#sales-form input').forEach(input => {

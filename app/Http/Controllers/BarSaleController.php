@@ -47,8 +47,45 @@ class BarSaleController extends Controller
         $totalStoreCash = 0;
         $totalStoreQr = 0;
 
+        // Variables de barras (solo usadas cuando no es Tienda) — inicializadas por defecto
+        $specialMixerOptions = collect();
+        $categories = [];
+        $allMixerProducts = collect();
+
         if ($session) {
             $closing = CashClosing::firstOrCreate(['night_session_id' => $session->id]);
+
+            // Pagos QR y Facturas/Tarjetas vinculados al punto de venta actual
+            if ($selectedBar === 'Tienda') {
+                $qrPosNames = ['Tienda', 'tienda'];
+                $invoiceBarNames = ['Tienda', 'tienda'];
+            } elseif (str_contains($selectedBar, 'Subte') || str_contains($selectedBar, 'Ariel')) {
+                $qrPosNames = ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'];
+                $invoiceBarNames = ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'];
+            } else {
+                // Barra Kelly (Principal)
+                $qrPosNames = ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'];
+                $invoiceBarNames = ['Principal', 'Barra Kelly (Principal)', 'Kelly'];
+            }
+
+            $barQrPayments = $session->qrPayments()
+                ->whereIn('point_of_sale', $qrPosNames)
+                ->orderByDesc('id')
+                ->get();
+
+            $barTotalQrYasta = (float)$barQrPayments->where('bank_app', 'YASTA')->sum('amount');
+            $barTotalQrYape  = (float)$barQrPayments->where('bank_app', 'YAPE')->sum('amount');
+            $barTotalQr      = (float)$barQrPayments->sum('amount');
+
+            $barInvoices = $session->invoices()
+                ->whereIn('bar_name', $invoiceBarNames)
+                ->orderBy('correlative_num')
+                ->get();
+
+            $barCardInvoices = $barInvoices->where('payment_method', 'tarjeta');
+            $barTotalCard           = (float)$barCardInvoices->sum('amount');
+            $barTotalCardCommission = (float)$barCardInvoices->sum('commission_amount');
+            $barTotalCardNet        = (float)$barCardInvoices->sum('net_amount');
 
             if ($selectedBar === 'Tienda') {
                 // Tienda: Despacho directo de combos desde almacén con desglose efectivo/QR
@@ -59,9 +96,12 @@ class BarSaleController extends Controller
                     ->get();
 
                 $totalStoreCombos = $storeSales->sum('quantity');
-                $totalStoreRevenue = $storeSales->sum('total_price');
-                $totalStoreCash = $storeSales->sum('cash_amount');
-                $totalStoreQr = $storeSales->sum('qr_amount');
+                $totalStoreCash = (float)$storeSales->sum('cash_amount');
+                $storeSalesQr = (float)$storeSales->sum('qr_amount');
+                // En QR Tienda se toma el total de cobros QR registrados para Tienda
+                $totalStoreQr = $barTotalQr > 0 ? $barTotalQr : $storeSalesQr;
+                $totalStoreRevenue = $totalStoreCash + $totalStoreQr;
+                $barCashRemaining = $totalStoreCash;
             } else {
                 // Barras tradicionales (Principal y Subte): Apertura, Unidades, Saldo y deducción de sodas
                 $existingCount = BarSale::where('night_session_id', $session->id)
@@ -175,7 +215,19 @@ class BarSaleController extends Controller
                 $categories = Product::getDrinkSubcategories();
                 $allMixerProducts = Product::where('category', 'Mixers')->where('is_active', true)->get();
 
+                $barCashRemaining = max(0, $grandTotalBar - $barTotalQr - $barTotalCardNet);
             }
+        } else {
+            $barQrPayments = collect();
+            $barTotalQr = 0;
+            $barTotalQrYasta = 0;
+            $barTotalQrYape = 0;
+            $barInvoices = collect();
+            $barCardInvoices = collect();
+            $barTotalCard = 0;
+            $barTotalCardCommission = 0;
+            $barTotalCardNet = 0;
+            $barCashRemaining = 0;
         }
 
         return view('sales.index', compact(
@@ -201,7 +253,17 @@ class BarSaleController extends Controller
             'totalStoreQr',
             'specialMixerOptions',
             'categories',
-            'allMixerProducts'
+            'allMixerProducts',
+            'barQrPayments',
+            'barTotalQr',
+            'barTotalQrYasta',
+            'barTotalQrYape',
+            'barInvoices',
+            'barCardInvoices',
+            'barTotalCard',
+            'barTotalCardCommission',
+            'barTotalCardNet',
+            'barCashRemaining'
         ));
 
     }

@@ -124,8 +124,49 @@
 
                 <div>
                     <label for="cobrante_name" class="block text-xs font-medium text-zinc-300 mb-1">Cobrante / Mesero</label>
-                    <input type="text" name="cobrante_name" id="cobrante_name" required placeholder="Ej. Kelly, Mau, Ari..."
-                           class="glass-input w-full text-xs rounded-xl px-3 py-2 text-zinc-100 uppercase placeholder-zinc-500">
+                    <select name="cobrante_name" id="cobrante_name" required 
+                            class="glass-input w-full text-xs rounded-xl px-3 py-2 text-zinc-100 font-medium cursor-pointer uppercase">
+                        <option value="" disabled selected class="bg-[#12141c]">-- Seleccionar Personal --</option>
+                        @php
+                            $bartenders = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'bartender') || str_contains(mb_strtolower($s->role), 'barra'));
+                            $refuerzos  = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'refuerzo'));
+                            $meseros    = $cobrantesStaff->reject(fn($s) =>
+                                str_contains(mb_strtolower($s->role), 'bartender') ||
+                                str_contains(mb_strtolower($s->role), 'barra') ||
+                                str_contains(mb_strtolower($s->role), 'refuerzo')
+                            );
+                        @endphp
+
+                        @if($bartenders->isNotEmpty())
+                            <optgroup label="BARTENDERS" class="bg-[#12141c] text-amber-400 font-bold">
+                                @foreach($bartenders as $b)
+                                    <option value="{{ $b->name }}" class="bg-[#12141c] text-zinc-100">
+                                        {{ $b->name }} ({{ $b->role }}{{ $b->assigned_bar ? ' — ' . $b->assigned_bar : '' }})
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endif
+
+                        @if($meseros->isNotEmpty())
+                            <optgroup label="MESEROS" class="bg-[#12141c] text-amber-400 font-bold">
+                                @foreach($meseros as $m)
+                                    <option value="{{ $m->name }}" class="bg-[#12141c] text-zinc-100">
+                                        {{ $m->name }} ({{ $m->role }})
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endif
+
+                        @if($refuerzos->isNotEmpty())
+                            <optgroup label="REFUERZOS" class="bg-[#12141c] text-amber-400 font-bold">
+                                @foreach($refuerzos as $r)
+                                    <option value="{{ $r->name }}" class="bg-[#12141c] text-zinc-100">
+                                        {{ $r->name }} ({{ $r->role }})
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endif
+                    </select>
                 </div>
 
                 <div>

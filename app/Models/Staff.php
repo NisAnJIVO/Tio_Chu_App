@@ -72,4 +72,33 @@ class Staff extends Model
         }
         return (float)$this->default_pay;
     }
+
+    /**
+     * Categoriza al trabajador en uno de los 4 grupos principales:
+     * meseros, limpieza, seguridades, barra (u otros)
+     */
+    public function getRoleCategory(): string
+    {
+        $role = mb_strtolower(trim($this->role ?? ''));
+        $name = mb_strtolower(trim($this->name ?? ''));
+        $bar = mb_strtolower(trim($this->assigned_bar ?? ''));
+
+        if (str_contains($role, 'seguridad') || str_contains($name, '(s)') || str_contains($bar, 'seguridad')) {
+            return 'seguridades';
+        }
+
+        if (str_contains($role, 'limpieza')) {
+            return 'limpieza';
+        }
+
+        if (str_contains($role, 'bartender') || str_contains($role, 'barra') || str_contains($bar, 'barra')) {
+            return 'barra';
+        }
+
+        if (str_contains($role, 'mozo') || str_contains($role, 'meser') || str_contains($role, 'staff') || str_contains($bar, 'pista')) {
+            return 'meseros';
+        }
+
+        return 'meseros';
+    }
 }

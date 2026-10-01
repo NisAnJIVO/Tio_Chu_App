@@ -25,19 +25,30 @@
             </p>
         </div>
 
-        @if($allSessions->isNotEmpty())
-            <form method="GET" action="{{ route('staffPayments.index') }}" class="glass-panel p-2 rounded-2xl border border-white/10 flex items-center gap-2">
-                <label for="session_id" class="text-xs text-zinc-400 font-medium pl-1">Noche:</label>
-                <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                        class="glass-input text-xs font-mono font-bold rounded-xl px-2.5 py-1.5 text-zinc-100 cursor-pointer">
-                    @foreach($allSessions as $s)
-                        <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-[#12141c] text-zinc-100">
-                            {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}
-                        </option>
-                    @endforeach
-                </select>
-            </form>
-        @endif
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('paymentHistory.index', $session ? ['session_id' => $session->id] : []) }}" 
+               class="glass-panel px-3.5 py-2 rounded-2xl border border-white/10 text-xs font-mono font-bold text-amber-400 hover:text-amber-300 hover:bg-white/5 transition-all flex items-center gap-1.5 shadow-sm">
+                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Ver Historial de Pagos y Deudas &rarr;</span>
+            </a>
+
+            @if($allSessions->isNotEmpty())
+                <form method="GET" action="{{ route('staffPayments.index') }}" class="glass-panel p-2 rounded-2xl border border-white/10 flex items-center gap-2">
+                    <label for="session_id" class="text-xs text-zinc-400 font-medium pl-1">Noche:</label>
+                    <select name="session_id" id="session_id" onchange="this.form.submit()" 
+                            class="glass-input text-xs font-mono font-bold rounded-xl px-2.5 py-1.5 text-zinc-100 cursor-pointer">
+                        @foreach($allSessions as $s)
+                            <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-[#12141c] text-zinc-100">
+                                {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            @endif
+        </div>
     </div>
 
     @if(!$session)
@@ -140,13 +151,24 @@
                 <span class="text-xs text-zinc-400 font-mono">Todo el personal activo está incluido en esta noche.</span>
             @endif
 
-            <!-- Marcar Todos como Pagados -->
-            <form method="POST" action="{{ route('staffPayments.markAllPaid', $session) }}" onsubmit="return confirm('¿Marcar a todo el personal como PAGADO?');">
-                @csrf
-                <button type="submit" class="px-4 py-2 glass-card rounded-xl text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer">
-                    ✓ Marcar Todos como Pagados
+            <div class="flex items-center gap-2">
+                <!-- Botón Editar Sueldo General -->
+                <button type="button" onclick="openWageBatchDrawer()" 
+                        class="px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-950 rounded-xl text-xs font-black uppercase tracking-wider hover:brightness-110 active:scale-95 transition-all shadow-md shadow-amber-500/20 cursor-pointer flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                    Editar Sueldo
                 </button>
-            </form>
+
+                <!-- Marcar Todos como Pagados -->
+                <form method="POST" action="{{ route('staffPayments.markAllPaid', $session) }}" onsubmit="return confirm('¿Marcar a todo el personal como PAGADO?');">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 glass-card rounded-xl text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer">
+                        ✓ Marcar Todos como Pagados
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Tabla de Planilla Oficial -->
@@ -239,4 +261,140 @@
     @endif
 
 </div>
+
+@if($session)
+<!-- ==========================================
+     DRAWER: EDITAR SUELDO GENERAL (LIQUID GLASS / iOS)
+     ========================================== -->
+<div id="wage-batch-drawer-overlay" class="drawer-overlay" onclick="closeWageBatchDrawer()"></div>
+
+<div id="wage-batch-drawer" class="drawer-panel" style="z-index: 60;">
+    <div class="drawer-header">
+        <div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-1.5 font-mono">
+                Ajuste Masivo de Jornales
+            </span>
+            <h2 class="text-lg font-black text-white tracking-tight">Editar Sueldo por Área</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Aplica tarifas específicas para esta noche ({{ $session->day_name }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}).</p>
+        </div>
+        <button type="button" onclick="closeWageBatchDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-all flex-shrink-0 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <form method="POST" action="{{ route('staffPayments.updateBatchWage') }}" class="drawer-body space-y-5">
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="night_session_id" value="{{ $session->id }}">
+
+        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-zinc-300">
+            <span class="text-amber-400 font-bold block mb-1">⚡ Modificación Rápida por Cargo</span>
+            Ingresa la tarifa por área. Al guardar, se actualizará el jornal únicamente para el personal de esta jornada nocturna.
+        </div>
+
+        <div class="space-y-4">
+            <!-- Meseros -->
+            <div class="glass-card p-4 rounded-2xl border border-white/10 flex items-center justify-between gap-4">
+                <div>
+                    <label for="wage_meseros" class="text-sm font-bold text-white block">Meseros / Mozos</label>
+                    <span class="text-[11px] text-zinc-400">Atención en pista, mozos y meseras</span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-amber-400 font-black text-xs font-mono">Bs.</span>
+                    <input type="number" step="5" min="0" name="wages[meseros]" id="wage_meseros" placeholder="100"
+                           class="glass-input w-24 text-right rounded-xl px-3 py-2 text-sm font-bold font-mono text-amber-400">
+                </div>
+            </div>
+
+            <!-- Limpieza -->
+            <div class="glass-card p-4 rounded-2xl border border-white/10 flex items-center justify-between gap-4">
+                <div>
+                    <label for="wage_limpieza" class="text-sm font-bold text-white block">Limpieza</label>
+                    <span class="text-[11px] text-zinc-400">Aseo de pista, baños y mantenimiento</span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-amber-400 font-black text-xs font-mono">Bs.</span>
+                    <input type="number" step="5" min="0" name="wages[limpieza]" id="wage_limpieza" placeholder="100"
+                           class="glass-input w-24 text-right rounded-xl px-3 py-2 text-sm font-bold font-mono text-amber-400">
+                </div>
+            </div>
+
+            <!-- Seguridades -->
+            <div class="glass-card p-4 rounded-2xl border border-white/10 flex items-center justify-between gap-4">
+                <div>
+                    <label for="wage_seguridades" class="text-sm font-bold text-white block">Seguridades</label>
+                    <span class="text-[11px] text-zinc-400">Control de acceso, orden y puerta</span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-amber-400 font-black text-xs font-mono">Bs.</span>
+                    <input type="number" step="5" min="0" name="wages[seguridades]" id="wage_seguridades" placeholder="120"
+                           class="glass-input w-24 text-right rounded-xl px-3 py-2 text-sm font-bold font-mono text-amber-400">
+                </div>
+            </div>
+
+            <!-- Barra -->
+            <div class="glass-card p-4 rounded-2xl border border-white/10 flex items-center justify-between gap-4">
+                <div>
+                    <label for="wage_barra" class="text-sm font-bold text-white block">Barra (Bartenders)</label>
+                    <span class="text-[11px] text-zinc-400">Barra Kelly (Principal) y Ariel (Subte)</span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-amber-400 font-black text-xs font-mono">Bs.</span>
+                    <input type="number" step="5" min="0" name="wages[barra]" id="wage_barra" placeholder="100"
+                           class="glass-input w-24 text-right rounded-xl px-3 py-2 text-sm font-bold font-mono text-amber-400">
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer-footer" style="margin: 0 -1.75rem -1.75rem; padding: 1.25rem 1.75rem;">
+            <button type="button" onclick="closeWageBatchDrawer()" class="px-5 py-2.5 glass-card hover:bg-white/10 text-zinc-400 hover:text-white text-xs font-semibold rounded-xl transition-all cursor-pointer">
+                Cancelar
+            </button>
+            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 text-xs font-extrabold tracking-wider uppercase rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all cursor-pointer">
+                Aplicar a Esta Noche
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function openWageBatchDrawer() {
+        const overlay = document.getElementById('wage-batch-drawer-overlay');
+        const drawer = document.getElementById('wage-batch-drawer');
+        if (overlay && drawer) {
+            overlay.classList.add('is-open');
+            drawer.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                const input = document.getElementById('wage_meseros');
+                if (input) input.focus();
+            }, 300);
+        }
+    }
+
+    function openWageBatchModal() {
+        openWageBatchDrawer();
+    }
+
+    function closeWageBatchDrawer() {
+        const overlay = document.getElementById('wage-batch-drawer-overlay');
+        const drawer = document.getElementById('wage-batch-drawer');
+        if (overlay && drawer) {
+            overlay.classList.remove('is-open');
+            drawer.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function closeWageBatchModal() {
+        closeWageBatchDrawer();
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeWageBatchDrawer();
+        }
+    });
+</script>
+@endif
 @endsection

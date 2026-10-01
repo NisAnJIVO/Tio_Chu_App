@@ -14,6 +14,7 @@ class Invoice extends Model
         'night_session_id',
         'correlative_num',
         'payment_method',
+        'bar_name',
         'amount',
         'commission_rate',
         'commission_amount',

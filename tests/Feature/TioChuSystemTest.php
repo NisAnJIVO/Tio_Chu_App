@@ -396,6 +396,7 @@ class TioChuSystemTest extends TestCase
 
     public function test_cannot_create_duplicate_session_date(): void
     {
+        NightSession::where('status', 'open')->update(['status' => 'closed']);
         $existingDate = \Carbon\Carbon::parse(NightSession::first()->session_date)->format('Y-m-d');
         $response = $this->actingAs($this->user)->post(route('sessions.store'), [
             'session_date' => $existingDate,
@@ -407,7 +408,8 @@ class TioChuSystemTest extends TestCase
 
     public function test_can_create_session_for_today(): void
     {
-        // Si ya hay sesión para hoy, la eliminamos para probar la creación
+        // Si ya hay sesión para hoy, la eliminamos para probar la creación y cerramos abiertas
+        NightSession::where('status', 'open')->update(['status' => 'closed']);
         $today = now()->format('Y-m-d');
         NightSession::whereDate('session_date', $today)->delete();
 
@@ -421,6 +423,7 @@ class TioChuSystemTest extends TestCase
 
     public function test_session_calculates_day_name_automatically(): void
     {
+        NightSession::where('status', 'open')->update(['status' => 'closed']);
         $futureDate = now()->addDays(5)->format('Y-m-d');
         $response = $this->actingAs($this->user)->post(route('sessions.store'), [
             'session_date' => $futureDate,
