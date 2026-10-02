@@ -89,6 +89,8 @@ class TioChuSystemTest extends TestCase
 
     public function test_staff_varies_by_day_saturday_has_more_staff_than_friday_and_sunday(): void
     {
+        NightSession::query()->delete();
+
         // 1. Crear Noche de Viernes
         $fridayDate = Carbon::parse('2026-10-02'); // Viernes
         $fridaySession = NightSession::create([
