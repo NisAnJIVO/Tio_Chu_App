@@ -46,6 +46,7 @@ class BarSaleController extends Controller
         $totalStoreRevenue = 0;
         $totalStoreCash = 0;
         $totalStoreQr = 0;
+        $totalStoreCard = 0;
 
         // Variables de barras (solo usadas cuando no es Tienda) — inicializadas por defecto
         $specialMixerOptions = collect();
@@ -100,10 +101,25 @@ class BarSaleController extends Controller
                 $storeSalesQr = (float)$storeSales->sum('qr_amount');
                 // En QR Tienda se toma el total de cobros QR registrados para Tienda
                 $totalStoreQr = $barTotalQr > 0 ? $barTotalQr : $storeSalesQr;
-                $totalStoreRevenue = $totalStoreCash + $totalStoreQr;
+                $totalStoreCard = $barTotalCard;
+                $totalStoreRevenue = $totalStoreCash + $totalStoreQr + $totalStoreCard;
                 $barCashRemaining = $totalStoreCash;
             } else {
                 // Barras tradicionales (Principal y Subte): Apertura, Unidades, Saldo y deducción de sodas
+                if ($session->isOpen()) {
+                    BarSale::where('night_session_id', $session->id)
+                        ->whereHas('product')
+                        ->with('product')
+                        ->get()
+                        ->each(function (BarSale $barSale): void {
+                            $barSale->unit_price = $barSale->product->sale_price;
+                            if ($barSale->product->category !== 'Mixers') {
+                                $barSale->subtotal = (int) $barSale->vendido * (float) $barSale->product->sale_price;
+                            }
+                            $barSale->save();
+                        });
+                }
+
                 $existingCount = BarSale::where('night_session_id', $session->id)
                     ->where('bar_name', $selectedBar)
                     ->count();
@@ -251,6 +267,7 @@ class BarSaleController extends Controller
             'totalStoreRevenue',
             'totalStoreCash',
             'totalStoreQr',
+            'totalStoreCard',
             'specialMixerOptions',
             'categories',
             'allMixerProducts',

@@ -56,17 +56,17 @@ class NightSessionService
         $totalQrYasta = (float) $session->qrPayments()->where('bank_app', 'YASTA')->sum('amount');
         $totalQrYape  = (float) $session->qrPayments()->where('bank_app', 'YAPE')->sum('amount');
 
-        // 1. Efectivo en Barra Kelly (Principal): Ventas Kelly - QR Kelly - Tarjeta Neto Kelly
+        // 1. Efectivo en Barra Kelly (Principal): Ventas Kelly - QR Kelly - Tarjeta bruto Kelly
         $salesKelly = (float) $session->barSales()->whereIn('bar_name', ['Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal');
         $qrKelly = (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount');
-        $cardNetKelly = (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('net_amount');
-        $cashKelly = max(0, $salesKelly - $qrKelly - $cardNetKelly);
+        $cardKelly = (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount');
+        $cashKelly = max(0, $salesKelly - $qrKelly - $cardKelly);
 
-        // 2. Efectivo en Barra Ariel (Subte): Ventas Subte - QR Subte - Tarjeta Neto Subte
+        // 2. Efectivo en Barra Ariel (Subte): Ventas Subte - QR Subte - Tarjeta bruto Subte
         $salesSubte = (float) $session->barSales()->whereIn('bar_name', ['Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal');
         $qrSubte = (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'])->sum('amount');
-        $cardNetSubte = (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('net_amount');
-        $cashSubte = max(0, $salesSubte - $qrSubte - $cardNetSubte);
+        $cardSubte = (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount');
+        $cashSubte = max(0, $salesSubte - $qrSubte - $cardSubte);
 
         // Efectivo total en Cierre de Caja = Suma de efectivos de las barras
         $totalEfectivo = $cashKelly + $cashSubte;
@@ -85,8 +85,8 @@ class NightSessionService
         $totalGuardarropa = (float)($closing->total_guardarropa ?? 0);
         $totalSnacks      = (float)($closing->total_snacks ?? 0);
 
-        // Total Ingresos = Tarjeta Neto + QR YASTA + QR YAPE + Efectivo Barras
-        $totalIngresos = $totalCardNet + $totalQrYasta + $totalQrYape + $totalEfectivo;
+        // Total Ingresos = Tarjeta bruto + QR YASTA + QR YAPE + Efectivo Barras
+        $totalIngresos = $totalCard + $totalQrYasta + $totalQrYape + $totalEfectivo;
 
         // Total Egresos (Personal + Gastos)
         $totalEgresos = $totalStaffPaid + $totalExpenses;

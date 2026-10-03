@@ -69,6 +69,7 @@
 
             <!-- Botón Guardar en Cabecera (Para barras tradicionales) -->
             @if($session && $session->isOpen() && $selectedBar !== 'Tienda')
+                <span id="sales-autosave-status" class="text-[10px] font-mono text-zinc-500" aria-live="polite"></span>
                 <button type="submit" form="sales-form" class="px-4 py-1.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn shadow-sm">
                     <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -176,46 +177,38 @@
                     @csrf
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
-                        
-                        <!-- Producto / Combo -->
-                        <div class="sm:col-span-2">
-                            <label for="product_id" class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Combo / Bebida Solicitada
-                            </label>
-                            <select name="product_id" id="product_id" required 
-                                    class="w-full text-xs font-bold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                                <option value="" disabled selected class="bg-zinc-950 text-zinc-400">-- Seleccionar Combo / Bebida --</option>
-                                @foreach($storeProducts as $prod)
-                                    <option value="{{ $prod->id }}" data-price="{{ $prod->sale_price }}" class="bg-zinc-950 text-white">
-                                        {{ $prod->name }} (Bs. {{ number_format($prod->sale_price, 2) }})
-                                    </option>
-                                @endforeach
-                            </select>
+                    <div id="tienda-order-rows" class="space-y-3">
+                        <div class="tienda-order-row grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3 items-end" data-row-index="0">
+                            <div class="sm:col-span-2 md:col-span-6">
+                                <label class="block text-xs font-semibold text-zinc-300 mb-1">Combo / Bebida</label>
+                                <input type="text" class="tienda-product-search w-full mb-1 text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]" placeholder="Buscar por nombre...">
+                                <select name="orders[0][product_id]" class="tienda-product-select w-full text-xs font-bold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer" required>
+                                    <option value="" disabled selected>-- Seleccionar Combo / Bebida --</option>
+                                    @foreach($storeProducts as $prod)
+                                        <option value="{{ $prod->id }}" data-price="{{ $prod->sale_price }}">{{ $prod->name }} (Bs. {{ number_format($prod->sale_price, 2) }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-zinc-300 mb-1">Cantidad</label>
+                                <input type="number" name="orders[0][quantity]" value="1" min="1" required class="tienda-quantity w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="block text-xs font-semibold text-zinc-300 mb-1">Precio Unitario (Bs.)</label>
+                                <input type="number" step="0.5" name="orders[0][unit_price]" value="0.00" min="0" required class="tienda-unit-price w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
+                            </div>
+                            <div class="md:col-span-1">
+                                <button type="button" class="remove-tienda-row hidden w-full px-2 py-2 text-xs rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10">Quitar</button>
+                            </div>
                         </div>
-
-                        <!-- Cantidad -->
-                        <div>
-                            <label for="quantity" class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Cantidad
-                            </label>
-                            <input type="number" name="quantity" id="quantity" value="1" min="1" required 
-                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
-                        </div>
-
-                        <!-- Precio Unitario -->
-                        <div>
-                            <label for="unit_price" class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Precio Unitario (Bs.)
-                            </label>
-                            <input type="number" step="0.5" name="unit_price" id="unit_price" value="0.00" min="0" required 
-                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
-                        </div>
-
                     </div>
 
+                    <button type="button" id="add-tienda-row" class="px-3 py-2 text-xs font-bold rounded-xl bg-zinc-950 border border-zinc-800 text-[#F5B81C] hover:border-[#F5B81C]/50">
+                        + Agregar bebida
+                    </button>
+
                     <!-- Fila de Cobrante y Desglose de Pago -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5 pt-3 border-t theme-border items-end">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3.5 pt-3 border-t theme-border items-end">
                         
                         <!-- Nombre del Cobrante / Mesero -->
                         <div class="md:col-span-2">
@@ -252,6 +245,11 @@
                             </label>
                             <input type="number" step="0.5" name="qr_amount" id="qr_amount" value="0.00" min="0" required 
                                    class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-blue-400 focus:outline-none focus:border-[#F5B81C]">
+                        </div>
+
+                        <div>
+                            <label for="card_amount" class="block text-xs font-semibold text-zinc-300 mb-1">Monto Tarjeta (Bs.)</label>
+                            <input type="number" step="0.5" name="card_amount" id="card_amount" value="0.00" min="0" required class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-purple-400 focus:outline-none focus:border-[#F5B81C]">
                         </div>
 
                     </div>
@@ -457,66 +455,105 @@
             <!-- Scripts de Cálculo para Tienda -->
             <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const productSelect = document.getElementById('product_id');
-                const quantityInput = document.getElementById('quantity');
-                const unitPriceInput = document.getElementById('unit_price');
+                const rowsContainer = document.getElementById('tienda-order-rows');
+                const addRowButton = document.getElementById('add-tienda-row');
                 const cashInput = document.getElementById('cash_amount');
                 const qrInput = document.getElementById('qr_amount');
+                const cardInput = document.getElementById('card_amount');
                 const totalDisplay = document.getElementById('tienda-total-display');
+                let rowIndex = 1;
 
-                function updateCalculations() {
-                    const qty = parseInt(quantityInput.value) || 0;
-                    const price = parseFloat(unitPriceInput.value) || 0;
-                    const total = qty * price;
-                    totalDisplay.textContent = 'Bs. ' + total.toFixed(2);
+                function getTotal() {
+                    let total = 0;
+                    rowsContainer.querySelectorAll('.tienda-order-row').forEach(row => {
+                        const quantity = parseInt(row.querySelector('.tienda-quantity')?.value) || 0;
+                        const price = parseFloat(row.querySelector('.tienda-unit-price')?.value) || 0;
+                        total += quantity * price;
+                    });
                     return total;
                 }
 
-                if (productSelect) {
-                    productSelect.addEventListener('change', function () {
+                function updateCalculations(resetPayments = true) {
+                    const total = getTotal();
+                    totalDisplay.textContent = 'Bs. ' + total.toFixed(2);
+                    if (resetPayments) {
+                        cashInput.value = total.toFixed(2);
+                        qrInput.value = '0.00';
+                        cardInput.value = '0.00';
+                    }
+                    return total;
+                }
+
+                function bindRow(row) {
+                    const search = row.querySelector('.tienda-product-search');
+                    const select = row.querySelector('.tienda-product-select');
+                    const quantity = row.querySelector('.tienda-quantity');
+                    const price = row.querySelector('.tienda-unit-price');
+
+                    search.addEventListener('input', function () {
+                        const query = this.value.toLowerCase().trim();
+                        Array.from(select.options).forEach(option => {
+                            option.hidden = option.value !== '' && !option.text.toLowerCase().includes(query);
+                        });
+                    });
+
+                    select.addEventListener('change', function () {
                         const selected = this.options[this.selectedIndex];
-                        const price = parseFloat(selected.getAttribute('data-price')) || 0;
-                        unitPriceInput.value = price.toFixed(2);
-                        const total = updateCalculations();
-                        cashInput.value = total.toFixed(2);
-                        qrInput.value = '0.00';
+                        price.value = (parseFloat(selected.dataset.price) || 0).toFixed(2);
+                        search.value = selected.text.replace(/ \(Bs\. [\d,.]+\)$/, '');
+                        updateCalculations();
+                    });
+
+                    [quantity, price].forEach(input => input.addEventListener('input', () => updateCalculations()));
+
+                    row.querySelector('.remove-tienda-row').addEventListener('click', function () {
+                        row.remove();
+                        updateCalculations();
                     });
                 }
 
-                if (quantityInput) {
-                    quantityInput.addEventListener('input', function () {
-                        const total = updateCalculations();
-                        cashInput.value = total.toFixed(2);
-                        qrInput.value = '0.00';
-                    });
-                }
+                bindRow(rowsContainer.querySelector('.tienda-order-row'));
 
-                if (unitPriceInput) {
-                    unitPriceInput.addEventListener('input', function () {
-                        const total = updateCalculations();
-                        cashInput.value = total.toFixed(2);
-                        qrInput.value = '0.00';
+                addRowButton.addEventListener('click', function () {
+                    const template = rowsContainer.querySelector('.tienda-order-row').cloneNode(true);
+                    template.dataset.rowIndex = rowIndex;
+                    template.querySelector('.tienda-product-search').value = '';
+                    template.querySelector('.tienda-product-select').value = '';
+                    template.querySelector('.tienda-quantity').value = '1';
+                    template.querySelector('.tienda-unit-price').value = '0.00';
+                    template.querySelector('.remove-tienda-row').classList.remove('hidden');
+                    template.querySelectorAll('[name]').forEach(input => {
+                        input.name = input.name.replace(/orders\[\d+\]/, `orders[${rowIndex}]`);
                     });
-                }
+                    rowIndex++;
+                    rowsContainer.appendChild(template);
+                    bindRow(template);
+                    updateCalculations();
+                });
 
                 document.getElementById('btn-all-cash')?.addEventListener('click', function () {
-                    const total = updateCalculations();
+                    const total = updateCalculations(false);
                     cashInput.value = total.toFixed(2);
                     qrInput.value = '0.00';
+                    cardInput.value = '0.00';
                 });
 
                 document.getElementById('btn-all-qr')?.addEventListener('click', function () {
-                    const total = updateCalculations();
+                    const total = updateCalculations(false);
                     qrInput.value = total.toFixed(2);
                     cashInput.value = '0.00';
+                    cardInput.value = '0.00';
                 });
 
                 document.getElementById('btn-split-50')?.addEventListener('click', function () {
-                    const total = updateCalculations();
+                    const total = updateCalculations(false);
                     const half = (total / 2).toFixed(2);
                     cashInput.value = half;
                     qrInput.value = (total - parseFloat(half)).toFixed(2);
+                    cardInput.value = '0.00';
                 });
+
+                updateCalculations();
             });
             </script>
 
@@ -684,7 +721,7 @@
             </div>
 
             <!-- Formulario Tabular de Inventario y Ventas para Barras -->
-            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form" data-ajax="true" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
@@ -783,7 +820,7 @@
                                                         onclick="openSpecialModal({{ $sale->id }})" 
                                                         id="btn-special-{{ $sale->id }}"
                                                         class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border {{ $hasSpecials ? 'bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white' }}">
-                                                    <span>{{ $badgeText }}</span>
+                                                    <span id="badge-special-{{ $sale->id }}">{{ $badgeText }}</span>
                                                 </button>
                                             </td>
 
@@ -1172,11 +1209,64 @@
 
                 closeSpecialModal();
                 window.recalculateSales();
+                window.queueSalesAutosave?.();
             }
 
             document.addEventListener('DOMContentLoaded', function () {
                 const liquorRows = document.querySelectorAll('.liquor-row');
                 const mixerRows = document.querySelectorAll('.mixer-row');
+                const salesForm = document.getElementById('sales-form');
+                const autosaveStatus = document.getElementById('sales-autosave-status');
+                let autosaveTimer = null;
+                let autosaveInFlight = false;
+                let autosaveQueued = false;
+
+                function setAutosaveStatus(message, className) {
+                    if (!autosaveStatus) return;
+                    autosaveStatus.textContent = message;
+                    autosaveStatus.className = `text-[10px] font-mono ${className}`;
+                }
+
+                async function autosaveSales() {
+                    if (!salesForm) return;
+                    if (autosaveInFlight) {
+                        autosaveQueued = true;
+                        return;
+                    }
+
+                    autosaveInFlight = true;
+                    setAutosaveStatus('Guardando...', 'text-[#F5B81C]');
+                    try {
+                        const response = await fetch(salesForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            body: new FormData(salesForm)
+                        });
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        setAutosaveStatus('Guardado', 'text-emerald-400');
+                    } catch (error) {
+                        console.error('Error en autoguardado de ventas:', error);
+                        setAutosaveStatus('Error al guardar', 'text-rose-400');
+                    } finally {
+                        autosaveInFlight = false;
+                        if (autosaveQueued) {
+                            autosaveQueued = false;
+                            queueAutosave();
+                        }
+                    }
+                }
+
+                function queueAutosave() {
+                    if (!salesForm) return;
+                    clearTimeout(autosaveTimer);
+                    setAutosaveStatus('Pendiente...', 'text-zinc-400');
+                    autosaveTimer = setTimeout(autosaveSales, 450);
+                }
+
+                window.queueSalesAutosave = queueAutosave;
 
                 if (!liquorRows.length && !mixerRows.length) return;
 
@@ -1308,6 +1398,7 @@
 
                 document.querySelectorAll('#sales-form input').forEach(input => {
                     input.addEventListener('input', window.recalculateSales);
+                    if (input.type === 'number') input.addEventListener('change', queueAutosave);
                 });
             });
             </script>

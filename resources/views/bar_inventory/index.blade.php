@@ -84,6 +84,7 @@
 
             <!-- Botón Principal Guardar (Accesible de inmediato en cabecera) -->
             @if($session && $session->isOpen())
+                <span id="inventory-autosave-status" class="text-[10px] font-mono text-zinc-500" aria-live="polite"></span>
                 <button type="submit" form="bar-inventory-form" class="px-4 py-1.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn shadow-sm">
                     <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -168,7 +169,7 @@
         <!-- ========================================================
              3. TABLA PRINCIPAL DE INVENTARIO
              ======================================================== -->
-        <form method="POST" action="{{ route('barInventory.updateBulk') }}" id="bar-inventory-form">
+        <form method="POST" action="{{ route('barInventory.updateBulk') }}" id="bar-inventory-form" data-ajax="true">
             @csrf
             @method('PUT')
             <input type="hidden" name="night_session_id" value="{{ $session->id }}">
@@ -402,6 +403,56 @@
         document.addEventListener('DOMContentLoaded', function () {
             const rows = document.querySelectorAll('.inv-row');
             const totalSumEl = document.getElementById('bar-total-sum');
+            const inventoryForm = document.getElementById('bar-inventory-form');
+            const autosaveStatus = document.getElementById('inventory-autosave-status');
+            let autosaveTimer = null;
+            let autosaveInFlight = false;
+            let autosaveQueued = false;
+
+            function setAutosaveStatus(message, className) {
+                if (!autosaveStatus) return;
+                autosaveStatus.textContent = message;
+                autosaveStatus.className = `text-[10px] font-mono ${className}`;
+            }
+
+            async function autosaveInventory() {
+                if (!inventoryForm) return;
+                if (autosaveInFlight) {
+                    autosaveQueued = true;
+                    return;
+                }
+
+                autosaveInFlight = true;
+                setAutosaveStatus('Guardando...', 'text-[#F5B81C]');
+                try {
+                    const response = await fetch(inventoryForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        body: new FormData(inventoryForm)
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    setAutosaveStatus('Guardado', 'text-emerald-400');
+                } catch (error) {
+                    console.error('Error en autoguardado de inventario:', error);
+                    setAutosaveStatus('Error al guardar', 'text-rose-400');
+                } finally {
+                    autosaveInFlight = false;
+                    if (autosaveQueued) {
+                        autosaveQueued = false;
+                        queueAutosave();
+                    }
+                }
+            }
+
+            function queueAutosave() {
+                if (!inventoryForm) return;
+                clearTimeout(autosaveTimer);
+                setAutosaveStatus('Pendiente...', 'text-zinc-400');
+                autosaveTimer = setTimeout(autosaveInventory, 450);
+            }
 
             function updateTotalSum() {
                 let grandTotal = 0;
@@ -468,6 +519,7 @@
             rows.forEach(row => {
                 row.querySelectorAll('input').forEach(input => {
                     input.addEventListener('input', () => recalculateRow(row));
+                    input.addEventListener('change', queueAutosave);
                 });
 
                 row.querySelectorAll('.btn-step-plus').forEach(btn => {
@@ -477,6 +529,7 @@
                             input.value = (parseInt(input.value) || 0) + 1;
                             input.dispatchEvent(new Event('input', { bubbles: true }));
                             recalculateRow(row);
+                            queueAutosave();
                         }
                     });
                 });
@@ -490,6 +543,7 @@
                                 input.value = val - 1;
                                 input.dispatchEvent(new Event('input', { bubbles: true }));
                                 recalculateRow(row);
+                                queueAutosave();
                             }
                         }
                     });

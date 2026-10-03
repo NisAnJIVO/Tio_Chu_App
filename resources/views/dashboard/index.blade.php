@@ -9,16 +9,32 @@
     $salesTienda = $session ? (float) $session->storeSales()->sum('total_price') : 0;
     $totalSales = $salesKelly + $salesAriel + $salesTienda;
 
-    $netCash = $closing->net_cash_balance ?? 0;
-    $totalIncome = $closing->total_income ?? 0;
     $totalExpenses = $closing->total_expenses ?? 0;
 
-    $qrTotal = $closing->total_qr ?? 0;
-    $posNet = $closing->total_pos_net ?? 0;
-    $posGross = $closing->total_pos_gross ?? 0;
-    $posCommission = $posGross - $posNet;
-    $barTotal = $closing->total_bar_sales ?? 0;
     $staffPaid = $closing->total_staff_paid ?? 0;
+
+    $barPayments = [
+        'kelly' => [
+            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount') : 0,
+            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
+            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
+        ],
+        'ariel' => [
+            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'])->sum('amount') : 0,
+            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
+            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
+        ],
+    ];
+    $barPayments['kelly']['cash'] = max(0, $salesKelly - $barPayments['kelly']['qr'] - $barPayments['kelly']['card']);
+    $barPayments['ariel']['cash'] = max(0, $salesAriel - $barPayments['ariel']['qr'] - $barPayments['ariel']['card']);
+    $storeQr = $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Tienda', 'tienda'])->sum('amount') : 0;
+    $qrTotal = $barPayments['kelly']['qr'] + $barPayments['ariel']['qr'] + $storeQr;
+    $posGross = $barPayments['kelly']['card'] + $barPayments['ariel']['card'];
+    $posNet = $barPayments['kelly']['card_net'] + $barPayments['ariel']['card_net'];
+    $posCommission = $posGross - $posNet;
+    $barTotal = $salesKelly + $salesAriel;
+    $netCash = $barPayments['kelly']['cash'] + $barPayments['ariel']['cash'];
+    $totalIncome = $posGross + $qrTotal + $netCash;
 @endphp
 
 <div class="space-y-4 max-w-7xl mx-auto w-full pb-8">
@@ -126,13 +142,13 @@
             <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-2' : '' }}">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Tarjetas (Neto Banco)
+                        Tarjetas (Bruto)
                     </span>
                     <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($posNet, 2) }}
                     </div>
                     <span class="text-[10px] text-zinc-500 font-medium block mt-0.5 truncate">
-                        Bruto: Bs. {{ number_format($posGross, 2) }}
+                        Neto Banco: Bs. {{ number_format($posNet, 2) }}
                     </span>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
@@ -217,6 +233,9 @@
                             Bs. {{ number_format($salesKelly, 2) }}
                         </span>
                     </div>
+                    <div class="mt-1 text-[10px] text-zinc-500 font-mono">
+                        QR Bs. {{ number_format($barPayments['kelly']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['kelly']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['kelly']['cash'], 2) }}
+                    </div>
 
                     <!-- Barra Ariel (Subte) -->
                     <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
@@ -227,6 +246,9 @@
                         <span class="font-black text-white font-mono text-sm">
                             Bs. {{ number_format($salesAriel, 2) }}
                         </span>
+                    </div>
+                    <div class="mt-1 text-[10px] text-zinc-500 font-mono">
+                        QR Bs. {{ number_format($barPayments['ariel']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['ariel']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['ariel']['cash'], 2) }}
                     </div>
 
                     <!-- Tienda / Guardarropa -->

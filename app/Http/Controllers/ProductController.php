@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarSale;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -102,6 +103,16 @@ class ProductController extends Controller
         unset($validated['image']);
 
         $product->update($validated);
+        BarSale::where('product_id', $product->id)
+            ->whereHas('nightSession', fn ($query) => $query->where('status', 'open'))
+            ->get()
+            ->each(function (BarSale $barSale) use ($product): void {
+                $barSale->unit_price = $product->sale_price;
+                if ($product->category !== 'Mixers') {
+                    $barSale->subtotal = (int) $barSale->vendido * (float) $product->sale_price;
+                }
+                $barSale->save();
+            });
         $this->syncStockBreakdown($product);
         $product->save();
 
