@@ -1,4 +1,6 @@
 @echo off
+setlocal
+cd /d "%~dp0"
 chcp 65001 > nul
 title Tío Chu - Instalador y Configurador Inicial
 color 0E
