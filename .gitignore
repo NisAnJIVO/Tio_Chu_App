@@ -13,6 +13,8 @@
 /.zed
 /auth.json
 /node_modules
+/php
+/composer.phar
 /public/hot
 /public/storage
 /storage/*.key

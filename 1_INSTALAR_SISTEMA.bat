@@ -10,15 +10,27 @@ echo                DISCOTECA TÍO CHU - INSTALADOR INICIAL
 echo =====================================================================
 echo.
 echo [1/6] Verificando entorno PHP...
+set "PHP_BIN="
 where php >nul 2>nul
-if %ERRORLEVEL% neq 0 (
-    color 0C
-    echo [ERROR] No se encontró PHP instalado o no está en el PATH del sistema.
-    echo Por favor asegúrate de tener PHP 8.2 o superior instalado.
-    echo.
-    pause
-    exit /b 1
+if %ERRORLEVEL% equ 0 set "PHP_BIN=php"
+if exist "%~dp0php\php.exe" set "PHP_BIN=%~dp0php\php.exe"
+
+if not defined PHP_BIN (
+    echo       - PHP no encontrado. Descargando PHP portable 8.4...
+    if not exist "%~dp0php" mkdir "%~dp0php"
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://windows.php.net/downloads/releases/latest/php-8.4-nts-Win32-vs17-x64-latest.zip' -OutFile '%TEMP%\tio-chu-php.zip'; Expand-Archive -Path '%TEMP%\tio-chu-php.zip' -DestinationPath '%~dp0php' -Force; Remove-Item '%TEMP%\tio-chu-php.zip' -Force"
+    if not exist "%~dp0php\php.exe" (
+        color 0C
+        echo [ERROR] No se pudo descargar PHP. Revisa la conexion a Internet.
+        echo.
+        pause
+        exit /b 1
+    )
+    copy /y "%~dp0php\php.ini-development" "%~dp0php\php.ini" > nul
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='%~dp0php\php.ini'; $s=Get-Content $p -Raw; $s=$s -replace ';extension_dir = \"ext\"','extension_dir = \"ext\"'; $s=$s -replace ';extension=curl','extension=curl'; $s=$s -replace ';extension=mbstring','extension=mbstring'; $s=$s -replace ';extension=openssl','extension=openssl'; $s=$s -replace ';extension=pdo_sqlite','extension=pdo_sqlite'; $s=$s -replace ';extension=sqlite3','extension=sqlite3'; $s=$s -replace ';extension=fileinfo','extension=fileinfo'; $s=$s -replace ';extension=zip','extension=zip'; Set-Content -Path $p -Value $s -NoNewline"
+    set "PHP_BIN=%~dp0php\php.exe"
 )
+echo       - PHP listo: %PHP_BIN%
 
 echo [2/6] Configurando archivo de entorno (.env)...
 if not exist ".env" (
@@ -30,19 +42,33 @@ if not exist ".env" (
 
 echo [3/6] Verificando dependencias (Composer)...
 if not exist "vendor" (
-    where composer >nul 2>nul
-    if %ERRORLEVEL% equ 0 (
-        echo       - Instalando paquetes de Composer...
-        call composer install --no-interaction --prefer-dist --optimize-autoloader
-    ) else (
-        echo       - [AVISO] Composer no está en PATH, pero si ya tienes vendor se continuará.
+    if not exist "%~dp0composer.phar" (
+        echo       - Composer no encontrado. Descargando Composer...
+        powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://getcomposer.org/download/latest-stable/composer.phar' -OutFile '%~dp0composer.phar'"
+    )
+    if not exist "%~dp0composer.phar" (
+        color 0C
+        echo [ERROR] No se pudo descargar Composer. Revisa la conexion a Internet.
+        echo.
+        pause
+        exit /b 1
+    )
+    echo       - Instalando paquetes de Composer...
+    "%PHP_BIN%" "%~dp0composer.phar" install --no-interaction --prefer-dist --optimize-autoloader
+    if %ERRORLEVEL% neq 0 (
+        color 0C
+        echo [ERROR] Composer no pudo instalar las dependencias.
+        echo.
+        pause
+        exit /b 1
     )
 ) else (
     echo       - Carpeta vendor detectada correctamente.
 )
 
 echo [4/6] Generando clave de seguridad de la aplicación...
-call php artisan key:generate --force
+call "%PHP_BIN%" artisan key:generate --force
+if %ERRORLEVEL% neq 0 exit /b 1
 
 echo [5/6] Preparando Base de Datos SQLite y Datos Oficiales...
 if not exist "database\database.sqlite" (
@@ -51,11 +77,12 @@ if not exist "database\database.sqlite" (
 )
 
 echo       - Ejecutando migraciones y cargando datos oficiales (Usuarios, Bebidas, Personal)...
-call php artisan migrate:fresh --seed --force
+call "%PHP_BIN%" artisan migrate:fresh --seed --force
+if %ERRORLEVEL% neq 0 exit /b 1
 
 echo [6/6] Optimizando enlaces y caché...
-call php artisan storage:link 2>nul
-call php artisan optimize:clear
+call "%PHP_BIN%" artisan storage:link 2>nul
+call "%PHP_BIN%" artisan optimize:clear
 
 echo.
 color 0A

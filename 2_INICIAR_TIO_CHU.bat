@@ -2,6 +2,9 @@
 chcp 65001 > nul
 title Tío Chu - Servidor de Operación
 color 06
+set "PHP_BIN=php"
+if exist "%~dp0php\php.exe" set "PHP_BIN=%~dp0php\php.exe"
+cd /d "%~dp0"
 
 echo =====================================================================
 echo                   DISCOTECA TÍO CHU - SERVIDOR ACTIVO
@@ -25,4 +28,4 @@ echo =====================================================================
 echo.
 
 start "" cmd /c "timeout /t 2 /nobreak >nul & start http://127.0.0.1:8000"
-php artisan serve --host=127.0.0.1 --port=8000
+call "%PHP_BIN%" artisan serve --host=127.0.0.1 --port=8000
