@@ -151,31 +151,8 @@
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
                     <input type="hidden" name="correlative_num" value="{{ $nextCorrelative }}">
 
-                    <!-- 1. Forma de Pago (Píldoras Switch Modo iPhone) -->
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Forma de Pago</label>
-                        <input type="hidden" name="payment_method" id="payment_method_input" value="tarjeta">
-                        <div class="grid grid-cols-2 p-1 rounded-xl bg-zinc-950 border border-zinc-800 gap-1">
-                            <button type="button"
-                                    id="btn-method-tarjeta"
-                                    onclick="selectPaymentMethod('tarjeta')"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] active:scale-95">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                                </svg>
-                                <span>Tarjeta</span>
-                            </button>
-                            <button type="button"
-                                    id="btn-method-efectivo"
-                                    onclick="selectPaymentMethod('efectivo')"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white active:scale-95">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
-                                <span>Efectivo</span>
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Forma de Pago: Tarjeta por defecto -->
+                    <input type="hidden" name="payment_method" id="payment_method_input" value="tarjeta">
 
                     <!-- 2. Barra (Píldoras Switch Modo iPhone) -->
                     <div>
@@ -318,21 +295,6 @@
 </div>
 
 <script>
-/* --- CONTROL DE FORMA DE PAGO (PÍLDORAS MODO IPHONE) --- */
-function selectPaymentMethod(method) {
-    document.getElementById('payment_method_input').value = method;
-    const btnCard = document.getElementById('btn-method-tarjeta');
-    const btnCash = document.getElementById('btn-method-efectivo');
-
-    if (method === 'tarjeta') {
-        btnCard.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] active:scale-95';
-        btnCash.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white active:scale-95';
-    } else {
-        btnCash.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] active:scale-95';
-        btnCard.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white active:scale-95';
-    }
-}
-
 /* --- CONTROL DE BARRA (PÍLDORAS MODO IPHONE) --- */
 function selectBar(bar) {
     document.getElementById('bar_name_input').value = bar;

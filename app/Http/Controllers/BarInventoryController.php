@@ -44,39 +44,20 @@ class BarInventoryController extends Controller
             if ($existingCount === 0) {
                 $products = Product::where('is_active', true)->get();
                 foreach ($products as $prod) {
-                    $unitsPerPkg = $prod->units_per_package > 0 ? $prod->units_per_package : 1;
-                    $initialPackages = 0;
-                    $initialUnits = 0;
-                    $totalInitial = 0;
-
-                    // Si hay sesión anterior, jalar el saldo sobrante al cierre
-                    if ($previousSession) {
-                        $prevSale = BarSale::where('night_session_id', $previousSession->id)
-                            ->where('bar_name', $selectedBar)
-                            ->where('product_id', $prod->id)
-                            ->first();
-
-                        if ($prevSale && (int)$prevSale->saldo > 0) {
-                            $initialPackages = intdiv((int)$prevSale->saldo, $unitsPerPkg);
-                            $initialUnits = (int)$prevSale->saldo % $unitsPerPkg;
-                            $totalInitial = (int)$prevSale->saldo;
-                        }
-                    }
-
                     BarSale::create([
                         'night_session_id' => $session->id,
                         'product_id' => $prod->id,
                         'bar_name' => $selectedBar,
-                        'initial_packages' => $initialPackages,
-                        'initial_units' => $initialUnits,
+                        'initial_packages' => 0,
+                        'initial_units' => 0,
                         'added_packages' => 0,
                         'added_units' => 0,
                         'night_packages' => 0,
                         'night_units' => 0,
-                        'packages' => $initialPackages,
-                        'units' => $initialUnits,
-                        'total_initial' => $totalInitial,
-                        'saldo' => $totalInitial,
+                        'packages' => 0,
+                        'units' => 0,
+                        'total_initial' => 0,
+                        'saldo' => 0,
                         'vendido' => 0,
                         'unit_price' => $prod->sale_price,
                         'subtotal' => 0,
@@ -88,48 +69,6 @@ class BarInventoryController extends Controller
                 ->where('night_session_id', $session->id)
                 ->where('bar_name', $selectedBar)
                 ->get();
-
-            // Sincronizar automáticamente el saldo inicial si la sesión anterior fue modificada
-            if ($previousSession) {
-                foreach ($allBarSales as $barSale) {
-                    if (!$barSale->product) continue;
-                    $prevSale = BarSale::where('night_session_id', $previousSession->id)
-                        ->where('bar_name', $selectedBar)
-                        ->where('product_id', $barSale->product_id)
-                        ->first();
-
-                    $prevSaldo = $prevSale ? (int)$prevSale->saldo : 0;
-                    $unitsPerPkg = $barSale->product->units_per_package > 0 ? (int)$barSale->product->units_per_package : 1;
-
-                    $expectedInitPkg = intdiv($prevSaldo, $unitsPerPkg);
-                    $expectedInitUnits = $prevSaldo % $unitsPerPkg;
-
-                    if ($barSale->initial_packages !== $expectedInitPkg || $barSale->initial_units !== $expectedInitUnits) {
-                        $barSale->initial_packages = $expectedInitPkg;
-                        $barSale->initial_units = $expectedInitUnits;
-
-                        $totalNightPkg = $expectedInitPkg + (int)$barSale->added_packages + (int)$barSale->night_packages;
-                        $totalNightUnits = $expectedInitUnits + (int)$barSale->added_units + (int)$barSale->night_units;
-                        $totalNightBot = ($totalNightPkg * $unitsPerPkg) + $totalNightUnits;
-
-                        $barSale->packages = $totalNightPkg;
-                        $barSale->units = $totalNightUnits;
-                        $barSale->total_initial = $totalNightBot;
-
-                        if ((int)$barSale->vendido === 0) {
-                            $barSale->saldo = $totalNightBot;
-                        } else {
-                            $barSale->vendido = max(0, $totalNightBot - (int)$barSale->saldo);
-                        }
-
-                        if ($barSale->product->category !== 'Mixers') {
-                            $barSale->subtotal = $barSale->vendido * (float)$barSale->unit_price;
-                        }
-
-                        $barSale->save();
-                    }
-                }
-            }
 
             $liquorSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category !== 'Mixers');
             $mixerSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category === 'Mixers');
@@ -251,10 +190,8 @@ class BarInventoryController extends Controller
             $barSale->packages = $initPkg + (int)$barSale->added_packages + (int)$barSale->night_packages;
             $barSale->units = $initUnits + (int)$barSale->added_units + (int)$barSale->night_units;
             $barSale->total_initial = ($barSale->packages * $unitsPerPkg) + $barSale->units;
-            // Si el saldo no se había editado, ajustarlo al total inicial
-            if ((int)$barSale->vendido === 0) {
-                $barSale->saldo = $barSale->total_initial;
-            }
+            // El Saldo Cierre de la nueva noche se mantiene siempre en 0
+            $barSale->saldo = 0;
             $barSale->vendido = max(0, $barSale->total_initial - (int)$barSale->saldo);
             if ($barSale->product->category !== 'Mixers') {
                 $barSale->subtotal = $barSale->vendido * (float)$barSale->unit_price;

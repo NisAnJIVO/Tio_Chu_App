@@ -107,7 +107,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             
             <!-- TARJETA 1: Total General QR -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Total Cobrado por QR
@@ -130,7 +130,7 @@
             </div>
 
             <!-- TARJETA 2: Barra Kelly (Principal) -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Barra Kelly (Principal)
@@ -150,7 +150,7 @@
             </div>
 
             <!-- TARJETA 3: Tienda (Entrada) -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Tienda (Entrada)
@@ -170,7 +170,7 @@
             </div>
 
             <!-- TARJETA 4: Barra Ariel (Subte) -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm">
+            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Barra Ariel (Subte)
@@ -194,8 +194,8 @@
         <!-- ========================================================
              3. FORMULARIO MINIMALISTA CON SWITCHES MODO IPHONE & LOGOS
              ======================================================== -->
-        <div class="p-5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
-            <div class="border-b border-zinc-800/80 pb-3 mb-4 flex items-center justify-between">
+        <div class="p-5 rounded-2xl theme-card border theme-border shadow-sm">
+            <div class="border-b theme-border pb-3 mb-4 flex items-center justify-between">
                 <div>
                     <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                         Registrar Nuevo Cobro QR
@@ -451,10 +451,10 @@
                         default => $posName,
                     };
                 @endphp
-                <div class="rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col h-full overflow-hidden shadow-sm">
+                <div class="rounded-2xl theme-card border theme-border flex flex-col h-full overflow-hidden shadow-sm">
                     
                     <!-- Encabezado de Columna -->
-                    <div class="px-4 py-3.5 bg-zinc-950 border-b border-zinc-800/80">
+                    <div class="px-4 py-3.5 bg-zinc-950 border-b theme-border">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                                 {{ $displayPosName }}

@@ -68,7 +68,7 @@
             @endif
 
             <!-- Botón Guardar en Cabecera (Para barras tradicionales) -->
-            @if($session && $session->isOpen() && $selectedBar !== 'Tienda')
+            @if($session && $session->isOpen())
                 <span id="sales-autosave-status" class="text-[10px] font-mono text-zinc-500" aria-live="polite"></span>
                 <button type="submit" form="sales-form" class="px-4 py-1.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn shadow-sm">
                     <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -99,9 +99,8 @@
                 @foreach($availableBars as $bar)
                     @php
                         $isSelected = $selectedBar === $bar;
-                        $isTienda = $bar === 'Tienda';
                         $isKelly = str_contains($bar, 'Kelly');
-                        $badgeLabel = $isTienda ? 'Directo' : ($isKelly ? 'Piso Principal' : 'Subterráneo');
+                        $badgeLabel = $isKelly ? 'Piso Principal' : 'Subterráneo';
                     @endphp
                     <a href="{{ route('sales.index', ['session_id' => $session->id, 'bar' => $bar]) }}" 
                        class="px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 cursor-pointer {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-sm' : 'text-zinc-400 hover:text-white' }}">
@@ -111,7 +110,7 @@
                 @endforeach
             </div>
 
-            @if($selectedBar !== 'Tienda' && $session->isOpen())
+            @if($session->isOpen())
                 <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')"
                         class="px-3.5 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn">
                     <span class="text-[#F5B81C] font-bold">+</span>
@@ -120,444 +119,6 @@
             @endif
         </div>
 
-        @if($selectedBar === 'Tienda')
-            <!-- ======================================================== -->
-            <!-- VISTA EXCLUSIVA: TIENDA (DESPACHO DIRECTO) -->
-            <!-- ======================================================== -->
-
-            <!-- Métricas de Tienda (Sin Confetti) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                <div class="theme-card rounded-2xl p-5 border theme-border">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Combos Despachados</span>
-                    <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
-                        {{ $totalStoreCombos }} <span class="text-xs font-sans text-zinc-400 font-normal">combos</span>
-                    </div>
-                    <p class="text-[11px] text-zinc-500 mt-1">Salida directa de almacén</p>
-                </div>
-
-                <div class="theme-card rounded-2xl p-5 border theme-border">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Total Recaudado Tienda</span>
-                    <div class="mt-2 text-2xl font-black font-mono text-[#F5B81C] tracking-tight">
-                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalStoreRevenue, 2) }}
-                    </div>
-                    <p class="text-[11px] text-zinc-400 mt-1">Efectivo + Transferencias QR</p>
-                </div>
-
-                <div class="theme-card rounded-2xl p-5 border theme-border">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">En Efectivo</span>
-                    <div class="mt-2 text-2xl font-black font-mono text-emerald-400 tracking-tight">
-                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalStoreCash, 2) }}
-                    </div>
-                    <p class="text-[11px] text-zinc-500 mt-1">Cobrado físicamente en mano</p>
-                </div>
-
-                <div class="theme-card rounded-2xl p-5 border theme-border">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">En QR (Yasta / Yape)</span>
-                    <div class="mt-2 text-2xl font-black font-mono text-blue-400 tracking-tight">
-                        <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalStoreQr, 2) }}
-                    </div>
-                    <p class="text-[11px] text-zinc-500 mt-1">Transferencias bancarias</p>
-                </div>
-            </div>
-
-            <!-- Formulario de Despacho Rápido en Tienda -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <div class="border-b theme-border pb-3 mb-4 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-sm font-bold text-white uppercase tracking-wider font-sans">
-                            Despachar Combo en Tienda
-                        </h2>
-                        <p class="text-xs text-zinc-400 mt-0.5">
-                            Registra el combo entregado al mesero con desglose inmediato de efectivo o QR
-                        </p>
-                    </div>
-                </div>
-
-                <form method="POST" action="{{ route('sales.storeSales.store') }}" id="tienda-order-form" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
-                    @csrf
-                    <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-
-                    <div id="tienda-order-rows" class="space-y-3">
-                        <div class="tienda-order-row grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3 items-end" data-row-index="0">
-                            <div class="sm:col-span-2 md:col-span-6">
-                                <label class="block text-xs font-semibold text-zinc-300 mb-1">Combo / Bebida</label>
-                                <input type="text" class="tienda-product-search w-full mb-1 text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]" placeholder="Buscar por nombre...">
-                                <select name="orders[0][product_id]" class="tienda-product-select w-full text-xs font-bold rounded-xl px-3 py-2.5 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer" required>
-                                    <option value="" disabled selected>-- Seleccionar Combo / Bebida --</option>
-                                    @foreach($storeProducts as $prod)
-                                        <option value="{{ $prod->id }}" data-price="{{ $prod->sale_price }}">{{ $prod->name }} (Bs. {{ number_format($prod->sale_price, 2) }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-xs font-semibold text-zinc-300 mb-1">Cantidad</label>
-                                <input type="number" name="orders[0][quantity]" value="1" min="1" required class="tienda-quantity w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
-                            </div>
-                            <div class="md:col-span-3">
-                                <label class="block text-xs font-semibold text-zinc-300 mb-1">Precio Unitario (Bs.)</label>
-                                <input type="number" step="0.5" name="orders[0][unit_price]" value="0.00" min="0" required class="tienda-unit-price w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
-                            </div>
-                            <div class="md:col-span-1">
-                                <button type="button" class="remove-tienda-row hidden w-full px-2 py-2 text-xs rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10">Quitar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="button" id="add-tienda-row" class="px-3 py-2 text-xs font-bold rounded-xl bg-zinc-950 border border-zinc-800 text-[#F5B81C] hover:border-[#F5B81C]/50">
-                        + Agregar bebida
-                    </button>
-
-                    <!-- Fila de Cobrante y Desglose de Pago -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3.5 pt-3 border-t theme-border items-end">
-                        
-                        <!-- Nombre del Cobrante / Mesero -->
-                        <div class="md:col-span-2">
-                            <label for="cobrante_name" class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Nombre del Mesero / Cobrante
-                            </label>
-                            <input type="text" name="cobrante_name" id="cobrante_name" required placeholder="Ej. Juan, Mau, Ari..."
-                                   class="w-full text-xs uppercase rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
-                        </div>
-
-                        <!-- Total Calculado -->
-                        <div>
-                            <label class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Total Pedido (Bs.)
-                            </label>
-                            <div class="px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-[#F5B81C] font-mono font-bold text-sm" id="tienda-total-display">
-                                Bs. 0.00
-                            </div>
-                        </div>
-
-                        <!-- Monto en Efectivo -->
-                        <div>
-                            <label for="cash_amount" class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Monto Efectivo (Bs.)
-                            </label>
-                            <input type="number" step="0.5" name="cash_amount" id="cash_amount" value="0.00" min="0" required 
-                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-emerald-400 focus:outline-none focus:border-[#F5B81C]">
-                        </div>
-
-                        <!-- Monto en QR -->
-                        <div>
-                            <label for="qr_amount" class="block text-xs font-semibold text-zinc-300 mb-1">
-                                Monto QR (Bs.)
-                            </label>
-                            <input type="number" step="0.5" name="qr_amount" id="qr_amount" value="0.00" min="0" required 
-                                   class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-blue-400 focus:outline-none focus:border-[#F5B81C]">
-                        </div>
-
-                        <div>
-                            <label for="card_amount" class="block text-xs font-semibold text-zinc-300 mb-1">Monto Tarjeta (Bs.)</label>
-                            <input type="number" step="0.5" name="card_amount" id="card_amount" value="0.00" min="0" required class="w-full text-xs font-mono font-bold rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-purple-400 focus:outline-none focus:border-[#F5B81C]">
-                        </div>
-
-                    </div>
-
-                    <!-- Botones de ayuda rápida -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
-                        <div class="flex items-center gap-2">
-                            <span class="text-zinc-500 font-semibold text-[11px]">Asignar:</span>
-                            <button type="button" id="btn-all-cash" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-800 text-emerald-400 hover:border-emerald-500/50 cursor-pointer">
-                                Todo Efectivo
-                            </button>
-                            <button type="button" id="btn-all-qr" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-800 text-blue-400 hover:border-blue-500/50 cursor-pointer">
-                                Todo QR
-                            </button>
-                            <button type="button" id="btn-split-50" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-950 border border-zinc-800 text-amber-300 hover:border-[#F5B81C]/50 cursor-pointer">
-                                50% Efectivo / 50% QR
-                            </button>
-                        </div>
-
-                        <!-- Opciones de QR -->
-                        <div class="flex items-center gap-2" id="qr-options-box">
-                            <label for="bank_app" class="text-[11px] font-semibold text-zinc-400">Banco QR:</label>
-                            <select name="bank_app" id="bank_app" 
-                                    class="text-xs rounded-xl px-3 py-1 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                                <option value="YASTA" class="bg-zinc-950">YASTA (Unión)</option>
-                                <option value="YAPE" class="bg-zinc-950">YAPE (BCP)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 flex justify-end">
-                        <button type="submit" class="px-5 py-2.5 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] transition-all dilemo-btn cursor-pointer shadow-sm">
-                            + Despachar y Registrar Venta
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Tabla de Despachos Registrados en Tienda -->
-            <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                <div class="px-5 py-3.5 border-b theme-border bg-zinc-950 flex items-center justify-between">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300 font-sans">
-                        Historial de Combos Despachados en Tienda ({{ $storeSales->count() }})
-                    </h3>
-                    <span class="text-xs font-mono font-bold text-[#F5B81C]">
-                        Total Tienda: Bs. {{ number_format($totalStoreRevenue, 2) }}
-                    </span>
-                </div>
-
-                <div class="overflow-x-auto max-h-[480px]">
-                    <table class="w-full text-xs text-left border-collapse">
-                        <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider sticky top-0">
-                            <tr>
-                                <th class="px-4 py-3">Hora</th>
-                                <th class="px-4 py-3">Combo / Producto</th>
-                                <th class="px-3 py-3 text-center">Cant.</th>
-                                <th class="px-4 py-3 text-right">Unitario</th>
-                                <th class="px-4 py-3 text-right">Total (Bs.)</th>
-                                <th class="px-4 py-3 text-right">Efectivo</th>
-                                <th class="px-4 py-3 text-right">QR</th>
-                                <th class="px-4 py-3">Cobrante</th>
-                                <th class="px-3 py-3 text-right w-16">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y theme-border font-sans">
-                            @forelse($storeSales as $ss)
-                                <tr class="hover:bg-zinc-900/30 transition-colors">
-                                    <td class="px-4 py-2.5 text-zinc-400 font-mono">{{ \Carbon\Carbon::parse($ss->created_at)->format('H:i') }}</td>
-                                    <td class="px-4 py-2.5 font-bold text-white">{{ $ss->product->name }}</td>
-                                    <td class="px-3 py-2.5 text-center font-bold font-mono text-[#F5B81C]">{{ $ss->quantity }}</td>
-                                    <td class="px-4 py-2.5 text-right font-mono text-zinc-300">Bs. {{ number_format($ss->unit_price, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-right font-bold font-mono text-white">Bs. {{ number_format($ss->total_price, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-right font-mono text-emerald-400 font-semibold">Bs. {{ number_format($ss->cash_amount, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-right font-mono text-blue-400 font-semibold">Bs. {{ number_format($ss->qr_amount, 2) }}</td>
-                                    <td class="px-4 py-2.5 text-zinc-300 uppercase font-medium">{{ $ss->cobrante_name }}</td>
-                                    <td class="px-3 py-2.5 text-right">
-                                        <form method="POST" action="{{ route('sales.storeSales.destroy', $ss) }}" onsubmit="return confirm('¿Eliminar despacho?');" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-rose-400 hover:text-rose-300 font-semibold text-xs cursor-pointer">Borrar</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="9" class="px-4 py-8 text-center text-zinc-500 font-sans">
-                                        No hay despachos registrados en Tienda en esta noche.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- ======================================================== -->
-            <!-- DETALLE DE COBROS DIGITALES EN TIENDA (QR & TARJETAS) -->
-            <!-- ======================================================== -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                
-                <!-- Cobros QR en Tienda -->
-                <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                    <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
-                        <div>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
-                                Cobros QR en Tienda
-                            </h3>
-                            <p class="text-[11px] text-zinc-400">Transferencias YASTA & YAPE</p>
-                        </div>
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-xs font-mono font-bold text-blue-400">
-                                Bs. {{ number_format($barTotalQr, 2) }}
-                            </span>
-                            <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                               class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-blue-400 hover:text-white transition-all">
-                                Ver QR &rarr;
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto max-h-60 overflow-y-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
-                                <tr>
-                                    <th class="px-4 py-2.5">Cobrante</th>
-                                    <th class="px-3 py-2.5 text-center">App</th>
-                                    <th class="px-4 py-2.5">Ref / Comprobante</th>
-                                    <th class="px-4 py-2.5 text-right">Monto (Bs.)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y theme-border font-sans">
-                                @forelse($barQrPayments as $qr)
-                                    <tr class="hover:bg-zinc-900/30">
-                                        <td class="px-4 py-2 text-zinc-200 font-medium">{{ $qr->operator_name ?? '—' }}</td>
-                                        <td class="px-3 py-2 text-center">
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-zinc-300">
-                                                {{ $qr->bank_app }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-2 text-zinc-400 text-[11px] truncate max-w-[120px] font-mono">{{ $qr->reference_code ?? '—' }}</td>
-                                        <td class="px-4 py-2 text-right font-bold font-mono text-blue-400">Bs. {{ number_format($qr->amount, 2) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay cobros QR registrados para Tienda.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Tarjetas POS en Tienda -->
-                <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                    <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
-                        <div>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
-                                Pagos Tarjeta (POS) en Tienda
-                            </h3>
-                            <p class="text-[11px] text-zinc-400">Facturas y cobro con tarjeta</p>
-                        </div>
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-xs font-mono font-bold text-purple-400">
-                                Bs. {{ number_format($barTotalCard, 2) }}
-                            </span>
-                            <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                               class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-purple-400 hover:text-white transition-all">
-                                Ver Facturas &rarr;
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto max-h-60 overflow-y-auto">
-                        <table class="w-full text-xs text-left border-collapse">
-                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
-                                <tr>
-                                    <th class="px-4 py-2.5 text-center"># Factura</th>
-                                    <th class="px-4 py-2.5">Detalle</th>
-                                    <th class="px-4 py-2.5 text-right">Comisión</th>
-                                    <th class="px-4 py-2.5 text-right">Monto Bruto</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y theme-border font-sans">
-                                @forelse($barCardInvoices as $inv)
-                                    <tr class="hover:bg-zinc-900/30">
-                                        <td class="px-4 py-2 text-center text-zinc-400 font-mono font-bold">#{{ $inv->correlative_num }}</td>
-                                        <td class="px-4 py-2 text-zinc-300 text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? 'Pago Tarjeta POS' }}</td>
-                                        <td class="px-4 py-2 text-right text-zinc-500 text-[11px] font-mono">- Bs. {{ number_format($inv->commission_amount, 2) }}</td>
-                                        <td class="px-4 py-2 text-right font-bold font-mono text-purple-400">Bs. {{ number_format($inv->amount, 2) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay pagos con tarjeta registrados para Tienda.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Scripts de Cálculo para Tienda -->
-            <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const rowsContainer = document.getElementById('tienda-order-rows');
-                const addRowButton = document.getElementById('add-tienda-row');
-                const cashInput = document.getElementById('cash_amount');
-                const qrInput = document.getElementById('qr_amount');
-                const cardInput = document.getElementById('card_amount');
-                const totalDisplay = document.getElementById('tienda-total-display');
-                let rowIndex = 1;
-
-                function getTotal() {
-                    let total = 0;
-                    rowsContainer.querySelectorAll('.tienda-order-row').forEach(row => {
-                        const quantity = parseInt(row.querySelector('.tienda-quantity')?.value) || 0;
-                        const price = parseFloat(row.querySelector('.tienda-unit-price')?.value) || 0;
-                        total += quantity * price;
-                    });
-                    return total;
-                }
-
-                function updateCalculations(resetPayments = true) {
-                    const total = getTotal();
-                    totalDisplay.textContent = 'Bs. ' + total.toFixed(2);
-                    if (resetPayments) {
-                        cashInput.value = total.toFixed(2);
-                        qrInput.value = '0.00';
-                        cardInput.value = '0.00';
-                    }
-                    return total;
-                }
-
-                function bindRow(row) {
-                    const search = row.querySelector('.tienda-product-search');
-                    const select = row.querySelector('.tienda-product-select');
-                    const quantity = row.querySelector('.tienda-quantity');
-                    const price = row.querySelector('.tienda-unit-price');
-
-                    search.addEventListener('input', function () {
-                        const query = this.value.toLowerCase().trim();
-                        Array.from(select.options).forEach(option => {
-                            option.hidden = option.value !== '' && !option.text.toLowerCase().includes(query);
-                        });
-                    });
-
-                    select.addEventListener('change', function () {
-                        const selected = this.options[this.selectedIndex];
-                        price.value = (parseFloat(selected.dataset.price) || 0).toFixed(2);
-                        search.value = selected.text.replace(/ \(Bs\. [\d,.]+\)$/, '');
-                        updateCalculations();
-                    });
-
-                    [quantity, price].forEach(input => input.addEventListener('input', () => updateCalculations()));
-
-                    row.querySelector('.remove-tienda-row').addEventListener('click', function () {
-                        row.remove();
-                        updateCalculations();
-                    });
-                }
-
-                bindRow(rowsContainer.querySelector('.tienda-order-row'));
-
-                addRowButton.addEventListener('click', function () {
-                    const template = rowsContainer.querySelector('.tienda-order-row').cloneNode(true);
-                    template.dataset.rowIndex = rowIndex;
-                    template.querySelector('.tienda-product-search').value = '';
-                    template.querySelector('.tienda-product-select').value = '';
-                    template.querySelector('.tienda-quantity').value = '1';
-                    template.querySelector('.tienda-unit-price').value = '0.00';
-                    template.querySelector('.remove-tienda-row').classList.remove('hidden');
-                    template.querySelectorAll('[name]').forEach(input => {
-                        input.name = input.name.replace(/orders\[\d+\]/, `orders[${rowIndex}]`);
-                    });
-                    rowIndex++;
-                    rowsContainer.appendChild(template);
-                    bindRow(template);
-                    updateCalculations();
-                });
-
-                document.getElementById('btn-all-cash')?.addEventListener('click', function () {
-                    const total = updateCalculations(false);
-                    cashInput.value = total.toFixed(2);
-                    qrInput.value = '0.00';
-                    cardInput.value = '0.00';
-                });
-
-                document.getElementById('btn-all-qr')?.addEventListener('click', function () {
-                    const total = updateCalculations(false);
-                    qrInput.value = total.toFixed(2);
-                    cashInput.value = '0.00';
-                    cardInput.value = '0.00';
-                });
-
-                document.getElementById('btn-split-50')?.addEventListener('click', function () {
-                    const total = updateCalculations(false);
-                    const half = (total / 2).toFixed(2);
-                    cashInput.value = half;
-                    qrInput.value = (total - parseFloat(half)).toFixed(2);
-                    cardInput.value = '0.00';
-                });
-
-                updateCalculations();
-            });
-            </script>
-
-        @else
             <!-- ======================================================== -->
             <!-- VISTA DE BARRAS TRADICIONALES (KELLY & ARIEL) -->
             <!-- ======================================================== -->
@@ -731,33 +292,50 @@
 
                     <!-- 1. TABLA DE LICORES (COMBOS) -->
                     <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                        <div class="px-5 py-3.5 bg-zinc-950 border-b theme-border flex items-center justify-between">
+                        <div class="px-5 py-3.5 bg-zinc-950 border-b theme-border flex flex-wrap items-center justify-between gap-3">
                             <div>
                                 <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">1. Licores & Combos</h3>
                                 <p class="text-[11px] text-zinc-400 mt-0.5">
                                     Stock inicial sincronizado desde <a href="{{ route('barInventory.index', ['session_id' => $session->id, 'bar' => $selectedBar]) }}" class="text-[#F5B81C] hover:underline font-semibold">Inventario de Barras</a>. Cada combo incluye su soda (Gins incluyen 2 tónicas).
                                 </p>
                             </div>
-                            <span class="text-xs font-mono font-bold text-[#F5B81C]" id="badge-liquor-subtotal">
-                                Subtotal: Bs. {{ number_format($subtotalLiquors, 2) }}
-                            </span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-mono font-bold text-[#F5B81C]" id="badge-liquor-subtotal">
+                                    Subtotal: Bs. {{ number_format($subtotalLiquors, 2) }}
+                                </span>
+                            </div>
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left border-collapse" id="table-liquors">
+                            <table class="w-full text-xs text-left border-collapse excel-table" id="table-liquors">
                                 <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                     <tr>
-                                        <th class="px-3 py-3 w-8 text-center">N°</th>
-                                        <th class="px-4 py-3">Licor / Presentación</th>
-                                        <th class="px-4 py-3">Acompañamiento</th>
-                                        <th class="px-3 py-3 text-center">Especial</th>
-                                        <th class="px-2 py-3 w-16 text-center">Cajas</th>
-                                        <th class="px-2 py-3 w-16 text-center">Sueltas</th>
-                                        <th class="px-3 py-3 w-20 text-center">Total Inicial</th>
-                                        <th class="px-3 py-3 w-24 text-center">Saldo al Cierre</th>
-                                        <th class="px-4 py-3 w-24 text-center font-bold text-[#F5B81C]">Combos Vendidos</th>
-                                        <th class="px-4 py-3 w-28 text-right">Precio Combo</th>
-                                        <th class="px-4 py-3 w-32 text-right">Subtotal (Bs.)</th>
+                                        <th class="px-3 py-3.5 w-8 text-center">N°</th>
+                                        <th class="px-4 py-3.5">Licor / Presentación</th>
+                                        <th class="px-4 py-3.5">Acompañamiento</th>
+                                        <th class="px-3 py-3.5 text-center">Especial</th>
+                                        <th class="px-2 py-3.5 w-16 text-center border-l theme-border bg-zinc-950/60">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-zinc-200">Cajas</span>
+                                                <span class="text-[9px] text-zinc-500 lowercase">stock</span>
+                                            </div>
+                                        </th>
+                                        <th class="px-2 py-3.5 w-16 text-center bg-zinc-950/60">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-zinc-200">Sueltas</span>
+                                                <span class="text-[9px] text-zinc-500 lowercase">stock</span>
+                                            </div>
+                                        </th>
+                                        <th class="px-3 py-3.5 w-20 text-center border-l theme-border">Total Inicial</th>
+                                        <th class="px-3 py-3.5 w-24 text-center border-l theme-border bg-zinc-950/80">
+                                            <div class="flex flex-col items-center text-[#F5B81C]">
+                                                <span class="font-bold">Saldo Cierre</span>
+                                                <span class="text-[9px] text-zinc-400 lowercase">conteo</span>
+                                            </div>
+                                        </th>
+                                        <th class="px-4 py-3.5 w-24 text-center border-l theme-border font-bold text-[#F5B81C]">Combos Vendidos</th>
+                                        <th class="px-4 py-3.5 w-28 text-right border-l theme-border">Precio Combo</th>
+                                        <th class="px-4 py-3.5 w-32 text-right border-l theme-border">Subtotal (Bs.)</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y theme-border font-sans">
@@ -790,7 +368,7 @@
                                             $badgeText = count($badgeParts) > 0 ? implode(', ', $badgeParts) : '+ Especial';
                                             $hasSpecials = count($badgeParts) > 0;
                                         @endphp
-                                        <tr class="hover:bg-zinc-900/30 transition-colors liquor-row" 
+                                        <tr class="hover:bg-zinc-900/40 transition-colors liquor-row" 
                                             data-row-id="{{ $sale->id }}" 
                                             data-product-id="{{ $sale->product_id }}"
                                             data-product-name="{{ $sale->product->name }}"
@@ -824,29 +402,50 @@
                                                 </button>
                                             </td>
 
-                                            <td class="px-2 py-2 text-center">
-                                                <input type="number" name="sales[{{ $sale->id }}][packages]" value="{{ $sale->packages }}" min="0"
-                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-packages">
+                                            <td class="px-2 py-2 text-center border-l theme-border">
+                                                <input type="number" 
+                                                       data-excel-col="0"
+                                                       name="sales[{{ $sale->id }}][packages]" 
+                                                       value="{{ $sale->packages }}" 
+                                                       min="0"
+                                                       class="excel-input input-packages w-14 sm:w-16 h-9 text-center rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </td>
                                             <td class="px-2 py-2 text-center">
-                                                <input type="number" name="sales[{{ $sale->id }}][units]" value="{{ $sale->units }}" min="0"
-                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-units">
+                                                <input type="number" 
+                                                       data-excel-col="1"
+                                                       name="sales[{{ $sale->id }}][units]" 
+                                                       value="{{ $sale->units }}" 
+                                                       min="0"
+                                                       class="excel-input input-units w-14 sm:w-16 h-9 text-center rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </td>
-                                            <td class="px-3 py-2.5 text-center font-bold font-mono text-zinc-300 cell-total-initial">
-                                                {{ $sale->total_initial }}
+                                            <td class="px-3 py-2.5 text-center border-l theme-border">
+                                                <div class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 font-bold font-mono text-zinc-300 text-xs cell-total-initial">
+                                                    {{ $sale->total_initial }}
+                                                </div>
                                             </td>
-                                            <td class="px-3 py-2 text-center">
-                                                <input type="number" name="sales[{{ $sale->id }}][saldo]" value="{{ $sale->saldo }}" min="0"
-                                                       class="w-16 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-saldo">
+                                            <td class="px-3 py-2 text-center border-l theme-border bg-zinc-950/40">
+                                                <input type="number" 
+                                                       data-excel-col="2"
+                                                       name="sales[{{ $sale->id }}][saldo]" 
+                                                       value="{{ $sale->saldo }}" 
+                                                       min="0"
+                                                       class="excel-input input-saldo w-16 sm:w-20 h-9 text-center rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-950 border-2 border-zinc-700/80 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all shadow-inner">
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-black font-mono text-[#F5B81C] text-base cell-vendido">
-                                                {{ $sale->vendido }}
+                                            <td class="px-4 py-2.5 text-center border-l theme-border">
+                                                <div class="inline-flex items-center justify-center px-3 py-1 rounded-xl bg-zinc-950 border border-zinc-800 font-black font-mono text-[#F5B81C] text-sm sm:text-base cell-vendido">
+                                                    {{ $sale->vendido }}
+                                                </div>
                                             </td>
-                                            <td class="px-4 py-2 text-right">
-                                                <input type="number" step="0.5" name="sales[{{ $sale->id }}][unit_price]" value="{{ $sale->unit_price }}" min="0"
-                                                       class="w-20 text-right rounded-lg px-2 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-price">
+                                            <td class="px-4 py-2 text-right border-l theme-border">
+                                                <input type="number" 
+                                                       step="0.5" 
+                                                       data-excel-col="3"
+                                                       name="sales[{{ $sale->id }}][unit_price]" 
+                                                       value="{{ $sale->unit_price }}" 
+                                                       min="0"
+                                                       class="excel-input input-price w-20 sm:w-24 h-9 text-right rounded-xl px-2 font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </td>
-                                            <td class="px-4 py-2.5 text-right font-bold font-mono text-white cell-subtotal">
+                                            <td class="px-4 py-2.5 text-right font-bold font-mono text-white text-xs sm:text-sm border-l theme-border cell-subtotal">
                                                 Bs. {{ number_format($sale->subtotal, 2) }}
                                             </td>
                                         </tr>
@@ -870,7 +469,7 @@
 
                     <!-- 2. TABLA DE MIXERS / SODAS (EXTRAS) -->
                     <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                        <div class="px-5 py-3.5 bg-zinc-950 border-b theme-border flex items-center justify-between">
+                        <div class="px-5 py-3.5 bg-zinc-950 border-b theme-border flex flex-wrap items-center justify-between gap-3">
                             <div>
                                 <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">2. Mixers, Sodas & Aguas (Control de Extras)</h3>
                                 <p class="text-[11px] text-zinc-400 mt-0.5">
@@ -883,25 +482,40 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left border-collapse" id="table-mixers">
+                            <table class="w-full text-xs text-left border-collapse excel-table" id="table-mixers">
                                 <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                     <tr>
-                                        <th class="px-3 py-3 w-8 text-center">N°</th>
-                                        <th class="px-4 py-3">Mixer / Soda</th>
-                                        <th class="px-2 py-3 w-16 text-center">Cajas</th>
-                                        <th class="px-2 py-3 w-16 text-center">Sueltas</th>
-                                        <th class="px-3 py-3 w-20 text-center">Total Inicial</th>
-                                        <th class="px-3 py-3 w-24 text-center">Saldo al Cierre</th>
-                                        <th class="px-4 py-3 w-20 text-center">Consumidas</th>
-                                        <th class="px-4 py-3 w-24 text-center text-zinc-400">En Combos</th>
-                                        <th class="px-4 py-3 w-20 text-center font-bold text-[#F5B81C]">Extras</th>
-                                        <th class="px-4 py-3 w-28 text-right">Precio Extra</th>
-                                        <th class="px-4 py-3 w-32 text-right">Total Extras (Bs.)</th>
+                                        <th class="px-3 py-3.5 w-8 text-center">N°</th>
+                                        <th class="px-4 py-3.5">Mixer / Soda</th>
+                                        <th class="px-2 py-3.5 w-16 text-center border-l theme-border bg-zinc-950/60">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-zinc-200">Cajas</span>
+                                                <span class="text-[9px] text-zinc-500 lowercase">stock</span>
+                                            </div>
+                                        </th>
+                                        <th class="px-2 py-3.5 w-16 text-center bg-zinc-950/60">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-zinc-200">Sueltas</span>
+                                                <span class="text-[9px] text-zinc-500 lowercase">stock</span>
+                                            </div>
+                                        </th>
+                                        <th class="px-3 py-3.5 w-20 text-center border-l theme-border">Total Inicial</th>
+                                        <th class="px-3 py-3.5 w-24 text-center border-l theme-border bg-zinc-950/80">
+                                            <div class="flex flex-col items-center text-[#F5B81C]">
+                                                <span class="font-bold">Saldo Cierre</span>
+                                                <span class="text-[9px] text-zinc-400 lowercase">conteo</span>
+                                            </div>
+                                        </th>
+                                        <th class="px-4 py-3.5 w-20 text-center border-l theme-border">Consumidas</th>
+                                        <th class="px-4 py-3.5 w-24 text-center border-l theme-border text-zinc-400">En Combos</th>
+                                        <th class="px-4 py-3.5 w-20 text-center border-l theme-border font-bold text-[#F5B81C]">Extras</th>
+                                        <th class="px-4 py-3.5 w-28 text-right border-l theme-border">Precio Extra</th>
+                                        <th class="px-4 py-3.5 w-32 text-right border-l theme-border">Total Extras (Bs.)</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y theme-border font-sans">
                                     @forelse($mixerSales as $index => $sale)
-                                        <tr class="hover:bg-zinc-900/30 transition-colors mixer-row" 
+                                        <tr class="hover:bg-zinc-900/40 transition-colors mixer-row" 
                                             data-row-id="{{ $sale->id }}" 
                                             data-units-per-pkg="{{ $sale->product->units_per_package ?? 1 }}"
                                             data-product-id="{{ $sale->product_id }}">
@@ -909,35 +523,56 @@
                                             <td class="px-4 py-2.5 font-bold text-white">
                                                 {{ $sale->product->name }}
                                             </td>
-                                            <td class="px-2 py-2 text-center">
-                                                <input type="number" name="sales[{{ $sale->id }}][packages]" value="{{ $sale->packages }}" min="0"
-                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-packages">
+                                            <td class="px-2 py-2 text-center border-l theme-border">
+                                                <input type="number" 
+                                                       data-excel-col="0"
+                                                       name="sales[{{ $sale->id }}][packages]" 
+                                                       value="{{ $sale->packages }}" 
+                                                       min="0"
+                                                       class="excel-input input-packages w-14 sm:w-16 h-9 text-center rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </td>
                                             <td class="px-2 py-2 text-center">
-                                                <input type="number" name="sales[{{ $sale->id }}][units]" value="{{ $sale->units }}" min="0"
-                                                       class="w-14 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-semibold bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] input-units">
+                                                <input type="number" 
+                                                       data-excel-col="1"
+                                                       name="sales[{{ $sale->id }}][units]" 
+                                                       value="{{ $sale->units }}" 
+                                                       min="0"
+                                                       class="excel-input input-units w-14 sm:w-16 h-9 text-center rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </td>
-                                            <td class="px-3 py-2.5 text-center font-bold font-mono text-zinc-300 cell-total-initial">
-                                                {{ $sale->total_initial }}
+                                            <td class="px-3 py-2.5 text-center border-l theme-border">
+                                                <div class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 font-bold font-mono text-zinc-300 text-xs cell-total-initial">
+                                                    {{ $sale->total_initial }}
+                                                </div>
                                             </td>
-                                            <td class="px-3 py-2 text-center">
-                                                <input type="number" name="sales[{{ $sale->id }}][saldo]" value="{{ $sale->saldo }}" min="0"
-                                                       class="w-16 text-center rounded-lg px-1.5 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-saldo">
+                                            <td class="px-3 py-2 text-center border-l theme-border bg-zinc-950/40">
+                                                <input type="number" 
+                                                       data-excel-col="2"
+                                                       name="sales[{{ $sale->id }}][saldo]" 
+                                                       value="{{ $sale->saldo }}" 
+                                                       min="0"
+                                                       class="excel-input input-saldo w-16 sm:w-20 h-9 text-center rounded-xl font-mono font-bold text-xs sm:text-sm bg-zinc-950 border-2 border-zinc-700/80 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all shadow-inner">
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-mono text-zinc-300 cell-consumido">
+                                            <td class="px-4 py-2.5 text-center font-mono text-zinc-300 border-l theme-border cell-consumido">
                                                 {{ $sale->vendido }}
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-mono text-zinc-400 cell-included">
+                                            <td class="px-4 py-2.5 text-center font-mono text-zinc-400 border-l theme-border cell-included">
                                                 {{ $sale->included_in_combos ?? 0 }}
                                             </td>
-                                            <td class="px-4 py-2.5 text-center font-black font-mono text-[#F5B81C] text-base cell-extras">
-                                                {{ $sale->extras ?? 0 }}
+                                            <td class="px-4 py-2.5 text-center border-l theme-border">
+                                                <div class="inline-flex items-center justify-center px-3 py-1 rounded-xl bg-zinc-950 border border-zinc-800 font-black font-mono text-[#F5B81C] text-sm sm:text-base cell-extras">
+                                                    {{ $sale->extras ?? 0 }}
+                                                </div>
                                             </td>
-                                            <td class="px-4 py-2 text-right">
-                                                <input type="number" step="0.5" name="sales[{{ $sale->id }}][unit_price]" value="{{ $sale->unit_price }}" min="0"
-                                                       class="w-20 text-right rounded-lg px-2 py-1 text-xs font-mono font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:border-[#F5B81C] input-price">
+                                            <td class="px-4 py-2 text-right border-l theme-border">
+                                                <input type="number" 
+                                                       step="0.5" 
+                                                       data-excel-col="3"
+                                                       name="sales[{{ $sale->id }}][unit_price]" 
+                                                       value="{{ $sale->unit_price }}" 
+                                                       min="0"
+                                                       class="excel-input input-price w-20 sm:w-24 h-9 text-right rounded-xl px-2 font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </td>
-                                            <td class="px-4 py-2.5 text-right font-bold font-mono text-white cell-subtotal">
+                                            <td class="px-4 py-2.5 text-right font-bold font-mono text-white text-xs sm:text-sm border-l theme-border cell-subtotal">
                                                 Bs. {{ number_format($sale->subtotal, 2) }}
                                             </td>
                                         </tr>
@@ -1396,13 +1031,136 @@
                     if (footerGrandTotal) footerGrandTotal.textContent = 'Bs. ' + grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 };
 
+                /* ========================================================
+                   MOTOR DE NAVEGACIÓN Y LLENADO RÁPIDO TIPO EXCEL
+                   - Selección automática al enfocar (sobrescribe directo)
+                   - Flecha Abajo / Enter: siguiente fila, misma columna
+                   - Flecha Arriba / Shift+Enter: fila anterior, misma columna
+                   - Flecha Derecha / Izquierda: columna adyacente
+                   ======================================================== */
+                function initExcelNavigation(form) {
+                    if (!form) return;
+
+                    function getMatrix(currentTable) {
+                        const table = currentTable || form;
+                        const visibleRows = Array.from(table.querySelectorAll('.liquor-row, .mixer-row')).filter(tr => tr.style.display !== 'none');
+                        return visibleRows.map(tr => {
+                            const inputs = Array.from(tr.querySelectorAll('input[data-excel-col]')).filter(inp => !inp.disabled);
+                            inputs.sort((a, b) => parseInt(a.dataset.excelCol) - parseInt(b.dataset.excelCol));
+                            return { tr, inputs };
+                        });
+                    }
+
+                    form.addEventListener('focusin', function (e) {
+                        const input = e.target;
+                        if (!input.matches('input[data-excel-col]')) return;
+
+                        // Seleccionar todo el número al entrar para escribir directo sin borrar
+                        setTimeout(() => {
+                            if (document.activeElement === input) {
+                                try { input.select(); } catch (err) {}
+                            }
+                        }, 25);
+
+                        // Iluminar fila activa
+                        form.querySelectorAll('.liquor-row, .mixer-row').forEach(r => r.classList.remove('excel-active-row'));
+                        const tr = input.closest('tr');
+                        if (tr) tr.classList.add('excel-active-row');
+                    });
+
+                    form.addEventListener('focusout', function (e) {
+                        const input = e.target;
+                        if (!input.matches('input[data-excel-col]')) return;
+                        const tr = input.closest('tr');
+                        if (tr && !tr.contains(document.activeElement)) {
+                            tr.classList.remove('excel-active-row');
+                        }
+                    });
+
+                    form.addEventListener('keydown', function (e) {
+                        const input = e.target;
+                        if (!input.matches('input[data-excel-col]')) return;
+
+                        const key = e.key;
+                        if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Tab'].includes(key)) {
+                            return;
+                        }
+
+                        const currentTable = input.closest('table');
+                        const matrix = getMatrix(currentTable);
+                        const currentTr = input.closest('tr');
+                        const rowIndex = matrix.findIndex(item => item.tr === currentTr);
+                        if (rowIndex === -1) return;
+
+                        const rowInputs = matrix[rowIndex].inputs;
+                        const colIndex = rowInputs.indexOf(input);
+                        if (colIndex === -1) return;
+
+                        let targetInput = null;
+
+                        if (key === 'ArrowDown') {
+                            e.preventDefault();
+                            if (rowIndex + 1 < matrix.length) {
+                                const nextRowInputs = matrix[rowIndex + 1].inputs;
+                                targetInput = nextRowInputs[colIndex] || nextRowInputs[nextRowInputs.length - 1];
+                            }
+                        } else if (key === 'ArrowUp') {
+                            e.preventDefault();
+                            if (rowIndex - 1 >= 0) {
+                                const prevRowInputs = matrix[rowIndex - 1].inputs;
+                                targetInput = prevRowInputs[colIndex] || prevRowInputs[prevRowInputs.length - 1];
+                            }
+                        } else if (key === 'Enter') {
+                            e.preventDefault(); // Nunca enviar el formulario con Enter
+                            if (e.shiftKey) {
+                                if (rowIndex - 1 >= 0) {
+                                    const prevRowInputs = matrix[rowIndex - 1].inputs;
+                                    targetInput = prevRowInputs[colIndex] || prevRowInputs[prevRowInputs.length - 1];
+                                }
+                            } else {
+                                if (rowIndex + 1 < matrix.length) {
+                                    const nextRowInputs = matrix[rowIndex + 1].inputs;
+                                    targetInput = nextRowInputs[colIndex] || nextRowInputs[nextRowInputs.length - 1];
+                                }
+                            }
+                        } else if (key === 'ArrowRight' || (key === 'Tab' && !e.shiftKey)) {
+                            e.preventDefault();
+                            if (colIndex + 1 < rowInputs.length) {
+                                targetInput = rowInputs[colIndex + 1];
+                            } else if (rowIndex + 1 < matrix.length) {
+                                targetInput = matrix[rowIndex + 1].inputs[0];
+                            }
+                        } else if (key === 'ArrowLeft' || (key === 'Tab' && e.shiftKey)) {
+                            e.preventDefault();
+                            if (colIndex - 1 >= 0) {
+                                targetInput = rowInputs[colIndex - 1];
+                            } else if (rowIndex - 1 >= 0) {
+                                const prevRowInputs = matrix[rowIndex - 1].inputs;
+                                targetInput = prevRowInputs[prevRowInputs.length - 1];
+                            }
+                        }
+
+                        if (targetInput) {
+                            targetInput.focus();
+                            try { targetInput.select(); } catch (err) {}
+                        }
+                    });
+                }
+
+                if (salesForm) initExcelNavigation(salesForm);
+
                 document.querySelectorAll('#sales-form input').forEach(input => {
                     input.addEventListener('input', window.recalculateSales);
                     if (input.type === 'number') input.addEventListener('change', queueAutosave);
                 });
+
+                // Recalcular inmediatamente al cargar la página para reflejar subtotales y totales correctos
+                if (typeof window.recalculateSales === 'function') {
+                    window.recalculateSales();
+                }
             });
             </script>
-        @endif
+        
 
     @endif
 

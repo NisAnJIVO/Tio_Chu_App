@@ -89,36 +89,20 @@ class NightSessionController extends Controller
         $products = Product::where('is_active', true)->get();
         foreach (['Barra Kelly (Principal)', 'Barra Ariel (Subte)', 'Tienda'] as $bar) {
             foreach ($products as $prod) {
-                $unitsPerPkg = $prod->units_per_package > 0 ? (int)$prod->units_per_package : 1;
-                $initPkg = 0;
-                $initUnits = 0;
-                $totalInit = 0;
-
-                if ($previousSession && $bar !== 'Tienda') {
-                    $prevSale = BarSale::where('night_session_id', $previousSession->id)
-                        ->where('bar_name', $bar)
-                        ->where('product_id', $prod->id)
-                        ->first();
-
-                    if ($prevSale && (int)$prevSale->saldo > 0) {
-                        $initPkg = intdiv((int)$prevSale->saldo, $unitsPerPkg);
-                        $initUnits = (int)$prevSale->saldo % $unitsPerPkg;
-                        $totalInit = (int)$prevSale->saldo;
-                    }
-                }
-
                 BarSale::create([
                     'night_session_id' => $session->id,
                     'product_id' => $prod->id,
                     'bar_name' => $bar,
-                    'initial_packages' => $initPkg,
-                    'initial_units' => $initUnits,
+                    'initial_packages' => 0,
+                    'initial_units' => 0,
                     'added_packages' => 0,
                     'added_units' => 0,
-                    'packages' => $initPkg,
-                    'units' => $initUnits,
-                    'total_initial' => $totalInit,
-                    'saldo' => $totalInit,
+                    'night_packages' => 0,
+                    'night_units' => 0,
+                    'packages' => 0,
+                    'units' => 0,
+                    'total_initial' => 0,
+                    'saldo' => 0,
                     'vendido' => 0,
                     'unit_price' => $prod->sale_price,
                     'subtotal' => 0,

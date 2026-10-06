@@ -129,7 +129,7 @@
             </div>
 
             <!-- Filtros de Categoría & Buscador -->
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2.5">
                 <div class="inline-flex p-1 rounded-xl bg-zinc-950 border border-zinc-800 text-xs">
                     <button type="button" 
                             id="filter-all-btn"
@@ -151,7 +151,7 @@
                     </button>
                 </div>
 
-                <div class="relative w-44 sm:w-52">
+                <div class="relative w-40 sm:w-48">
                     <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-500">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -167,7 +167,7 @@
         </div>
 
         <!-- ========================================================
-             3. TABLA PRINCIPAL DE INVENTARIO
+             3. TABLA PRINCIPAL DE INVENTARIO (GRID TIPO EXCEL)
              ======================================================== -->
         <form method="POST" action="{{ route('barInventory.updateBulk') }}" id="bar-inventory-form" data-ajax="true">
             @csrf
@@ -177,14 +177,34 @@
 
             <div class="rounded-2xl theme-card border theme-border overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
+                    <table class="w-full text-left border-collapse text-xs excel-table" id="inventory-table">
                         <thead>
                             <tr class="border-b theme-border bg-zinc-950 text-zinc-400 font-semibold uppercase tracking-wider text-[11px]">
-                                <th class="py-3 px-4 w-1/4">Bebida / Presentación</th>
-                                <th class="py-3 px-3 text-center w-1/5">1. Saldo de Ayer</th>
-                                <th class="py-3 px-3 text-center w-1/5">2. Subido al Abrir</th>
-                                <th class="py-3 px-3 text-center w-1/5">3. Reposición en Noche</th>
-                                <th class="py-3 px-4 text-center w-1/6">Total Disponible</th>
+                                <th class="py-3.5 px-4 w-1/4">Bebida / Presentación</th>
+                                <th class="py-3.5 px-3 text-center w-1/5 border-l theme-border bg-zinc-950/60">
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <span class="text-zinc-200 font-bold">1. Saldo de Ayer</span>
+                                        <span class="text-[10px] text-zinc-500 font-normal normal-case">Cierre anterior en barra</span>
+                                    </div>
+                                </th>
+                                <th class="py-3.5 px-3 text-center w-1/5 border-l theme-border bg-zinc-950/60">
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <span class="text-zinc-200 font-bold">2. Subido al Abrir</span>
+                                        <span class="text-[10px] text-zinc-500 font-normal normal-case">Apertura inicial del turno</span>
+                                    </div>
+                                </th>
+                                <th class="py-3.5 px-3 text-center w-1/5 border-l theme-border bg-zinc-950/60">
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <span class="text-zinc-200 font-bold">3. Reposición en Noche</span>
+                                        <span class="text-[10px] text-zinc-500 font-normal normal-case">Durante la fiesta (rápido)</span>
+                                    </div>
+                                </th>
+                                <th class="py-3.5 px-4 text-center w-1/6 border-l theme-border bg-zinc-950/90">
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <span class="text-[#F5B81C] font-bold">Total Disponible</span>
+                                        <span class="text-[10px] text-zinc-400 font-normal normal-case">Suma total botellas</span>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y theme-border font-sans" id="inventory-rows-tbody">
@@ -214,8 +234,9 @@
                                     $totNightBot = ($totNightPkg * $unitsPerPkg) + $totNightUnits;
                                     $initBot = ($initPkg * $unitsPerPkg) + $initUnits;
                                     $addBot = ($addPkg * $unitsPerPkg) + $addUnits;
+                                    $nightBot = ($nightPkg * $unitsPerPkg) + $nightUnits;
                                 @endphp
-                                <tr class="inv-row hover:bg-zinc-900/30 transition-colors"
+                                <tr class="inv-row hover:bg-zinc-900/40 transition-colors"
                                     data-row-id="{{ $sale->id }}"
                                     data-category="{{ $itemCategory }}"
                                     data-name="{{ strtolower($sale->product->name ?? '') }}"
@@ -236,107 +257,97 @@
                                         </div>
                                     </td>
 
-                                    <!-- 2. Saldo de Ayer (Lo que quedó) -->
-                                    <td class="py-3 px-3 text-center">
-                                        <div class="inline-flex items-center gap-2">
+                                    <!-- 2. Saldo de Ayer (Cajas & Sueltas) -->
+                                    <td class="py-2.5 px-3 text-center border-l theme-border">
+                                        <div class="inline-flex items-center justify-center gap-2">
                                             <div class="flex flex-col items-center">
+                                                <span class="text-[10px] text-zinc-500 font-semibold uppercase mb-1">Cajas</span>
                                                 <input type="number" 
+                                                       data-excel-col="0"
                                                        name="inventory[{{ $sale->id }}][initial_packages]" 
                                                        value="{{ $initPkg }}" 
                                                        min="0" 
                                                        @disabled(!$session->isOpen())
-                                                       class="input-init-pkg w-12 text-center font-mono font-semibold text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-white py-1 px-1 focus:border-[#F5B81C] focus:outline-none">
-                                                <span class="text-[10px] text-zinc-500 font-medium mt-0.5">Cajas</span>
+                                                       class="input-init-pkg excel-input w-14 sm:w-16 h-9 text-center font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </div>
                                             <div class="flex flex-col items-center">
+                                                <span class="text-[10px] text-zinc-500 font-semibold uppercase mb-1">Sueltas</span>
                                                 <input type="number" 
+                                                       data-excel-col="1"
                                                        name="inventory[{{ $sale->id }}][initial_units]" 
                                                        value="{{ $initUnits }}" 
                                                        min="0" 
                                                        @disabled(!$session->isOpen())
-                                                       class="input-init-units w-12 text-center font-mono font-semibold text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-white py-1 px-1 focus:border-[#F5B81C] focus:outline-none">
-                                                <span class="text-[10px] text-zinc-500 font-medium mt-0.5">Sueltas</span>
+                                                       class="input-init-units excel-input w-14 sm:w-16 h-9 text-center font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </div>
                                         </div>
-                                        <span class="text-[11px] text-zinc-400 block mt-1 font-mono">
+                                        <div class="text-[10px] text-zinc-400 mt-1 font-mono">
                                             = <strong class="cell-init-bot text-zinc-200 font-semibold">{{ $initBot }}</strong> bot.
-                                        </span>
+                                        </div>
                                     </td>
 
-                                    <!-- 3. Subido al Abrir (Apertura) -->
-                                    <td class="py-3 px-3 text-center">
-                                        <div class="inline-flex items-center gap-2">
+                                    <!-- 3. Subido al Abrir (Cajas & Sueltas) -->
+                                    <td class="py-2.5 px-3 text-center border-l theme-border">
+                                        <div class="inline-flex items-center justify-center gap-2">
                                             <div class="flex flex-col items-center">
+                                                <span class="text-[10px] text-zinc-500 font-semibold uppercase mb-1">Cajas</span>
                                                 <input type="number" 
+                                                       data-excel-col="2"
                                                        name="inventory[{{ $sale->id }}][added_packages]" 
                                                        value="{{ $addPkg }}" 
                                                        min="0" 
                                                        @disabled(!$session->isOpen())
-                                                       class="input-add-pkg w-12 text-center font-mono font-semibold text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-white py-1 px-1 focus:border-[#F5B81C] focus:outline-none">
-                                                <span class="text-[10px] text-zinc-500 font-medium mt-0.5">Cajas</span>
+                                                       class="input-add-pkg excel-input w-14 sm:w-16 h-9 text-center font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </div>
                                             <div class="flex flex-col items-center">
+                                                <span class="text-[10px] text-zinc-500 font-semibold uppercase mb-1">Sueltas</span>
                                                 <input type="number" 
+                                                       data-excel-col="3"
                                                        name="inventory[{{ $sale->id }}][added_units]" 
                                                        value="{{ $addUnits }}" 
                                                        min="0" 
                                                        @disabled(!$session->isOpen())
-                                                       class="input-add-units w-12 text-center font-mono font-semibold text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-white py-1 px-1 focus:border-[#F5B81C] focus:outline-none">
-                                                <span class="text-[10px] text-zinc-500 font-medium mt-0.5">Sueltas</span>
+                                                       class="input-add-units excel-input w-14 sm:w-16 h-9 text-center font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </div>
                                         </div>
-                                        <span class="text-[11px] text-zinc-400 block mt-1 font-mono">
+                                        <div class="text-[10px] text-zinc-400 mt-1 font-mono">
                                             + <strong class="cell-add-bot text-zinc-200 font-semibold">{{ $addBot }}</strong> bot.
-                                        </span>
+                                        </div>
                                     </td>
 
-                                    <!-- 4. Reposición en Noche (Durante la Fiesta) -->
-                                    <td class="py-3 px-3 text-center">
-                                        <div class="inline-flex items-center justify-center gap-3">
-                                            <!-- Cajas con Stepper sutil -->
+                                    <!-- 4. Reposición en Noche (Entrada directa sin steppers) -->
+                                    <td class="py-2.5 px-3 text-center border-l theme-border">
+                                        <div class="inline-flex items-center justify-center gap-2">
                                             <div class="flex flex-col items-center">
-                                                <div class="flex items-center gap-0.5 bg-zinc-950 border border-zinc-800 rounded-lg p-0.5">
-                                                    @if($session->isOpen())
-                                                        <button type="button" class="btn-step-minus w-5 h-5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95 cursor-pointer">−</button>
-                                                    @endif
-                                                    <input type="number" 
-                                                           name="inventory[{{ $sale->id }}][night_packages]" 
-                                                           value="{{ $nightPkg }}" 
-                                                           min="0" 
-                                                           @disabled(!$session->isOpen())
-                                                           class="input-night-pkg w-8 text-center font-mono font-semibold text-xs bg-transparent border-0 text-white focus:outline-none p-0">
-                                                    @if($session->isOpen())
-                                                        <button type="button" class="btn-step-plus w-5 h-5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95 cursor-pointer">+</button>
-                                                    @endif
-                                                </div>
-                                                <span class="text-[10px] text-zinc-500 font-medium mt-0.5">Cajas</span>
+                                                <span class="text-[10px] text-zinc-500 font-semibold uppercase mb-1">Cajas</span>
+                                                <input type="number" 
+                                                       data-excel-col="4"
+                                                       name="inventory[{{ $sale->id }}][night_packages]" 
+                                                       value="{{ $nightPkg }}" 
+                                                       min="0" 
+                                                       @disabled(!$session->isOpen())
+                                                       class="input-night-pkg excel-input w-14 sm:w-16 h-9 text-center font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </div>
-
-                                            <!-- Botellas Sueltas con Stepper sutil -->
                                             <div class="flex flex-col items-center">
-                                                <div class="flex items-center gap-0.5 bg-zinc-950 border border-zinc-800 rounded-lg p-0.5">
-                                                    @if($session->isOpen())
-                                                        <button type="button" class="btn-step-minus w-5 h-5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95 cursor-pointer">−</button>
-                                                    @endif
-                                                    <input type="number" 
-                                                           name="inventory[{{ $sale->id }}][night_units]" 
-                                                           value="{{ $nightUnits }}" 
-                                                           min="0" 
-                                                           @disabled(!$session->isOpen())
-                                                           class="input-night-units w-8 text-center font-mono font-semibold text-xs bg-transparent border-0 text-white focus:outline-none p-0">
-                                                    @if($session->isOpen())
-                                                        <button type="button" class="btn-step-plus w-5 h-5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95 cursor-pointer">+</button>
-                                                    @endif
-                                                </div>
-                                                <span class="text-[10px] text-zinc-500 font-medium mt-0.5">Sueltas</span>
+                                                <span class="text-[10px] text-zinc-500 font-semibold uppercase mb-1">Sueltas</span>
+                                                <input type="number" 
+                                                       data-excel-col="5"
+                                                       name="inventory[{{ $sale->id }}][night_units]" 
+                                                       value="{{ $nightUnits }}" 
+                                                       min="0" 
+                                                       @disabled(!$session->isOpen())
+                                                       class="input-night-units excel-input w-14 sm:w-16 h-9 text-center font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
                                             </div>
+                                        </div>
+                                        <div class="text-[10px] text-zinc-400 mt-1 font-mono">
+                                            + <strong class="cell-night-bot text-zinc-200 font-semibold">{{ $nightBot }}</strong> bot.
                                         </div>
                                     </td>
 
                                     <!-- 5. Total Disponible para Ventas (Destacado y Claro) -->
-                                    <td class="py-3 px-4 text-center">
-                                        <div class="inline-flex flex-col items-center justify-center px-3.5 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 min-w-[84px]">
-                                            <span class="cell-total-bot font-black font-mono text-base text-[#F5B81C]">
+                                    <td class="py-2.5 px-4 text-center border-l theme-border bg-zinc-950/40">
+                                        <div class="stat-pill inline-flex flex-col items-center justify-center px-4 py-2 rounded-xl min-w-[96px] shadow-sm">
+                                            <span class="cell-total-bot font-black font-mono text-lg text-[#F5B81C] tracking-tight">
                                                 {{ $totNightBot }}
                                             </span>
                                             <span class="text-[10px] text-zinc-400 font-mono mt-0.5">
@@ -397,7 +408,7 @@
         </form>
 
         <!-- ========================================================
-             5. SCRIPT REACTIVO (CÁLCULO AL INSTANTE & FILTROS)
+             5. SCRIPT REACTIVO CON MOTOR DE NAVEGACIÓN TIPO EXCEL
              ======================================================== -->
         <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -487,6 +498,7 @@
                 // Conteo de botellas
                 const initBot = (initPkg * unitsPerPkg) + initUnits;
                 const addBot = (addPkg * unitsPerPkg) + addUnits;
+                const nightBot = (nightPkg * unitsPerPkg) + nightUnits;
 
                 // Total Apertura
                 const apertPkg = initPkg + addPkg;
@@ -503,6 +515,9 @@
 
                 const addBotEl = row.querySelector('.cell-add-bot');
                 if (addBotEl) addBotEl.textContent = addBot;
+
+                const nightBotEl = row.querySelector('.cell-night-bot');
+                if (nightBotEl) nightBotEl.textContent = nightBot;
 
                 // Actualizar total final
                 const totBotEl = row.querySelector('.cell-total-bot');
@@ -521,34 +536,124 @@
                     input.addEventListener('input', () => recalculateRow(row));
                     input.addEventListener('change', queueAutosave);
                 });
+            });
 
-                row.querySelectorAll('.btn-step-plus').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const input = this.closest('div').querySelector('input');
-                        if (input && !input.disabled) {
-                            input.value = (parseInt(input.value) || 0) + 1;
-                            input.dispatchEvent(new Event('input', { bubbles: true }));
-                            recalculateRow(row);
-                            queueAutosave();
-                        }
+            /* ========================================================
+               MOTOR DE NAVEGACIÓN Y LLENADO RÁPIDO TIPO EXCEL
+               - Selección automática al enfocar (sobrescribe directo)
+               - Flecha Abajo / Enter: siguiente fila, misma columna
+               - Flecha Arriba / Shift+Enter: fila anterior, misma columna
+               - Flecha Derecha / Izquierda: columna adyacente
+               ======================================================== */
+            function initExcelNavigation(container) {
+                if (!container) return;
+
+                function getMatrix() {
+                    const visibleRows = Array.from(container.querySelectorAll('.inv-row')).filter(tr => tr.style.display !== 'none');
+                    return visibleRows.map(tr => {
+                        const inputs = Array.from(tr.querySelectorAll('input[data-excel-col]')).filter(inp => !inp.disabled);
+                        inputs.sort((a, b) => parseInt(a.dataset.excelCol) - parseInt(b.dataset.excelCol));
+                        return { tr, inputs };
                     });
+                }
+
+                container.addEventListener('focusin', function (e) {
+                    const input = e.target;
+                    if (!input.matches('input[data-excel-col]')) return;
+
+                    // Seleccionar todo el número al entrar para escribir directo
+                    setTimeout(() => {
+                        if (document.activeElement === input) {
+                            try { input.select(); } catch (err) {}
+                        }
+                    }, 25);
+
+                    // Iluminar fila activa
+                    container.querySelectorAll('.inv-row').forEach(r => r.classList.remove('excel-active-row'));
+                    const tr = input.closest('.inv-row');
+                    if (tr) tr.classList.add('excel-active-row');
                 });
 
-                row.querySelectorAll('.btn-step-minus').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const input = this.closest('div').querySelector('input');
-                        if (input && !input.disabled) {
-                            const val = parseInt(input.value) || 0;
-                            if (val > 0) {
-                                input.value = val - 1;
-                                input.dispatchEvent(new Event('input', { bubbles: true }));
-                                recalculateRow(row);
-                                queueAutosave();
+                container.addEventListener('focusout', function (e) {
+                    const input = e.target;
+                    if (!input.matches('input[data-excel-col]')) return;
+                    const tr = input.closest('.inv-row');
+                    if (tr && !tr.contains(document.activeElement)) {
+                        tr.classList.remove('excel-active-row');
+                    }
+                });
+
+                container.addEventListener('keydown', function (e) {
+                    const input = e.target;
+                    if (!input.matches('input[data-excel-col]')) return;
+
+                    const key = e.key;
+                    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Tab'].includes(key)) {
+                        return;
+                    }
+
+                    const matrix = getMatrix();
+                    const currentTr = input.closest('.inv-row');
+                    const rowIndex = matrix.findIndex(item => item.tr === currentTr);
+                    if (rowIndex === -1) return;
+
+                    const rowInputs = matrix[rowIndex].inputs;
+                    const colIndex = rowInputs.indexOf(input);
+                    if (colIndex === -1) return;
+
+                    let targetInput = null;
+
+                    if (key === 'ArrowDown') {
+                        e.preventDefault();
+                        if (rowIndex + 1 < matrix.length) {
+                            const nextRowInputs = matrix[rowIndex + 1].inputs;
+                            targetInput = nextRowInputs[colIndex] || nextRowInputs[nextRowInputs.length - 1];
+                        }
+                    } else if (key === 'ArrowUp') {
+                        e.preventDefault();
+                        if (rowIndex - 1 >= 0) {
+                            const prevRowInputs = matrix[rowIndex - 1].inputs;
+                            targetInput = prevRowInputs[colIndex] || prevRowInputs[prevRowInputs.length - 1];
+                        }
+                    } else if (key === 'Enter') {
+                        e.preventDefault(); // Nunca enviar el formulario con Enter
+                        if (e.shiftKey) {
+                            if (rowIndex - 1 >= 0) {
+                                const prevRowInputs = matrix[rowIndex - 1].inputs;
+                                targetInput = prevRowInputs[colIndex] || prevRowInputs[prevRowInputs.length - 1];
+                            }
+                        } else {
+                            if (rowIndex + 1 < matrix.length) {
+                                const nextRowInputs = matrix[rowIndex + 1].inputs;
+                                targetInput = nextRowInputs[colIndex] || nextRowInputs[nextRowInputs.length - 1];
                             }
                         }
-                    });
+                    } else if (key === 'ArrowRight' || (key === 'Tab' && !e.shiftKey)) {
+                        e.preventDefault();
+                        if (colIndex + 1 < rowInputs.length) {
+                            targetInput = rowInputs[colIndex + 1];
+                        } else if (rowIndex + 1 < matrix.length) {
+                            targetInput = matrix[rowIndex + 1].inputs[0];
+                        }
+                    } else if (key === 'ArrowLeft' || (key === 'Tab' && e.shiftKey)) {
+                        e.preventDefault();
+                        if (colIndex - 1 >= 0) {
+                            targetInput = rowInputs[colIndex - 1];
+                        } else if (rowIndex - 1 >= 0) {
+                            const prevRowInputs = matrix[rowIndex - 1].inputs;
+                            targetInput = prevRowInputs[prevRowInputs.length - 1];
+                        }
+                    }
+
+                    if (targetInput) {
+                        targetInput.focus();
+                        try { targetInput.select(); } catch (err) {}
+                    }
                 });
-            });
+            }
+
+            const tbody = document.getElementById('inventory-rows-tbody');
+            if (tbody) initExcelNavigation(tbody);
 
             // Conteo inicial
             updateTotalSum();

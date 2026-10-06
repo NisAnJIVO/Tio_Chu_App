@@ -362,11 +362,16 @@ class TioChuSystemTest extends TestCase
         // Mesero pide 2 combos de 250 = 500 Bs, pagando 250 en efectivo y 250 en QR
         $response = $this->actingAs($this->user)->post(route('sales.storeSales.store'), [
             'night_session_id' => $session->id,
-            'product_id' => $singani->id,
-            'quantity' => 2,
-            'unit_price' => 250.00,
+            'orders' => [
+                [
+                    'product_id' => $singani->id,
+                    'quantity' => 2,
+                    'unit_price' => 250.00,
+                ],
+            ],
             'cash_amount' => 250.00,
             'qr_amount' => 250.00,
+            'card_amount' => 0.00,
             'cobrante_name' => 'ARIEL',
             'sync_qr' => 1,
             'bank_app' => 'YASTA',

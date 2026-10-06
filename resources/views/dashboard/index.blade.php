@@ -121,7 +121,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             
             <!-- TARJETA 1: Venta Total en Barras -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-1' : '' }}">
+            <div class="theme-card p-4 rounded-2xl border theme-border flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-1' : '' }}">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Venta en Barras
@@ -139,7 +139,7 @@
             </div>
 
             <!-- TARJETA 2: Cobros por Tarjeta (POS) -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-2' : '' }}">
+            <div class="theme-card p-4 rounded-2xl border theme-border flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-2' : '' }}">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Tarjetas (Bruto)
@@ -160,7 +160,7 @@
             </div>
 
             <!-- TARJETA 3: Cobros por QR -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-3' : '' }}">
+            <div class="theme-card p-4 rounded-2xl border theme-border flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-3' : '' }}">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Cobros por QR
@@ -181,7 +181,7 @@
             </div>
 
             <!-- TARJETA 4: Dinero en Caja (Balance Neto) -->
-            <div class="p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-4' : '' }}">
+            <div class="theme-card p-4 rounded-2xl border theme-border flex items-center justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-card-4' : '' }}">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
                         Efectivo en Caja
@@ -210,8 +210,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             <!-- Columna Izquierda (4 Cols): Ventas por Barra -->
-            <div class="lg:col-span-4 p-5 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-grid-left' : '' }}">
-                <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3 mb-3">
+            <div class="theme-card lg:col-span-4 p-5 rounded-2xl border theme-border flex flex-col justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-grid-left' : '' }}">
+                <div class="flex items-center justify-between border-b theme-border pb-3 mb-3">
                     <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                         Ventas por Barra
                     </h2>
@@ -264,14 +264,14 @@
                 </div>
 
                 <!-- Total Barras -->
-                <div class="pt-3.5 mt-3 border-t border-zinc-800/80 flex items-center justify-between">
+                <div class="pt-3.5 mt-3 border-t theme-border flex items-center justify-between">
                     <span class="text-zinc-400 font-bold uppercase tracking-wider text-[11px]">Total Barras</span>
                     <span class="font-black text-[#F5B81C] font-mono text-base">Bs. {{ number_format($barTotal, 2) }}</span>
                 </div>
             </div>
 
             <!-- Columna Derecha (8 Cols): Balance de Noche (Ingresos vs Egresos) -->
-            <div class="lg:col-span-8 p-5 rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-grid-right' : '' }}">
+            <div class="theme-card lg:col-span-8 p-5 rounded-2xl border theme-border flex flex-col justify-between shadow-sm {{ session('animate_entrance') ? 'animate-entrance-grid-right' : '' }}">
                 
                 <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3 mb-3">
                     <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
