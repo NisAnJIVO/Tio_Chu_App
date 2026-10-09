@@ -8,9 +8,9 @@
     <!-- ==========================================
          CABECERA (iOS PURE DARK - SIN RELLENO DE IA)
          ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 py-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-3.5 sm:px-5 sm:py-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
         <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C]">
+            <div class="w-9 h-9 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C] shrink-0">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
@@ -20,50 +20,50 @@
             </h1>
         </div>
 
-        <div class="flex items-center gap-2.5">
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <a href="{{ route('staffPayments.index') }}" 
-               class="inline-flex items-center gap-2 px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95">
-                <svg class="w-4 h-4 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center">
+                <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-                <span>Planilla de Pagos</span>
+                <span>Planilla Pagos</span>
             </a>
 
             <button type="button" onclick="openCreateStaffDrawer()"
-                   class="inline-flex items-center gap-2 px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl transition-all shadow-md cursor-pointer active:scale-95">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl transition-all shadow-md cursor-pointer active:scale-95 text-center">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
-                <span>Nuevo Personal</span>
+                <span>+ Personal</span>
             </button>
         </div>
     </div>
 
-    <!-- Pestañas por Día: iOS Segmented Control (Fuente Sans Oficial - Dimensiones Fijas) -->
-    <div class="flex items-center justify-between flex-wrap gap-3">
-        <div class="inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-2xl gap-1 text-xs sm:text-sm font-sans">
+    <!-- Pestañas por Día: iOS Segmented Control Responsivo -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-4 sm:inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-2xl gap-1 text-xs sm:text-sm font-sans w-full sm:w-auto">
             <a href="{{ route('staff.index', ['day' => 'viernes']) }}" 
-               class="px-4 py-2 min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'viernes' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'viernes' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Viernes <span class="ml-1 text-xs {{ $currentDay === 'viernes' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countViernes }})</span>
             </a>
             <a href="{{ route('staff.index', ['day' => 'sabado']) }}" 
-               class="px-4 py-2 min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'sabado' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'sabado' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Sábado <span class="ml-1 text-xs {{ $currentDay === 'sabado' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countSabado }})</span>
             </a>
             <a href="{{ route('staff.index', ['day' => 'domingo']) }}" 
-               class="px-4 py-2 min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'domingo' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'domingo' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Domingo <span class="ml-1 text-xs {{ $currentDay === 'domingo' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countDomingo }})</span>
             </a>
             <a href="{{ route('staff.index', ['day' => 'todos']) }}" 
-               class="px-4 py-2 min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'todos' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'todos' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Todos <span class="ml-1 text-xs {{ $currentDay === 'todos' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countTodos }})</span>
             </a>
         </div>
 
         <div class="flex items-center gap-3 w-full sm:w-auto">
             <!-- Buscador por Nombre iOS Minimalista -->
-            <div class="relative flex-1 sm:w-72">
+            <div class="relative w-full sm:w-72">
                 <svg class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="11" cy="11" r="8"/>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -89,26 +89,95 @@
 
     <!-- Tabla Minimalista de Personal (Fuente Sans Oficial - Ancho Fijo Bloqueado) -->
     <div class="rounded-2xl border border-zinc-800/80 bg-[#09090b] overflow-hidden shadow-xl font-sans min-h-[540px]">
-        <div class="overflow-x-auto">
-            <table class="w-full text-xs sm:text-sm text-left table-fixed">
-                <colgroup>
-                    <col style="width: 5%;">
-                    <col style="width: 27%;">
-                    <col style="width: 18%;">
-                    <col style="width: 17%;">
-                    <col style="width: 17%;">
-                    <col style="width: 10%;">
-                    <col style="width: 6%;">
-                </colgroup>
+        <!-- VISTA DE TARJETAS PARA CELULAR (md:hidden) -->
+        <div class="md:hidden divide-y divide-zinc-800/80">
+            @forelse($staffMembers as $index => $member)
+                @php
+                    $pay = match($currentDay) {
+                        'viernes' => $member->getPayForDay('Viernes'),
+                        'sabado' => $member->getPayForDay('Sábado'),
+                        'domingo' => $member->getPayForDay('Domingo'),
+                        default => $member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0,
+                    };
+                    $displayRole = str_ireplace(['Staff / ', 'Staff/', ' (S)', '(S)', 'mozo', 'mozos'], ['', '', '', '', 'MESERO', 'MESEROS'], $member->role);
+                    $displayBar = str_ireplace(['Pista / Mozos', 'Pista o mozos', 'Pista', 'Seguridad / Puerta'], ['Meseros', 'Meseros', 'Meseros', 'Seguridad'], $member->assigned_bar ?? 'General');
+                @endphp
+                <div class="p-3.5 space-y-2.5 staff-table-row hover:bg-zinc-900/30 transition-colors" data-name="{{ strtolower($member->name) }}" data-role="{{ strtolower($displayRole) }}" data-bar="{{ strtolower($displayBar) }}">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="text-xs text-zinc-500 font-mono font-bold mr-1">#{{ $index + 1 }}</span>
+                            <span class="font-bold text-white text-sm tracking-tight uppercase">{{ $member->name }}</span>
+                        </div>
+                        <span class="font-mono font-black text-[#F5B81C] text-sm shrink-0">
+                            Bs. {{ number_format($pay, 2) }}
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                        <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-zinc-950 border border-zinc-800 text-zinc-200 uppercase">
+                            {{ strtoupper($displayRole) }}
+                        </span>
+                        <span class="text-zinc-400 text-xs">• {{ $displayBar }}</span>
+                        @if(!empty($member->phone))
+                            <a href="tel:{{ $member->phone }}" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 text-emerald-400 font-mono text-[11px] ml-auto hover:border-emerald-500/50 transition-colors">
+                                <svg class="w-3 h-3 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                                <span>{{ $member->phone }}</span>
+                            </a>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <div class="flex items-center gap-1 font-sans">
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded {{ $member->works_friday ? 'bg-zinc-800 text-zinc-200 border border-zinc-700/60' : 'text-zinc-600 bg-zinc-950' }}">Vie</span>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded {{ $member->works_saturday ? 'bg-zinc-800 text-zinc-200 border border-zinc-700/60' : 'text-zinc-600 bg-zinc-950' }}">Sáb</span>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded {{ $member->works_sunday ? 'bg-zinc-800 text-zinc-200 border border-zinc-700/60' : 'text-zinc-600 bg-zinc-950' }}">Dom</span>
+                        </div>
+
+                        <button type="button"
+                                onclick="openEditStaffDrawer(
+                                    {{ $member->id }},
+                                    {{ json_encode($member->name) }},
+                                    {{ json_encode($displayRole) }},
+                                    {{ json_encode($displayBar) }},
+                                    {{ $member->works_friday ? 'true' : 'false' }},
+                                    {{ $member->works_saturday ? 'true' : 'false' }},
+                                    {{ $member->works_sunday ? 'true' : 'false' }},
+                                    {{ $member->default_pay ?? 100 }},
+                                    {{ $member->friday_pay ?? 100 }},
+                                    {{ $member->saturday_pay ?? 110 }},
+                                    {{ $member->sunday_pay ?? 110 }},
+                                    {{ json_encode($member->phone ?? '') }},
+                                    {{ $member->is_active ? 1 : 0 }}
+                                )"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs font-bold transition-all cursor-pointer">
+                            <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            <span>Editar</span>
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="p-8 text-center text-zinc-500 font-sans text-xs">
+                    No hay personal activo registrado para este turno.
+                </div>
+            @endforelse
+        </div>
+
+        <!-- TABLA COMPLETA PARA TABLET Y ESCRITORIO (hidden md:block) -->
+        <div class="hidden md:block">
+            <table class="w-full text-xs sm:text-sm text-left">
                 <thead class="bg-zinc-950 border-b border-zinc-800/80 text-zinc-400 uppercase text-[10px] tracking-wider font-bold">
                     <tr>
-                        <th class="px-3 py-3.5 text-center">N°</th>
+                        <th class="w-12 px-3 py-3.5 text-center">N°</th>
                         <th class="px-4 py-3.5">Trabajador</th>
-                        <th class="px-4 py-3.5">Contacto / Celular</th>
-                        <th class="px-4 py-3.5">Cargo / Rol</th>
-                        <th class="px-4 py-3.5">Área Asignada</th>
-                        <th class="px-4 py-3.5 text-right">Jornal del Turno</th>
-                        <th class="px-3 py-3.5 text-right">Acción</th>
+                        <th class="px-4 py-3.5 whitespace-nowrap">Contacto</th>
+                        <th class="px-4 py-3.5 whitespace-nowrap">Cargo / Rol</th>
+                        <th class="px-4 py-3.5 whitespace-nowrap">Área</th>
+                        <th class="px-4 py-3.5 text-right whitespace-nowrap">Jornal</th>
+                        <th class="w-24 px-4 py-3.5 text-right whitespace-nowrap">Acción</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-800/60 font-sans">
@@ -321,7 +390,7 @@
         <!-- Tarifas de Pago por Noche -->
         <div>
             <label class="block text-xs font-bold text-zinc-300 mb-1.5">Tarifas por Noche (Bs.)</label>
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <div>
                     <label for="c_default_pay" class="block text-[10px] font-sans font-bold text-zinc-400 mb-1">Base</label>
                     <input type="number" step="5" name="default_pay" id="c_default_pay" required value="100"
@@ -346,13 +415,13 @@
         </div>
 
         <!-- Botones de Acción -->
-        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6">
+        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6 w-full">
             <button type="button" onclick="closeStaffDrawer()" 
-                    class="px-4 py-2 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer">
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                 Cancelar
             </button>
             <button type="submit" 
-                    class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer shadow-md">
+                    class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                 Guardar Personal
             </button>
         </div>
@@ -457,7 +526,7 @@
         <!-- Tarifas de Pago por Noche -->
         <div>
             <label class="block text-xs font-bold text-zinc-300 mb-1.5">Tarifas por Noche (Bs.)</label>
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <div>
                     <label for="e_default_pay" class="block text-[10px] font-sans font-bold text-zinc-400 mb-1">Base</label>
                     <input type="number" step="5" name="default_pay" id="e_default_pay" required
@@ -494,18 +563,18 @@
         </div>
 
         <!-- Botones de Acción -->
-        <div class="pt-5 border-t border-zinc-800 flex items-center justify-between gap-3 mt-6">
+        <div class="pt-5 border-t border-zinc-800 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 w-full">
             <button type="button" onclick="confirmDeleteStaff()"
-                    class="text-xs text-rose-400 hover:text-rose-300 font-bold hover:underline transition-all cursor-pointer">
+                    class="w-full sm:w-auto text-center sm:text-left py-2 text-xs text-rose-400 hover:text-rose-300 font-bold transition-all cursor-pointer">
                 Eliminar Personal
             </button>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
                 <button type="button" onclick="closeStaffDrawer()" 
-                        class="px-4 py-2 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer">
+                        class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                     Cancelar
                 </button>
                 <button type="submit" 
-                        class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer shadow-md">
+                        class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                     Guardar Cambios
                 </button>
             </div>
@@ -522,6 +591,7 @@
     function openCreateStaffDrawer() {
         document.getElementById('staff-drawer-overlay').classList.add('is-open');
         document.getElementById('drawer-create-staff').classList.add('is-open');
+        document.body.classList.add('drawer-open');
         document.body.style.overflow = 'hidden';
         setTimeout(() => {
             const input = document.getElementById('c_name');
@@ -566,6 +636,7 @@
 
         document.getElementById('staff-drawer-overlay').classList.add('is-open');
         document.getElementById('drawer-edit-staff').classList.add('is-open');
+        document.body.classList.add('drawer-open');
         document.body.style.overflow = 'hidden';
     }
 
@@ -573,6 +644,7 @@
         document.getElementById('staff-drawer-overlay').classList.remove('is-open');
         document.getElementById('drawer-create-staff').classList.remove('is-open');
         document.getElementById('drawer-edit-staff').classList.remove('is-open');
+        document.body.classList.remove('drawer-open');
         document.body.style.overflow = '';
     }
 

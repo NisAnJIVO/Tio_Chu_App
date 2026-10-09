@@ -3,10 +3,10 @@
 @section('title', 'Multimedia')
 
 @section('content')
-<div class="space-y-8 max-w-7xl mx-auto pb-12">
+<div class="space-y-5 sm:space-y-8 max-w-7xl mx-auto pb-12 w-full min-w-0 max-w-full overflow-x-hidden">
 
     <!-- Cabecera Minimalista iOS -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b" style="border-color: #1e1f24;">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b w-full min-w-0" style="border-color: #1e1f24;">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/20">
@@ -15,16 +15,16 @@
                 <span class="text-zinc-600 text-xs">•</span>
                 <span class="text-xs text-zinc-500 font-mono">{{ $counts['all'] }} Recursos</span>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight text-white">Multimedia</h1>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Multimedia</h1>
             <p class="text-xs text-zinc-400 mt-1">
                 Administra el logo oficial, el fondo de acceso y la biblioteca visual de bebidas, local y personal.
             </p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
             <button type="button" 
                     onclick="openUploadModal()"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-all shadow-lg shadow-[#F5B81C]/10 cursor-pointer">
+                    class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-all shadow-lg shadow-[#F5B81C]/10 cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -34,18 +34,18 @@
     </div>
 
     <!-- Sección 1: Recursos Oficiales del Sistema (Logo y Fondo) -->
-    <section class="space-y-3">
+    <section class="space-y-3 w-full min-w-0">
         <div class="flex items-center justify-between">
             <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Recursos Oficiales del Sistema</h2>
-            <span class="text-[11px] text-zinc-500">Cambiables sin tocar código</span>
+            <span class="text-[11px] text-zinc-500">Personalizables</span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 w-full min-w-0">
             
             <!-- Card 1: Logo Oficial de Tío Chu -->
-            <div class="p-4 rounded-2xl border flex flex-col justify-between gap-4" style="background-color: #050507; border-color: #1e1f24;">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-xl bg-black border border-white/10 flex items-center justify-center p-2 shrink-0 overflow-hidden relative group">
+            <div class="p-3.5 sm:p-4 rounded-2xl border flex flex-col justify-between gap-3.5 sm:gap-4" style="background-color: #050507; border-color: #1e1f24;">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-black border border-white/10 flex items-center justify-center p-2 shrink-0 overflow-hidden relative group">
                         <img src="{{ asset('images/LogoTioChu.png') }}?v={{ $systemLogo ? $systemLogo->updated_at?->timestamp : time() }}" 
                              alt="Logo Oficial" 
                              class="max-w-full max-h-full object-contain cursor-pointer transition-transform group-hover:scale-105"
@@ -54,7 +54,7 @@
                     <div class="min-w-0">
                         <div class="flex items-center gap-2">
                             <h3 class="text-sm font-bold text-white truncate">Logo Oficial</h3>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#F5B81C]/15 text-[#F5B81C] border border-[#F5B81C]/30">Activo</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#F5B81C]/15 text-[#F5B81C] border border-[#F5B81C]/30 shrink-0">Activo</span>
                         </div>
                         <p class="text-[11px] text-zinc-500 font-mono mt-0.5 truncate">Logo del sistema</p>
                     </div>
@@ -67,7 +67,7 @@
                         <input type="file" name="replacement_image" id="logo-file-input" accept="image/*" class="hidden" onchange="this.form.submit()">
                         <button type="button" 
                                 onclick="document.getElementById('logo-file-input').click()"
-                                class="w-full px-3 py-2 rounded-xl text-xs font-medium text-zinc-200 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                                class="w-full px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-200 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                             <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                             </svg>
@@ -79,9 +79,9 @@
             </div>
 
             <!-- Card 2: Fondo del Inicio de Sesión -->
-            <div class="p-4 rounded-2xl border flex flex-col justify-between gap-4" style="background-color: #050507; border-color: #1e1f24;">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-xl bg-black border border-white/10 flex items-center justify-center shrink-0 overflow-hidden relative group">
+            <div class="p-3.5 sm:p-4 rounded-2xl border flex flex-col justify-between gap-3.5 sm:gap-4" style="background-color: #050507; border-color: #1e1f24;">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-black border border-white/10 flex items-center justify-center shrink-0 overflow-hidden relative group">
                         <img src="{{ asset('images/fondoTioChuLogo.png') }}?v={{ $systemBackground ? $systemBackground->updated_at?->timestamp : time() }}" 
                              alt="Fondo Login" 
                              class="w-full h-full object-cover cursor-pointer transition-transform group-hover:scale-105"
@@ -90,7 +90,7 @@
                     <div class="min-w-0">
                         <div class="flex items-center gap-2">
                             <h3 class="text-sm font-bold text-white truncate">Fondo de Login</h3>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30">Pantalla</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30 shrink-0">Pantalla</span>
                         </div>
                         <p class="text-[11px] text-zinc-500 font-mono mt-0.5 truncate">Portada de acceso</p>
                     </div>
@@ -103,7 +103,7 @@
                         <input type="file" name="replacement_image" id="bg-file-input" accept="image/*" class="hidden" onchange="this.form.submit()">
                         <button type="button" 
                                 onclick="document.getElementById('bg-file-input').click()"
-                                class="w-full px-3 py-2 rounded-xl text-xs font-medium text-zinc-200 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                                class="w-full px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-200 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                             <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                             </svg>
@@ -114,10 +114,10 @@
                 @endif
             </div>
 
-            <!-- Card 3: Foto de Perfil (WhatsApp / YouTube Simple) -->
-            <div class="p-4 rounded-2xl border flex flex-col justify-between gap-4" style="background-color: #050507; border-color: #1e1f24;">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-full border-2 border-zinc-700 bg-zinc-900 overflow-hidden shrink-0 flex items-center justify-center">
+            <!-- Card 3: Foto de Perfil -->
+            <div class="p-3.5 sm:p-4 rounded-2xl border flex flex-col justify-between gap-3.5 sm:gap-4" style="background-color: #050507; border-color: #1e1f24;">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-zinc-700 bg-zinc-900 overflow-hidden shrink-0 flex items-center justify-center">
                         @if(Auth::user()?->avatar_url)
                             <img src="{{ Auth::user()->avatar_url }}" 
                                  alt="{{ Auth::user()->name }}" 
@@ -134,13 +134,13 @@
                     </div>
                 </div>
 
-                <div class="pt-2 border-t flex items-center gap-2" style="border-color: #1a1a1f;">
-                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" class="flex-1">
+                <div class="pt-2 border-t flex flex-col sm:flex-row items-stretch sm:items-center gap-2" style="border-color: #1a1a1f;">
+                    <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data" class="flex-1 w-full">
                         @csrf
                         <input type="file" name="avatar" id="media-profile-avatar-input" accept="image/*" class="hidden" onchange="this.form.submit()">
                         <button type="button" 
                                 onclick="document.getElementById('media-profile-avatar-input').click()" 
-                                class="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
+                                class="w-full px-3 py-2.5 rounded-xl text-xs font-semibold bg-[#F5B81C] text-black hover:bg-[#e5ac18] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm text-center">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                                 <circle cx="12" cy="13" r="3"/>
@@ -150,11 +150,11 @@
                     </form>
 
                     @if(Auth::user()?->avatar)
-                        <form action="{{ route('profile.avatar.remove') }}" method="POST">
+                        <form action="{{ route('profile.avatar.remove') }}" method="POST" class="w-full sm:w-auto">
                             @csrf
                             @method('DELETE')
                             <button type="submit" 
-                                    class="px-3 py-2 rounded-xl text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 transition-colors cursor-pointer">
+                                    class="w-full sm:w-auto px-3 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 transition-colors cursor-pointer text-center">
                                 Quitar foto
                             </button>
                         </form>
@@ -171,25 +171,25 @@
             <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Galería de Recursos</h2>
             
             <!-- Filtros por Categoría iOS -->
-            <div class="inline-flex p-1 rounded-xl bg-zinc-950 border border-zinc-800/80 overflow-x-auto max-w-full">
+            <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-950 border border-zinc-800/80 overflow-x-auto w-full sm:w-auto max-w-full" style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
                 <a href="{{ route('media.index', ['category' => 'all']) }}" 
-                   class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'all' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'all' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
                     Todas ({{ $counts['all'] }})
                 </a>
                 <a href="{{ route('media.index', ['category' => 'drinks']) }}" 
-                   class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'drinks' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'drinks' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
                     Bebidas ({{ $counts['drinks'] }})
                 </a>
                 <a href="{{ route('media.index', ['category' => 'establishment']) }}" 
-                   class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'establishment' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'establishment' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
                     Local ({{ $counts['establishment'] }})
                 </a>
                 <a href="{{ route('media.index', ['category' => 'staff']) }}" 
-                   class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'staff' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'staff' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
                     Personal ({{ $counts['staff'] }})
                 </a>
                 <a href="{{ route('media.index', ['category' => 'system']) }}" 
-                   class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'system' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap {{ $category === 'system' ? 'bg-zinc-900 text-[#F5B81C] font-semibold' : 'text-zinc-400 hover:text-white' }}">
                     Sistema ({{ $counts['system'] }})
                 </a>
             </div>
@@ -197,7 +197,7 @@
 
         @if($mediaAssets->isEmpty())
             <!-- Estado Vacío Minimalista -->
-            <div class="py-16 text-center rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-950/40">
+            <div class="py-16 text-center rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-950/40 px-4">
                 <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500 mb-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
@@ -211,20 +211,20 @@
                 </p>
                 <button type="button" 
                         onclick="openUploadModal()"
-                        class="mt-4 px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-200 border border-zinc-700/60 hover:bg-zinc-800 transition-colors cursor-pointer">
+                        class="mt-4 px-4 py-2.5 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-200 border border-zinc-700/60 hover:bg-zinc-800 transition-colors cursor-pointer">
                     Subir primera imagen
                 </button>
             </div>
         @else
-            <!-- Grilla de Imágenes -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- Grilla de Imágenes: 2 cols en celulares, 3 en sm, 4 en md, 5 en lg -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-4 w-full min-w-0">
                 @foreach($mediaAssets as $asset)
-                    <div class="group rounded-2xl border overflow-hidden flex flex-col transition-all duration-200 hover:border-zinc-700/80" 
+                    <div class="group rounded-2xl border overflow-hidden flex flex-col justify-between transition-all duration-200 hover:border-zinc-700/80 shadow-sm w-full min-w-0" 
                          style="background-color: #060608; border-color: #1e1f24;">
                         
-                        <!-- Contenedor Visual de la Imagen -->
+                        <!-- Contenedor Visual de la Imagen (Cuadrado para uniformidad) -->
                         <div class="relative aspect-square w-full bg-black/60 flex items-center justify-center overflow-hidden cursor-pointer"
-                             onclick="openLightbox('{{ $asset->url }}', '{{ $asset->title }}', '{{ $asset->dimensions ?? '—' }}', '{{ $asset->formatted_size }}')">
+                             onclick="openLightbox('{{ $asset->url }}', '{{ addslashes($asset->title) }}', '{{ $asset->dimensions ?? '—' }}', '{{ $asset->formatted_size }}')">
                             
                             <img src="{{ $asset->url }}" 
                                  alt="{{ $asset->title }}" 
@@ -233,90 +233,81 @@
 
                             <!-- Badge de Categoría Flotante -->
                             <div class="absolute top-2 left-2 z-10 pointer-events-none">
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold backdrop-blur-md border 
-                                    {{ $asset->is_system ? 'bg-[#F5B81C]/20 text-[#F5B81C] border-[#F5B81C]/40' : 'bg-black/60 text-zinc-300 border-white/10' }}">
+                                <span class="px-1.5 py-0.5 rounded-md text-[9px] sm:text-[10px] font-semibold backdrop-blur-md border 
+                                    {{ $asset->is_system ? 'bg-[#F5B81C]/20 text-[#F5B81C] border-[#F5B81C]/40' : 'bg-black/70 text-zinc-300 border-white/10' }}">
                                     {{ $asset->category_label }}
-                                </span>
-                            </div>
-
-                            <!-- Botón de Vista Rápida en Hover -->
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                <span class="p-2 rounded-xl bg-black/70 text-white backdrop-blur-sm border border-white/20">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
-                                    </svg>
                                 </span>
                             </div>
                         </div>
 
                         <!-- Metadatos y Acciones -->
-                        <div class="p-3 flex-1 flex flex-col justify-between space-y-2">
-                            <div class="min-w-0">
-                                <p class="text-xs font-semibold text-white truncate" title="{{ $asset->title }}">{{ $asset->title }}</p>
-                                <div class="flex items-center gap-2 text-[10px] text-zinc-500 font-mono mt-0.5">
+                        <div class="p-2 sm:p-3 flex-1 flex flex-col justify-between gap-2 min-w-0 overflow-hidden">
+                            <div class="min-w-0 overflow-hidden">
+                                <p class="text-xs font-bold text-white truncate block w-full" title="{{ $asset->title }}">{{ $asset->title }}</p>
+                                <div class="flex items-center gap-1 text-[10px] text-zinc-500 font-mono mt-0.5 truncate w-full">
                                     <span>{{ $asset->dimensions ?? '—' }}</span>
                                     <span>•</span>
                                     <span>{{ $asset->formatted_size }}</span>
                                 </div>
                             </div>
 
-                            <div class="pt-2 border-t flex items-center justify-between gap-1" style="border-color: #1a1a1f;">
+                            <!-- Barra de Acciones: 4 Columnas adaptadas al ancho exacto del card -->
+                            <div class="pt-2 border-t grid grid-cols-4 gap-1 w-full min-w-0" style="border-color: #1a1a1f;">
                                 <!-- Copiar URL Directa -->
                                 <button type="button" 
                                         onclick="copyMediaUrl('{{ $asset->url }}')"
                                         title="Copiar URL directa"
-                                        class="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors cursor-pointer">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        class="h-7 sm:h-8 rounded-lg text-zinc-300 hover:text-white bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center w-full">
+                                    <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                                     </svg>
                                 </button>
 
-                                <div class="flex items-center gap-1">
-                                    <!-- Menú de Acciones Rápidas -->
-                                    @if(!$asset->is_system)
-                                        <!-- Establecer como Logo -->
-                                        <form action="{{ route('media.setSystem', $asset) }}" method="POST" class="inline" onsubmit="return confirm('¿Establecer esta imagen como el Logo Oficial de Tío Chu?')">
-                                            @csrf
-                                            <input type="hidden" name="target" value="logo">
-                                            <button type="submit" 
-                                                    title="Establecer como Logo Oficial" 
-                                                    class="p-1.5 rounded-lg text-zinc-400 hover:text-[#F5B81C] hover:bg-zinc-900 transition-colors cursor-pointer">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                                                </svg>
-                                            </button>
-                                        </form>
+                                @if(!$asset->is_system)
+                                    <!-- Establecer como Logo -->
+                                    <form action="{{ route('media.setSystem', $asset) }}" method="POST" class="w-full inline" onsubmit="return confirm('¿Establecer como Logo Oficial?')">
+                                        @csrf
+                                        <input type="hidden" name="target" value="logo">
+                                        <button type="submit" 
+                                                title="Establecer como Logo Oficial" 
+                                                class="h-7 sm:h-8 rounded-lg text-zinc-400 hover:text-[#F5B81C] bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center w-full">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
 
-                                        <!-- Reemplazar Archivo -->
-                                        <form action="{{ route('media.replace', $asset) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                            @csrf
-                                            <input type="file" name="replacement_image" id="replace-file-{{ $asset->id }}" accept="image/*" class="hidden" onchange="this.form.submit()">
-                                            <button type="button" 
-                                                    onclick="document.getElementById('replace-file-{{ $asset->id }}').click()"
-                                                    title="Reemplazar archivo" 
-                                                    class="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors cursor-pointer">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                                </svg>
-                                            </button>
-                                        </form>
+                                    <!-- Reemplazar Archivo -->
+                                    <form action="{{ route('media.replace', $asset) }}" method="POST" enctype="multipart/form-data" class="w-full inline">
+                                        @csrf
+                                        <input type="file" name="replacement_image" id="replace-file-{{ $asset->id }}" accept="image/*" class="hidden" onchange="this.form.submit()">
+                                        <button type="button" 
+                                                onclick="document.getElementById('replace-file-{{ $asset->id }}').click()"
+                                                title="Reemplazar archivo" 
+                                                class="h-7 sm:h-8 rounded-lg text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center w-full">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                            </svg>
+                                        </button>
+                                    </form>
 
-                                        <!-- Eliminar -->
-                                        <form action="{{ route('media.destroy', $asset) }}" method="POST" class="inline" onsubmit="return confirm('¿Eliminar esta imagen de la galería?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    title="Eliminar de la galería" 
-                                                    class="p-1.5 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-zinc-900 transition-colors cursor-pointer">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    @else
-                                        <span class="text-[10px] text-zinc-600 font-mono pr-1">Sistema</span>
-                                    @endif
-                                </div>
+                                    <!-- Eliminar -->
+                                    <form action="{{ route('media.destroy', $asset) }}" method="POST" class="w-full inline" onsubmit="return confirm('¿Eliminar esta imagen?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                title="Eliminar de la galería" 
+                                                class="h-7 sm:h-8 rounded-lg text-zinc-500 hover:text-rose-400 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center w-full">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="col-span-3 flex items-center justify-center bg-zinc-900/40 rounded-lg border border-zinc-800/50">
+                                        <span class="text-[9px] text-zinc-500 font-mono">Sistema</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -329,11 +320,11 @@
 </div>
 
 <!-- Modal 1: Subir Nueva Imagen (Minimalismo iOS) -->
-<div id="upload-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-2xl border p-6 space-y-5" style="background-color: #000000; border-color: #27272a;">
+<div id="upload-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="w-full max-w-md max-h-[92vh] overflow-y-auto rounded-2xl border p-4 sm:p-6 space-y-4 sm:space-y-5" style="background-color: #000000; border-color: #27272a;">
         <div class="flex items-center justify-between pb-3 border-b" style="border-color: #1e1f24;">
             <h3 class="text-sm font-bold text-white">Subir a Galería Multimedia</h3>
-            <button type="button" onclick="closeUploadModal()" class="text-zinc-500 hover:text-white transition-colors cursor-pointer">
+            <button type="button" onclick="closeUploadModal()" class="text-zinc-500 hover:text-white transition-colors cursor-pointer p-1">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -348,7 +339,7 @@
                 <label class="block text-xs font-medium text-zinc-400 mb-1.5">Archivo de Imagen</label>
                 <div id="dropzone" 
                      onclick="document.getElementById('image-upload-input').click()"
-                     class="border border-dashed rounded-xl p-5 text-center cursor-pointer transition-colors hover:border-zinc-500"
+                     class="border border-dashed rounded-xl p-4 sm:p-5 text-center cursor-pointer transition-colors hover:border-zinc-500"
                      style="background-color: #08080a; border-color: #27272a;">
                     
                     <input type="file" name="image" id="image-upload-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" required onchange="handleImagePreview(this)">
@@ -362,7 +353,7 @@
                     </div>
 
                     <div id="dropzone-preview" class="hidden">
-                        <img id="preview-img" src="" alt="Preview" class="max-h-40 mx-auto rounded-lg object-contain">
+                        <img id="preview-img" src="" alt="Preview" class="max-h-36 sm:max-h-40 mx-auto rounded-lg object-contain">
                         <p class="text-[10px] text-[#F5B81C] mt-2 font-medium">Clic para cambiar imagen</p>
                     </div>
                 </div>
@@ -396,14 +387,14 @@
             </div>
 
             <!-- Botones -->
-            <div class="pt-2 flex items-center justify-end gap-2.5">
+            <div class="pt-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                 <button type="button" 
                         onclick="closeUploadModal()"
-                        class="px-4 py-2 rounded-xl text-xs font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer">
+                        class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer text-center">
                     Cancelar
                 </button>
                 <button type="submit" 
-                        class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-colors shadow-lg shadow-[#F5B81C]/15 cursor-pointer">
+                        class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-colors shadow-lg shadow-[#F5B81C]/15 cursor-pointer text-center">
                     Guardar Imagen
                 </button>
             </div>

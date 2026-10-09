@@ -3,16 +3,16 @@
 @section('title', 'Pagos al Personal')
 
 @section('content')
-<div class="space-y-5 max-w-7xl mx-auto pb-10">
+<div class="space-y-5 max-w-7xl mx-auto pb-10 w-full min-w-0 max-w-full overflow-x-hidden">
 
     <!-- ==========================================
          CABECERA (iOS PURE DARK - SIN RELLENO DE IA)
          ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 py-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-3.5 sm:px-5 sm:py-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
         
-        <div class="flex flex-wrap items-center gap-3.5">
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
             <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C]">
+                <div class="w-9 h-9 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C] shrink-0">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
@@ -23,30 +23,30 @@
             </div>
 
             @if($session)
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-zinc-950 border border-zinc-800">
                     <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500' : 'bg-zinc-600' }}"></span>
-                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-200' : 'text-zinc-500' }}">
-                        {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
+                    <span class="text-[11px] font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-200' : 'text-zinc-500' }}">
+                        {{ $session->isOpen() ? 'En Vivo' : 'Cerrada' }}
                     </span>
                 </div>
 
-                <div class="flex items-center gap-2 text-sm font-bold text-zinc-300 font-sans">
-                    <span class="uppercase text-white tracking-wide">{{ $session->day_name }}</span>
-                    <span class="text-zinc-600 font-bold">•</span>
-                    <span class="font-mono text-zinc-300 font-bold text-sm">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
+                <div class="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-zinc-300 font-sans">
+                    <span class="uppercase text-white">{{ $session->day_name }}</span>
+                    <span class="text-zinc-600">•</span>
+                    <span class="font-mono text-zinc-300 text-xs sm:text-sm">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
                 </div>
             @endif
 
             @if($allSessions->isNotEmpty())
-                <form method="GET" action="{{ route('staffPayments.index') }}" class="flex items-center">
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors shadow-sm">
-                        <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <form method="GET" action="{{ route('staffPayments.index') }}" class="flex items-center w-full sm:w-auto">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors shadow-sm w-full sm:w-auto">
+                        <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs sm:text-sm font-bold text-zinc-200 focus:outline-none cursor-pointer pr-1">
+                                class="bg-transparent border-0 text-xs sm:text-sm font-bold text-zinc-200 focus:outline-none cursor-pointer pr-1 w-full">
                             @foreach($allSessions as $s)
                                 <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white font-sans">
                                     {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
@@ -58,9 +58,9 @@
             @endif
         </div>
 
-        <div class="flex items-center gap-2.5 shrink-0">
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
             <a href="{{ route('paymentHistory.index', $session ? ['session_id' => $session->id] : []) }}" 
-               class="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-xs sm:text-sm font-bold text-zinc-200 hover:text-white transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95">
+               class="w-full sm:w-auto justify-center px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-xs sm:text-sm font-bold text-zinc-200 hover:text-white transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
                 <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
@@ -71,7 +71,7 @@
     </div>
 
     @if(!$session)
-        <div class="rounded-2xl p-12 text-center shadow-xl bg-[#09090b] border border-zinc-800/80">
+        <div class="rounded-2xl p-8 sm:p-12 text-center shadow-xl bg-[#09090b] border border-zinc-800/80">
             <h3 class="text-base font-bold text-white">No hay ninguna noche abierta o seleccionada</h3>
             <p class="text-sm text-zinc-400 mt-1 mb-6">Crea o selecciona una noche para registrar la planilla de pagos.</p>
             <a href="{{ route('sessions.create') }}" class="inline-flex items-center px-6 py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-sm font-black rounded-xl transition-all shadow-md">
@@ -81,7 +81,7 @@
     @else
 
         @if(!$session->isOpen())
-            <div class="px-5 py-3 rounded-xl border border-zinc-800 bg-zinc-950 flex items-center justify-between gap-4">
+            <div class="px-4 sm:px-5 py-3 rounded-xl border border-zinc-800 bg-zinc-950 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div class="flex items-center gap-2.5">
                     <span class="w-2 h-2 rounded-full bg-zinc-500"></span>
                     <span class="text-xs sm:text-sm font-bold text-zinc-300">Noche Cerrada (Solo lectura)</span>
@@ -96,71 +96,71 @@
         <!-- ==========================================
              KPIs DE LA PLANILLA (LEGIBLES Y CON DORADO)
              ========================================== -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
             
-            <div class="rounded-2xl p-5 border border-zinc-800/80 bg-[#09090b] shadow-sm">
+            <div class="col-span-2 sm:col-span-1 rounded-2xl p-3.5 sm:p-5 border border-zinc-800/80 bg-[#09090b] shadow-sm">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Total Planilla</span>
-                    <span class="text-xs font-bold text-zinc-500 font-mono">{{ $attendances->count() }} trabajadores</span>
+                    <span class="text-[11px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Total Planilla</span>
+                    <span class="text-[11px] sm:text-xs font-bold text-zinc-500 font-mono">{{ $attendances->count() }} pers.</span>
                 </div>
-                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
-                    <span class="text-lg text-[#F5B81C] mr-0.5">Bs.</span><span id="kpi-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
+                <div class="mt-1 sm:mt-2 text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
+                    <span class="text-base sm:text-lg text-[#F5B81C] mr-0.5">Bs.</span><span id="kpi-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
                 </div>
             </div>
 
-            <div class="rounded-2xl p-5 border border-emerald-500/25 bg-[#09090b] shadow-sm">
+            <div class="rounded-2xl p-3.5 sm:p-5 border border-emerald-500/25 bg-[#09090b] shadow-sm">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Total Pagado</span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider truncate">Total Pagado</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
                 </div>
-                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono text-emerald-400 tracking-tight">
-                    <span class="text-lg text-emerald-500 mr-0.5">Bs.</span><span id="kpi-total-pagado">{{ number_format($totalPagado, 2) }}</span>
+                <div class="mt-1 sm:mt-2 text-xl sm:text-3xl font-black font-mono text-emerald-400 tracking-tight truncate">
+                    <span class="text-sm sm:text-lg text-emerald-500 mr-0.5">Bs.</span><span id="kpi-total-pagado">{{ number_format($totalPagado, 2) }}</span>
                 </div>
             </div>
 
-            <div class="rounded-2xl p-5 border border-zinc-800/80 bg-[#09090b] shadow-sm">
+            <div class="rounded-2xl p-3.5 sm:p-5 border border-zinc-800/80 bg-[#09090b] shadow-sm">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Por Pagar</span>
-                    <span class="w-2 h-2 rounded-full {{ $totalPendiente > 0 ? 'bg-amber-400' : 'bg-zinc-600' }}"></span>
+                    <span class="text-[11px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider truncate">Por Pagar</span>
+                    <span class="w-2 h-2 rounded-full {{ $totalPendiente > 0 ? 'bg-amber-400' : 'bg-zinc-600' }} shrink-0"></span>
                 </div>
-                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono tracking-tight {{ $totalPendiente > 0 ? 'text-amber-400' : 'text-zinc-500' }}">
-                    <span class="text-lg mr-0.5">Bs.</span><span id="kpi-total-pendiente">{{ number_format($totalPendiente, 2) }}</span>
+                <div class="mt-1 sm:mt-2 text-xl sm:text-3xl font-black font-mono tracking-tight truncate {{ $totalPendiente > 0 ? 'text-amber-400' : 'text-zinc-500' }}">
+                    <span class="text-sm sm:text-lg mr-0.5">Bs.</span><span id="kpi-total-pendiente">{{ number_format($totalPendiente, 2) }}</span>
                 </div>
             </div>
 
         </div>
 
-        <!-- Desglose por Cargo (Limpio y sin textos de relleno) -->
-        <div class="rounded-2xl p-5 border border-zinc-800/80 bg-[#09090b] shadow-sm space-y-3">
+        <!-- Desglose por Cargo -->
+        <div class="rounded-2xl p-3.5 sm:p-5 border border-zinc-800/80 bg-[#09090b] shadow-sm space-y-2.5">
             <span class="text-xs font-black uppercase tracking-wider text-white block font-sans">Desglose por Cargo</span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
-                    <span class="font-bold text-white text-sm">Meseros & Limpieza</span>
-                    <span class="font-black text-sm font-mono text-[#F5B81C]">
-                        {{ $summaryByType['meseros']['count'] }} pers. — Bs. {{ number_format($summaryByType['meseros']['total'], 2) }}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs">
+                <div class="p-2.5 sm:p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
+                    <span class="font-bold text-white text-xs">Meseros & Limpieza</span>
+                    <span class="font-black text-xs sm:text-sm font-mono text-[#F5B81C]">
+                        {{ $summaryByType['meseros']['count'] }} p. — Bs. {{ number_format($summaryByType['meseros']['total'], 2) }}
                     </span>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
-                    <span class="font-bold text-white text-sm">Bartenders</span>
-                    <span class="font-black text-sm font-mono text-[#F5B81C]">
-                        {{ $summaryByType['bartenders']['count'] }} pers. — Bs. {{ number_format($summaryByType['bartenders']['total'], 2) }}
+                <div class="p-2.5 sm:p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
+                    <span class="font-bold text-white text-xs">Bartenders</span>
+                    <span class="font-black text-xs sm:text-sm font-mono text-[#F5B81C]">
+                        {{ $summaryByType['bartenders']['count'] }} p. — Bs. {{ number_format($summaryByType['bartenders']['total'], 2) }}
                     </span>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
-                    <span class="font-bold text-white text-sm">Seguridad</span>
-                    <span class="font-black text-sm font-mono text-[#F5B81C]">
-                        {{ $summaryByType['seguridad']['count'] }} pers. — Bs. {{ number_format($summaryByType['seguridad']['total'], 2) }}
+                <div class="p-2.5 sm:p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
+                    <span class="font-bold text-white text-xs">Seguridad</span>
+                    <span class="font-black text-xs sm:text-sm font-mono text-[#F5B81C]">
+                        {{ $summaryByType['seguridad']['count'] }} p. — Bs. {{ number_format($summaryByType['seguridad']['total'], 2) }}
                     </span>
                 </div>
             </div>
         </div>
 
         <!-- Barra de Acciones Rápidas -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
             @if($availableStaff->isNotEmpty())
-                <form method="POST" action="{{ route('staffPayments.store') }}" class="flex items-center gap-2 flex-1">
+                <form method="POST" action="{{ route('staffPayments.store') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1">
                     @csrf
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
                     <select name="staff_id" required class="bg-zinc-950 border border-zinc-800 text-xs sm:text-sm rounded-xl px-3.5 py-2 text-zinc-100 cursor-pointer flex-1 focus:outline-none focus:border-[#F5B81C]">
@@ -174,7 +174,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <button type="submit" class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl active:scale-95 transition-all whitespace-nowrap cursor-pointer shadow-sm">
+                    <button type="submit" class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl active:scale-95 transition-all whitespace-nowrap cursor-pointer shadow-sm text-center">
                         + Agregar
                     </button>
                 </form>
@@ -182,24 +182,24 @@
                 <span class="text-xs text-zinc-500 font-medium">Todo el personal activo está incluido en esta noche.</span>
             @endif
 
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="grid grid-cols-2 sm:flex items-center gap-2 shrink-0 w-full sm:w-auto">
                 <!-- Botón Editar Sueldo General -->
                 <button type="button" onclick="openWageBatchDrawer()" 
-                        class="px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-200 rounded-xl text-xs sm:text-sm font-bold hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95">
-                    <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        class="justify-center px-3 sm:px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-200 rounded-xl text-xs sm:text-sm font-bold hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95 text-center">
+                    <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                     </svg>
-                    <span>Editar Sueldos por Área</span>
+                    <span>Editar por Área</span>
                 </button>
 
                 <!-- Marcar Todos como Pagados -->
-                <form method="POST" action="{{ route('staffPayments.markAllPaid', $session) }}" onsubmit="return confirm('¿Marcar a todo el personal como PAGADO?');">
+                <form method="POST" action="{{ route('staffPayments.markAllPaid', $session) }}" onsubmit="return confirm('¿Marcar a todo el personal como PAGADO?');" class="flex-1">
                     @csrf
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-zinc-950 border border-emerald-500/30 text-xs sm:text-sm font-bold text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button type="submit" class="w-full justify-center px-3 sm:px-4 py-2 rounded-xl bg-zinc-950 border border-emerald-500/30 text-xs sm:text-sm font-bold text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95 text-center">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
-                        <span>Marcar Todos Pagados</span>
+                        <span>Marcar Pagados</span>
                     </button>
                 </form>
             </div>
@@ -214,14 +214,15 @@
             <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
             <div class="rounded-2xl overflow-hidden border border-zinc-800/80 bg-[#09090b] shadow-xl">
-                <div class="px-5 py-3.5 bg-zinc-950 border-b border-zinc-800/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <!-- Encabezado de la planilla -->
+                <div class="px-4 sm:px-5 py-3.5 bg-zinc-950 border-b border-zinc-800/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <h3 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-sans">
                         Planilla: {{ mb_strtoupper($session->day_name) }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}
                     </h3>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
                         <!-- Buscador por Nombre en Planilla -->
-                        <div class="relative w-56 sm:w-64">
+                        <div class="relative w-full sm:w-64">
                             <svg class="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <circle cx="11" cy="11" r="8"/>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -230,7 +231,7 @@
                                    id="payroll-search-input" 
                                    oninput="filterPayrollTable(this.value)" 
                                    placeholder="Buscar por nombre..." 
-                                   class="w-full pl-8 pr-7 py-1.5 rounded-xl text-xs bg-black border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C] transition-all">
+                                   class="w-full pl-8 pr-7 py-2 rounded-xl text-xs bg-black border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C] transition-all">
                             <button type="button" 
                                     id="clear-payroll-search" 
                                     onclick="clearPayrollSearch()" 
@@ -239,15 +240,16 @@
                             </button>
                         </div>
 
-                        <span class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] whitespace-nowrap">
+                        <div class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] whitespace-nowrap text-right sm:text-left">
                             TOTAL: Bs. <span id="header-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
-                        </span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs sm:text-sm text-left" id="payroll-table">
-                        <thead class="bg-zinc-950/60 border-b border-zinc-800/80 text-zinc-400 uppercase text-[10px] tracking-wider font-bold">
+                <!-- Tabla Responsive (Cards en Móvil, Tabla en Desktop) -->
+                <div class="p-3 md:p-0">
+                    <table class="w-full text-xs sm:text-sm text-left block md:table" id="payroll-table">
+                        <thead class="hidden md:table-header-group bg-zinc-950/60 border-b border-zinc-800/80 text-zinc-400 uppercase text-[10px] tracking-wider font-bold">
                             <tr>
                                 <th class="px-4 py-3 w-12 text-center">N°</th>
                                 <th class="px-4 py-3">Personal</th>
@@ -257,72 +259,101 @@
                                 <th class="px-4 py-3 w-24 text-right">Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="payroll-tbody" class="divide-y divide-zinc-800/60 font-sans">
+                        <tbody id="payroll-tbody" class="block md:table-row-group divide-y-0 md:divide-y md:divide-zinc-800/60 font-sans space-y-3 md:space-y-0">
                             @forelse($attendances as $index => $att)
                                 @php
                                     $roleName = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $att->staff->role ?? 'Staff');
                                 @endphp
-                                <tr id="attendance-row-{{ $att->id }}" class="hover:bg-zinc-900/40 transition-colors payroll-table-row" data-name="{{ strtolower($att->staff->name) }}" data-role="{{ strtolower($roleName) }}">
-                                    <td class="px-4 py-3 text-center text-zinc-500 font-mono font-bold row-index">
+                                <tr id="attendance-row-{{ $att->id }}" 
+                                    class="payroll-table-row block md:table-row p-3.5 md:p-0 rounded-2xl md:rounded-none bg-zinc-950/80 md:bg-transparent border md:border-0 border-zinc-800/80 hover:bg-zinc-900/40 transition-colors shadow-sm md:shadow-none space-y-2.5 md:space-y-0" 
+                                    data-name="{{ strtolower($att->staff->name) }}" 
+                                    data-role="{{ strtolower($roleName) }}">
+                                    
+                                    <td class="hidden md:table-cell px-4 py-3 text-center text-zinc-500 font-mono font-bold row-index">
                                         {{ $index + 1 }}
                                     </td>
-                                    <td class="px-4 py-3">
-                                        <div class="font-bold text-white uppercase text-sm sm:text-base leading-tight">
-                                            {{ $att->staff->name }}
-                                        </div>
-                                        @if(!empty($att->staff->phone))
-                                            <div class="text-zinc-500 font-mono text-xs mt-0.5 flex items-center gap-1">
-                                                <span>{{ $att->staff->phone }}</span>
+
+                                    <td class="block md:table-cell md:px-4 md:py-3">
+                                        <div class="flex items-start justify-between gap-2">
+                                            <div>
+                                                <div class="font-bold text-white uppercase text-sm sm:text-base leading-tight">
+                                                    {{ $att->staff->name }}
+                                                </div>
+                                                @if(!empty($att->staff->phone))
+                                                    <div class="text-zinc-500 font-mono text-xs mt-0.5 flex items-center gap-1">
+                                                        <span>{{ $att->staff->phone }}</span>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        @endif
+                                            <span class="md:hidden inline-flex px-2 py-0.5 rounded-lg text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-zinc-200">
+                                                {{ strtoupper($roleName) }}
+                                            </span>
+                                        </div>
                                     </td>
-                                    <td class="px-4 py-3 text-zinc-400">
+
+                                    <td class="hidden md:table-cell px-4 py-3 text-zinc-400">
                                         <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-bold bg-zinc-950 border border-zinc-800 text-zinc-200">
                                             {{ strtoupper($roleName) }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-2.5 text-right">
-                                        <div class="inline-flex items-center gap-1">
-                                            <span class="text-xs text-[#F5B81C] font-bold">Bs.</span>
-                                            <input type="number" step="5" min="0" 
-                                                   name="attendances[{{ $att->id }}][pay_amount]" 
-                                                   value="{{ $att->pay_amount }}" 
-                                                   data-attendance-id="{{ $att->id }}"
-                                                   oninput="recalculateTotals()"
-                                                   class="pay-amount-input bg-zinc-950 border border-zinc-800 w-28 text-right rounded-xl px-3 py-1.5 text-sm sm:text-base font-mono font-black text-white focus:outline-none focus:border-[#F5B81C] transition-colors">
+
+                                    <td class="block md:table-cell md:px-4 md:py-2.5 pt-2 border-t md:border-0 border-zinc-800/60">
+                                        <div class="flex items-center justify-between md:justify-end gap-2">
+                                            <span class="md:hidden text-xs text-zinc-400 font-bold uppercase font-mono">Sueldo:</span>
+                                            <div class="inline-flex items-center gap-1">
+                                                <span class="text-xs text-[#F5B81C] font-bold">Bs.</span>
+                                                <input type="number" inputmode="numeric" step="5" min="0" 
+                                                       name="attendances[{{ $att->id }}][pay_amount]" 
+                                                       value="{{ $att->pay_amount }}" 
+                                                       data-attendance-id="{{ $att->id }}"
+                                                       oninput="recalculateTotals()"
+                                                       class="pay-amount-input bg-zinc-900 md:bg-zinc-950 border border-zinc-700 md:border-zinc-800 w-28 text-right rounded-xl px-3 py-2 md:py-1.5 text-sm sm:text-base font-mono font-black text-white focus:outline-none focus:border-[#F5B81C] transition-colors">
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <input type="checkbox" 
-                                               name="attendances[{{ $att->id }}][is_paid]" 
-                                               value="1" 
-                                               data-attendance-id="{{ $att->id }}"
-                                               onchange="recalculateTotals()"
-                                               {{ $att->is_paid ? 'checked' : '' }}
-                                               class="is-paid-checkbox rounded border-zinc-700 bg-zinc-950 text-[#F5B81C] focus:ring-0 w-5 h-5 cursor-pointer accent-[#F5B81C]">
+
+                                    <td class="block md:table-cell md:px-4 md:py-3 pt-2 border-t md:border-0 border-zinc-800/60">
+                                        <div class="flex items-center justify-between md:justify-center gap-2">
+                                            <span class="md:hidden text-xs text-zinc-400 font-bold uppercase font-mono">Estado:</span>
+                                            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                                                <input type="checkbox" 
+                                                       name="attendances[{{ $att->id }}][is_paid]" 
+                                                       value="1" 
+                                                       data-attendance-id="{{ $att->id }}"
+                                                       onchange="recalculateTotals()"
+                                                       {{ $att->is_paid ? 'checked' : '' }}
+                                                       class="is-paid-checkbox rounded border-zinc-700 bg-zinc-950 text-[#F5B81C] focus:ring-0 w-5 h-5 cursor-pointer accent-[#F5B81C]">
+                                                <span class="md:hidden text-xs font-bold {{ $att->is_paid ? 'text-emerald-400' : 'text-zinc-400' }}">
+                                                    {{ $att->is_paid ? 'Pagado' : 'Por Pagar' }}
+                                                </span>
+                                            </label>
+                                        </div>
                                     </td>
-                                    <td class="px-4 py-3 text-right">
-                                        <button type="button" 
-                                                onclick="removeAttendance({{ $att->id }}, '{{ route('staffPayments.destroy', $att) }}', '{{ addslashes($att->staff->name) }}')"
-                                                class="px-2.5 py-1 rounded-lg text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer">
-                                            Quitar
-                                        </button>
+
+                                    <td class="block md:table-cell md:px-4 md:py-3 pt-2 border-t md:border-0 border-zinc-800/60 text-right">
+                                        <div class="flex items-center justify-end">
+                                            <button type="button" 
+                                                    onclick="removeAttendance({{ $att->id }}, '{{ route('staffPayments.destroy', $att) }}', '{{ addslashes($att->staff->name) }}')"
+                                                    class="w-full md:w-auto px-3 py-1.5 rounded-lg text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/10 md:bg-transparent border border-rose-500/20 md:border-transparent hover:border-rose-500/20 transition-all cursor-pointer text-center">
+                                                Quitar
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
-                                <tr id="empty-payroll-row">
-                                    <td colspan="6" class="px-4 py-10 text-center text-zinc-500 font-sans">
+                                <tr id="empty-payroll-row" class="block md:table-row">
+                                    <td colspan="6" class="px-4 py-10 text-center text-zinc-500 font-sans block md:table-cell">
                                         No hay personal asignado a esta noche.
                                     </td>
                                 </tr>
                             @endforelse
                             <tr id="payroll-search-empty" class="hidden">
-                                <td colspan="6" class="px-4 py-10 text-center text-zinc-500 font-sans">
+                                <td colspan="6" class="px-4 py-10 text-center text-zinc-500 font-sans block md:table-cell">
                                     No se encontró ningún integrante en la planilla que coincida con la búsqueda.
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot class="bg-zinc-950 border-t border-zinc-800/80 font-bold text-xs sm:text-sm text-white">
+                        <tfoot class="hidden md:table-footer-group bg-zinc-950 border-t border-zinc-800/80 font-bold text-xs sm:text-sm text-white">
                             <tr>
                                 <td colspan="3" class="px-4 py-3.5 text-right uppercase tracking-wider font-mono">TOTAL PLANILLA:</td>
                                 <td class="px-4 py-3.5 text-right font-mono font-black text-[#F5B81C] text-base">
@@ -337,13 +368,14 @@
                     </table>
                 </div>
 
-                <div class="p-4 bg-zinc-950 border-t border-zinc-800/80 flex items-center justify-between">
+                <!-- Barra de Guardar Cambios (Sticky en Móvil) -->
+                <div class="p-3.5 sm:p-4 bg-zinc-950 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 sticky bottom-0 z-10 shadow-lg">
                     <span id="payroll-autosave-feedback" class="text-xs text-zinc-500 font-mono hidden">
                         Cambios sincronizados
                     </span>
-                    <div class="ml-auto flex items-center gap-3">
+                    <div class="w-full sm:w-auto sm:ml-auto flex items-center gap-3">
                         <button type="submit" id="btn-save-payroll" 
-                                class="px-6 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl active:scale-95 transition-all shadow-md cursor-pointer uppercase tracking-wider flex items-center gap-2">
+                                class="w-full sm:w-auto justify-center px-6 py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl active:scale-95 transition-all shadow-md cursor-pointer uppercase tracking-wider flex items-center gap-2">
                             <span>Guardar Cambios</span>
                         </button>
                     </div>
@@ -427,13 +459,13 @@
             </div>
         </div>
 
-        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6">
+        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6 w-full">
             <button type="button" onclick="closeWageBatchDrawer()" 
-                    class="px-4 py-2 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer">
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                 Cancelar
             </button>
             <button type="submit" 
-                    class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider transition-all cursor-pointer">
+                    class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                 Aplicar Tarifas
             </button>
         </div>
@@ -664,6 +696,7 @@
         if (overlay && drawer) {
             overlay.classList.add('is-open');
             drawer.classList.add('is-open');
+            document.body.classList.add('drawer-open');
             document.body.style.overflow = 'hidden';
             setTimeout(() => {
                 const input = document.getElementById('wage_meseros');
@@ -678,6 +711,7 @@
         if (overlay && drawer) {
             overlay.classList.remove('is-open');
             drawer.classList.remove('is-open');
+            document.body.classList.remove('drawer-open');
             document.body.style.overflow = '';
         }
     }

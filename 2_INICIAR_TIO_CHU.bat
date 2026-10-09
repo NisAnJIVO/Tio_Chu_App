@@ -12,13 +12,30 @@ echo =====================================================================
 echo.
 
 if not exist ".env" (
-    color 0C
-    echo [ERROR] No se ha configurado el archivo .env.
-    echo Por favor ejecuta primero "1_INSTALAR_SISTEMA.bat".
-    echo.
-    pause
-    exit /b 1
+    if exist ".env.example" (
+        echo [INFO] Creando archivo de configuración inicial (.env)...
+        copy .env.example .env > nul
+        call "%PHP_BIN%" artisan key:generate --force > nul 2>&1
+    ) else (
+        color 0C
+        echo [ERROR] No se ha encontrado .env ni .env.example.
+        echo Por favor ejecuta primero "1_INSTALAR_SISTEMA.bat".
+        pause
+        exit /b 1
+    )
 )
+
+if not exist "database\database.sqlite" (
+    echo [INFO] Inicializando base de datos local...
+    type nul > "database\database.sqlite"
+    call "%PHP_BIN%" artisan migrate:fresh --seed --force > nul 2>&1
+)
+
+:: Limpiar caché de Laravel para reflejar cualquier cambio de código
+call "%PHP_BIN%" artisan optimize:clear > nul 2>&1
+
+:: Limpiar procesos huérfanos antes de iniciar
+taskkill /F /IM ngrok.exe >nul 2>&1
 
 echo Iniciando servidor local en http://127.0.0.1:8000 ...
 echo Abriendo el navegador en 2 segundos...
@@ -29,3 +46,6 @@ echo.
 
 start "" cmd /c "timeout /t 2 /nobreak >nul & start http://127.0.0.1:8000"
 call "%PHP_BIN%" artisan serve --host=127.0.0.1 --port=8000
+
+:: Al apagar o cerrar el sistema, detener automáticamente el túnel Ngrok
+taskkill /F /IM ngrok.exe >nul 2>&1

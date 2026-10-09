@@ -26,9 +26,9 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
             <button type="button" onclick="openCreateUserDrawer()" 
-                    class="px-3.5 py-2 rounded-lg bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
+                    class="w-full sm:w-auto justify-center px-3.5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -82,9 +82,80 @@
     @endif
 
     <!-- ==========================================
-         3. TABLA LISTADO DE USUARIOS AUTORIZADOS
+         3. TARJETAS MÓVILES (md:hidden)
          ========================================== -->
-    <div class="rounded-xl bg-[#09090b] border border-zinc-800/80 shadow-sm overflow-hidden">
+    <div class="md:hidden space-y-3">
+        <div class="flex items-center justify-between px-1">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono">Cuentas Registradas ({{ $users->count() }})</h2>
+        </div>
+
+        @forelse($users as $index => $u)
+            @php
+                $isCurrentUser = $u->id === Auth::id();
+                $isMasterAdmin = (strcasecmp($u->email, 'DonLudo@gmail.com') === 0 || strcasecmp($u->email, 'DonLudo@gmail.chu') === 0);
+            @endphp
+            <div class="rounded-xl p-3.5 border {{ $isCurrentUser ? 'border-[#F5B81C]/40 bg-[#F5B81C]/5' : 'border-zinc-800/80 bg-[#09090b]' }} shadow-sm space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        @if($u->avatar_url)
+                            <img src="{{ $u->avatar_url }}" alt="{{ $u->name }}" class="w-8 h-8 rounded-lg object-cover border border-zinc-700 shrink-0">
+                        @else
+                            <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-black text-zinc-300 shrink-0">
+                                {{ substr($u->name, 0, 1) }}
+                            </div>
+                        @endif
+                        <div class="min-w-0">
+                            <span class="font-bold text-white text-xs block truncate">{{ $u->name }}</span>
+                            <span class="text-[11px] text-zinc-400 font-mono block truncate">{{ $u->email }}</span>
+                        </div>
+                    </div>
+                    <div class="shrink-0">
+                        @if($isCurrentUser)
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-[#F5B81C] bg-[#F5B81C]/10 border border-[#F5B81C]/30 tracking-wider">Tu Sesión</span>
+                        @elseif($isMasterAdmin)
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase text-zinc-400 bg-zinc-800 border border-zinc-700 tracking-wider">Admin</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-[11px] text-zinc-500 font-mono pt-2 border-t border-zinc-800/60">
+                    <span>{{ $u->created_at ? $u->created_at->format('d/m/Y') : 'Inicial' }}</span>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" 
+                                onclick="openEditUserDrawer({{ $u->id }}, '{{ addslashes($u->name) }}', '{{ addslashes($u->email) }}')"
+                                class="px-3 py-1.5 rounded-lg bg-zinc-900 active:bg-zinc-800 border border-zinc-800 text-zinc-300 active:text-white text-xs font-semibold transition-all cursor-pointer">
+                            Editar
+                        </button>
+
+                        @if($isCurrentUser || $isMasterAdmin)
+                            <button type="button" disabled title="Cuenta protegida"
+                                    class="px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800/40 text-zinc-600 text-xs cursor-not-allowed">
+                                Bloqueado
+                            </button>
+                        @else
+                            <form method="POST" action="{{ route('users.destroy', $u) }}" onsubmit="return confirm('¿Confirmas eliminar la cuenta de {{ addslashes($u->name) }}? Ya no podrá acceder al sistema.')" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="px-3 py-1.5 rounded-lg bg-zinc-900 active:bg-rose-500/20 border border-zinc-800 text-zinc-400 active:text-rose-300 text-xs font-semibold transition-all cursor-pointer">
+                                    Eliminar
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="p-6 text-center text-zinc-500 rounded-xl bg-[#09090b] border border-zinc-800/80 text-xs">
+                No se encontraron cuentas registradas.
+            </div>
+        @endforelse
+    </div>
+
+    <!-- ==========================================
+         4. TABLA LISTADO DE USUARIOS (DESKTOP: hidden md:block)
+         ========================================== -->
+    <div class="hidden md:block rounded-xl bg-[#09090b] border border-zinc-800/80 shadow-sm overflow-hidden">
         
         <div class="px-4 py-3 border-b border-zinc-800/80 flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-300">Cuentas Registradas</h2>
@@ -241,13 +312,13 @@
             </div>
         </div>
 
-        <div class="pt-4 border-t border-zinc-800/80 flex items-center justify-end gap-2">
+        <div class="pt-4 border-t border-zinc-800/80 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2">
             <button type="button" onclick="closeCreateUserDrawer()" 
-                    class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold transition-all cursor-pointer">
+                    class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold transition-all cursor-pointer">
                 Cancelar
             </button>
             <button type="submit" 
-                    class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs transition-all shadow-md cursor-pointer active:scale-95">
+                    class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs transition-all shadow-md cursor-pointer active:scale-95">
                 Guardar Cuenta
             </button>
         </div>
@@ -310,13 +381,13 @@
             <p class="text-[10px] text-zinc-500 mt-1">Escribe solo si deseas asignarle una nueva contraseña.</p>
         </div>
 
-        <div class="pt-4 border-t border-zinc-800/80 flex items-center justify-end gap-2">
+        <div class="pt-4 border-t border-zinc-800/80 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2">
             <button type="button" onclick="closeEditUserDrawer()" 
-                    class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold transition-all cursor-pointer">
+                    class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold transition-all cursor-pointer">
                 Cancelar
             </button>
             <button type="submit" 
-                    class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs transition-all shadow-md cursor-pointer active:scale-95">
+                    class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs transition-all shadow-md cursor-pointer active:scale-95">
                 Actualizar Cuenta
             </button>
         </div>
@@ -330,6 +401,7 @@
         if (overlay && drawer) {
             overlay.classList.add('is-open');
             drawer.classList.add('is-open');
+            document.body.classList.add('drawer-open');
             document.body.style.overflow = 'hidden';
             setTimeout(() => document.getElementById('create_name')?.focus(), 250);
         }
@@ -341,6 +413,7 @@
         if (overlay && drawer) {
             overlay.classList.remove('is-open');
             drawer.classList.remove('is-open');
+            document.body.classList.remove('drawer-open');
             document.body.style.overflow = '';
         }
     }
@@ -357,6 +430,7 @@
 
             overlay.classList.add('is-open');
             drawer.classList.add('is-open');
+            document.body.classList.add('drawer-open');
             document.body.style.overflow = 'hidden';
         }
     }
@@ -367,6 +441,7 @@
         if (overlay && drawer) {
             overlay.classList.remove('is-open');
             drawer.classList.remove('is-open');
+            document.body.classList.remove('drawer-open');
             document.body.style.overflow = '';
         }
     }

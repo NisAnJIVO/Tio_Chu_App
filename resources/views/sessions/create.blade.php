@@ -81,7 +81,7 @@
                 Tasa de Comisión Tarjetero / POS (Decimal) <span class="text-[#F5B81C]">*</span>
             </label>
             <div class="flex items-center gap-3">
-                <input type="number" step="0.0001" name="pos_commission_rate" id="pos_commission_rate" required value="{{ old('pos_commission_rate', 0.0130) }}"
+                <input type="number" step="0.0001" inputmode="decimal" name="pos_commission_rate" id="pos_commission_rate" required value="{{ old('pos_commission_rate', 0.0130) }}"
                        class="w-full px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#F5B81C] transition-all">
                 <span class="text-xs font-mono font-bold text-[#F5B81C] whitespace-nowrap bg-zinc-950 px-3.5 py-2.5 rounded-xl border border-zinc-800">
                     = 1.30%
@@ -98,13 +98,13 @@
                       class="w-full px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C] transition-all font-sans">{{ old('notes') }}</textarea>
         </div>
 
-        <div class="pt-5 flex items-center justify-end gap-3 border-t border-zinc-800/80">
+        <div class="pt-5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 border-t border-zinc-800/80">
             <a href="{{ route('sessions.index') }}" 
-               class="px-4 py-2 rounded-xl border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white text-xs font-bold transition-all">
+               class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white text-xs font-bold transition-all">
                 Cancelar
             </a>
             <button type="submit" 
-                    class="px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl transition-all shadow-sm active:scale-95">
+                    class="w-full sm:w-auto px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl transition-all shadow-sm active:scale-95">
                 Aperturar Noche
             </button>
         </div>

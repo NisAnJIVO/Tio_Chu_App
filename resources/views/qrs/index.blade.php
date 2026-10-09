@@ -104,22 +104,22 @@
         <!-- ========================================================
              2. 4 TARJETAS KPI RESUMEN: SOBRIAS Y MINIMALISTAS
              ======================================================== -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
             
             <!-- TARJETA 1: Total General QR -->
-            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Total Cobrado por QR
+                        Total QR
                     </span>
-                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalGeneral, 2) }}
                     </div>
-                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
-                        Yasta: Bs. {{ number_format($totalYasta, 0) }} • Yape: Bs. {{ number_format($totalYape, 0) }}
+                    <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: {{ number_format($totalYasta, 0) }} • Yape: {{ number_format($totalYape, 0) }}
                     </span>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                <div class="hidden sm:flex w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 items-center justify-center text-zinc-300 shrink-0 ml-3">
                     <svg class="w-5 h-5 text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect width="6" height="6" x="3" y="3" rx="1"/>
                         <rect width="6" height="6" x="15" y="3" rx="1"/>
@@ -130,12 +130,12 @@
             </div>
 
             <!-- TARJETA 2: Barra Kelly (Principal) -->
-            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Barra Kelly (Principal)
+                        Barra Kelly
                     </span>
-                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Barra Principal']['total'], 2) }}
                     </div>
                     <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
@@ -150,19 +150,19 @@
             </div>
 
             <!-- TARJETA 3: Tienda (Entrada) -->
-            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Tienda (Entrada)
+                        Tienda
                     </span>
-                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Tienda']['total'], 2) }}
                     </div>
-                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
-                        Yasta: Bs. {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
+                    <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                <div class="hidden sm:flex w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 items-center justify-center text-zinc-300 shrink-0 ml-3">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
@@ -170,19 +170,19 @@
             </div>
 
             <!-- TARJETA 4: Barra Ariel (Subte) -->
-            <div class="p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Barra Ariel (Subte)
+                        Barra Ariel
                     </span>
-                    <div class="text-2xl font-black text-white font-mono tracking-tight mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Subte']['total'], 2) }}
                     </div>
-                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
-                        Yasta: Bs. {{ number_format($totalsByPos['Subte']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Subte']['yape'], 0) }}
+                    <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                        Yasta: {{ number_format($totalsByPos['Subte']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Subte']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                <div class="hidden sm:flex w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 items-center justify-center text-zinc-300 shrink-0 ml-3">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
@@ -418,16 +418,16 @@
                         <div class="flex items-center gap-2">
                             <div class="relative flex-1">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 font-sans font-bold text-xs text-[#F5B81C]">Bs.</span>
-                                <input type="number" step="any" min="0.01" name="amount" id="amount" required placeholder="0.00"
+                                <input type="number" step="any" min="0.01" inputmode="decimal" name="amount" id="amount" required placeholder="0.00"
                                        class="w-full text-base font-mono font-black rounded-xl pl-8 pr-2 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] placeholder:text-zinc-600">
                             </div>
                             <button type="submit" 
-                                    class="py-2.5 px-3 bg-[#F5B81C] text-black font-black text-xs rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all shadow-sm shrink-0 flex items-center gap-1 cursor-pointer">
+                                    class="py-2.5 px-3.5 bg-[#F5B81C] text-black font-black text-xs rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all shadow-sm shrink-0 flex items-center gap-1 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
                                 </svg>
-                                <span class="hidden sm:inline">Cobrar</span>
+                                <span>Cobrar</span>
                             </button>
                         </div>
                     </div>

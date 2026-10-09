@@ -8,30 +8,30 @@
     <!-- ==========================================
          1. CABECERA: TÍTULO, SELECTOR DE NOCHE Y ACCIONES
          ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 rounded-xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:px-4 sm:py-3 rounded-xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
         
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
             <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C]">
+                <div class="w-8 h-8 rounded-lg bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C] shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="10"/>
                         <polyline points="12 6 12 12 16 14"/>
                     </svg>
                 </div>
-                <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">
-                    Historial de Pagos y Deudas del Personal
+                <h1 class="text-base sm:text-xl font-black tracking-tight text-white truncate">
+                    Historial de Pagos y Deudas
                 </h1>
             </div>
 
             @if($session)
                 <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800">
                     <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500' : 'bg-zinc-600' }}"></span>
-                    <span class="text-xs font-bold uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-300' : 'text-zinc-500' }}">
-                        {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
+                    <span class="text-[11px] font-bold uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-300' : 'text-zinc-500' }}">
+                        {{ $session->isOpen() ? 'Abierta' : 'Cerrada' }}
                     </span>
                 </div>
 
-                <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-zinc-400">
+                <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-zinc-400">
                     <span class="uppercase text-zinc-200 tracking-wide">{{ $session->day_name }}</span>
                     <span class="text-zinc-600">•</span>
                     <span class="font-mono text-zinc-300">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
@@ -39,15 +39,15 @@
             @endif
 
             @if($allSessions->isNotEmpty())
-                <form method="GET" action="{{ route('paymentHistory.index') }}" class="flex items-center">
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors shadow-sm">
+                <form method="GET" action="{{ route('paymentHistory.index') }}" class="flex items-center w-full sm:w-auto">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors shadow-sm w-full sm:w-auto">
                         <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-semibold text-zinc-200 focus:outline-none cursor-pointer pr-1">
+                                class="bg-transparent border-0 text-xs font-semibold text-zinc-200 focus:outline-none cursor-pointer pr-1 w-full">
                             @foreach($allSessions as $s)
                                 <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white">
                                     {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->status === 'open' ? 'Abierta' : 'Cerrada' }})
@@ -59,20 +59,20 @@
             @endif
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="grid grid-cols-2 sm:flex items-center gap-2 shrink-0 w-full sm:w-auto">
             @if($session)
                 <a href="{{ route('staffPayments.index', ['session_id' => $session->id]) }}" 
-                   class="px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-xs font-semibold text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
-                    <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                   class="justify-center px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-xs font-semibold text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 text-center">
+                    <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
                     </svg>
-                    <span>Planilla de esta Noche</span>
+                    <span>Planilla</span>
                 </a>
             @endif
 
             <button type="button" onclick="openNightsHistoryDrawer()" 
-                    class="px-3 py-1.5 rounded-lg bg-[#F5B81C]/10 border border-[#F5B81C]/40 hover:border-[#F5B81C] hover:bg-[#F5B81C]/20 text-[#F5B81C] text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    class="justify-center px-3 py-1.5 rounded-lg bg-[#F5B81C]/10 border border-[#F5B81C]/40 hover:border-[#F5B81C] hover:bg-[#F5B81C]/20 text-[#F5B81C] text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 text-center">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                 </svg>
@@ -160,20 +160,20 @@
         <!-- ==========================================
              3. BARRA DE FILTROS & BÚSQUEDA COMPACTA
              ========================================== -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 px-4 py-2.5 rounded-xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 p-3 sm:px-4 sm:py-2.5 rounded-xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
             
             <!-- Switch Segmentado -->
-            <div class="inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-lg gap-1 text-xs">
+            <div class="grid grid-cols-3 sm:inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-lg gap-1 text-xs w-full sm:w-auto">
                 <button type="button" onclick="setCardFilter('all')" id="filter-btn-all"
-                        class="filter-pill-btn px-3 py-1 rounded-md font-black transition-all bg-[#F5B81C] text-black shadow-sm cursor-pointer">
+                        class="filter-pill-btn px-2 sm:px-3 py-1.5 sm:py-1 rounded-md font-black transition-all bg-[#F5B81C] text-black shadow-sm cursor-pointer text-center">
                     Todos ({{ $totalTrabajadores }})
                 </button>
                 <button type="button" onclick="setCardFilter('unpaid')" id="filter-btn-unpaid"
-                        class="filter-pill-btn px-3 py-1 rounded-md font-semibold transition-all text-zinc-400 hover:text-white hover:bg-zinc-900 cursor-pointer">
-                    Con Deuda ({{ $conDeudaCount }})
+                        class="filter-pill-btn px-2 sm:px-3 py-1.5 sm:py-1 rounded-md font-semibold transition-all text-zinc-400 hover:text-white hover:bg-zinc-900 cursor-pointer text-center">
+                    Deuda ({{ $conDeudaCount }})
                 </button>
                 <button type="button" onclick="setCardFilter('paid')" id="filter-btn-paid"
-                        class="filter-pill-btn px-3 py-1 rounded-md font-semibold transition-all text-zinc-400 hover:text-white hover:bg-zinc-900 cursor-pointer">
+                        class="filter-pill-btn px-2 sm:px-3 py-1.5 sm:py-1 rounded-md font-semibold transition-all text-zinc-400 hover:text-white hover:bg-zinc-900 cursor-pointer text-center">
                     Al Día ({{ $pagadosCount }})
                 </button>
             </div>
@@ -593,6 +593,7 @@
         if (overlay && drawer) {
             overlay.classList.add('is-open');
             drawer.classList.add('is-open');
+            document.body.classList.add('drawer-open');
             document.body.style.overflow = 'hidden';
         }
     }
@@ -603,6 +604,7 @@
         if (overlay && drawer) {
             overlay.classList.remove('is-open');
             drawer.classList.remove('is-open');
+            document.body.classList.remove('drawer-open');
             document.body.style.overflow = '';
         }
     }

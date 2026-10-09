@@ -133,5 +133,15 @@ Route::middleware('auth')->group(function () {
     // 11. Administración de Usuarios (Cuentas autorizadas)
     Route::resource('users', UserController::class)->except(['create', 'show', 'edit']);
 
+    // 12. Control del Servidor Remoto (Túnel Ngrok para Móviles e Internet)
+    Route::prefix('server')->name('server.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\ServerTunnelController::class, 'index'])->name('index');
+        Route::get('/status', [\App\Http\Controllers\ServerTunnelController::class, 'status'])->name('status');
+        Route::post('/toggle', [\App\Http\Controllers\ServerTunnelController::class, 'toggle'])->name('toggle');
+        Route::post('/start', [\App\Http\Controllers\ServerTunnelController::class, 'start'])->name('start');
+        Route::post('/stop', [\App\Http\Controllers\ServerTunnelController::class, 'stop'])->name('stop');
+        Route::post('/save-token', [\App\Http\Controllers\ServerTunnelController::class, 'saveToken'])->name('save_token');
+    });
+
 });
 

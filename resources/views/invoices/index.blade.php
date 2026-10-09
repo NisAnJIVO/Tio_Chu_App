@@ -82,44 +82,44 @@
         <!-- ========================================================
              2. MÉTRICAS CLARAS Y DIRECTAS PARA DON LUDO
              ======================================================== -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
             
             <!-- 1. Pasado por Tarjeta (Bruto) -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Pasado por Tarjeta</span>
-                <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjeta, 2) }}
+            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border">
+                <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider block truncate">Pasado por Tarjeta</span>
+                <div class="mt-1 sm:mt-2 text-lg sm:text-2xl font-black font-mono text-white tracking-tight truncate">
+                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjeta, 2) }}
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1">Total según vouchers pasados por máquina</p>
+                <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 truncate">Vouchers pasados</p>
             </div>
 
             <!-- 2. Comisión del Banco -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">
+            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border">
+                <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider block truncate">
                     Comisión Banco ({{ number_format(($session->pos_commission_rate ?? 0.035) * 100, 1) }}%)
                 </span>
-                <div class="mt-2 text-2xl font-black font-mono text-rose-400 tracking-tight">
-                    - <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjetaComision, 2) }}
+                <div class="mt-1 sm:mt-2 text-lg sm:text-2xl font-black font-mono text-rose-400 tracking-tight truncate">
+                    - <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjetaComision, 2) }}
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1">Retención del procesador de tarjeta</p>
+                <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 truncate">Retención banco</p>
             </div>
 
             <!-- 3. Plata que Entra al Banco (Neto) -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Plata que Entra al Banco</span>
-                <div class="mt-2 text-2xl font-black font-mono text-[#F5B81C] tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjetaNeto, 2) }}
+            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border">
+                <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider block truncate">Neto al Banco</span>
+                <div class="mt-1 sm:mt-2 text-lg sm:text-2xl font-black font-mono text-[#F5B81C] tracking-tight truncate">
+                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjetaNeto, 2) }}
                 </div>
-                <p class="text-[11px] text-zinc-400 mt-1">Dinero real que ingresa a la cuenta</p>
+                <p class="text-[10px] sm:text-[11px] text-zinc-400 mt-0.5 sm:mt-1 truncate">Dinero neto acreditado</p>
             </div>
 
             <!-- 4. Facturas en Efectivo -->
-            <div class="theme-card rounded-2xl p-5 border theme-border">
-                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Facturas en Efectivo</span>
-                <div class="mt-2 text-2xl font-black font-mono text-white tracking-tight">
-                    <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalEfectivo, 2) }}
+            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border">
+                <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider block truncate">Facturas en Efectivo</span>
+                <div class="mt-1 sm:mt-2 text-lg sm:text-2xl font-black font-mono text-white tracking-tight truncate">
+                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalEfectivo, 2) }}
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1">Dinero recibido en mano</p>
+                <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 truncate">Recibido en mano</p>
             </div>
 
         </div>
@@ -185,7 +185,7 @@
                         <label for="amount" class="block text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Monto Cobrado</label>
                         <div class="inline-flex items-center rounded-xl bg-zinc-950 border border-zinc-800 px-3.5 py-1.5 focus-within:border-[#F5B81C] focus-within:ring-1 focus-within:ring-[#F5B81C]/40 transition-all">
                             <span class="text-sm font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
-                            <input type="number" step="0.5" name="amount" id="amount" required placeholder="0.00"
+                            <input type="number" step="0.5" inputmode="decimal" name="amount" id="amount" required placeholder="0.00"
                                    class="w-36 text-xl font-mono font-black bg-transparent border-0 text-white placeholder-zinc-600 focus:outline-none p-0">
                         </div>
                     </div>
@@ -225,7 +225,7 @@
                 </div>
 
                 <div class="overflow-x-auto max-h-[520px]">
-                    <table class="w-full text-xs text-left border-collapse">
+                    <table class="w-full min-w-[560px] text-xs text-left border-collapse">
                         <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[11px] tracking-wider sticky top-0 font-semibold">
                             <tr>
                                 <th class="px-3 py-3 w-12 text-center">N°</th>

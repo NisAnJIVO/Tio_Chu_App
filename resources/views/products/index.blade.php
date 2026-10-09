@@ -242,7 +242,7 @@
                         <th class="py-3 px-4 text-center">Cajas & Sueltas</th>
                         <th class="py-3 px-4 text-center">Botellas en Bodega</th>
                         <th class="py-3 px-4 text-center">Ajuste Rápido</th>
-                        <th class="py-3 px-4 text-right">Acción</th>
+                        <th class="py-3 px-4 text-right whitespace-nowrap w-24">Acción</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y theme-border font-sans" id="table-products-tbody">
@@ -364,11 +364,11 @@
                         </td>
 
                         <!-- Columna 7: Acción Editar -->
-                        <td class="py-3 px-4 text-right">
+                        <td class="py-3 px-4 text-right whitespace-nowrap w-24">
                             <button type="button"
                                     onclick="openEditDrawer({{ $prod->id }}, {{ json_encode($prod->name) }}, {{ json_encode($prod->category) }}, {{ json_encode($prod->unit) }}, {{ $prod->sale_price }}, {{ $prod->cost_price ?? 0 }}, {{ $prod->units_per_package }}, {{ $prod->stock_warehouse }}, {{ $prod->is_active ? 1 : 0 }}, {{ json_encode($prod->image_url) }})"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-all cursor-pointer">
-                                <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
+                                <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                                 <span>Editar</span>
@@ -501,8 +501,8 @@
                 </div>
 
                 <!-- Botones de Ajuste Rápido y Editar -->
-                <div class="flex items-center justify-between gap-1 pt-0.5">
-                    <div class="inline-flex items-center gap-1">
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-zinc-900/80">
+                    <div class="inline-flex items-center gap-1 shrink-0">
                         <button type="button" 
                                 onclick="stepStock({{ $prod->id }}, -10)"
                                 title="-10 unidades"
@@ -529,7 +529,7 @@
                         </button>
                     </div>
 
-                    <div class="inline-flex items-center gap-1">
+                    <div class="inline-flex items-center gap-1.5 ml-auto shrink-0">
                         <button type="button"
                                 onclick="openEditDrawer({{ $prod->id }}, {{ json_encode($prod->name) }}, {{ json_encode($prod->category) }}, {{ json_encode($prod->unit) }}, {{ $prod->sale_price }}, {{ $prod->cost_price ?? 0 }}, {{ $prod->units_per_package }}, {{ $prod->stock_warehouse }}, {{ $prod->is_active ? 1 : 0 }}, {{ json_encode($prod->image_url) }}, true)"
                                 title="Cambiar Foto"
@@ -540,8 +540,8 @@
                         </button>
                         <button type="button"
                                 onclick="openEditDrawer({{ $prod->id }}, {{ json_encode($prod->name) }}, {{ json_encode($prod->category) }}, {{ json_encode($prod->unit) }}, {{ $prod->sale_price }}, {{ $prod->cost_price ?? 0 }}, {{ $prod->units_per_package }}, {{ $prod->stock_warehouse }}, {{ $prod->is_active ? 1 : 0 }}, {{ json_encode($prod->image_url) }})"
-                                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-all cursor-pointer">
-                            <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
+                            <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                             <span>Editar</span>
@@ -673,13 +673,13 @@
                        class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold bg-zinc-900 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:border-[#F5B81C] transition-all">
             </div>
         </div>
-        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6">
+        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6 w-full">
             <button type="button" onclick="closeDrawer()" 
-                    class="px-4 py-2 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs font-bold transition-all cursor-pointer">
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                 Cancelar
             </button>
             <button type="submit" 
-                    class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black uppercase tracking-wider transition-all cursor-pointer">
+                    class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                 Guardar Bebida
             </button>
         </div>
@@ -743,7 +743,7 @@
             @if(!empty($drinkImages))
             <div class="pt-2 border-t border-zinc-800/80">
                 <span class="block text-[10px] font-bold text-zinc-400 mb-1.5">Catálogo en /images/drinks ({{ count($drinkImages) }} fotos disponibles):</span>
-                <div class="grid grid-cols-6 gap-1.5 max-h-36 overflow-y-auto p-1.5 bg-zinc-950/60 rounded-xl border border-zinc-800/60">
+                <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-36 overflow-y-auto p-1.5 bg-zinc-950/60 rounded-xl border border-zinc-800/60">
                     @foreach($drinkImages as $dImg)
                     <button type="button"
                             onclick="pickCatalogImage('{{ $dImg['path'] }}', '{{ $dImg['url'] }}', 'ed_image_path', 'ed_preview_img', 'ed_preview_placeholder', this)"
@@ -810,15 +810,15 @@
                 <option value="0">Pausado (No mostrar en ventas)</option>
             </select>
         </div>
-        <div class="pt-5 border-t border-zinc-800 flex items-center justify-between gap-3 mt-6">
-            <button type="button" onclick="confirmDeleteProduct()" class="text-xs text-rose-400 hover:text-rose-300 font-bold hover:underline transition-all cursor-pointer">
+        <div class="pt-5 border-t border-zinc-800 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 w-full">
+            <button type="button" onclick="confirmDeleteProduct()" class="w-full sm:w-auto text-center sm:text-left py-2 text-xs text-rose-400 hover:text-rose-300 font-bold transition-all cursor-pointer">
                 Eliminar Bebida
             </button>
-            <div class="flex items-center gap-2.5">
-                <button type="button" onclick="closeDrawer()" class="px-4 py-2 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs font-bold transition-all cursor-pointer">
+            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                <button type="button" onclick="closeDrawer()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                     Cancelar
                 </button>
-                <button type="submit" class="px-5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black uppercase tracking-wider transition-all cursor-pointer">
+                <button type="submit" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                     Guardar Cambios
                 </button>
             </div>
@@ -862,10 +862,11 @@ function switchViewMode(mode) {
     }
 }
 
-// Inicializar vista guardada
+// Inicializar vista guardada (por defecto en celular 'cards', en escritorio 'table')
 (function() {
-    const saved = localStorage.getItem('tiochu_bodega_view') || 'table';
-    switchViewMode(saved);
+    const saved = localStorage.getItem('tiochu_bodega_view');
+    const initial = saved || (window.innerWidth < 768 ? 'cards' : 'table');
+    switchViewMode(initial);
 })();
 
 /* --- HELPERS DE ELEMENTOS Y SINCRONIZACIÓN --- */
@@ -1141,6 +1142,7 @@ function openCreateDrawer() {
 
     document.getElementById('product-drawer-overlay').classList.add('is-open');
     document.getElementById('drawer-create-product').classList.add('is-open');
+    document.body.classList.add('drawer-open');
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('d_name').focus(), 250);
 }
@@ -1185,6 +1187,7 @@ function openEditDrawer(id, name, cat, unit, saleP, costP, uPkg, stock, active, 
 
     document.getElementById('product-drawer-overlay').classList.add('is-open');
     document.getElementById('drawer-edit-product').classList.add('is-open');
+    document.body.classList.add('drawer-open');
     document.body.style.overflow = 'hidden';
 
     if (focusImage) {
@@ -1203,6 +1206,7 @@ function closeDrawer() {
     document.getElementById('product-drawer-overlay').classList.remove('is-open');
     document.getElementById('drawer-create-product').classList.remove('is-open');
     document.getElementById('drawer-edit-product').classList.remove('is-open');
+    document.body.classList.remove('drawer-open');
     document.body.style.overflow = '';
 }
 

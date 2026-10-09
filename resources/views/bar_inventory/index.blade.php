@@ -177,7 +177,7 @@
 
             <div class="rounded-2xl theme-card border theme-border overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs excel-table" id="inventory-table">
+                    <table class="w-full min-w-[700px] text-left border-collapse text-xs excel-table" id="inventory-table">
                         <thead>
                             <tr class="border-b theme-border bg-zinc-950 text-zinc-400 font-semibold uppercase tracking-wider text-[11px]">
                                 <th class="py-3.5 px-4 w-1/4">Bebida / Presentación</th>

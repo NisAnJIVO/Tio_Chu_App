@@ -28,12 +28,12 @@
 </head>
 <body class="h-screen overflow-hidden font-sans antialiased theme-text-primary selection:bg-[#F5B81C] selection:text-black theme-app-bg transition-colors duration-200">
 
-<div class="h-screen w-full flex overflow-hidden relative theme-app-bg">
+<div class="h-screen w-full max-w-full flex overflow-hidden overflow-x-hidden relative theme-app-bg">
     <!-- Sidebar de Tío Chu (Estático y Fijo) -->
     @include('layouts.sidebar')
 
     <!-- Main Content Area -->
-    <main class="flex-1 h-screen overflow-y-auto relative z-10 p-4 lg:p-6 theme-main-bg transition-colors duration-200 flex flex-col">
+    <main class="flex-1 min-w-0 w-full max-w-full h-screen overflow-y-auto overflow-x-hidden p-2.5 sm:p-4 lg:p-6 theme-main-bg transition-colors duration-200 flex flex-col">
         <!-- Alerta Discreta Estilo iOS (Bottom-Right Toast sin bloqueo visual) -->
         @if(session('success'))
             <div id="flash-success-toast" class="fixed bottom-5 right-5 z-50 px-4 py-2.5 bg-[#09090b]/95 border border-zinc-800 text-xs text-zinc-300 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300">
