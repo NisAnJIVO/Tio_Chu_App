@@ -129,11 +129,11 @@
                 </div>
             </div>
 
-            <!-- TARJETA 2: Barra Kelly (Principal) -->
+            <!-- TARJETA 2: Barra Principal -->
             <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Barra Kelly
+                        Barra Principal
                     </span>
                     <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Barra Principal']['total'], 2) }}
@@ -169,11 +169,11 @@
                 </div>
             </div>
 
-            <!-- TARJETA 4: Barra Ariel (Subte) -->
+            <!-- TARJETA 4: Barra Subterráneo -->
             <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
-                        Barra Ariel
+                        Barra Subterráneo
                     </span>
                     <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Subte']['total'], 2) }}
@@ -446,8 +446,8 @@
                     $list = $paymentsByPos[$posName];
                     $subtotals = $totalsByPos[$posName];
                     $displayPosName = match($posName) {
-                        'Barra Principal' => 'Barra Kelly (Principal)',
-                        'Subte' => 'Barra Ariel (Subte)',
+                        'Barra Principal' => 'Barra Principal',
+                        'Subte' => 'Barra Subterráneo',
                         default => $posName,
                     };
                 @endphp

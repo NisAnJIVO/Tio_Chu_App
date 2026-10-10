@@ -188,19 +188,19 @@ class TioChuSystemTest extends TestCase
         $session = NightSession::first();
         $response = $this->actingAs($this->user)->get(route('sales.index', ['session_id' => $session->id]));
         $response->assertStatus(200);
-        $response->assertSee('Barra Kelly (Principal)');
+        $response->assertSee('Barra Principal');
     }
 
     public function test_combos_deduct_included_mixers_and_only_charge_extras(): void
     {
         $session = NightSession::first();
         $singaniSale = \App\Models\BarSale::where('night_session_id', $session->id)
-            ->where('bar_name', 'Barra Kelly (Principal)')
+            ->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)'])
             ->where('product_id', 1) // Singani Casa Real Negro (va con Ginger Ale id 23)
             ->first();
 
         $gingerSale = \App\Models\BarSale::where('night_session_id', $session->id)
-            ->where('bar_name', 'Barra Kelly (Principal)')
+            ->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)'])
             ->where('product_id', 23) // Ginger Ale 2.0L
             ->first();
 
@@ -244,12 +244,12 @@ class TioChuSystemTest extends TestCase
     {
         $session = NightSession::first();
         $ginSale = \App\Models\BarSale::where('night_session_id', $session->id)
-            ->where('bar_name', 'Barra Kelly (Principal)')
+            ->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)'])
             ->where('product_id', 20) // Ganesha Gin (va con Agua Tónica id 26, ratio 2)
             ->first();
 
         $tonicaSale = \App\Models\BarSale::where('night_session_id', $session->id)
-            ->where('bar_name', 'Barra Kelly (Principal)')
+            ->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)'])
             ->where('product_id', 26) // Agua Tónica 1.0L
             ->first();
 
@@ -397,6 +397,41 @@ class TioChuSystemTest extends TestCase
             'operator_name' => 'ARIEL',
             'amount' => 250.00,
         ]);
+    }
+
+    public function test_bars_renamed_to_institutional_and_tienda_view_accessible(): void
+    {
+        $session = NightSession::first();
+
+        // 1. Barra Principal view
+        $responsePrincipal = $this->actingAs($this->user)->get(route('sales.index', [
+            'session_id' => $session->id,
+            'bar' => 'Barra Principal',
+        ]));
+        $responsePrincipal->assertStatus(200);
+        $responsePrincipal->assertSee('Barra Principal');
+
+        // 2. Barra Subterráneo view
+        $responseSubte = $this->actingAs($this->user)->get(route('sales.index', [
+            'session_id' => $session->id,
+            'bar' => 'Barra Subterráneo',
+        ]));
+        $responseSubte->assertStatus(200);
+        $responseSubte->assertSee('Barra Subterráneo');
+
+        // 3. Tienda view
+        $responseTienda = $this->actingAs($this->user)->get(route('sales.index', [
+            'session_id' => $session->id,
+            'bar' => 'Tienda',
+        ]));
+        $responseTienda->assertStatus(200);
+        $responseTienda->assertSee('Tienda Oficial');
+        $responseTienda->assertSee('Ventas Directas de Unidades Sueltas');
+
+        // 4. Bodega Central has link to Tienda
+        $responseBodega = $this->actingAs($this->user)->get(route('products.index'));
+        $responseBodega->assertStatus(200);
+        $responseBodega->assertSee('Ventas Tienda (Sueltas)');
     }
 
     public function test_closing_and_expenses_module(): void

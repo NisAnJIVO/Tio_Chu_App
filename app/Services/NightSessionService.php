@@ -56,24 +56,30 @@ class NightSessionService
         $totalQrYasta = (float) $session->qrPayments()->where('bank_app', 'YASTA')->sum('amount');
         $totalQrYape  = (float) $session->qrPayments()->where('bank_app', 'YAPE')->sum('amount');
 
-        // 1. Efectivo en Barra Kelly (Principal): Ventas Kelly - QR Kelly - Tarjeta bruto Kelly
-        $salesKelly = (float) $session->barSales()->whereIn('bar_name', ['Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal');
-        $qrKelly = (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount');
-        $cardKelly = (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount');
-        $cashKelly = max(0, $salesKelly - $qrKelly - $cardKelly);
+        // 1. Efectivo en Barra Principal: Ventas - QR - Tarjeta bruto
+        $salesPrincipal = (float) $session->barSales()->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal');
+        $qrPrincipal = (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount');
+        $cardPrincipal = (float) $session->invoices()->whereIn('bar_name', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount');
+        $cashPrincipal = max(0, $salesPrincipal - $qrPrincipal - $cardPrincipal);
 
-        // 2. Efectivo en Barra Ariel (Subte): Ventas Subte - QR Subte - Tarjeta bruto Subte
-        $salesSubte = (float) $session->barSales()->whereIn('bar_name', ['Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal');
-        $qrSubte = (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'])->sum('amount');
-        $cardSubte = (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount');
+        // 2. Efectivo en Barra Subterráneo: Ventas - QR - Tarjeta bruto
+        $salesSubte = (float) $session->barSales()->whereIn('bar_name', ['Barra Subterráneo', 'Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal');
+        $qrSubte = (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Subterráneo', 'Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'])->sum('amount');
+        $cardSubte = (float) $session->invoices()->whereIn('bar_name', ['Barra Subterráneo', 'Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount');
         $cashSubte = max(0, $salesSubte - $qrSubte - $cardSubte);
 
-        // Efectivo total en Cierre de Caja = Suma de efectivos de las barras
-        $totalEfectivo = $cashKelly + $cashSubte;
+        // 3. Efectivo en Tienda: Ventas (Inventario + Pedidos directos) - QR Tienda - Tarjeta Tienda
+        $salesTienda = (float) $session->barSales()->whereIn('bar_name', ['Tienda', 'tienda'])->sum('subtotal')
+            + (float) $session->storeSales()->sum('total_price');
+        $qrTienda = (float) $session->qrPayments()->whereIn('point_of_sale', ['Tienda', 'tienda'])->sum('amount');
+        $cardTienda = (float) $session->invoices()->whereIn('bar_name', ['Tienda', 'tienda'])->where('payment_method', 'tarjeta')->sum('amount');
+        $cashTienda = max(0, $salesTienda - $qrTienda - $cardTienda);
+
+        // Efectivo total en Cierre de Caja = Suma de efectivos de las barras y tienda
+        $totalEfectivo = $cashPrincipal + $cashSubte + $cashTienda;
 
         // Ventas totales de referencia (barras + tienda)
-        $totalBarSales = (float) $session->barSales()->where('bar_name', '!=', 'Tienda')->sum('subtotal')
-            + (float) $session->storeSales()->sum('total_price');
+        $totalBarSales = $salesPrincipal + $salesSubte + $salesTienda;
 
         // Personal
         $totalStaffPaid = (float) $session->staffAttendances()->where('is_paid', true)->sum('pay_amount');

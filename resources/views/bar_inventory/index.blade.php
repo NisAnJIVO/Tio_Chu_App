@@ -115,15 +115,26 @@
             <div class="inline-flex p-1 rounded-xl bg-zinc-950 border border-zinc-800">
                 @foreach($availableBars as $bar)
                     @php
-                        $isKelly = str_contains($bar, 'Kelly');
-                        $barLabel = $isKelly ? 'Barra Kelly' : 'Barra Ariel';
-                        $barFloor = $isKelly ? 'Piso Principal' : 'Subterráneo';
                         $isSelected = $selectedBar === $bar;
+                        $barLabel = match($bar) {
+                            'Barra Principal', 'Barra Kelly (Principal)' => 'Barra Principal',
+                            'Barra Subterráneo', 'Barra Ariel (Subte)' => 'Barra Subterráneo',
+                            'Tienda' => 'Tienda',
+                            default => $bar,
+                        };
+                        $barFloor = match($bar) {
+                            'Barra Principal', 'Barra Kelly (Principal)' => 'Piso Principal',
+                            'Barra Subterráneo', 'Barra Ariel (Subte)' => 'Subterráneo',
+                            'Tienda' => 'Unidades Sueltas',
+                            default => '',
+                        };
                     @endphp
                     <a href="{{ route('barInventory.index', ['session_id' => $session->id, 'bar' => $bar]) }}" 
                        class="px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 cursor-pointer {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-sm' : 'text-zinc-400 hover:text-white' }}">
                         <span>{{ $barLabel }}</span>
-                        <span class="text-[10px] font-medium opacity-75">({{ $barFloor }})</span>
+                        @if($barFloor)
+                            <span class="text-[10px] font-medium opacity-75">({{ $barFloor }})</span>
+                        @endif
                     </a>
                 @endforeach
             </div>

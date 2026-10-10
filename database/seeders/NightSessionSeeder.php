@@ -48,9 +48,9 @@ class NightSessionSeeder extends Seeder
             );
         }
 
-        // Inicializar productos en Barra Kelly (Principal), Barra Ariel (Subte) y Tienda
+        // Inicializar productos en Barra Principal, Barra Subterráneo y Tienda
         $products = Product::where('is_active', true)->get();
-        foreach (['Barra Kelly (Principal)', 'Barra Ariel (Subte)', 'Tienda'] as $bar) {
+        foreach (['Barra Principal', 'Barra Subterráneo', 'Tienda'] as $bar) {
             foreach ($products as $prod) {
                 BarSale::firstOrCreate(
                     [

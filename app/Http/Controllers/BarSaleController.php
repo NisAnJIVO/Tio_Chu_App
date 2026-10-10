@@ -25,11 +25,14 @@ class BarSaleController extends Controller
         $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
-        $selectedBar = $request->get('bar', 'Barra Kelly (Principal)');
-        if ($selectedBar === 'Tienda') {
-            $selectedBar = 'Barra Kelly (Principal)';
-        }
-        $availableBars = ['Barra Kelly (Principal)', 'Barra Ariel (Subte)'];
+        $rawBar = $request->get('bar', 'Barra Principal');
+        $selectedBar = match($rawBar) {
+            'Barra Kelly (Principal)', 'Kelly', 'Principal' => 'Barra Principal',
+            'Barra Ariel (Subte)', 'Ariel', 'Subte', 'Subterraneo', 'Subterráneo' => 'Barra Subterráneo',
+            'Tienda' => 'Tienda',
+            default => $rawBar,
+        };
+        $availableBars = ['Barra Principal', 'Barra Subterráneo', 'Tienda'];
 
         $liquorSales = collect();
         $mixerSales = collect();
@@ -45,18 +48,24 @@ class BarSaleController extends Controller
         $specialMixerOptions = collect();
         $categories = [];
         $allMixerProducts = collect();
+        $storeSales = collect();
+        $totalStoreSales = 0;
+        $allProducts = collect();
 
         if ($session) {
             $closing = CashClosing::firstOrCreate(['night_session_id' => $session->id]);
 
             // Pagos QR y Facturas/Tarjetas vinculados al punto de venta actual
-            if (str_contains($selectedBar, 'Subte') || str_contains($selectedBar, 'Ariel')) {
-                $qrPosNames = ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'];
-                $invoiceBarNames = ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'];
+            if ($selectedBar === 'Tienda') {
+                $qrPosNames = ['Tienda', 'tienda'];
+                $invoiceBarNames = ['Tienda', 'tienda'];
+            } elseif (str_contains($selectedBar, 'Subte') || str_contains($selectedBar, 'Ariel') || str_contains($selectedBar, 'Subterráneo') || str_contains($selectedBar, 'Subterraneo')) {
+                $qrPosNames = ['Barra Subterráneo', 'Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'];
+                $invoiceBarNames = ['Barra Subterráneo', 'Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'];
             } else {
-                // Barra Kelly (Principal)
+                // Barra Principal
                 $qrPosNames = ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'];
-                $invoiceBarNames = ['Principal', 'Barra Kelly (Principal)', 'Kelly'];
+                $invoiceBarNames = ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'];
             }
 
             $barQrPayments = $session->qrPayments()
@@ -187,6 +196,13 @@ class BarSaleController extends Controller
             $specialMixerOptions = CategoryMixerOption::all()->groupBy('category');
             $categories = Product::getDrinkSubcategories();
             $allMixerProducts = Product::where('category', 'Mixers')->where('is_active', true)->get();
+            $storeSales = $session->storeSales()->with('product')->orderByDesc('id')->get();
+            $totalStoreSales = (float)$storeSales->sum('total_price');
+            $allProducts = Product::where('is_active', true)->orderBy('name')->get();
+
+            if ($selectedBar === 'Tienda') {
+                $grandTotalBar = ($subtotalLiquors + $subtotalMixers) + $totalStoreSales;
+            }
 
             $barCashRemaining = max(0, $grandTotalBar - $barTotalQr - $barTotalCardNet);
         } else {
@@ -200,6 +216,9 @@ class BarSaleController extends Controller
             $barTotalCardCommission = 0;
             $barTotalCardNet = 0;
             $barCashRemaining = 0;
+            $storeSales = collect();
+            $totalStoreSales = 0;
+            $allProducts = collect();
         }
 
         return view('sales.index', compact(
@@ -229,7 +248,10 @@ class BarSaleController extends Controller
             'barTotalCard',
             'barTotalCardCommission',
             'barTotalCardNet',
-            'barCashRemaining'
+            'barCashRemaining',
+            'storeSales',
+            'totalStoreSales',
+            'allProducts'
         ));
 
     }
@@ -262,7 +284,13 @@ class BarSaleController extends Controller
 
         $rows = $request->input('sales', []);
         $mapping = Product::getMixerMapping();
-        $barName = $request->input('bar_name', 'Barra Kelly (Principal)');
+        $rawBar = $request->input('bar_name', 'Barra Principal');
+        $barName = match($rawBar) {
+            'Barra Kelly (Principal)', 'Kelly', 'Principal' => 'Barra Principal',
+            'Barra Ariel (Subte)', 'Ariel', 'Subte', 'Subterraneo', 'Subterráneo' => 'Barra Subterráneo',
+            'Tienda' => 'Tienda',
+            default => $rawBar,
+        };
 
         // 1ra pasada: Actualizar inventario de licores y calcular subtotal de combos
         $updatedSales = [];

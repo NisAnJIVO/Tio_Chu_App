@@ -85,9 +85,9 @@ class NightSessionController extends Controller
             ->orderByDesc('session_date')
             ->first() ?? NightSession::where('id', '<', $session->id)->orderByDesc('id')->first();
 
-        // Cargar productos en los 3 puntos de venta (Barra Kelly, Barra Ariel, Tienda)
+        // Cargar productos en los 3 puntos de venta (Barra Principal, Barra Subterráneo, Tienda)
         $products = Product::where('is_active', true)->get();
-        foreach (['Barra Kelly (Principal)', 'Barra Ariel (Subte)', 'Tienda'] as $bar) {
+        foreach (['Barra Principal', 'Barra Subterráneo', 'Tienda'] as $bar) {
             foreach ($products as $prod) {
                 BarSale::create([
                     'night_session_id' => $session->id,

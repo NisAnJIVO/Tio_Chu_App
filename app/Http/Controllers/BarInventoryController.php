@@ -22,8 +22,14 @@ class BarInventoryController extends Controller
         $session = $this->sessionService->resolveSession($request->get('session_id'));
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
-        $selectedBar = $request->get('bar', 'Barra Kelly (Principal)');
-        $availableBars = ['Barra Kelly (Principal)', 'Barra Ariel (Subte)'];
+        $rawBar = $request->get('bar', 'Barra Principal');
+        $selectedBar = match($rawBar) {
+            'Barra Kelly (Principal)', 'Kelly', 'Principal' => 'Barra Principal',
+            'Barra Ariel (Subte)', 'Ariel', 'Subte', 'Subterraneo', 'Subterráneo' => 'Barra Subterráneo',
+            'Tienda' => 'Tienda',
+            default => $rawBar,
+        };
+        $availableBars = ['Barra Principal', 'Barra Subterráneo', 'Tienda'];
 
         $liquorSales = collect();
         $mixerSales = collect();
@@ -94,7 +100,13 @@ class BarInventoryController extends Controller
         }
 
         $rows = $request->input('inventory', []);
-        $selectedBar = $request->input('bar_name', 'Barra Kelly (Principal)');
+        $rawBar = $request->input('bar_name', 'Barra Principal');
+        $selectedBar = match($rawBar) {
+            'Barra Kelly (Principal)', 'Kelly', 'Principal' => 'Barra Principal',
+            'Barra Ariel (Subte)', 'Ariel', 'Subte', 'Subterraneo', 'Subterráneo' => 'Barra Subterráneo',
+            'Tienda' => 'Tienda',
+            default => $rawBar,
+        };
 
         foreach ($rows as $id => $data) {
             $barSale = BarSale::with('product')->find($id);

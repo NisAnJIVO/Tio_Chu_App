@@ -4,36 +4,42 @@
 
 @section('content')
 @php
-    $salesKelly = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal') : 0;
-    $salesAriel = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal') : 0;
-    $salesTienda = $session ? (float) $session->storeSales()->sum('total_price') : 0;
-    $totalSales = $salesKelly + $salesAriel + $salesTienda;
+    $salesPrincipal = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal') : 0;
+    $salesSubte = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Subterráneo', 'Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal') : 0;
+    $salesTienda = $session ? ((float) $session->barSales()->whereIn('bar_name', ['Tienda', 'tienda'])->sum('subtotal') + (float) $session->storeSales()->sum('total_price')) : 0;
+    $totalSales = $salesPrincipal + $salesSubte + $salesTienda;
 
     $totalExpenses = $closing->total_expenses ?? 0;
 
     $staffPaid = $closing->total_staff_paid ?? 0;
 
     $barPayments = [
-        'kelly' => [
+        'principal' => [
             'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount') : 0,
-            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
-            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
+            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
+            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
         ],
-        'ariel' => [
-            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Ariel'])->sum('amount') : 0,
-            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
-            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Ariel'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
+        'subte' => [
+            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Barra Subterráneo', 'Ariel'])->sum('amount') : 0,
+            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Barra Subterráneo', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
+            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Barra Subterráneo', 'Ariel'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
+        ],
+        'tienda' => [
+            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Tienda', 'tienda'])->sum('amount') : 0,
+            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Tienda', 'tienda'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
+            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Tienda', 'tienda'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
         ],
     ];
-    $barPayments['kelly']['cash'] = max(0, $salesKelly - $barPayments['kelly']['qr'] - $barPayments['kelly']['card']);
-    $barPayments['ariel']['cash'] = max(0, $salesAriel - $barPayments['ariel']['qr'] - $barPayments['ariel']['card']);
-    $storeQr = $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Tienda', 'tienda'])->sum('amount') : 0;
-    $qrTotal = $barPayments['kelly']['qr'] + $barPayments['ariel']['qr'] + $storeQr;
-    $posGross = $barPayments['kelly']['card'] + $barPayments['ariel']['card'];
-    $posNet = $barPayments['kelly']['card_net'] + $barPayments['ariel']['card_net'];
+    $barPayments['principal']['cash'] = max(0, $salesPrincipal - $barPayments['principal']['qr'] - $barPayments['principal']['card']);
+    $barPayments['subte']['cash'] = max(0, $salesSubte - $barPayments['subte']['qr'] - $barPayments['subte']['card']);
+    $barPayments['tienda']['cash'] = max(0, $salesTienda - $barPayments['tienda']['qr'] - $barPayments['tienda']['card']);
+
+    $qrTotal = $barPayments['principal']['qr'] + $barPayments['subte']['qr'] + $barPayments['tienda']['qr'];
+    $posGross = $barPayments['principal']['card'] + $barPayments['subte']['card'] + $barPayments['tienda']['card'];
+    $posNet = $barPayments['principal']['card_net'] + $barPayments['subte']['card_net'] + $barPayments['tienda']['card_net'];
     $posCommission = $posGross - $posNet;
-    $barTotal = $salesKelly + $salesAriel;
-    $netCash = $barPayments['kelly']['cash'] + $barPayments['ariel']['cash'];
+    $barTotal = $totalSales;
+    $netCash = $barPayments['principal']['cash'] + $barPayments['subte']['cash'] + $barPayments['tienda']['cash'];
     $totalIncome = $posGross + $qrTotal + $netCash;
 @endphp
 
@@ -223,43 +229,46 @@
                 </div>
 
                 <div class="space-y-2.5 flex-1">
-                    <!-- Barra Kelly (Principal) -->
+                    <!-- Barra Principal -->
                     <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
                         <div>
-                            <span class="font-bold text-xs text-white block">Barra Kelly</span>
+                            <span class="font-bold text-xs text-white block">Barra Principal</span>
                             <span class="text-[10px] text-zinc-500 font-medium">Piso Principal</span>
                         </div>
                         <span class="font-black text-white font-mono text-sm">
-                            Bs. {{ number_format($salesKelly, 2) }}
+                            Bs. {{ number_format($salesPrincipal, 2) }}
                         </span>
                     </div>
                     <div class="mt-1 text-[10px] text-zinc-500 font-mono">
-                        QR Bs. {{ number_format($barPayments['kelly']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['kelly']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['kelly']['cash'], 2) }}
+                        QR Bs. {{ number_format($barPayments['principal']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['principal']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['principal']['cash'], 2) }}
                     </div>
 
-                    <!-- Barra Ariel (Subte) -->
+                    <!-- Barra Subterráneo -->
                     <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
                         <div>
-                            <span class="font-bold text-xs text-white block">Barra Ariel</span>
+                            <span class="font-bold text-xs text-white block">Barra Subterráneo</span>
                             <span class="text-[10px] text-zinc-500 font-medium">Subterráneo</span>
                         </div>
                         <span class="font-black text-white font-mono text-sm">
-                            Bs. {{ number_format($salesAriel, 2) }}
+                            Bs. {{ number_format($salesSubte, 2) }}
                         </span>
                     </div>
                     <div class="mt-1 text-[10px] text-zinc-500 font-mono">
-                        QR Bs. {{ number_format($barPayments['ariel']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['ariel']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['ariel']['cash'], 2) }}
+                        QR Bs. {{ number_format($barPayments['subte']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['subte']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['subte']['cash'], 2) }}
                     </div>
 
-                    <!-- Tienda / Guardarropa -->
+                    <!-- Tienda (Unidades Sueltas & Entrada) -->
                     <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between">
                         <div>
                             <span class="font-bold text-xs text-white block">Tienda</span>
-                            <span class="text-[10px] text-zinc-500 font-medium">Entrada / Guardarropa</span>
+                            <span class="text-[10px] text-zinc-500 font-medium">Unidades Sueltas / Entrada</span>
                         </div>
                         <span class="font-black text-white font-mono text-sm">
                             Bs. {{ number_format($salesTienda, 2) }}
                         </span>
+                    </div>
+                    <div class="mt-1 text-[10px] text-zinc-500 font-mono">
+                        QR Bs. {{ number_format($barPayments['tienda']['qr'], 2) }} · Tarjeta Bs. {{ number_format($barPayments['tienda']['card'], 2) }} · Efectivo Bs. {{ number_format($barPayments['tienda']['cash'], 2) }}
                     </div>
                 </div>
 

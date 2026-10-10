@@ -85,6 +85,14 @@
                 </button>
             </div>
 
+            <a href="{{ route('sales.index', ['bar' => 'Tienda']) }}" 
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 text-xs font-bold rounded-xl transition-all cursor-pointer">
+                <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Ventas Tienda (Sueltas)</span>
+            </a>
+
             <button type="button" 
                     onclick="openCreateDrawer()"
                     class="inline-flex items-center gap-2 px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black rounded-xl transition-all shadow-md shadow-[#F5B81C]/10 cursor-pointer">
