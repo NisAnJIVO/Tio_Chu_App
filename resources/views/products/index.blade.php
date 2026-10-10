@@ -53,13 +53,26 @@
         </div>
 
         <div class="flex items-center gap-2.5 shrink-0">
-            <!-- Selector de Vista (Tabla vs Tarjetas) -->
+            <!-- Selector de Vista (Tarjetas por defecto vs Tabla) -->
             <div class="inline-flex items-center p-1 rounded-xl bg-zinc-900 border border-zinc-800">
+                <button type="button" 
+                        id="view-mode-cards-btn"
+                        onclick="switchViewMode('cards')"
+                        title="Ver en Tarjetas"
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer bg-[#F5B81C] text-black shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <rect width="7" height="7" x="3" y="3" rx="1"/>
+                        <rect width="7" height="7" x="14" y="3" rx="1"/>
+                        <rect width="7" height="7" x="14" y="14" rx="1"/>
+                        <rect width="7" height="7" x="3" y="14" rx="1"/>
+                    </svg>
+                    <span>Tarjetas</span>
+                </button>
                 <button type="button" 
                         id="view-mode-table-btn"
                         onclick="switchViewMode('table')"
-                        title="Ver en Tabla Ejecutiva"
-                        class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer bg-[#F5B81C] text-black shadow-sm">
+                        title="Ver en Tabla"
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer text-zinc-400 hover:text-white">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                         <line x1="8" y1="6" x2="21" y2="6"/>
                         <line x1="8" y1="12" x2="21" y2="12"/>
@@ -69,19 +82,6 @@
                         <line x1="3" y1="18" x2="3.01" y2="18"/>
                     </svg>
                     <span>Tabla</span>
-                </button>
-                <button type="button" 
-                        id="view-mode-cards-btn"
-                        onclick="switchViewMode('cards')"
-                        title="Ver en Tarjetas"
-                        class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer text-zinc-400 hover:text-white">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                        <rect width="7" height="7" x="3" y="3" rx="1"/>
-                        <rect width="7" height="7" x="14" y="3" rx="1"/>
-                        <rect width="7" height="7" x="14" y="14" rx="1"/>
-                        <rect width="7" height="7" x="3" y="14" rx="1"/>
-                    </svg>
-                    <span>Tarjetas</span>
                 </button>
             </div>
 
@@ -229,9 +229,9 @@
     </div>
 
     <!-- ========================================================
-         4. VISTA 1: TABLA EJECUTIVA (POR DEFECTO)
+         4. VISTA 1: TABLA EJECUTIVA (OPCIONAL)
          ======================================================== -->
-    <div id="view-table-container" class="rounded-2xl theme-card border theme-border overflow-hidden shadow-sm">
+    <div id="view-table-container" class="hidden rounded-2xl theme-card border theme-border overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
@@ -383,9 +383,9 @@
     </div>
 
     <!-- ========================================================
-         5. VISTA 2: CUADRÍCULA DE TARJETAS MINIMALISTAS (TOGGLEABLE)
+         5. VISTA 2: CUADRÍCULA DE TARJETAS (POR DEFECTO)
          ======================================================== -->
-    <div id="view-cards-container" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+    <div id="view-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
         @foreach($products as $prod)
         @php
             $sub = getDrinkCategory($prod->name, $prod->category);
@@ -830,6 +830,12 @@
     </form>
 </div>
 
+<!-- Toast Efímero Estilo iOS para Bodega Central -->
+<div id="bodega-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full text-xs font-semibold text-white bg-zinc-900 border border-zinc-700 shadow-2xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+    <span id="bodega-toast-dot" class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
+    <span id="bodega-toast-text">Notificación</span>
+</div>
+
 <!-- ========================================================
      8. JAVASCRIPT REACTIVO (SIN RECARGA & SINCRONIZADO)
      ======================================================== -->
@@ -838,7 +844,7 @@ const CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('con
 const BASE = '{{ url("/products") }}';
 let debounceTimers = {};
 
-/* --- SELECTOR DE VISTA (TABLA / TARJETAS) --- */
+/* --- SELECTOR DE VISTA (TARJETAS POR DEFECTO / TABLA) --- */
 function switchViewMode(mode) {
     const tableContainer = document.getElementById('view-table-container');
     const cardsContainer = document.getElementById('view-cards-container');
@@ -862,10 +868,10 @@ function switchViewMode(mode) {
     }
 }
 
-// Inicializar vista guardada (por defecto en celular 'cards', en escritorio 'table')
+// Inicializar vista guardada (POR DEFECTO EN TARJETAS PARA ESCRITORIO Y CELULAR)
 (function() {
     const saved = localStorage.getItem('tiochu_bodega_view');
-    const initial = saved || (window.innerWidth < 768 ? 'cards' : 'table');
+    const initial = saved || 'cards';
     switchViewMode(initial);
 })();
 
@@ -1210,9 +1216,175 @@ function closeDrawer() {
     document.body.style.overflow = '';
 }
 
-function confirmDeleteProduct() {
-    if (confirm('¿Eliminar definitivamente esta bebida del inventario?')) {
-        document.getElementById('delete-prod-inline-form').submit();
+/* --- TOAST DISCRETO BODEGA CENTRAL --- */
+function showAppToast(text, type = 'success') {
+    const toast = document.getElementById('bodega-toast');
+    const toastText = document.getElementById('bodega-toast-text');
+    const toastDot = document.getElementById('bodega-toast-dot');
+    if (!toast || !toastText) return;
+    
+    toastText.innerHTML = text;
+    if (toastDot) {
+        toastDot.className = type === 'error' ? 'w-2 h-2 rounded-full bg-rose-500' : 'w-2 h-2 rounded-full bg-[#F5B81C]';
+    }
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 2400);
+}
+
+function calcSubcat(name, cat) {
+    const n = name.toLowerCase();
+    if (n.includes('singani')) return 'Singani';
+    if (n.includes('whisky') || n.includes('whiskey') || n.includes('jack daniel')) return 'Whisky';
+    if (n.includes('ron') || n.includes('abuelo') || n.includes('havana') || n.includes('fernet')) return 'Ron';
+    if (n.includes('gin') || n.includes('tanqueray') || n.includes('beefeater') || n.includes('dharma') || n.includes('ganesha') || n.includes('james cook')) return 'Gin';
+    if (n.includes('tequila') || n.includes('jager') || n.includes('cuervo') || n.includes('olmeca')) return 'Tequila';
+    if (cat === 'Mixers' || n.includes('coca') || n.includes('ginger') || n.includes('agua') || n.includes('sprite') || n.includes('aquarius') || n.includes('tónica') || n.includes('tonica')) return 'Mixer';
+    if (cat === 'Cervezas' || n.includes('cerveza') || n.includes('huari') || n.includes('paceña')) return 'Cerveza';
+    return 'Otro';
+}
+
+function updateProductDOM(p) {
+    const id = p.id;
+    const items = document.querySelectorAll('.product-item[data-id="' + id + '"]');
+    const sub = calcSubcat(p.name, p.category);
+    const saleP = parseFloat(p.sale_price) || 0;
+    const costP = parseFloat(p.cost_price) || 0;
+    const stock = parseInt(p.stock_warehouse) || 0;
+    const uPkg = parseInt(p.units_per_package) || 1;
+
+    items.forEach(item => {
+        item.dataset.name = p.name.toLowerCase();
+        item.dataset.subcat = sub;
+        item.dataset.price = saleP;
+        item.dataset.stock = stock;
+        item.dataset.unitsPerPackage = uPkg;
+
+        // Actualizar botones de editar en este item
+        const editBtns = item.querySelectorAll('button[onclick*="openEditDrawer"]');
+        editBtns.forEach(btn => {
+            const hasFocusImg = btn.getAttribute('onclick')?.includes(', true');
+            btn.setAttribute('onclick', `openEditDrawer(${id}, ${JSON.stringify(p.name)}, ${JSON.stringify(p.category)}, ${JSON.stringify(p.unit)}, ${saleP}, ${costP}, ${uPkg}, ${stock}, ${p.is_active ? 1 : 0}, ${JSON.stringify(p.image_url)}${hasFocusImg ? ', true' : ''})`);
+        });
+
+        // Actualizar visual de Tarjeta
+        if (item.classList.contains('group')) {
+            const titleEl = item.querySelector('h3');
+            if (titleEl) titleEl.textContent = p.name;
+
+            const unitSpans = item.querySelectorAll('.flex.items-center.justify-between.text-\\[10px\\] span');
+            if (unitSpans.length >= 2) {
+                unitSpans[0].textContent = p.unit;
+                unitSpans[1].textContent = uPkg + ' unid/caja';
+            }
+
+            const catBadge = item.querySelector('.uppercase');
+            if (catBadge) catBadge.textContent = sub;
+
+            const priceBadge = item.querySelector('.font-mono.font-bold');
+            if (priceBadge) {
+                priceBadge.innerHTML = `<span class="text-[#F5B81C] text-[10px] mr-1">Bs.</span>${saleP.toFixed(2)}`;
+            }
+
+            if (p.image_url) {
+                const imgs = item.querySelectorAll('img');
+                imgs.forEach(img => img.src = p.image_url);
+            }
+
+            // Resaltado visual instantáneo
+            item.classList.add('ring-2', 'ring-[#F5B81C]');
+            setTimeout(() => item.classList.remove('ring-2', 'ring-[#F5B81C]'), 1500);
+        } else {
+            // Actualizar visual de Fila de Tabla
+            const nameEl = item.querySelector('.font-black.text-white.text-xs');
+            if (nameEl) nameEl.textContent = p.name;
+
+            const unitEl = item.querySelector('.text-\\[10px\\].text-zinc-400');
+            if (unitEl) unitEl.textContent = `${p.unit} • ${uPkg} unid. x caja`;
+
+            const catBadge = item.querySelector('td:nth-child(2) span');
+            if (catBadge) catBadge.textContent = sub;
+
+            const priceTd = item.querySelector('td:nth-child(3)');
+            if (priceTd) priceTd.innerHTML = `<span class="text-[#F5B81C] text-[10px] mr-0.5">Bs.</span>${saleP.toFixed(2)}`;
+
+            const initialEl = item.querySelector('.text-\\[\\#F5B81C\\]');
+            if (initialEl) initialEl.textContent = p.name.charAt(0).toUpperCase();
+
+            // Resaltado de fila
+            item.classList.add('bg-zinc-800/80');
+            setTimeout(() => item.classList.remove('bg-zinc-800/80'), 1500);
+        }
+    });
+
+    syncAllInputs(id, stock);
+}
+
+/* --- ENVÍO ASÍNCRONO DEL FORMULARIO DE EDICIÓN (SIN RECARGA NI PÉRDIDA DE SCROLL) --- */
+document.getElementById('edit-prod-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = this;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>Guardando...</span>';
+
+    try {
+        const formData = new FormData(form);
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': CSRF
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            closeDrawer();
+            updateProductDOM(data.product);
+            showAppToast(data.message || 'Bebida actualizada');
+            refreshKPIs();
+        } else {
+            const err = data.message || (data.errors ? Object.values(data.errors).flat().join('<br>') : 'Error al guardar');
+            showAppToast(err, 'error');
+        }
+    } catch(err) {
+        showAppToast('Error de conexión al guardar cambios', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+});
+
+async function confirmDeleteProduct() {
+    if (!confirm('¿Eliminar definitivamente esta bebida del inventario?')) return;
+    const form = document.getElementById('delete-prod-inline-form');
+    try {
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': CSRF
+            },
+            body: new FormData(form)
+        });
+        closeDrawer();
+        const prodId = form.action.split('/').pop();
+        document.querySelectorAll('.product-item[data-id="' + prodId + '"]').forEach(el => el.remove());
+        showAppToast('Bebida eliminada del catálogo');
+        refreshKPIs();
+    } catch(e) {
+        form.submit();
     }
 }
 

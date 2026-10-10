@@ -116,12 +116,36 @@ class ProductController extends Controller
         $this->syncStockBreakdown($product);
         $product->save();
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bebida "' . $product->name . '" actualizada correctamente.',
+                'product' => [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'category' => $product->category,
+                    'sale_price' => (float)$product->sale_price,
+                    'cost_price' => (float)($product->cost_price ?? 0),
+                    'unit' => $product->unit,
+                    'units_per_package' => (int)$product->units_per_package,
+                    'stock_warehouse' => (int)$product->stock_warehouse,
+                    'stock_packages' => (int)$product->stock_packages,
+                    'stock_units' => (int)$product->stock_units,
+                    'is_active' => (bool)$product->is_active,
+                    'image_url' => $product->image_url,
+                ],
+            ]);
+        }
+
         return redirect()->route('products.index')->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
         $product->delete();
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Producto eliminado correctamente.']);
+        }
         return redirect()->route('products.index')->with('success', 'Producto eliminado.');
     }
 
