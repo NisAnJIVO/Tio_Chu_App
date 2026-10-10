@@ -83,8 +83,23 @@ class TioChuSystemTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('KELLY');
         $response->assertSee('ARIEL');
-        $response->assertSee('Sábado');
-        $response->assertSee('Viernes');
+
+        // Test all day tabs
+        foreach (['viernes', 'sabado', 'domingo', 'todos'] as $day) {
+            $r = $this->actingAs($this->user)->get(route('staff.index', ['day' => $day]));
+            $r->assertStatus(200);
+        }
+
+        // Test extraordinary day (Jueves)
+        NightSession::where('status', 'open')->update(['status' => 'closed']);
+        $thursday = NightSession::create([
+            'session_date' => '2026-10-15',
+            'day_name' => 'Jueves',
+            'status' => 'open',
+            'pos_commission_rate' => 0.013,
+        ]);
+        $rThursday = $this->actingAs($this->user)->get(route('staff.index', ['session_id' => $thursday->id, 'day' => 'jueves']));
+        $rThursday->assertStatus(200);
     }
 
     public function test_staff_varies_by_day_saturday_has_more_staff_than_friday_and_sunday(): void

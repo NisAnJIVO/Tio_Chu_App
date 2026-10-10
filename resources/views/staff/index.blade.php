@@ -217,6 +217,13 @@
     <!-- Tabla Minimalista de Personal (Fuente Sans Oficial - Ancho Fijo Bloqueado) -->
     <div class="rounded-2xl border border-zinc-800/80 bg-[#09090b] overflow-hidden shadow-xl font-sans min-h-[480px]">
         @php
+            if (!function_exists('staffNormalizeDay')) {
+                function staffNormalizeDay(?string $day): string {
+                    if (!$day) return '';
+                    $d = mb_strtolower(trim($day));
+                    return str_replace(['á', 'é', 'í', 'ó', 'ú', 'ñ'], ['a', 'e', 'i', 'o', 'u', 'n'], $d);
+                }
+            }
             $catLabels = [
                 1 => '1. SEGURIDAD',
                 2 => '2. BARRA',
@@ -236,7 +243,7 @@
                         'viernes' => $member->getPayForDay('Viernes'),
                         'sabado' => $member->getPayForDay('Sábado'),
                         'domingo' => $member->getPayForDay('Domingo'),
-                        default => ($activeSession && $this->normalizeDay($activeSession->day_name) === $currentDay)
+                        default => ($activeSession && staffNormalizeDay($activeSession->day_name) === $currentDay)
                             ? $member->getPayForDay($activeSession->day_name)
                             : ($member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0),
                     };
@@ -365,7 +372,7 @@
                                 'viernes' => $member->getPayForDay('Viernes'),
                                 'sabado' => $member->getPayForDay('Sábado'),
                                 'domingo' => $member->getPayForDay('Domingo'),
-                                default => ($activeSession && $this->normalizeDay($activeSession->day_name) === $currentDay)
+                                default => ($activeSession && staffNormalizeDay($activeSession->day_name) === $currentDay)
                                     ? $member->getPayForDay($activeSession->day_name)
                                     : ($member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0),
                             };
