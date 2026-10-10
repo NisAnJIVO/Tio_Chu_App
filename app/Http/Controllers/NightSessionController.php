@@ -8,11 +8,19 @@ use App\Models\NightSession;
 use App\Models\Product;
 use App\Models\Staff;
 use App\Models\StaffAttendance;
+use App\Services\NightSessionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class NightSessionController extends Controller
 {
+    protected NightSessionService $sessionService;
+
+    public function __construct(NightSessionService $sessionService)
+    {
+        $this->sessionService = $sessionService;
+    }
+
     public function index()
     {
         $sessions = NightSession::orderByDesc('session_date')->get();
@@ -131,5 +139,26 @@ class NightSessionController extends Controller
         $session->delete();
 
         return redirect()->route('sessions.index')->with('success', 'La noche del ' . $dateFormatted . ' ha sido eliminada correctamente.');
+    }
+
+    public function consolidatedSummary(Request $request)
+    {
+        $sessionIds = $request->input('session_ids', []);
+        if (is_string($sessionIds)) {
+            $sessionIds = explode(',', $sessionIds);
+        }
+        $sessionIds = array_filter(array_map('intval', (array)$sessionIds));
+
+        if (empty($sessionIds)) {
+            $sessionIds = NightSession::orderByDesc('session_date')->limit(3)->pluck('id')->toArray();
+        }
+
+        $summary = $this->sessionService->getConsolidatedSummary($sessionIds);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($summary);
+        }
+
+        return view('sessions.consolidated', compact('summary'));
     }
 }

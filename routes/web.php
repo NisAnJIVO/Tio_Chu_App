@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     // 3. Gestión de Noches / Sesiones
     Route::prefix('sessions')->name('sessions.')->group(function () {
         Route::get('/', [NightSessionController::class, 'index'])->name('index');
+        Route::match(['get', 'post'], '/consolidated-summary', [NightSessionController::class, 'consolidatedSummary'])->name('consolidatedSummary');
         Route::get('/create', [NightSessionController::class, 'create'])->name('create');
         Route::post('/', [NightSessionController::class, 'store'])->name('store');
         Route::patch('/{session}/status', [NightSessionController::class, 'updateStatus'])->name('updateStatus');

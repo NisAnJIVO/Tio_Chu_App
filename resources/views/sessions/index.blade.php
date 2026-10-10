@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Historial de Noches')
+@section('title', 'Historial de Noches & Consolidado')
 
 @section('content')
-<div class="space-y-6 max-w-7xl mx-auto">
+<div class="space-y-6 max-w-7xl mx-auto pb-24">
 
     @php
         $openSession = $sessions->firstWhere('status', 'open');
@@ -14,10 +14,7 @@
     <!-- ==========================================
          CABECERA MINIMALISTA (iOS PURE DARK)
          ========================================== -->
-    <!-- ==========================================
-         CABECERA MINIMALISTA (iOS PURE DARK)
-         ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-800/80">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-zinc-800/80">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="text-xs font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
@@ -26,15 +23,36 @@
                 <span class="text-zinc-600 text-xs">•</span>
                 <span class="text-xs text-zinc-400 font-mono">Jornadas Nocturnas</span>
             </div>
-            <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
                 Historial de Noches de Atención
-            </h2>
+            </h1>
             <p class="text-xs text-zinc-400 mt-1">
-                Registro cronológico de jornadas, comisiones de POS bancario y estados de cierre de caja.
+                Selecciona noches individuales o fines de semana para consolidar arqueos y métodos de pago.
             </p>
         </div>
 
-        <div class="flex items-center gap-3 w-full sm:w-auto">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+            <!-- Botón Rápido: Seleccionar Fin de Semana (Vie, Sáb, Dom) -->
+            <button type="button" onclick="selectWeekend()" 
+                    class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold rounded-xl transition-all cursor-pointer">
+                <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>Seleccionar Fin de Semana</span>
+            </button>
+
+            <!-- Botón Generar Consolidado -->
+            <button type="button" onclick="openConsolidatedModal()" id="btn-header-consolidated"
+                    class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-[#F5B81C] border border-zinc-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm">
+                <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Resumen Consolidado (<span id="header-selected-count">0</span>)</span>
+            </button>
+
             <a href="{{ route('sessions.create') }}" 
                class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl shadow-sm active:scale-95 transition-all">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,6 +122,7 @@
     <div class="md:hidden space-y-3">
         <div class="flex items-center justify-between px-1">
             <span class="text-xs font-bold text-zinc-400 font-mono uppercase tracking-wider">Jornadas ({{ $totalCount }})</span>
+            <span class="text-[11px] text-zinc-500">Toca las casillas para consolidar</span>
         </div>
         
         @forelse($sessions as $s)
@@ -111,16 +130,21 @@
                 $isOpen = $s->isOpen();
             @endphp
             <div class="theme-card rounded-2xl p-4 border {{ $isOpen ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-zinc-800/80 bg-[#09090b]' }} space-y-3">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full {{ $isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600' }}"></span>
-                            <span class="text-base font-bold font-mono text-white">{{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}</span>
-                            <span class="text-xs text-zinc-400 font-medium">({{ $s->day_name }})</span>
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
+                               class="session-chk mt-1 w-5 h-5 rounded-lg border-zinc-700 bg-black text-[#F5B81C] focus:ring-[#F5B81C] cursor-pointer"
+                               onchange="updateSelectedCount()">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full {{ $isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600' }}"></span>
+                                <span class="text-base font-bold font-mono text-white">{{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}</span>
+                                <span class="text-xs text-zinc-400 font-medium">({{ $s->day_name }})</span>
+                            </div>
+                            @if($s->notes)
+                                <p class="text-xs text-zinc-400 mt-1 italic">{{ $s->notes }}</p>
+                            @endif
                         </div>
-                        @if($s->notes)
-                            <p class="text-xs text-zinc-400 mt-1 italic">{{ $s->notes }}</p>
-                        @endif
                     </div>
                     <div>
                         @if($isOpen)
@@ -172,18 +196,29 @@
          ========================================== -->
     <div class="hidden md:block theme-card rounded-2xl border border-zinc-800/80 bg-[#09090b] shadow-xl overflow-hidden">
         <div class="px-5 py-3.5 bg-zinc-950/60 border-b border-zinc-800/80 flex items-center justify-between">
-            <h3 class="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono">
-                Registro de Jornadas Nocturnas
-            </h3>
-            <span class="text-xs font-mono text-zinc-500">
-                Mostrando {{ $totalCount }} noches
-            </span>
+            <div class="flex items-center gap-3">
+                <h3 class="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono">
+                    Registro de Jornadas Nocturnas
+                </h3>
+                <span class="text-xs font-mono text-zinc-500">
+                    ({{ $totalCount }} noches en total)
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="selectWeekend()" class="text-xs text-[#F5B81C] hover:underline font-mono">
+                    + Marcar Fin de Semana
+                </button>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
                 <thead class="bg-zinc-950/40 border-b border-zinc-800/80 text-zinc-400 font-mono uppercase text-[10px] tracking-wider">
                     <tr>
+                        <th class="px-4 py-3.5 w-10 text-center">
+                            <input type="checkbox" id="check-all-desktop" onchange="toggleSelectAll(this)" title="Marcar todas" 
+                                   class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] focus:ring-[#F5B81C] cursor-pointer">
+                        </th>
                         <th class="px-5 py-3.5">Fecha</th>
                         <th class="px-5 py-3.5">Día</th>
                         <th class="px-5 py-3.5 text-center">Comisión POS</th>
@@ -198,6 +233,11 @@
                             $isOpen = $s->isOpen();
                         @endphp
                         <tr class="hover:bg-zinc-900/40 transition-colors {{ $isOpen ? 'bg-[#F5B81C]/[0.02]' : '' }}">
+                            <td class="px-4 py-4 text-center">
+                                <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
+                                       class="session-chk w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] focus:ring-[#F5B81C] cursor-pointer"
+                                       onchange="updateSelectedCount()">
+                            </td>
                             <td class="px-5 py-4 font-mono font-bold text-white text-sm">
                                 <div class="flex items-center gap-2.5">
                                     @if($isOpen)
@@ -255,7 +295,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-5 py-12 text-center text-zinc-500">
+                            <td colspan="7" class="px-5 py-12 text-center text-zinc-500">
                                 <div class="max-w-xs mx-auto space-y-2">
                                     <p class="text-sm font-semibold text-zinc-400">No hay noches registradas</p>
                                     <p class="text-xs text-zinc-500">Apertura una nueva noche para comenzar a operar inventarios, personal y cobros.</p>
@@ -268,5 +308,428 @@
         </div>
     </div>
 
+    <!-- ==========================================
+         FLOATING ACTION BAR (STICKY BOTTOM PILL)
+         ========================================== -->
+    <div id="floating-consolidated-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[92%] sm:w-auto">
+        <div class="theme-card bg-[#09090b]/95 backdrop-blur-md border border-[#F5B81C]/50 rounded-2xl p-2.5 sm:px-5 sm:py-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C] animate-pulse"></span>
+                <span class="font-bold text-white font-sans">
+                    <span id="floating-selected-count" class="font-mono text-[#F5B81C] text-sm">0</span> noches seleccionadas
+                </span>
+                <button type="button" onclick="deselectAll()" class="text-[11px] text-zinc-400 hover:text-white underline ml-1 cursor-pointer">
+                    Desmarcar
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="openConsolidatedModal()" 
+                        class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-extrabold text-xs rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 dilemo-btn">
+                    <span>Ver Resumen Consolidado</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                    </svg>
+                </button>
+
+                <button type="button" onclick="goToPrintConsolidated()" title="Imprimir Comprobante Oficial"
+                        class="p-2 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL INTERACTIVO DE RESUMEN CONSOLIDADO
+         ========================================== -->
+    <div id="modal-consolidated-summary" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-5 backdrop-blur-sm overflow-y-auto">
+        <div class="theme-card p-4 sm:p-6 rounded-2xl border border-zinc-800 bg-[#09090b] max-w-4xl w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-5 my-auto">
+            
+            <!-- Encabezado Modal -->
+            <div class="flex items-start justify-between border-b border-zinc-800 pb-3">
+                <div>
+                    <span class="text-[10px] uppercase tracking-wider text-[#F5B81C] font-mono font-bold block">
+                        Liquidación Multisesión • Tío Chu
+                    </span>
+                    <h2 class="text-lg sm:text-xl font-bold text-white font-sans mt-0.5">
+                        Resumen Consolidado de Jornadas Nocturnas
+                    </h2>
+                    <p class="text-xs text-zinc-400 mt-0.5" id="modal-consolidated-dates">
+                        Cargando información...
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="goToPrintConsolidated()" title="Abrir versión para impresión"
+                            class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-200 hover:text-white flex items-center gap-1 cursor-pointer">
+                        <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                        </svg>
+                        <span class="hidden sm:inline">Imprimir Oficial</span>
+                    </button>
+                    <button type="button" onclick="closeConsolidatedModal()" class="text-zinc-400 hover:text-white text-xl font-bold cursor-pointer p-1">&times;</button>
+                </div>
+            </div>
+
+            <!-- Loader Spinner -->
+            <div id="modal-consolidated-loading" class="py-16 text-center space-y-3">
+                <div class="w-10 h-10 border-4 border-[#F5B81C] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p class="text-xs font-mono text-zinc-400">Calculando recaudación y consolidando noches...</p>
+            </div>
+
+            <!-- Contenido Dinámico de Datos -->
+            <div id="modal-consolidated-data" class="hidden space-y-5">
+                
+                <!-- 1. 4 KPIs Globales -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                        <span class="text-[10px] text-zinc-400 uppercase font-mono tracking-wider block">Total Ingresos</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-[#F5B81C]" id="m-kpi-ingresos">Bs. 0.00</div>
+                        <span class="text-[10px] text-zinc-500 font-mono">Efectivo + QR + Tarjetas</span>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                        <span class="text-[10px] text-rose-400 uppercase font-mono tracking-wider block">Total Egresos</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-rose-400" id="m-kpi-egresos">Bs. 0.00</div>
+                        <span class="text-[10px] text-zinc-500 font-mono">Personal + Gastos</span>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-emerald-500/30">
+                        <span class="text-[10px] text-emerald-400 uppercase font-mono tracking-wider block">Ganancia Neta</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-emerald-400" id="m-kpi-neto">Bs. 0.00</div>
+                        <span class="text-[10px] text-zinc-500 font-mono">Saldo neto en caja</span>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                        <span class="text-[10px] text-zinc-400 uppercase font-mono tracking-wider block">Ventas Totales</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-white" id="m-kpi-ventas">Bs. 0.00</div>
+                        <span class="text-[10px] text-zinc-500 font-mono">Barras y Tienda</span>
+                    </div>
+                </div>
+
+                <!-- 2. Desglose Métodos de Pago -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
+                            <span class="text-xs font-bold text-emerald-400 uppercase font-mono">Efectivo Total</span>
+                            <span class="font-bold font-mono text-white text-xs" id="m-pay-cash">Bs. 0.00</span>
+                        </div>
+                        <div class="text-[11px] space-y-1 text-zinc-400">
+                            <div class="flex justify-between">
+                                <span>Barra Principal:</span>
+                                <span class="font-mono text-zinc-300" id="m-pay-cash-principal">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Barra Subterráneo:</span>
+                                <span class="font-mono text-zinc-300" id="m-pay-cash-subte">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tienda:</span>
+                                <span class="font-mono text-zinc-300" id="m-pay-cash-tienda">Bs. 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
+                            <span class="text-xs font-bold text-blue-400 uppercase font-mono">Cobros QR</span>
+                            <span class="font-bold font-mono text-white text-xs" id="m-pay-qr">Bs. 0.00</span>
+                        </div>
+                        <div class="text-[11px] space-y-1 text-zinc-400">
+                            <div class="flex justify-between">
+                                <span>YASTA (Unión):</span>
+                                <span class="font-mono text-zinc-300" id="m-pay-qr-yasta">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>YAPE (BCP):</span>
+                                <span class="font-mono text-zinc-300" id="m-pay-qr-yape">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between text-zinc-500 pt-1 border-t border-zinc-900">
+                                <span>Total QR:</span>
+                                <span class="font-mono font-bold text-blue-400" id="m-pay-qr-total">Bs. 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
+                            <span class="text-xs font-bold text-purple-400 uppercase font-mono">Tarjetas POS</span>
+                            <span class="font-bold font-mono text-white text-xs" id="m-pay-card-gross">Bs. 0.00</span>
+                        </div>
+                        <div class="text-[11px] space-y-1 text-zinc-400">
+                            <div class="flex justify-between">
+                                <span>Monto Bruto:</span>
+                                <span class="font-mono text-zinc-300" id="m-pay-card-bruto">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between text-rose-400/80">
+                                <span>Comisión POS:</span>
+                                <span class="font-mono" id="m-pay-card-comision">- Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-400 font-bold pt-1 border-t border-zinc-900">
+                                <span>Neto Banco:</span>
+                                <span class="font-mono" id="m-pay-card-neto">Bs. 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Rendimiento por Punto de Venta -->
+                <div class="rounded-xl border border-zinc-800 overflow-hidden">
+                    <div class="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-bold text-zinc-300 font-mono uppercase">
+                        Ventas por Punto de Venta (Barras & Tienda)
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-black/60 text-zinc-500 font-mono uppercase text-[10px] border-b border-zinc-800">
+                                <tr>
+                                    <th class="px-4 py-2">Barra / Tienda</th>
+                                    <th class="px-4 py-2 text-right">Ventas Totales</th>
+                                    <th class="px-4 py-2 text-right">Efectivo</th>
+                                    <th class="px-4 py-2 text-right">QR</th>
+                                    <th class="px-4 py-2 text-right">Tarjetas</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-900 font-mono text-zinc-300" id="m-bars-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. Comparativa Noche a Noche -->
+                <div class="rounded-xl border border-zinc-800 overflow-hidden">
+                    <div class="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-bold text-zinc-300 font-mono uppercase">
+                        Detalle Comparativo Noche por Noche
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-black/60 text-zinc-500 font-mono uppercase text-[10px] border-b border-zinc-800">
+                                <tr>
+                                    <th class="px-3 py-2">Fecha</th>
+                                    <th class="px-3 py-2">Día</th>
+                                    <th class="px-3 py-2 text-right">Ventas</th>
+                                    <th class="px-3 py-2 text-right">Efectivo</th>
+                                    <th class="px-3 py-2 text-right">QR</th>
+                                    <th class="px-3 py-2 text-right">POS Bruto</th>
+                                    <th class="px-3 py-2 text-right">Personal</th>
+                                    <th class="px-3 py-2 text-right">Gastos</th>
+                                    <th class="px-3 py-2 text-right">Neto Caja</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-900 font-mono text-zinc-300" id="m-nights-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Acciones -->
+            <div class="flex flex-col sm:flex-row justify-end gap-2 pt-3 border-t border-zinc-800">
+                <button type="button" onclick="closeConsolidatedModal()" class="px-4 py-2 rounded-xl text-xs text-zinc-400 font-semibold bg-zinc-950 border border-zinc-800 hover:text-white cursor-pointer w-full sm:w-auto">
+                    Cerrar
+                </button>
+                <button type="button" onclick="goToPrintConsolidated()" class="px-5 py-2.5 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer dilemo-btn w-full sm:w-auto flex items-center justify-center gap-1.5 shadow-md shadow-[#F5B81C]/10">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                    </svg>
+                    <span>Imprimir Acta Oficial</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
 </div>
+
+<script>
+    function getSelectedSessionIds() {
+        return Array.from(document.querySelectorAll('.session-chk:checked')).map(chk => chk.value);
+    }
+
+    function updateSelectedCount() {
+        const selected = getSelectedSessionIds();
+        const count = selected.length;
+        
+        const countSpan = document.getElementById('header-selected-count');
+        if (countSpan) countSpan.textContent = count;
+        
+        const floatingBar = document.getElementById('floating-consolidated-bar');
+        const floatingCount = document.getElementById('floating-selected-count');
+        if (floatingCount) floatingCount.textContent = count;
+        
+        if (floatingBar) {
+            if (count > 0) {
+                floatingBar.classList.remove('hidden');
+            } else {
+                floatingBar.classList.add('hidden');
+            }
+        }
+
+        // Sincronizar master checkbox
+        const allCheckboxes = document.querySelectorAll('.session-chk');
+        const master = document.getElementById('check-all-desktop');
+        if (master && allCheckboxes.length > 0) {
+            master.checked = count === allCheckboxes.length;
+        }
+    }
+
+    function toggleSelectAll(masterChk) {
+        const checkboxes = document.querySelectorAll('.session-chk');
+        checkboxes.forEach(chk => {
+            chk.checked = masterChk.checked;
+        });
+        updateSelectedCount();
+    }
+
+    function deselectAll() {
+        document.querySelectorAll('.session-chk').forEach(chk => chk.checked = false);
+        const master = document.getElementById('check-all-desktop');
+        if (master) master.checked = false;
+        updateSelectedCount();
+    }
+
+    function selectWeekend() {
+        deselectAll();
+        const checkboxes = Array.from(document.querySelectorAll('.session-chk'));
+        const weekendDays = ['viernes', 'sábado', 'sabado', 'domingo'];
+        
+        let matched = 0;
+        for (let chk of checkboxes) {
+            const day = (chk.getAttribute('data-day') || '').toLowerCase();
+            if (weekendDays.some(d => day.includes(d))) {
+                chk.checked = true;
+                matched++;
+                if (matched >= 3) break;
+            }
+        }
+        
+        // Si no encontró suficientes de fin de semana, marca las primeras 3 más recientes
+        if (matched === 0 && checkboxes.length > 0) {
+            checkboxes.slice(0, 3).forEach(chk => chk.checked = true);
+        }
+        
+        updateSelectedCount();
+        openConsolidatedModal();
+    }
+
+    async function openConsolidatedModal() {
+        let ids = getSelectedSessionIds();
+        if (ids.length === 0) {
+            selectWeekend();
+            ids = getSelectedSessionIds();
+        }
+
+        const modal = document.getElementById('modal-consolidated-summary');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        
+        const loading = document.getElementById('modal-consolidated-loading');
+        const content = document.getElementById('modal-consolidated-data');
+        if (loading) loading.classList.remove('hidden');
+        if (content) content.classList.add('hidden');
+        
+        try {
+            const response = await fetch(`{{ route('sessions.consolidatedSummary') }}?session_ids=${ids.join(',')}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await response.json();
+            renderConsolidatedData(data);
+            if (loading) loading.classList.add('hidden');
+            if (content) content.classList.remove('hidden');
+        } catch (err) {
+            console.error(err);
+            alert('Error al calcular el consolidado de noches.');
+        }
+    }
+
+    function closeConsolidatedModal() {
+        const modal = document.getElementById('modal-consolidated-summary');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function goToPrintConsolidated() {
+        let ids = getSelectedSessionIds();
+        if (ids.length === 0) {
+            ids = Array.from(document.querySelectorAll('.session-chk')).slice(0, 3).map(c => c.value);
+        }
+        if (ids.length === 0) return;
+        window.open(`{{ route('sessions.consolidatedSummary') }}?session_ids=${ids.join(',')}`, '_blank');
+    }
+
+    function fmtBs(val) {
+        return 'Bs. ' + (parseFloat(val) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function renderConsolidatedData(data) {
+        document.getElementById('modal-consolidated-dates').textContent = `${data.date_range} • ${data.count} noches consolidadas`;
+        
+        // KPIs
+        document.getElementById('m-kpi-ingresos').textContent = fmtBs(data.totals.ingresos);
+        document.getElementById('m-kpi-egresos').textContent = fmtBs(data.totals.egresos);
+        document.getElementById('m-kpi-neto').textContent = fmtBs(data.totals.neto);
+        document.getElementById('m-kpi-ventas').textContent = fmtBs(data.totals.ventas);
+
+        // Pagos
+        document.getElementById('m-pay-cash').textContent = fmtBs(data.totals.efectivo);
+        document.getElementById('m-pay-cash-principal').textContent = fmtBs(data.bars.principal.efectivo);
+        document.getElementById('m-pay-cash-subte').textContent = fmtBs(data.bars.subte.efectivo);
+        document.getElementById('m-pay-cash-tienda').textContent = fmtBs(data.bars.tienda.efectivo);
+
+        document.getElementById('m-pay-qr').textContent = fmtBs(data.totals.qr_total);
+        document.getElementById('m-pay-qr-yasta').textContent = fmtBs(data.totals.qr_yasta);
+        document.getElementById('m-pay-qr-yape').textContent = fmtBs(data.totals.qr_yape);
+        document.getElementById('m-pay-qr-total').textContent = fmtBs(data.totals.qr_total);
+
+        document.getElementById('m-pay-card-gross').textContent = fmtBs(data.totals.card_gross);
+        document.getElementById('m-pay-card-bruto').textContent = fmtBs(data.totals.card_gross);
+        document.getElementById('m-pay-card-comision').textContent = '- ' + fmtBs(data.totals.card_commission);
+        document.getElementById('m-pay-card-neto').textContent = fmtBs(data.totals.card_net);
+
+        // Tabla Barras
+        const barsTbody = document.getElementById('m-bars-tbody');
+        barsTbody.innerHTML = `
+            <tr class="hover:bg-zinc-900/50">
+                <td class="px-4 py-2.5 font-bold font-sans text-white">Barra Principal <span class="text-[10px] text-zinc-500 block font-normal font-sans">Piso Principal</span></td>
+                <td class="px-4 py-2.5 text-right font-bold text-[#F5B81C]">${fmtBs(data.bars.principal.ventas)}</td>
+                <td class="px-4 py-2.5 text-right text-emerald-400">${fmtBs(data.bars.principal.efectivo)}</td>
+                <td class="px-4 py-2.5 text-right text-blue-400">${fmtBs(data.bars.principal.qr)}</td>
+                <td class="px-4 py-2.5 text-right text-purple-400">${fmtBs(data.bars.principal.card)}</td>
+            </tr>
+            <tr class="hover:bg-zinc-900/50">
+                <td class="px-4 py-2.5 font-bold font-sans text-white">Barra Subterráneo <span class="text-[10px] text-zinc-500 block font-normal font-sans">Subterráneo</span></td>
+                <td class="px-4 py-2.5 text-right font-bold text-[#F5B81C]">${fmtBs(data.bars.subte.ventas)}</td>
+                <td class="px-4 py-2.5 text-right text-emerald-400">${fmtBs(data.bars.subte.efectivo)}</td>
+                <td class="px-4 py-2.5 text-right text-blue-400">${fmtBs(data.bars.subte.qr)}</td>
+                <td class="px-4 py-2.5 text-right text-purple-400">${fmtBs(data.bars.subte.card)}</td>
+            </tr>
+            <tr class="hover:bg-zinc-900/50">
+                <td class="px-4 py-2.5 font-bold font-sans text-white">Tienda Oficial <span class="text-[10px] text-zinc-500 block font-normal font-sans">${data.bars.tienda.store_units || 0} unid. sueltas</span></td>
+                <td class="px-4 py-2.5 text-right font-bold text-[#F5B81C]">${fmtBs(data.bars.tienda.ventas)}</td>
+                <td class="px-4 py-2.5 text-right text-emerald-400">${fmtBs(data.bars.tienda.efectivo)}</td>
+                <td class="px-4 py-2.5 text-right text-blue-400">${fmtBs(data.bars.tienda.qr)}</td>
+                <td class="px-4 py-2.5 text-right text-purple-400">${fmtBs(data.bars.tienda.card)}</td>
+            </tr>
+        `;
+
+        // Tabla Noches
+        const nightsTbody = document.getElementById('m-nights-tbody');
+        nightsTbody.innerHTML = data.nights.map(n => `
+            <tr class="hover:bg-zinc-900/50">
+                <td class="px-3 py-2 font-bold text-white">${n.date}</td>
+                <td class="px-3 py-2 text-zinc-300 font-sans">${n.day_name}</td>
+                <td class="px-3 py-2 text-right font-bold text-[#F5B81C]">${fmtBs(n.ventas)}</td>
+                <td class="px-3 py-2 text-right text-emerald-400">${fmtBs(n.efectivo)}</td>
+                <td class="px-3 py-2 text-right text-blue-400">${fmtBs(n.qr)}</td>
+                <td class="px-3 py-2 text-right text-purple-400">${fmtBs(n.tarjeta_bruto)}</td>
+                <td class="px-3 py-2 text-right text-rose-400/80">${fmtBs(n.personal)}</td>
+                <td class="px-3 py-2 text-right text-rose-400/80">${fmtBs(n.gastos)}</td>
+                <td class="px-3 py-2 text-right font-bold text-emerald-400">${fmtBs(n.neto)}</td>
+            </tr>
+        `).join('');
+    }
+</script>
 @endsection

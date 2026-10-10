@@ -123,6 +123,14 @@
         <!-- Derecha: Botones Imprimir y Cerrar/Reabrir Noche -->
         <div class="flex items-center gap-2 shrink-0">
             @if($session)
+                <a href="{{ route('sessions.index') }}" 
+                   class="px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5 shadow-sm">
+                    <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="hidden md:inline">Historial & Consolidado</span>
+                </a>
+
                 <button type="button" onclick="window.print()" 
                         class="px-3.5 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95 flex items-center gap-2 shadow-sm">
                     <svg class="w-4 h-4 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">

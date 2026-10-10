@@ -509,4 +509,57 @@ class TioChuSystemTest extends TestCase
             'id' => $session->id,
         ]);
     }
+
+    public function test_consolidated_summary_returns_html_and_json_for_selected_nights(): void
+    {
+        $sessions = NightSession::orderByDesc('session_date')->limit(3)->get();
+        $sessionIds = $sessions->pluck('id')->toArray();
+
+        // 1. Historial de Noches view shows checkboxes and consolidated button
+        $responseIndex = $this->actingAs($this->user)->get(route('sessions.index'));
+        $responseIndex->assertStatus(200);
+        $responseIndex->assertSee('Seleccionar Fin de Semana');
+        $responseIndex->assertSee('Resumen Consolidado');
+
+        // 2. HTML printable view for selected sessions
+        $responseHtml = $this->actingAs($this->user)->get(route('sessions.consolidatedSummary', [
+            'session_ids' => $sessionIds,
+        ]));
+        $responseHtml->assertStatus(200);
+        $responseHtml->assertSee('Resumen Consolidado');
+        $responseHtml->assertSee('Total Ingresos');
+        $responseHtml->assertSee('Ganancia Neta en Caja');
+        $responseHtml->assertSee('Barra Principal');
+        $responseHtml->assertSee('Barra Subterráneo');
+        $responseHtml->assertSee('Tienda Oficial');
+
+        // 3. JSON endpoint for modal / async rendering
+        $responseJson = $this->actingAs($this->user)->getJson(route('sessions.consolidatedSummary', [
+            'session_ids' => $sessionIds,
+        ]));
+        $responseJson->assertStatus(200);
+        $responseJson->assertJsonStructure([
+            'count',
+            'date_range',
+            'totals' => [
+                'ventas',
+                'ingresos',
+                'efectivo',
+                'qr_total',
+                'card_gross',
+                'card_net',
+                'personal',
+                'gastos',
+                'egresos',
+                'neto',
+            ],
+            'bars' => [
+                'principal',
+                'subte',
+                'tienda',
+            ],
+            'nights',
+        ]);
+        $this->assertEquals(count($sessionIds), $responseJson->json('count'));
+    }
 }
