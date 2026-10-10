@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('products', ProductController::class)->except(['show']);
 
     // 2. Personal y Turnos (Módulo 3)
+    Route::post('staff/sync-attendance', [StaffController::class, 'syncAttendance'])->name('staff.syncAttendance');
     Route::resource('staff', StaffController::class)->except(['show']);
 
     // 3. Gestión de Noches / Sesiones

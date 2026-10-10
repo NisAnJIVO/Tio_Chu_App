@@ -89,11 +89,27 @@ class StaffPaymentController extends Controller
                 }
             }
 
+            $attendances = $attendances->sort(function ($a, $b) {
+                $rankA = $a->staff ? $a->staff->getRoleCategoryRank() : 5;
+                $rankB = $b->staff ? $b->staff->getRoleCategoryRank() : 5;
+                if ($rankA === $rankB) {
+                    return strcasecmp($a->staff->name ?? '', $b->staff->name ?? '');
+                }
+                return $rankA <=> $rankB;
+            })->values();
+
             $assignedStaffIds = $attendances->pluck('staff_id')->toArray();
             $availableStaff = Staff::where('is_active', true)
                 ->whereNotIn('id', $assignedStaffIds)
-                ->orderBy('name')
-                ->get();
+                ->get()
+                ->sort(function ($a, $b) {
+                    $rankA = $a->getRoleCategoryRank();
+                    $rankB = $b->getRoleCategoryRank();
+                    if ($rankA === $rankB) {
+                        return strcasecmp($a->name ?? '', $b->name ?? '');
+                    }
+                    return $rankA <=> $rankB;
+                })->values();
         }
 
         return view('staff.payments', compact(
@@ -185,11 +201,17 @@ class StaffPaymentController extends Controller
         $updatedCount = 0;
         foreach ($attendances as $att) {
             if (!$att->staff) continue;
-            $cat = $att->staff->getRoleCategory(); // 'meseros', 'limpieza', 'seguridades', 'barra'
+            $cat = $att->staff->getRoleCategory();
 
-            if (isset($wages[$cat]) && $wages[$cat] !== null && $wages[$cat] !== '') {
+            $wageVal = $wages[$cat] ?? null;
+            if ($wageVal === null) {
+                if ($cat === 'mozos') $wageVal = $wages['meseros'] ?? null;
+                if ($cat === 'seguridad') $wageVal = $wages['seguridades'] ?? null;
+            }
+
+            if ($wageVal !== null && $wageVal !== '') {
                 $att->update([
-                    'pay_amount' => (float)$wages[$cat],
+                    'pay_amount' => (float)$wageVal,
                 ]);
                 $updatedCount++;
             }

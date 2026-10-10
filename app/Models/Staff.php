@@ -52,7 +52,7 @@ class Staff extends Model
         if (str_contains($day, 'viernes')) return (bool)$this->works_friday;
         if (str_contains($day, 'sabado') || str_contains($day, 'sábado')) return (bool)$this->works_saturday;
         if (str_contains($day, 'domingo')) return (bool)$this->works_sunday;
-        return true;
+        return false; // Días extraordinarios (Jueves, etc.) se seleccionan manualmente
     }
 
     /**
@@ -74,8 +74,8 @@ class Staff extends Model
     }
 
     /**
-     * Categoriza al trabajador en uno de los 4 grupos principales:
-     * meseros, limpieza, seguridades, barra (u otros)
+     * Categoriza al trabajador en uno de los 4 grupos principales oficiales:
+     * 1. Seguridad, 2. Barra, 3. Mozos, 4. Limpieza
      */
     public function getRoleCategory(): string
     {
@@ -84,11 +84,7 @@ class Staff extends Model
         $bar = mb_strtolower(trim($this->assigned_bar ?? ''));
 
         if (str_contains($role, 'seguridad') || str_contains($name, '(s)') || str_contains($bar, 'seguridad')) {
-            return 'seguridades';
-        }
-
-        if (str_contains($role, 'limpieza')) {
-            return 'limpieza';
+            return 'seguridad';
         }
 
         if (str_contains($role, 'bartender') || str_contains($role, 'barra') || str_contains($bar, 'barra')) {
@@ -96,9 +92,31 @@ class Staff extends Model
         }
 
         if (str_contains($role, 'mozo') || str_contains($role, 'meser') || str_contains($role, 'staff') || str_contains($bar, 'pista')) {
-            return 'meseros';
+            return 'mozos';
         }
 
-        return 'meseros';
+        if (str_contains($role, 'limpieza')) {
+            return 'limpieza';
+        }
+
+        return 'mozos';
+    }
+
+    /**
+     * Retorna el número de orden oficial para agrupar y ordenar al personal:
+     * 1. Seguridad
+     * 2. Barra
+     * 3. Mozos
+     * 4. Limpieza
+     */
+    public function getRoleCategoryRank(): int
+    {
+        return match($this->getRoleCategory()) {
+            'seguridad' => 1,
+            'barra' => 2,
+            'mozos' => 3,
+            'limpieza' => 4,
+            default => 5,
+        };
     }
 }

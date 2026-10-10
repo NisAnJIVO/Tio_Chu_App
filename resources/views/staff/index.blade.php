@@ -3,24 +3,51 @@
 @section('title', 'Personal y Turnos')
 
 @section('content')
-<div class="space-y-6 max-w-7xl mx-auto pb-10">
+<div class="space-y-5 max-w-7xl mx-auto pb-10">
 
     <!-- ==========================================
          CABECERA (iOS PURE DARK - SIN RELLENO DE IA)
          ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-3.5 sm:px-5 sm:py-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
-        <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C] shrink-0">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 p-3.5 sm:px-5 sm:py-4 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 flex items-center justify-center text-[#F5B81C] shrink-0">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
+                    Personal y Turnos
+                </h1>
             </div>
-            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
-                Personal y Turnos
-            </h1>
+
+            @if($activeSession)
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-zinc-950 border border-zinc-800">
+                    <span class="w-2 h-2 rounded-full {{ $activeSession->isOpen() ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-600' }}"></span>
+                    <span class="text-[11px] font-black uppercase tracking-wider {{ $activeSession->isOpen() ? 'text-zinc-200' : 'text-zinc-500' }}">
+                        {{ $activeSession->isOpen() ? 'En Vivo' : 'Cerrada' }}
+                    </span>
+                    <span class="text-zinc-600">•</span>
+                    <span class="text-xs font-bold text-white uppercase">{{ $activeSession->day_name }}</span>
+                    <span class="font-mono text-zinc-400 text-xs">{{ \Carbon\Carbon::parse($activeSession->session_date)->format('d/m/Y') }}</span>
+                </div>
+            @endif
         </div>
 
-        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            @if($activeSession && $activeSession->isOpen())
+                <button type="button" onclick="openShiftSelectorModal()"
+                        class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-[#F5B81C] hover:brightness-110 text-black text-xs sm:text-sm font-black rounded-xl transition-all shadow-md cursor-pointer active:scale-95 text-center">
+                    <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    <span>Seleccionar Personal de Turno</span>
+                    <span id="header-shift-count-badge" class="px-2 py-0.5 rounded-full bg-black/20 text-black font-mono text-xs font-black">
+                        {{ count($currentSessionStaffIds) }}
+                    </span>
+                </button>
+            @endif
+
             <a href="{{ route('staffPayments.index') }}" 
                class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center">
                 <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,9 +67,17 @@
         </div>
     </div>
 
-    <!-- Pestañas por Día: iOS Segmented Control Responsivo -->
+    <!-- Pestañas por Día: iOS Segmented Control Responsivo (Incluye días extraordinarios como Jueves) -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div class="grid grid-cols-2 sm:grid-cols-4 sm:inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-2xl gap-1 text-xs sm:text-sm font-sans w-full sm:w-auto">
+        <div class="flex flex-wrap sm:inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-2xl gap-1 text-xs sm:text-sm font-sans w-full sm:w-auto">
+            @if($isExtraDay && $extraDayKey)
+                <a href="{{ route('staff.index', ['day' => $extraDayKey]) }}" 
+                   class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === $extraDayKey ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
+                    {{ $extraDayName }} <span class="ml-1 text-xs {{ $currentDay === $extraDayKey ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countExtra }})</span>
+                </a>
+            @endif
+
             <a href="{{ route('staff.index', ['day' => 'viernes']) }}" 
                class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'viernes' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Viernes <span class="ml-1 text-xs {{ $currentDay === 'viernes' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countViernes }})</span>
@@ -87,8 +122,39 @@
         </div>
     </div>
 
+    <!-- Filtros de Rol Oficiales de Don Ludo (1. Seguridad, 2. Barra, 3. Mozos, 4. Limpieza) -->
+    <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
+        <button type="button" onclick="filterByRole('all')" id="role-pill-all" class="role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer">
+            Todos ({{ $staffMembers->count() }})
+        </button>
+        <button type="button" onclick="filterByRole('seguridad')" id="role-pill-seguridad" class="role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+            1. Seguridad ({{ $staffMembers->filter(fn($m) => $m->getRoleCategory() === 'seguridad')->count() }})
+        </button>
+        <button type="button" onclick="filterByRole('barra')" id="role-pill-barra" class="role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+            2. Barra ({{ $staffMembers->filter(fn($m) => $m->getRoleCategory() === 'barra')->count() }})
+        </button>
+        <button type="button" onclick="filterByRole('mozos')" id="role-pill-mozos" class="role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+            3. Mozos ({{ $staffMembers->filter(fn($m) => $m->getRoleCategory() === 'mozos')->count() }})
+        </button>
+        <button type="button" onclick="filterByRole('limpieza')" id="role-pill-limpieza" class="role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+            4. Limpieza ({{ $staffMembers->filter(fn($m) => $m->getRoleCategory() === 'limpieza')->count() }})
+        </button>
+    </div>
+
     <!-- Tabla Minimalista de Personal (Fuente Sans Oficial - Ancho Fijo Bloqueado) -->
-    <div class="rounded-2xl border border-zinc-800/80 bg-[#09090b] overflow-hidden shadow-xl font-sans min-h-[540px]">
+    <div class="rounded-2xl border border-zinc-800/80 bg-[#09090b] overflow-hidden shadow-xl font-sans min-h-[480px]">
+        @php
+            $catLabels = [
+                1 => '1. SEGURIDAD',
+                2 => '2. BARRA',
+                3 => '3. MOZOS / MESEROS',
+                4 => '4. LIMPIEZA',
+                5 => '5. OTROS',
+            ];
+            $lastRankMobile = null;
+            $lastRankDesktop = null;
+        @endphp
+
         <!-- VISTA DE TARJETAS PARA CELULAR (md:hidden) -->
         <div class="md:hidden divide-y divide-zinc-800/80">
             @forelse($staffMembers as $index => $member)
@@ -97,12 +163,35 @@
                         'viernes' => $member->getPayForDay('Viernes'),
                         'sabado' => $member->getPayForDay('Sábado'),
                         'domingo' => $member->getPayForDay('Domingo'),
-                        default => $member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0,
+                        default => ($activeSession && $this->normalizeDay($activeSession->day_name) === $currentDay)
+                            ? $member->getPayForDay($activeSession->day_name)
+                            : ($member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0),
                     };
                     $displayRole = str_ireplace(['Staff / ', 'Staff/', ' (S)', '(S)', 'mozo', 'mozos'], ['', '', '', '', 'MESERO', 'MESEROS'], $member->role);
                     $displayBar = str_ireplace(['Pista / Mozos', 'Pista o mozos', 'Pista', 'Seguridad / Puerta'], ['Meseros', 'Meseros', 'Meseros', 'Seguridad'], $member->assigned_bar ?? 'General');
+                    $memberCat = $member->getRoleCategory();
+                    $memberRank = $member->getRoleCategoryRank();
                 @endphp
-                <div class="p-3.5 space-y-2.5 staff-table-row hover:bg-zinc-900/30 transition-colors" data-name="{{ strtolower($member->name) }}" data-role="{{ strtolower($displayRole) }}" data-bar="{{ strtolower($displayBar) }}">
+
+                @if($memberRank !== $lastRankMobile)
+                    @php $lastRankMobile = $memberRank; @endphp
+                    <div class="category-divider-header px-4 py-2 bg-zinc-950 border-y border-zinc-800/80 flex items-center justify-between text-zinc-300 font-mono text-[11px] font-black uppercase tracking-wider" data-category="{{ $memberCat }}">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
+                            <span class="text-white">{{ $catLabels[$memberRank] ?? 'PERSONAL' }}</span>
+                        </div>
+                        <span class="text-zinc-500 font-mono text-[10px]">
+                            {{ $staffMembers->filter(fn($m) => $m->getRoleCategoryRank() === $memberRank)->count() }} pers.
+                        </span>
+                    </div>
+                @endif
+
+                <div class="p-3.5 space-y-2.5 staff-table-row hover:bg-zinc-900/30 transition-colors" 
+                     data-name="{{ strtolower($member->name) }}" 
+                     data-role="{{ strtolower($displayRole) }}" 
+                     data-bar="{{ strtolower($displayBar) }}"
+                     data-category="{{ $memberCat }}"
+                     data-rank="{{ $memberRank }}">
                     <div class="flex items-start justify-between gap-2">
                         <div>
                             <span class="text-xs text-zinc-500 font-mono font-bold mr-1">#{{ $index + 1 }}</span>
@@ -160,9 +249,25 @@
                     </div>
                 </div>
             @empty
-                <div class="p-8 text-center text-zinc-500 font-sans text-xs">
-                    No hay personal activo registrado para este turno.
-                </div>
+                @if($isExtraDay && $currentDay === $extraDayKey && $activeSession && $activeSession->isOpen())
+                    <div class="p-8 text-center space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 mx-auto flex items-center justify-center text-[#F5B81C]">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-sm font-bold text-white uppercase">Turno de {{ $extraDayName }} sin personal asignado</h3>
+                        <p class="text-xs text-zinc-400 max-w-xs mx-auto">Selecciona de la lista quiénes trabajarán en este turno extraordinario.</p>
+                        <button type="button" onclick="openShiftSelectorModal()"
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-[#F5B81C] text-black text-xs font-black rounded-xl cursor-pointer shadow-md">
+                            <span>Seleccionar Personal de Turno</span>
+                        </button>
+                    </div>
+                @else
+                    <div class="p-8 text-center text-zinc-500 font-sans text-xs">
+                        No hay personal activo registrado para este turno.
+                    </div>
+                @endif
             @endforelse
         </div>
 
@@ -187,12 +292,39 @@
                                 'viernes' => $member->getPayForDay('Viernes'),
                                 'sabado' => $member->getPayForDay('Sábado'),
                                 'domingo' => $member->getPayForDay('Domingo'),
-                                default => $member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0,
+                                default => ($activeSession && $this->normalizeDay($activeSession->day_name) === $currentDay)
+                                    ? $member->getPayForDay($activeSession->day_name)
+                                    : ($member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0),
                             };
                             $displayRole = str_ireplace(['Staff / ', 'Staff/', ' (S)', '(S)', 'mozo', 'mozos'], ['', '', '', '', 'MESERO', 'MESEROS'], $member->role);
                             $displayBar = str_ireplace(['Pista / Mozos', 'Pista o mozos', 'Pista', 'Seguridad / Puerta'], ['Meseros', 'Meseros', 'Meseros', 'Seguridad'], $member->assigned_bar ?? 'General');
+                            $memberCat = $member->getRoleCategory();
+                            $memberRank = $member->getRoleCategoryRank();
                         @endphp
-                        <tr class="hover:bg-zinc-900/40 transition-colors staff-table-row" data-name="{{ strtolower($member->name) }}" data-role="{{ strtolower($displayRole) }}" data-bar="{{ strtolower($displayBar) }}">
+
+                        @if($memberRank !== $lastRankDesktop)
+                            @php $lastRankDesktop = $memberRank; @endphp
+                            <tr class="category-divider-header bg-zinc-950/90 border-y border-zinc-800/80 text-zinc-300 font-mono text-[11px] font-black uppercase tracking-wider" data-category="{{ $memberCat }}">
+                                <td colspan="7" class="px-4 py-2">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
+                                            <span class="text-white">{{ $catLabels[$memberRank] ?? 'PERSONAL' }}</span>
+                                        </div>
+                                        <span class="text-zinc-500 font-mono text-[10px]">
+                                            {{ $staffMembers->filter(fn($m) => $m->getRoleCategoryRank() === $memberRank)->count() }} trabajadores
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+
+                        <tr class="hover:bg-zinc-900/40 transition-colors staff-table-row" 
+                            data-name="{{ strtolower($member->name) }}" 
+                            data-role="{{ strtolower($displayRole) }}" 
+                            data-bar="{{ strtolower($displayBar) }}"
+                            data-category="{{ $memberCat }}"
+                            data-rank="{{ $memberRank }}">
                             <td class="px-3 py-3 text-center text-zinc-500 font-mono font-bold">{{ $index + 1 }}</td>
                             
                             <!-- Nombre + Turnos programados -->
@@ -273,13 +405,32 @@
                     @empty
                         <tr>
                             <td colspan="7" class="px-4 py-12 text-center text-zinc-500 font-sans">
-                                No hay personal activo registrado para este turno.
+                                @if($isExtraDay && $currentDay === $extraDayKey && $activeSession && $activeSession->isOpen())
+                                    <div class="space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-[#F5B81C]/10 border border-[#F5B81C]/30 mx-auto flex items-center justify-center text-[#F5B81C]">
+                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-base font-bold text-white uppercase tracking-tight">Turno de {{ $extraDayName }} sin personal asignado</h3>
+                                        <p class="text-xs text-zinc-400 max-w-md mx-auto">Esta noche extraordinaria comienza sin personal predeterminado. Selecciona qué integrantes trabajarán hoy en el local.</p>
+                                        <button type="button" onclick="openShiftSelectorModal()"
+                                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
+                                            <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                            </svg>
+                                            <span>Seleccionar Personal de Turno Ahora</span>
+                                        </button>
+                                    </div>
+                                @else
+                                    No hay personal activo registrado para este turno.
+                                @endif
                             </td>
                         </tr>
                     @endforelse
                     <tr id="staff-search-empty" class="hidden">
                         <td colspan="7" class="px-4 py-12 text-center text-zinc-500 font-sans">
-                            No se encontró ningún integrante que coincida con la búsqueda.
+                            No se encontró ningún integrante que coincida con la búsqueda o filtro seleccionado.
                         </td>
                     </tr>
                 </tbody>
@@ -587,7 +738,178 @@
     </form>
 </div>
 
+<!-- ========================================================
+     MODAL DE SELECCIÓN DE PERSONAL DE TURNO (TAREA 2 & 3)
+     ======================================================== -->
+<div id="shift-selector-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md transition-opacity duration-200">
+    <div class="bg-[#09090b] border border-zinc-800 rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden font-sans">
+        
+        <!-- Modal Header -->
+        <div class="p-4 sm:p-5 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/60 shrink-0">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C] animate-pulse"></span>
+                    <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-tight">
+                        Seleccionar Personal de Turno
+                    </h2>
+                </div>
+                <p class="text-xs text-zinc-400 mt-0.5">
+                    @if($activeSession)
+                        Noche: <span class="text-white font-bold uppercase">{{ $activeSession->day_name }}</span>
+                        ({{ \Carbon\Carbon::parse($activeSession->session_date)->format('d/m/Y') }})
+                    @else
+                        Turno Extraordinario
+                    @endif
+                    — Marca o desmarca quiénes trabajarán hoy.
+                </p>
+            </div>
+            <button type="button" onclick="closeShiftSelectorModal()" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-lg leading-none cursor-pointer transition-colors">
+                &times;
+            </button>
+        </div>
+
+        <!-- Toolbar: Buscador, Filtros por Rol y Acciones de Selección -->
+        <div class="p-3 sm:p-4 border-b border-zinc-800/80 bg-zinc-950/40 space-y-3 shrink-0">
+            <div class="flex flex-col sm:flex-row items-center gap-2.5">
+                <!-- Buscador instantáneo -->
+                <div class="relative w-full sm:flex-1">
+                    <svg class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" id="shift-modal-search" oninput="filterModalCards(this.value)" placeholder="Buscar trabajador por nombre o cargo..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C] transition-all">
+                </div>
+
+                <!-- Botones Selección Rápida -->
+                <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                    <button type="button" onclick="toggleAllModalCheckboxes(true)" class="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold transition-all cursor-pointer">
+                        Marcar Visibles
+                    </button>
+                    <button type="button" onclick="toggleAllModalCheckboxes(false)" class="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold transition-all cursor-pointer">
+                        Desmarcar Todos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros de Rol Oficiales (Tarea 3) -->
+            <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
+                <button type="button" onclick="filterModalByRole('all')" id="modal-role-pill-all" class="modal-role-pill px-3 py-1 rounded-lg border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer">
+                    Todos ({{ $allActiveStaff->count() }})
+                </button>
+                <button type="button" onclick="filterModalByRole('seguridad')" id="modal-role-pill-seguridad" class="modal-role-pill px-3 py-1 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer">
+                    1. Seguridad ({{ $allActiveStaff->filter(fn($m) => $m->getRoleCategory() === 'seguridad')->count() }})
+                </button>
+                <button type="button" onclick="filterModalByRole('barra')" id="modal-role-pill-barra" class="modal-role-pill px-3 py-1 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer">
+                    2. Barra ({{ $allActiveStaff->filter(fn($m) => $m->getRoleCategory() === 'barra')->count() }})
+                </button>
+                <button type="button" onclick="filterModalByRole('mozos')" id="modal-role-pill-mozos" class="modal-role-pill px-3 py-1 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer">
+                    3. Mozos ({{ $allActiveStaff->filter(fn($m) => $m->getRoleCategory() === 'mozos')->count() }})
+                </button>
+                <button type="button" onclick="filterModalByRole('limpieza')" id="modal-role-pill-limpieza" class="modal-role-pill px-3 py-1 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer">
+                    4. Limpieza ({{ $allActiveStaff->filter(fn($m) => $m->getRoleCategory() === 'limpieza')->count() }})
+                </button>
+            </div>
+        </div>
+
+        <!-- Tarjetas Compactas del Personal (Scrollable) -->
+        <div class="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-4 max-h-[58vh]" id="shift-modal-cards-container">
+            @php
+                $modalLastRank = null;
+            @endphp
+            @foreach($allActiveStaff as $member)
+                @php
+                    $isChecked = in_array($member->id, $currentSessionStaffIds);
+                    $pay = $activeSession ? $member->getPayForDay($activeSession->day_name) : $member->default_pay;
+                    $cat = $member->getRoleCategory();
+                    $rank = $member->getRoleCategoryRank();
+                @endphp
+
+                @if($rank !== $modalLastRank)
+                    @php $modalLastRank = $rank; @endphp
+                    @if(!$loop->first)
+                        </div>
+                    </div>
+                    @endif
+                    <div class="modal-cat-section pt-1" data-category="{{ $cat }}">
+                        <div class="flex items-center gap-2 mb-2 px-1 text-zinc-400 font-mono text-[11px] font-black uppercase tracking-wider">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
+                            <span>{{ $catLabels[$rank] ?? 'PERSONAL' }}</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                @endif
+
+                <label class="modal-staff-card group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none {{ $isChecked ? 'bg-[#F5B81C]/10 border-[#F5B81C]/60 text-white' : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 text-zinc-300' }}"
+                       data-id="{{ $member->id }}"
+                       data-name="{{ strtolower($member->name) }}"
+                       data-role="{{ strtolower($member->role) }}"
+                       data-category="{{ $cat }}"
+                       data-pay="{{ (float)$pay }}">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <input type="checkbox" 
+                               name="shift_staff_ids[]" 
+                               value="{{ $member->id }}" 
+                               {{ $isChecked ? 'checked' : '' }} 
+                               onchange="onModalCheckboxChange(this)"
+                               class="shift-checkbox w-4.5 h-4.5 rounded border-zinc-700 bg-zinc-900 text-[#F5B81C] accent-[#F5B81C] cursor-pointer shrink-0">
+                        <div class="min-w-0">
+                            <div class="font-bold text-xs sm:text-sm uppercase tracking-tight truncate group-hover:text-white">{{ $member->name }}</div>
+                            <div class="flex items-center gap-1.5 mt-0.5 text-[10px]">
+                                <span class="px-1.5 py-0.2 rounded font-mono font-bold uppercase bg-zinc-900 border border-zinc-800 text-zinc-400">
+                                    {{ strtoupper($cat) }}
+                                </span>
+                                <span class="text-zinc-500 truncate">• {{ $member->assigned_bar ?? 'General' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0 pl-2">
+                        <span class="font-mono font-black text-xs sm:text-sm text-[#F5B81C]">
+                            Bs. {{ number_format($pay, 0) }}
+                        </span>
+                    </div>
+                </label>
+
+                @if($loop->last)
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+
+        <!-- Sticky Footer con Contadores y Guardado -->
+        <div class="p-3.5 sm:p-4 border-t border-zinc-800/80 bg-zinc-950 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+            <div class="flex items-center gap-3 text-xs sm:text-sm font-sans w-full sm:w-auto">
+                <span class="text-zinc-400">
+                    Seleccionados: <span id="shift-modal-selected-count" class="text-white font-mono font-bold text-base">0</span> de {{ $allActiveStaff->count() }}
+                </span>
+                <span class="text-zinc-600">•</span>
+                <span class="text-zinc-400">
+                    Planilla: <span class="text-[#F5B81C] font-mono font-black text-base">Bs. <span id="shift-modal-total-pay">0.00</span></span>
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" onclick="closeShiftSelectorModal()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer">
+                    Cancelar
+                </button>
+                <button type="button" id="btn-save-shift" onclick="saveShiftAttendance()" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2">
+                    <span id="btn-save-shift-text">Guardar Personal de Turno</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- TOAST FLOTANTE MINIMALISTA iOS -->
+<div id="staff-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[130] flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-zinc-950/95 border border-zinc-700/80 shadow-2xl backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 font-sans text-xs">
+    <span id="staff-toast-dot" class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
+    <span id="staff-toast-text" class="text-white font-medium"></span>
+</div>
+
 <script>
+    let currentRoleFilter = 'all';
+    let modalRoleFilter = 'all';
+
     function openCreateStaffDrawer() {
         document.getElementById('staff-drawer-overlay').classList.add('is-open');
         document.getElementById('drawer-create-staff').classList.add('is-open');
@@ -654,23 +976,62 @@
         }
     }
 
-    function filterStaffTable(query) {
-        const q = (query || '').toLowerCase().trim();
-        const rows = document.querySelectorAll('.staff-table-row');
-        const clearBtn = document.getElementById('clear-staff-search');
-        let visibleCount = 0;
+    /* --- FILTROS DE ROL (1. SEGURIDAD, 2. BARRA, 3. MOZOS, 4. LIMPIEZA) --- */
+    function filterByRole(role) {
+        currentRoleFilter = role;
+        
+        document.querySelectorAll('.role-pill').forEach(btn => {
+            btn.className = 'role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer';
+        });
+        const activeBtn = document.getElementById('role-pill-' + role);
+        if (activeBtn) {
+            activeBtn.className = 'role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer';
+        }
 
+        applyStaffFilters();
+    }
+
+    function filterStaffTable(query) {
+        applyStaffFilters();
+    }
+
+    function applyStaffFilters() {
+        const q = (document.getElementById('staff-search-input')?.value || '').toLowerCase().trim();
+        const clearBtn = document.getElementById('clear-staff-search');
         if (clearBtn) {
             clearBtn.classList.toggle('hidden', q.length === 0);
         }
+
+        const rows = document.querySelectorAll('.staff-table-row');
+        let visibleCount = 0;
+        const visibleCategories = new Set();
 
         rows.forEach(row => {
             const name = row.getAttribute('data-name') || '';
             const role = row.getAttribute('data-role') || '';
             const bar = row.getAttribute('data-bar') || '';
-            const match = !q || name.includes(q) || role.includes(q) || bar.includes(q);
-            row.style.display = match ? '' : 'none';
-            if (match) visibleCount++;
+            const cat = row.getAttribute('data-category') || '';
+
+            const matchesQuery = !q || name.includes(q) || role.includes(q) || bar.includes(q);
+            const matchesRole = (currentRoleFilter === 'all') || (cat === currentRoleFilter);
+
+            const isVisible = matchesQuery && matchesRole;
+            row.style.display = isVisible ? '' : 'none';
+
+            if (isVisible) {
+                visibleCount++;
+                visibleCategories.add(cat);
+            }
+        });
+
+        // Mostrar u ocultar cabeceras de categorías según coincidencia
+        document.querySelectorAll('.category-divider-header').forEach(header => {
+            const cat = header.getAttribute('data-category');
+            if (currentRoleFilter === 'all') {
+                header.style.display = visibleCategories.has(cat) ? '' : 'none';
+            } else {
+                header.style.display = (cat === currentRoleFilter && visibleCategories.has(cat)) ? '' : 'none';
+            }
         });
 
         const emptyRow = document.getElementById('staff-search-empty');
@@ -688,16 +1049,198 @@
         const input = document.getElementById('staff-search-input');
         if (input) {
             input.value = '';
-            filterStaffTable('');
+            applyStaffFilters();
             input.focus();
         }
+    }
+
+    /* --- MODAL SELECCIONAR PERSONAL DE TURNO (TAREA 2) --- */
+    function openShiftSelectorModal() {
+        const modal = document.getElementById('shift-selector-modal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        recalculateModalStats();
+        setTimeout(() => {
+            document.getElementById('shift-modal-search')?.focus();
+        }, 120);
+    }
+
+    function closeShiftSelectorModal() {
+        const modal = document.getElementById('shift-selector-modal');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function onModalCheckboxChange(cb) {
+        const card = cb.closest('.modal-staff-card');
+        if (card) {
+            if (cb.checked) {
+                card.classList.remove('bg-zinc-950', 'border-zinc-800/80', 'text-zinc-300');
+                card.classList.add('bg-[#F5B81C]/10', 'border-[#F5B81C]/60', 'text-white');
+            } else {
+                card.classList.remove('bg-[#F5B81C]/10', 'border-[#F5B81C]/60', 'text-white');
+                card.classList.add('bg-zinc-950', 'border-zinc-800/80', 'text-zinc-300');
+            }
+        }
+        recalculateModalStats();
+    }
+
+    function recalculateModalStats() {
+        let count = 0;
+        let totalPay = 0;
+        document.querySelectorAll('.modal-staff-card').forEach(card => {
+            const cb = card.querySelector('.shift-checkbox');
+            if (cb && cb.checked) {
+                count++;
+                totalPay += parseFloat(card.getAttribute('data-pay') || 0);
+            }
+        });
+        const cntEl = document.getElementById('shift-modal-selected-count');
+        const payEl = document.getElementById('shift-modal-total-pay');
+        if (cntEl) cntEl.textContent = count;
+        if (payEl) payEl.textContent = totalPay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function filterModalByRole(role) {
+        modalRoleFilter = role;
+        document.querySelectorAll('.modal-role-pill').forEach(btn => {
+            btn.className = 'modal-role-pill px-3 py-1 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white transition-all cursor-pointer';
+        });
+        const activeBtn = document.getElementById('modal-role-pill-' + role);
+        if (activeBtn) {
+            activeBtn.className = 'modal-role-pill px-3 py-1 rounded-lg border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer';
+        }
+        applyModalFilters();
+    }
+
+    function filterModalCards(query) {
+        applyModalFilters();
+    }
+
+    function applyModalFilters() {
+        const q = (document.getElementById('shift-modal-search')?.value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.modal-staff-card');
+        const visibleCats = new Set();
+
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name') || '';
+            const role = card.getAttribute('data-role') || '';
+            const cat = card.getAttribute('data-category') || '';
+
+            const matchesQuery = !q || name.includes(q) || role.includes(q);
+            const matchesRole = (modalRoleFilter === 'all') || (cat === modalRoleFilter);
+            const isVisible = matchesQuery && matchesRole;
+
+            card.style.display = isVisible ? '' : 'none';
+            if (isVisible) {
+                visibleCats.add(cat);
+            }
+        });
+
+        document.querySelectorAll('.modal-cat-section').forEach(section => {
+            const cat = section.getAttribute('data-category');
+            if (modalRoleFilter === 'all') {
+                section.style.display = visibleCats.has(cat) ? '' : 'none';
+            } else {
+                section.style.display = (cat === modalRoleFilter && visibleCats.has(cat)) ? '' : 'none';
+            }
+        });
+    }
+
+    function toggleAllModalCheckboxes(state) {
+        document.querySelectorAll('.modal-staff-card').forEach(card => {
+            if (card.style.display !== 'none') {
+                const cb = card.querySelector('.shift-checkbox');
+                if (cb) {
+                    cb.checked = state;
+                    onModalCheckboxChange(cb);
+                }
+            }
+        });
+    }
+
+    async function saveShiftAttendance() {
+        const btn = document.getElementById('btn-save-shift');
+        const btnText = document.getElementById('btn-save-shift-text');
+        const sessionId = {{ $activeSession ? $activeSession->id : 'null' }};
+
+        if (!sessionId) {
+            showToast('No hay una noche activa para sincronizar turnos', 'error');
+            return;
+        }
+
+        const checkedBoxes = document.querySelectorAll('#shift-selector-modal .shift-checkbox:checked');
+        const selectedIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+        btn.disabled = true;
+        btnText.textContent = 'Guardando...';
+
+        try {
+            const res = await fetch('{{ route("staff.syncAttendance") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    staff_ids: selectedIds
+                })
+            });
+
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showToast(data.message || 'Turno guardado con éxito');
+                closeShiftSelectorModal();
+                const badge = document.getElementById('header-shift-count-badge');
+                if (badge) badge.textContent = data.count;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                showToast(data.message || 'Error al guardar el turno', 'error');
+            }
+        } catch(e) {
+            showToast('Error de red al sincronizar personal', 'error');
+        } finally {
+            btn.disabled = false;
+            btnText.textContent = 'Guardar Personal de Turno';
+        }
+    }
+
+    function showToast(text, type = 'success') {
+        const toast = document.getElementById('staff-toast');
+        const toastText = document.getElementById('staff-toast-text');
+        const toastDot = document.getElementById('staff-toast-dot');
+        if (!toast || !toastText) return;
+
+        toastText.innerHTML = text;
+        if (toastDot) {
+            toastDot.className = type === 'error' ? 'w-2 h-2 rounded-full bg-rose-500' : 'w-2 h-2 rounded-full bg-[#F5B81C]';
+        }
+        toast.classList.remove('opacity-0', 'pointer-events-none');
+        toast.classList.add('opacity-100');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0', 'pointer-events-none');
+        }, 2600);
     }
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeStaffDrawer();
+            closeShiftSelectorModal();
             clearStaffSearch();
         }
+    });
+
+    // Inicializar contadores del modal
+    document.addEventListener('DOMContentLoaded', function() {
+        recalculateModalStats();
     });
 </script>
 @endsection
