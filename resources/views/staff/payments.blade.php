@@ -3,6 +3,79 @@
 @section('title', 'Pagos al Personal')
 
 @section('content')
+
+<style>
+@media print {
+    #main-sidebar, header, nav, .print-hide,
+    button, #wage-batch-drawer, #wage-batch-drawer-overlay,
+    #payroll-toast, a, .payroll-role-pill,
+    .no-print, [type="button"], input[type="checkbox"],
+    .sticky {
+        display: none !important;
+    }
+    body, main, .max-w-7xl {
+        background: #ffffff !important;
+        color: #000000 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .payroll-cat-divider {
+        background: #f3f4f6 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
+    table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+    thead {
+        display: table-header-group !important;
+    }
+    tbody {
+        display: table-row-group !important;
+    }
+    tr.payroll-table-row {
+        display: table-row !important;
+        background: #ffffff !important;
+        border: none !important;
+    }
+    td {
+        display: table-cell !important;
+        border: 1px solid #d1d5db !important;
+        padding: 6px 10px !important;
+        color: #000000 !important;
+    }
+    th {
+        border: 1px solid #d1d5db !important;
+        padding: 6px 10px !important;
+        background: #f3f4f6 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
+    .pay-amount-input {
+        border: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        font-size: 13px !important;
+        text-align: right !important;
+        padding: 0 !important;
+    }
+    .text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400 {
+        color: #000000 !important;
+    }
+    .text-\[\#F5B81C\] {
+        color: #000000 !important;
+    }
+}
+</style>
+
 <div class="space-y-5 max-w-7xl mx-auto pb-10 w-full min-w-0 max-w-full overflow-x-hidden">
 
     <!-- ==========================================
@@ -59,6 +132,15 @@
         </div>
 
         <div class="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
+            @if($session)
+                <button type="button" onclick="window.print()" 
+                        class="w-full sm:w-auto justify-center px-3.5 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-xs sm:text-sm font-bold text-zinc-300 hover:text-white transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
+                    <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    <span>Imprimir Planilla</span>
+                </button>
+            @endif
             <a href="{{ route('paymentHistory.index', $session ? ['session_id' => $session->id] : []) }}" 
                class="w-full sm:w-auto justify-center px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-xs sm:text-sm font-bold text-zinc-200 hover:text-white transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
                 <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -69,6 +151,23 @@
             </a>
         </div>
     </div>
+
+    @if($session)
+        <!-- CABECERA EXCLUSIVA PARA IMPRESIÓN (OCULTA EN PANTALLA) -->
+        <div class="hidden print-only text-center pb-4 mb-4 border-b-2 border-black font-sans">
+            <h1 class="text-2xl font-black uppercase tracking-tight text-black">DISCOTECA TÍO CHU</h1>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-700 mt-0.5">PLANILLA OFICIAL DE PAGOS AL PERSONAL</h2>
+            <div class="flex items-center justify-center gap-3 text-xs text-zinc-600 mt-1">
+                <span>Noche: <strong class="uppercase text-black">{{ $session->day_name }} ({{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }})</strong></span>
+                <span>•</span>
+                <span>Personal: <strong class="text-black">{{ $attendances->count() }} integrantes</strong></span>
+                <span>•</span>
+                <span>Total: <strong class="text-black">Bs. {{ number_format($totalPlanilla, 2) }}</strong></span>
+                <span>•</span>
+                <span>Pagado: <strong class="text-black">Bs. {{ number_format($totalPagado, 2) }}</strong></span>
+            </div>
+        </div>
+    @endif
 
     @if(!$session)
         <div class="rounded-2xl p-8 sm:p-12 text-center shadow-xl bg-[#09090b] border border-zinc-800/80">
@@ -205,6 +304,25 @@
             </div>
         </div>
 
+        <!-- Filtros de Rol Oficiales de Don Ludo (1. Seguridad, 2. Barra, 3. Mozos, 4. Limpieza) -->
+        <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
+            <button type="button" onclick="filterPayrollByRole('all')" id="payroll-role-pill-all" class="payroll-role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer">
+                Todos ({{ $attendances->count() }})
+            </button>
+            <button type="button" onclick="filterPayrollByRole('seguridad')" id="payroll-role-pill-seguridad" class="payroll-role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+                1. Seguridad ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'seguridad')->count() }})
+            </button>
+            <button type="button" onclick="filterPayrollByRole('barra')" id="payroll-role-pill-barra" class="payroll-role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+                2. Barra ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'barra')->count() }})
+            </button>
+            <button type="button" onclick="filterPayrollByRole('mozos')" id="payroll-role-pill-mozos" class="payroll-role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+                3. Mozos ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'mozos')->count() }})
+            </button>
+            <button type="button" onclick="filterPayrollByRole('limpieza')" id="payroll-role-pill-limpieza" class="payroll-role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer">
+                4. Limpieza ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'limpieza')->count() }})
+            </button>
+        </div>
+
         <!-- ==========================================
              TABLA DE PLANILLA OFICIAL (LETRAS GRANDES & CONTRAPUNTO)
              ========================================== -->
@@ -260,14 +378,45 @@
                             </tr>
                         </thead>
                         <tbody id="payroll-tbody" class="block md:table-row-group divide-y-0 md:divide-y md:divide-zinc-800/60 font-sans space-y-3 md:space-y-0">
+                            @php
+                                $payrollLastRank = null;
+                                $payrollCatNames = [
+                                    1 => '1. SEGURIDAD',
+                                    2 => '2. BARRA',
+                                    3 => '3. MOZOS / MESEROS',
+                                    4 => '4. LIMPIEZA',
+                                    5 => '5. OTROS',
+                                ];
+                            @endphp
                             @forelse($attendances as $index => $att)
                                 @php
                                     $roleName = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $att->staff->role ?? 'Staff');
+                                    $rank = $att->staff ? $att->staff->getRoleCategoryRank() : 5;
+                                    $cat = $att->staff ? $att->staff->getRoleCategory() : 'otros';
                                 @endphp
+
+                                @if($rank !== $payrollLastRank)
+                                    @php $payrollLastRank = $rank; @endphp
+                                    <tr class="payroll-cat-divider block md:table-row bg-zinc-950/90 border-y border-zinc-800/80 text-zinc-300 font-mono text-[11px] font-black uppercase tracking-wider" data-category="{{ $cat }}">
+                                        <td colspan="6" class="px-4 py-2 block md:table-cell">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
+                                                    <span class="text-white">{{ $payrollCatNames[$rank] ?? 'PERSONAL' }}</span>
+                                                </div>
+                                                <span class="text-zinc-500 font-mono text-[10px]">
+                                                    {{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategoryRank() === $rank)->count() }} pers.
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+
                                 <tr id="attendance-row-{{ $att->id }}" 
                                     class="payroll-table-row block md:table-row p-3.5 md:p-0 rounded-2xl md:rounded-none bg-zinc-950/80 md:bg-transparent border md:border-0 border-zinc-800/80 hover:bg-zinc-900/40 transition-colors shadow-sm md:shadow-none space-y-2.5 md:space-y-0" 
                                     data-name="{{ strtolower($att->staff->name) }}" 
-                                    data-role="{{ strtolower($roleName) }}">
+                                    data-role="{{ strtolower($roleName) }}"
+                                    data-category="{{ $cat }}">
                                     
                                     <td class="hidden md:table-cell px-4 py-3 text-center text-zinc-500 font-mono font-bold row-index">
                                         {{ $index + 1 }}
@@ -382,6 +531,20 @@
                 </div>
             </div>
         </form>
+
+        <!-- FIRMAS PARA REPORTE IMPRESO DE PLANILLA (OCULTO EN PANTALLA) -->
+        <div class="hidden print-only pt-10 mt-8 border-t border-black text-center text-xs font-sans">
+            <div class="grid grid-cols-2 gap-12">
+                <div>
+                    <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Cajero / Encargado de Pagos</div>
+                    <span class="text-[10px] text-zinc-600 block mt-0.5">Firma y Aclaración</span>
+                </div>
+                <div>
+                    <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Don Ludo / Gerencia</div>
+                    <span class="text-[10px] text-zinc-600 block mt-0.5">Visto Bueno y Aprobación</span>
+                </div>
+            </div>
+        </div>
 
     @endif
 
@@ -716,11 +879,30 @@
         }
     }
 
+    let payrollRoleFilter = 'all';
+
+    function filterPayrollByRole(role) {
+        payrollRoleFilter = role;
+        document.querySelectorAll('.payroll-role-pill').forEach(btn => {
+            btn.className = 'payroll-role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer';
+        });
+        const activeBtn = document.getElementById('payroll-role-pill-' + role);
+        if (activeBtn) {
+            activeBtn.className = 'payroll-role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer';
+        }
+        applyPayrollFilters();
+    }
+
     function filterPayrollTable(query) {
-        const q = (query || '').toLowerCase().trim();
+        applyPayrollFilters();
+    }
+
+    function applyPayrollFilters() {
+        const q = (document.getElementById('payroll-search-input')?.value || '').toLowerCase().trim();
         const rows = document.querySelectorAll('.payroll-table-row');
         const clearBtn = document.getElementById('clear-payroll-search');
         let visibleCount = 0;
+        const visibleCats = new Set();
 
         if (clearBtn) {
             clearBtn.classList.toggle('hidden', q.length === 0);
@@ -729,9 +911,22 @@
         rows.forEach(row => {
             const name = row.getAttribute('data-name') || '';
             const role = row.getAttribute('data-role') || '';
-            const match = !q || name.includes(q) || role.includes(q);
-            row.style.display = match ? '' : 'none';
-            if (match) visibleCount++;
+            const cat = row.getAttribute('data-category') || '';
+
+            const matchesQuery = !q || name.includes(q) || role.includes(q);
+            const matchesRole = (payrollRoleFilter === 'all') || (cat === payrollRoleFilter);
+            const isVisible = matchesQuery && matchesRole;
+
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) {
+                visibleCount++;
+                visibleCats.add(cat);
+            }
+        });
+
+        document.querySelectorAll('.payroll-cat-divider').forEach(divider => {
+            const cat = divider.getAttribute('data-category');
+            divider.style.display = visibleCats.has(cat) ? '' : 'none';
         });
 
         const emptyRow = document.getElementById('payroll-search-empty');
@@ -744,7 +939,7 @@
         const input = document.getElementById('payroll-search-input');
         if (input) {
             input.value = '';
-            filterPayrollTable('');
+            applyPayrollFilters();
             input.focus();
         }
     }

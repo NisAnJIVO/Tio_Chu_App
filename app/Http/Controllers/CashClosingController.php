@@ -32,7 +32,16 @@ class CashClosingController extends Controller
             $closing = $this->sessionService->recalculateClosing($session);
             $attendances = StaffAttendance::with('staff')
                 ->where('night_session_id', $session->id)
-                ->get();
+                ->get()
+                ->sort(function ($a, $b) {
+                    $rankA = $a->staff ? $a->staff->getRoleCategoryRank() : 5;
+                    $rankB = $b->staff ? $b->staff->getRoleCategoryRank() : 5;
+                    if ($rankA === $rankB) {
+                        return strcasecmp($a->staff->name ?? '', $b->staff->name ?? '');
+                    }
+                    return $rankA <=> $rankB;
+                })->values();
+
             $expenses = Expense::where('night_session_id', $session->id)
                 ->orderByDesc('id')
                 ->get();
@@ -40,8 +49,15 @@ class CashClosingController extends Controller
             $assignedStaffIds = $attendances->pluck('staff_id')->toArray();
             $availableStaff = Staff::where('is_active', true)
                 ->whereNotIn('id', $assignedStaffIds)
-                ->orderBy('name')
-                ->get();
+                ->get()
+                ->sort(function ($a, $b) {
+                    $rankA = $a->getRoleCategoryRank();
+                    $rankB = $b->getRoleCategoryRank();
+                    if ($rankA === $rankB) {
+                        return strcasecmp($a->name ?? '', $b->name ?? '');
+                    }
+                    return $rankA <=> $rankB;
+                })->values();
         }
 
         return view('closing.index', compact(

@@ -15,6 +15,50 @@
         -moz-appearance: textfield !important;
         appearance: textfield !important;
     }
+
+    @media print {
+        #main-sidebar, header, nav, .print-hide,
+        button, form, select,
+        #staff-drawer, #staff-drawer-backdrop {
+            display: none !important;
+        }
+
+        body, main, .max-w-7xl {
+            background: #ffffff !important;
+            color: #000000 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .print-only {
+            display: block !important;
+        }
+
+        .theme-card, .bg-zinc-950, .bg-\[\#09090b\] {
+            background: #ffffff !important;
+            border: 1px solid #e4e4e7 !important;
+            color: #000000 !important;
+            box-shadow: none !important;
+        }
+
+        .text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400 {
+            color: #18181b !important;
+        }
+
+        .text-\[\#F5B81C\] {
+            color: #b45309 !important;
+        }
+
+        .text-emerald-400 {
+            color: #047857 !important;
+        }
+
+        .text-rose-400 {
+            color: #b91c1c !important;
+        }
+    }
 </style>
 
 <div class="max-w-7xl mx-auto w-full space-y-4 pb-10">
@@ -76,9 +120,17 @@
             @endif
         </div>
 
-        <!-- Derecha: Botón Cerrar o Reabrir Noche -->
-        <div class="flex items-center gap-2.5 shrink-0">
+        <!-- Derecha: Botones Imprimir y Cerrar/Reabrir Noche -->
+        <div class="flex items-center gap-2 shrink-0">
             @if($session)
+                <button type="button" onclick="window.print()" 
+                        class="px-3.5 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95 flex items-center gap-2 shadow-sm">
+                    <svg class="w-4 h-4 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    <span>Imprimir Cierre</span>
+                </button>
+
                 @if($session->isOpen())
                     <form method="POST" action="{{ route('closing.close', $session) }}" onsubmit="return confirm('¿Seguro que deseas dar por cerrada esta noche de atención?');">
                         @csrf
@@ -113,6 +165,21 @@
         </div>
 
     </div>
+
+    @if($session)
+        <!-- CABECERA EXCLUSIVA PARA IMPRESIÓN (OCULTA EN PANTALLA) -->
+        <div class="hidden print-only text-center pb-4 mb-4 border-b-2 border-black font-sans">
+            <h1 class="text-2xl font-black uppercase tracking-tight text-black">DISCOTECA TÍO CHU</h1>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-700 mt-0.5">ACTA OFICIAL DE CIERRE DE CAJA</h2>
+            <div class="flex items-center justify-center gap-3 text-xs text-zinc-600 mt-1">
+                <span>Noche: <strong class="uppercase text-black">{{ $session->day_name }}</strong></span>
+                <span>•</span>
+                <span>Fecha: <strong class="text-black">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</strong></span>
+                <span>•</span>
+                <span>Estado: <strong class="text-black">{{ $session->isOpen() ? 'EN VIVO / ABIERTA' : 'CERRADA' }}</strong></span>
+            </div>
+        </div>
+    @endif
 
     @if(!$session)
         <!-- Estado Vacío -->
@@ -457,6 +524,22 @@
 
         </div>
 
+        @if($session)
+            <!-- FIRMAS PARA REPORTE IMPRESO (OCULTO EN PANTALLA) -->
+            <div class="hidden print-only pt-10 mt-8 border-t border-black text-center text-xs font-sans">
+                <div class="grid grid-cols-2 gap-12">
+                    <div>
+                        <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Cajero / Administrador</div>
+                        <span class="text-[10px] text-zinc-600 block mt-0.5">Firma y Aclaración</span>
+                    </div>
+                    <div>
+                        <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Don Ludo / Gerencia</div>
+                        <span class="text-[10px] text-zinc-600 block mt-0.5">Visto Bueno y Aprobación</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- ========================================================
              3. SLIDE-OVER DRAWER LATERAL: LISTA DE PERSONAL
              ======================================================== -->
@@ -505,12 +588,34 @@
                 </div>
             </div>
 
-            <!-- Lista de Trabajadores -->
+            <!-- Lista de Trabajadores Agrupados por Rol Oficial -->
             <div class="flex-1 overflow-y-auto p-5 space-y-2.5" id="drawer-staff-list">
+                @php
+                    $drawerLastRank = null;
+                    $drawerCatNames = [
+                        1 => '1. SEGURIDAD',
+                        2 => '2. BARRA',
+                        3 => '3. MOZOS / MESEROS',
+                        4 => '4. LIMPIEZA',
+                        5 => '5. OTROS',
+                    ];
+                @endphp
                 @forelse($attendances as $att)
                     @php
                         $workerRole = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $att->staff->role ?? 'Staff');
+                        $rank = $att->staff ? $att->staff->getRoleCategoryRank() : 5;
                     @endphp
+
+                    @if($rank !== $drawerLastRank)
+                        @php $drawerLastRank = $rank; @endphp
+                        <div class="px-2 py-1 mt-2.5 flex items-center justify-between text-zinc-400 font-mono text-[11px] font-black uppercase tracking-wider border-b border-zinc-800">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
+                                <span class="text-zinc-300">{{ $drawerCatNames[$rank] ?? 'PERSONAL' }}</span>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="drawer-staff-item p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between gap-3 hover:border-zinc-700 transition-colors"
                          data-search="{{ strtolower(($att->staff->name ?? '') . ' ' . $workerRole) }}">
                         <div class="flex items-center gap-3 min-w-0">

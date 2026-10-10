@@ -3,7 +3,72 @@
 @section('title', 'Personal y Turnos')
 
 @section('content')
+
+<style>
+@media print {
+    #main-sidebar, header, nav, .drawer-panel, .drawer-overlay,
+    #shift-selector-modal, #staff-toast, button, input,
+    .role-pill, a, [type="button"], .md\:hidden {
+        display: none !important;
+    }
+    body, main, .max-w-7xl {
+        background: #ffffff !important;
+        color: #000000 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .hidden.md\:block {
+        display: block !important;
+    }
+    table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+    th, td {
+        border: 1px solid #d1d5db !important;
+        padding: 6px 10px !important;
+        color: #000000 !important;
+    }
+    th {
+        background: #f3f4f6 !important;
+        font-weight: bold !important;
+    }
+    .category-divider-header {
+        background: #e5e7eb !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
+    .text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400 {
+        color: #000000 !important;
+    }
+    .text-\[\#F5B81C\] {
+        color: #000000 !important;
+    }
+}
+</style>
+
 <div class="space-y-5 max-w-7xl mx-auto pb-10">
+
+    <!-- CABECERA EXCLUSIVA PARA IMPRESIÓN (OCULTA EN PANTALLA) -->
+    <div class="hidden print-only text-center pb-4 mb-4 border-b-2 border-black font-sans">
+        <h1 class="text-2xl font-black uppercase tracking-tight text-black">DISCOTECA TÍO CHU</h1>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-700 mt-0.5">PLANILLA OFICIAL DE PERSONAL Y ASISTENCIA DEL TURNO</h2>
+        <div class="flex items-center justify-center gap-3 text-xs text-zinc-600 mt-1">
+            <span>Día de Turno: <strong class="uppercase text-black">{{ $currentDay }}</strong></span>
+            <span>•</span>
+            <span>Integrantes: <strong class="text-black">{{ $staffMembers->count() }} trabajadores</strong></span>
+            @if($activeSession)
+                <span>•</span>
+                <span>Noche Activa: <strong class="uppercase text-black">{{ $activeSession->day_name }} ({{ \Carbon\Carbon::parse($activeSession->session_date)->format('d/m/Y') }})</strong></span>
+            @endif
+        </div>
+    </div>
 
     <!-- ==========================================
          CABECERA (iOS PURE DARK - SIN RELLENO DE IA)
@@ -47,6 +112,14 @@
                     </span>
                 </button>
             @endif
+
+            <button type="button" onclick="window.print()" 
+                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center cursor-pointer">
+                <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                </svg>
+                <span>Imprimir Turno</span>
+            </button>
 
             <a href="{{ route('staffPayments.index') }}" 
                class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center">
@@ -435,6 +508,20 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- FIRMAS PARA REPORTE IMPRESO DE TURNO (OCULTO EN PANTALLA) -->
+    <div class="hidden print-only pt-10 mt-8 border-t border-black text-center text-xs font-sans">
+        <div class="grid grid-cols-2 gap-12">
+            <div>
+                <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Encargado de Turno / Seguridad</div>
+                <span class="text-[10px] text-zinc-600 block mt-0.5">Control de Asistencia</span>
+            </div>
+            <div>
+                <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Don Ludo / Gerencia</div>
+                <span class="text-[10px] text-zinc-600 block mt-0.5">Visto Bueno y Aprobación</span>
+            </div>
         </div>
     </div>
 
