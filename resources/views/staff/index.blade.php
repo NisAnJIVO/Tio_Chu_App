@@ -102,19 +102,19 @@
         <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             @if($activeSession && $activeSession->isOpen())
                 <button type="button" onclick="openShiftSelectorModal()"
-                        class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-[#F5B81C] hover:brightness-110 text-black text-xs sm:text-sm font-black rounded-xl transition-all shadow-md cursor-pointer active:scale-95 text-center">
-                    <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 hover:border-[#F5B81C] text-zinc-100 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm cursor-pointer active:scale-95 text-center">
+                    <svg class="w-4 h-4 shrink-0 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                     </svg>
                     <span>Seleccionar Personal de Turno</span>
-                    <span id="header-shift-count-badge" class="px-2 py-0.5 rounded-full bg-black/20 text-black font-mono text-xs font-black">
+                    <span id="header-shift-count-badge" class="px-2 py-0.5 rounded-full bg-[#F5B81C] text-black font-mono text-xs font-black">
                         {{ count($currentSessionStaffIds) }}
                     </span>
                 </button>
             @endif
 
             <button type="button" onclick="window.print()" 
-                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center cursor-pointer">
+                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center cursor-pointer">
                 <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                 </svg>
@@ -122,7 +122,7 @@
             </button>
 
             <a href="{{ route('staffPayments.index') }}" 
-               class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 border border-zinc-800 hover:border-[#F5B81C] text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center">
+               class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-sm active:scale-95 text-center">
                 <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
@@ -130,7 +130,7 @@
             </a>
 
             <button type="button" onclick="openCreateStaffDrawer()"
-                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl transition-all shadow-md cursor-pointer active:scale-95 text-center">
+                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl transition-all shadow-sm cursor-pointer active:scale-95 text-center">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -142,29 +142,29 @@
 
     <!-- Pestañas por Día: iOS Segmented Control Responsivo (Incluye días extraordinarios como Jueves) -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div class="flex flex-wrap sm:inline-flex p-1 bg-zinc-950 border border-zinc-800 rounded-2xl gap-1 text-xs sm:text-sm font-sans w-full sm:w-auto">
+        <div class="flex overflow-x-auto no-scrollbar p-1 bg-zinc-950 border border-zinc-800 rounded-xl gap-1 text-xs sm:text-sm font-sans w-full sm:w-auto shrink-0">
             @if($isExtraDay && $extraDayKey)
                 <a href="{{ route('staff.index', ['day' => $extraDayKey]) }}" 
-                   class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === $extraDayKey ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+                   class="whitespace-nowrap px-3.5 sm:px-4 py-2 min-w-0 text-center rounded-lg font-bold transition-all {{ $currentDay === $extraDayKey ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                     <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
                     {{ $extraDayName }} <span class="ml-1 text-xs {{ $currentDay === $extraDayKey ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countExtra }})</span>
                 </a>
             @endif
 
             <a href="{{ route('staff.index', ['day' => 'viernes']) }}" 
-               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'viernes' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="whitespace-nowrap px-3.5 sm:px-4 py-2 min-w-0 text-center rounded-lg font-bold transition-all {{ $currentDay === 'viernes' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Viernes <span class="ml-1 text-xs {{ $currentDay === 'viernes' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countViernes }})</span>
             </a>
             <a href="{{ route('staff.index', ['day' => 'sabado']) }}" 
-               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'sabado' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="whitespace-nowrap px-3.5 sm:px-4 py-2 min-w-0 text-center rounded-lg font-bold transition-all {{ $currentDay === 'sabado' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Sábado <span class="ml-1 text-xs {{ $currentDay === 'sabado' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countSabado }})</span>
             </a>
             <a href="{{ route('staff.index', ['day' => 'domingo']) }}" 
-               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'domingo' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="whitespace-nowrap px-3.5 sm:px-4 py-2 min-w-0 text-center rounded-lg font-bold transition-all {{ $currentDay === 'domingo' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Domingo <span class="ml-1 text-xs {{ $currentDay === 'domingo' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countDomingo }})</span>
             </a>
             <a href="{{ route('staff.index', ['day' => 'todos']) }}" 
-               class="px-3 sm:px-4 py-2 min-w-0 sm:min-w-[110px] text-center rounded-xl font-bold transition-all {{ $currentDay === 'todos' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
+               class="whitespace-nowrap px-3.5 sm:px-4 py-2 min-w-0 text-center rounded-lg font-bold transition-all {{ $currentDay === 'todos' ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60' }}">
                 Todos <span class="ml-1 text-xs {{ $currentDay === 'todos' ? 'text-black font-black' : 'text-zinc-500' }}">({{ $countTodos }})</span>
             </a>
         </div>
@@ -196,7 +196,7 @@
     </div>
 
     <!-- Filtros de Rol Oficiales de Don Ludo (1. Seguridad, 2. Barra, 3. Mozos, 4. Limpieza) -->
-    <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
+    <div class="flex flex-wrap items-center gap-1.5 text-xs font-sans font-semibold">
         <button type="button" onclick="filterByRole('all')" id="role-pill-all" class="role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer">
             Todos ({{ $staffMembers->count() }})
         </button>
@@ -215,7 +215,7 @@
     </div>
 
     <!-- Tabla Minimalista de Personal (Fuente Sans Oficial - Ancho Fijo Bloqueado) -->
-    <div class="rounded-2xl border border-zinc-800/80 bg-[#09090b] overflow-hidden shadow-xl font-sans min-h-[480px]">
+    <div class="rounded-2xl border border-zinc-800/80 bg-[#09090b] overflow-hidden font-sans min-h-[480px]">
         @php
             if (!function_exists('staffNormalizeDay')) {
                 function staffNormalizeDay(?string $day): string {
@@ -255,12 +255,12 @@
 
                 @if($memberRank !== $lastRankMobile)
                     @php $lastRankMobile = $memberRank; @endphp
-                    <div class="category-divider-header px-4 py-2 bg-zinc-950 border-y border-zinc-800/80 flex items-center justify-between text-zinc-300 font-mono text-[11px] font-black uppercase tracking-wider" data-category="{{ $memberCat }}">
+                    <div class="category-divider-header px-4 py-2 bg-zinc-950 border-y border-zinc-800/80 flex items-center justify-between text-zinc-300 font-sans text-xs font-bold uppercase tracking-wider" data-category="{{ $memberCat }}">
                         <div class="flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
                             <span class="text-white">{{ $catLabels[$memberRank] ?? 'PERSONAL' }}</span>
                         </div>
-                        <span class="text-zinc-500 font-mono text-[10px]">
+                        <span class="text-zinc-500 font-mono text-[11px] font-bold">
                             {{ $staffMembers->filter(fn($m) => $m->getRoleCategoryRank() === $memberRank)->count() }} pers.
                         </span>
                     </div>
@@ -384,14 +384,14 @@
 
                         @if($memberRank !== $lastRankDesktop)
                             @php $lastRankDesktop = $memberRank; @endphp
-                            <tr class="category-divider-header bg-zinc-950/90 border-y border-zinc-800/80 text-zinc-300 font-mono text-[11px] font-black uppercase tracking-wider" data-category="{{ $memberCat }}">
+                            <tr class="category-divider-header bg-zinc-950 border-y border-zinc-800/80 text-zinc-300 font-sans text-xs font-bold uppercase tracking-wider" data-category="{{ $memberCat }}">
                                 <td colspan="7" class="px-4 py-2">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
                                             <span class="w-1.5 h-1.5 rounded-full bg-[#F5B81C]"></span>
                                             <span class="text-white">{{ $catLabels[$memberRank] ?? 'PERSONAL' }}</span>
                                         </div>
-                                        <span class="text-zinc-500 font-mono text-[10px]">
+                                        <span class="text-zinc-500 font-mono text-[11px] font-bold">
                                             {{ $staffMembers->filter(fn($m) => $m->getRoleCategoryRank() === $memberRank)->count() }} trabajadores
                                         </span>
                                     </div>
@@ -835,14 +835,14 @@
 <!-- ========================================================
      MODAL DE SELECCIÓN DE PERSONAL DE TURNO (TAREA 2 & 3)
      ======================================================== -->
-<div id="shift-selector-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md transition-opacity duration-200">
-    <div class="bg-[#09090b] border border-zinc-800 rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden font-sans">
+<div id="shift-selector-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm transition-opacity duration-200">
+    <div class="bg-[#09090b] border border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden font-sans">
         
         <!-- Modal Header -->
-        <div class="p-4 sm:p-5 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/60 shrink-0">
+        <div class="p-4 sm:p-5 border-b border-zinc-800 flex items-center justify-between bg-zinc-950 shrink-0">
             <div>
                 <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C] animate-pulse"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C]"></span>
                     <h2 class="text-base sm:text-lg font-black text-white uppercase tracking-tight">
                         Seleccionar Personal de Turno
                     </h2>
@@ -863,7 +863,7 @@
         </div>
 
         <!-- Toolbar: Buscador, Filtros por Rol y Acciones de Selección -->
-        <div class="p-3 sm:p-4 border-b border-zinc-800/80 bg-zinc-950/40 space-y-3 shrink-0">
+        <div class="p-3 sm:p-4 border-b border-zinc-800 bg-zinc-950/70 space-y-3 shrink-0">
             <div class="flex flex-col sm:flex-row items-center gap-2.5">
                 <!-- Buscador instantáneo -->
                 <div class="relative w-full sm:flex-1">
@@ -886,7 +886,7 @@
             </div>
 
             <!-- Filtros de Rol Oficiales (Tarea 3) -->
-            <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
+            <div class="flex flex-wrap items-center gap-1.5 text-xs font-sans font-semibold">
                 <button type="button" onclick="filterModalByRole('all')" id="modal-role-pill-all" class="modal-role-pill px-3 py-1 rounded-lg border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer">
                     Todos ({{ $allActiveStaff->count() }})
                 </button>
@@ -944,11 +944,11 @@
                                value="{{ $member->id }}" 
                                {{ $isChecked ? 'checked' : '' }} 
                                onchange="onModalCheckboxChange(this)"
-                               class="shift-checkbox w-4.5 h-4.5 rounded border-zinc-700 bg-zinc-900 text-[#F5B81C] accent-[#F5B81C] cursor-pointer shrink-0">
+                               class="shift-checkbox w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-[#F5B81C] accent-[#F5B81C] cursor-pointer shrink-0">
                         <div class="min-w-0">
                             <div class="font-bold text-xs sm:text-sm uppercase tracking-tight truncate group-hover:text-white">{{ $member->name }}</div>
                             <div class="flex items-center gap-1.5 mt-0.5 text-[10px]">
-                                <span class="px-1.5 py-0.2 rounded font-mono font-bold uppercase bg-zinc-900 border border-zinc-800 text-zinc-400">
+                                <span class="px-1.5 py-0.5 rounded font-sans font-bold uppercase bg-zinc-900 border border-zinc-800 text-zinc-400">
                                     {{ strtoupper($cat) }}
                                 </span>
                                 <span class="text-zinc-500 truncate">• {{ $member->assigned_bar ?? 'General' }}</span>
@@ -970,7 +970,7 @@
         </div>
 
         <!-- Sticky Footer con Contadores y Guardado -->
-        <div class="p-3.5 sm:p-4 border-t border-zinc-800/80 bg-zinc-950 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <div class="p-3.5 sm:p-4 border-t border-zinc-800 bg-zinc-950 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
             <div class="flex items-center gap-3 text-xs sm:text-sm font-sans w-full sm:w-auto">
                 <span class="text-zinc-400">
                     Seleccionados: <span id="shift-modal-selected-count" class="text-white font-mono font-bold text-base">0</span> de {{ $allActiveStaff->count() }}
@@ -985,7 +985,7 @@
                 <button type="button" onclick="closeShiftSelectorModal()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer">
                     Cancelar
                 </button>
-                <button type="button" id="btn-save-shift" onclick="saveShiftAttendance()" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2">
+                <button type="button" id="btn-save-shift" onclick="saveShiftAttendance()" class="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-2">
                     <span id="btn-save-shift-text">Guardar Personal de Turno</span>
                 </button>
             </div>
@@ -1171,11 +1171,11 @@
         const card = cb.closest('.modal-staff-card');
         if (card) {
             if (cb.checked) {
-                card.classList.remove('bg-zinc-950', 'border-zinc-800/80', 'text-zinc-300');
+                card.classList.remove('bg-zinc-950', 'border-zinc-800', 'text-zinc-300');
                 card.classList.add('bg-[#F5B81C]/10', 'border-[#F5B81C]/60', 'text-white');
             } else {
                 card.classList.remove('bg-[#F5B81C]/10', 'border-[#F5B81C]/60', 'text-white');
-                card.classList.add('bg-zinc-950', 'border-zinc-800/80', 'text-zinc-300');
+                card.classList.add('bg-zinc-950', 'border-zinc-800', 'text-zinc-300');
             }
         }
         recalculateModalStats();
