@@ -303,14 +303,14 @@
             @endif
 
             <!-- Botón Guardar en Cabecera -->
-            @if($session && $session->isOpen() && $selectedBar !== 'Tienda')
+            @if($session && $session->isOpen())
                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
                     <span id="sales-autosave-status" class="text-[10px] font-mono text-zinc-500" aria-live="polite"></span>
                     <button type="submit" form="sales-form" class="px-4 py-2 sm:py-1.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn shadow-sm w-full sm:w-auto">
                         <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
-                        <span>Guardar Ventas</span>
+                        <span>{{ $selectedBar === 'Tienda' ? 'Guardar Ventas Tienda' : 'Guardar Ventas' }}</span>
                     </button>
                 </div>
             @endif
@@ -348,23 +348,13 @@
                 @endforeach
             </div>
 
-            @if($session->isOpen())
+            @if($session->isOpen() && $selectedBar !== 'Tienda')
                 <div class="flex items-center gap-2">
-                    @if($selectedBar === 'Tienda')
-                        <button type="submit" form="sales-form"
-                                class="px-3.5 py-2 sm:py-1.5 rounded-xl bg-[#F5B81C] text-black text-xs font-bold hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto shadow-sm">
-                            <svg class="w-3.5 h-3.5 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <span>Guardar Ventas Tienda</span>
-                        </button>
-                    @else
-                        <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')"
-                                class="px-3.5 py-2 sm:py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto">
-                            <span class="text-[#F5B81C] font-bold">+</span>
-                            <span>Nueva Soda en Catálogo</span>
-                        </button>
-                    @endif
+                    <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')"
+                            class="px-3.5 py-2 sm:py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto">
+                        <span class="text-[#F5B81C] font-bold">+</span>
+                        <span>Nueva Soda en Catálogo</span>
+                    </button>
                 </div>
             @endif
         </div>
@@ -571,7 +561,10 @@
                     </div>
                     <div class="flex items-center gap-3 sm:self-center">
                         <div class="text-right">
-                            <span class="text-[10px] text-zinc-400 block uppercase tracking-wider font-semibold">Total Tienda:</span>
+                            <div class="flex items-center justify-end gap-2">
+                                <span class="text-[10px] text-zinc-400 block uppercase tracking-wider font-semibold">Total Tienda:</span>
+                                <span id="tienda-autosave-indicator" class="text-[10px] font-mono text-zinc-500"></span>
+                            </div>
                             <span class="text-lg font-black font-mono text-[#F5B81C]" id="badge-tienda-grand-total">
                                 Bs. {{ number_format($grandTotalBar, 2) }}
                             </span>
@@ -615,15 +608,14 @@
                 <!-- TABLA FORMATO IDENTICO A LAS OTRAS BARRAS PERO SIMPLIFICADO -->
                 <div class="rounded-2xl theme-card border theme-border overflow-hidden">
                     <div class="overflow-x-auto sales-table-wrapper">
-                        <table class="w-full text-xs text-left border-collapse excel-table min-w-[700px]" id="table-tienda">
+                        <table class="w-full text-xs text-left border-collapse excel-table min-w-[550px]" id="table-tienda">
                             <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                 <tr>
-                                    <th class="px-3 py-3.5 w-10 text-center col-num">N°</th>
-                                    <th class="px-4 py-3.5 col-product col-sticky-product">Bebida / Presentación</th>
-                                    <th class="px-3 py-3.5 w-24 text-center border-l theme-border">Stock Bodega</th>
-                                    <th class="px-4 py-3.5 w-28 text-right border-l theme-border">Precio Venta (Bs.)</th>
-                                    <th class="px-4 py-3.5 w-40 text-center border-l theme-border font-bold text-[#F5B81C]">Unidades Vendidas</th>
-                                    <th class="px-4 py-3.5 w-36 text-right border-l theme-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
+                                    <th class="px-2.5 py-2.5 w-10 text-center col-num">N°</th>
+                                    <th class="px-3 py-2.5 col-product col-sticky-product">Bebida / Presentación</th>
+                                    <th class="px-3 py-2.5 w-24 text-right border-l theme-border">Precio Venta (Bs.)</th>
+                                    <th class="px-3 py-2.5 w-28 text-center border-l theme-border font-bold text-[#F5B81C]">Unidades Vendidas</th>
+                                    <th class="px-3 py-2.5 w-28 text-right border-l theme-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y theme-border font-sans" id="tienda-tbody">
@@ -652,44 +644,24 @@
                                         data-name="{{ strtolower($prod->name) }}">
                                         
                                         <!-- N° -->
-                                        <td class="px-3 py-2.5 text-center text-zinc-500 font-mono col-num">
+                                        <td class="px-2.5 py-2 text-center text-zinc-500 font-mono col-num text-xs">
                                             {{ $index + 1 }}
                                         </td>
 
-                                        <!-- Bebida / Presentación -->
-                                        <td class="px-4 py-2.5 col-product col-sticky-product">
-                                            <div class="flex items-center gap-3">
-                                                @if(!empty($prod->image_url))
-                                                    <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 p-1 flex items-center justify-center shrink-0">
-                                                        <img src="{{ $prod->image_url }}" alt="{{ $prod->name }}" class="max-h-full max-w-full object-contain filter drop-shadow">
-                                                    </div>
-                                                @endif
-                                                <div>
-                                                    <span class="font-bold text-white block text-sm sm:text-xs leading-snug">{{ $prod->name }}</span>
-                                                    <span class="text-[11px] text-zinc-400 font-normal">
-                                                        {{ $isMixer ? 'Mixer / Soda' : $drinkType }} • {{ $prod->unit }}
-                                                    </span>
-                                                </div>
+                                        <!-- Bebida / Presentación (Compacto, sin imagen) -->
+                                        <td class="px-3 py-2 col-product col-sticky-product max-w-[200px] sm:max-w-xs">
+                                            <div class="leading-tight">
+                                                <span class="font-bold text-white text-xs sm:text-sm block truncate">{{ $prod->name }}</span>
+                                                <span class="text-[10px] text-zinc-400 font-normal block truncate">
+                                                    {{ $isMixer ? 'Mixer / Soda' : $drinkType }} • {{ $prod->unit }}
+                                                </span>
                                             </div>
                                         </td>
 
-                                        <!-- Stock Bodega Central -->
-                                        <td class="px-3 py-2.5 text-center border-l theme-border">
-                                            @if($prod->stock_warehouse > 0)
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                    {{ $prod->stock_warehouse }} bot.
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-950 text-zinc-500 border border-zinc-800">
-                                                    0 bot.
-                                                </span>
-                                            @endif
-                                        </td>
-
                                         <!-- Precio Venta Unitario -->
-                                        <td class="px-4 py-2 text-right border-l theme-border">
+                                        <td class="px-3 py-1.5 text-right border-l theme-border">
                                             <div class="flex items-center justify-end gap-1">
-                                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                                <span class="text-zinc-500 font-mono text-[11px]">Bs.</span>
                                                 <input type="number" 
                                                        step="0.5" 
                                                        min="0"
@@ -697,37 +669,35 @@
                                                        id="tienda-price-{{ $sale->id }}"
                                                        value="{{ $sale->unit_price > 0 ? $sale->unit_price : $prod->sale_price }}"
                                                        oninput="onTiendaRowChange({{ $sale->id }})"
-                                                       class="tienda-input-price w-20 sm:w-24 h-9 text-right rounded-xl px-2 font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] transition-all">
+                                                       onfocus="this.select()"
+                                                       onclick="this.select()"
+                                                       class="tienda-input-price w-20 h-8 text-right rounded-lg px-2 font-mono font-bold text-xs bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-[#F5B81C] focus:border-[#F5B81C]">
                                             </div>
                                         </td>
 
-                                        <!-- Unidades Vendidas (Campo de Llenado Principal) -->
-                                        <td class="px-4 py-2 border-l theme-border text-center">
-                                            <div class="inline-flex items-center gap-1.5 justify-center">
-                                                <button type="button" 
-                                                        onclick="stepTiendaRowQty({{ $sale->id }}, -1)"
-                                                        class="w-7 h-8 rounded-lg bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center font-bold text-sm cursor-pointer transition-all active:scale-95">
-                                                    -
-                                                </button>
-                                                <input type="number" 
-                                                       min="0" 
+                                        <!-- Unidades Vendidas (Sin botones -/+, reemplazo de 0 automático, Enter/Flechas) -->
+                                        <td class="px-3 py-1.5 border-l theme-border text-center">
+                                            <div class="flex justify-center items-center">
+                                                <input type="text" 
+                                                       inputmode="numeric" 
+                                                       pattern="[0-9]*"
                                                        name="sales[{{ $sale->id }}][vendido]" 
                                                        id="tienda-vendido-{{ $sale->id }}"
                                                        value="{{ (int)$sale->vendido }}"
-                                                       oninput="onTiendaRowChange({{ $sale->id }})"
-                                                       class="tienda-input-vendido w-16 sm:w-20 h-9 text-center rounded-xl font-mono font-black text-sm sm:text-base bg-zinc-950 border-2 border-zinc-700/80 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
-                                                <button type="button" 
-                                                        onclick="stepTiendaRowQty({{ $sale->id }}, 1)"
-                                                        class="w-7 h-8 rounded-lg bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center font-bold text-sm cursor-pointer transition-all active:scale-95">
-                                                    +
-                                                </button>
+                                                       data-row-id="{{ $sale->id }}"
+                                                       onfocus="this.select()"
+                                                       onclick="this.select()"
+                                                       oninput="handleTiendaVendidoInput(this, {{ $sale->id }})"
+                                                       onkeydown="handleTiendaKeyDown(event, this)"
+                                                       onblur="if(this.value.trim()==='') { this.value='0'; onTiendaRowChange({{ $sale->id }}); }"
+                                                       class="tienda-input-vendido w-20 h-8 text-center rounded-lg font-mono font-black text-sm bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#1a1606] focus:text-[#F5B81C] transition-all">
                                             </div>
                                         </td>
 
                                         <!-- Ganancia / Total (Bs.) -->
-                                        <td class="px-4 py-2 text-right border-l theme-border">
+                                        <td class="px-3 py-1.5 text-right border-l theme-border">
                                             <div class="flex items-center justify-end gap-1">
-                                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                                <span class="text-zinc-500 font-mono text-[11px]">Bs.</span>
                                                 <input type="number" 
                                                        step="0.5" 
                                                        min="0"
@@ -735,28 +705,30 @@
                                                        id="tienda-subtotal-{{ $sale->id }}"
                                                        value="{{ number_format($sale->subtotal, 2, '.', '') }}"
                                                        oninput="onTiendaManualSubtotalChange({{ $sale->id }})"
-                                                       class="tienda-input-subtotal w-24 sm:w-28 h-9 text-right rounded-xl px-2 font-mono font-black text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] transition-all">
+                                                       onfocus="this.select()"
+                                                       onclick="this.select()"
+                                                       class="tienda-input-subtotal w-24 h-8 text-right rounded-lg px-2 font-mono font-black text-xs bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:ring-1 focus:ring-[#F5B81C] focus:border-[#F5B81C]">
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
+                                        <td colspan="5" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
                                     </tr>
                                 @endforelse
                                 <tr id="tienda-empty-filter-row" class="hidden">
-                                    <td colspan="6" class="px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
+                                    <td colspan="5" class="px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
                                 </tr>
                             </tbody>
                             <tfoot class="bg-zinc-950 border-t theme-border font-bold text-xs text-white">
                                 <tr>
-                                    <td colspan="4" class="px-4 py-3 text-right uppercase tracking-wider font-sans">
+                                    <td colspan="3" class="px-4 py-2.5 text-right uppercase tracking-wider font-sans">
                                         <span>Total Ventas Tienda:</span>
                                     </td>
-                                    <td class="px-4 py-3 text-center font-mono font-black text-[#F5B81C] text-base" id="tfoot-tienda-units">
+                                    <td class="px-4 py-2.5 text-center font-mono font-black text-[#F5B81C] text-sm" id="tfoot-tienda-units">
                                         {{ $totalTiendaUnits ?? $allBarSales->sum('vendido') }}
                                     </td>
-                                    <td class="px-4 py-3 text-right font-mono font-black text-[#F5B81C] text-base" id="tfoot-tienda-subtotal">
+                                    <td class="px-4 py-2.5 text-right font-mono font-black text-[#F5B81C] text-sm" id="tfoot-tienda-subtotal">
                                         Bs. {{ number_format($allBarSales->sum('subtotal'), 2) }}
                                     </td>
                                 </tr>
@@ -1534,6 +1506,11 @@
                     mobileAutosaveStatus.textContent = message;
                     mobileAutosaveStatus.className = `text-[10px] font-mono ${className}`;
                 }
+                const tiendaAutosave = document.getElementById('tienda-autosave-indicator');
+                if (tiendaAutosave) {
+                    tiendaAutosave.textContent = message === 'Guardado' ? '✓ Guardado' : message;
+                    tiendaAutosave.className = `text-[10px] font-mono ${className}`;
+                }
             }
 
             async function autosaveSales() {
@@ -1856,6 +1833,42 @@
            CONTROL DE VENTAS DIRECTAS TIENDA (FORMATO TABULAR SIMPLIFICADO)
            ======================================================== */
         let tiendaActiveCategory = 'todas';
+
+        window.handleTiendaVendidoInput = function(input, rowId) {
+            let val = input.value.replace(/[^0-9]/g, '');
+            // Si el valor comienza con 0 y tiene más dígitos (ej: "05"), quitar ceros a la izquierda
+            if (val.length > 1 && val.startsWith('0')) {
+                val = val.replace(/^0+/, '') || '0';
+            }
+            input.value = val;
+            window.onTiendaRowChange(rowId);
+        };
+
+        window.handleTiendaKeyDown = function(event, currentInput) {
+            if (event.key === 'Enter' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                navigateTiendaRow(currentInput, 1);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                navigateTiendaRow(currentInput, -1);
+            }
+        };
+
+        function navigateTiendaRow(currentInput, direction) {
+            const allVisibleRows = Array.from(document.querySelectorAll('.tienda-row')).filter(r => !r.classList.contains('hidden'));
+            const currentRow = currentInput.closest('.tienda-row');
+            const currentIndex = allVisibleRows.indexOf(currentRow);
+            if (currentIndex === -1) return;
+
+            const nextIndex = currentIndex + direction;
+            if (nextIndex >= 0 && nextIndex < allVisibleRows.length) {
+                const targetInput = allVisibleRows[nextIndex].querySelector('.tienda-input-vendido');
+                if (targetInput) {
+                    targetInput.focus();
+                    targetInput.select();
+                }
+            }
+        }
 
         window.stepTiendaRowQty = function(rowId, delta) {
             const input = document.getElementById(`tienda-vendido-${rowId}`);
