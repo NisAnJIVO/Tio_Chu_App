@@ -98,7 +98,10 @@
                     Planilla de personal, asignación de áreas y control de asistencia
                 </p>
             </div>
-              <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 shrink-0">
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 shrink-0">
             @if($activeSession && $activeSession->isOpen())
                 <button type="button" onclick="openShiftSelectorModal()"
                         class="inline-flex items-center gap-2 px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-[#F5B81C] text-zinc-200 hover:text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer active:scale-95">
