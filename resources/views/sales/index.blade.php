@@ -608,11 +608,13 @@
                 <!-- TABLA FORMATO IDENTICO A LAS OTRAS BARRAS PERO SIMPLIFICADO -->
                 <div class="rounded-2xl theme-card border theme-border overflow-hidden">
                     <div class="overflow-x-auto sales-table-wrapper">
-                        <table class="w-full text-xs text-left border-collapse excel-table min-w-[550px]" id="table-tienda">
+                        <table class="w-full text-xs text-left border-collapse excel-table min-w-[750px]" id="table-tienda">
                             <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                 <tr>
                                     <th class="px-2.5 py-2.5 w-10 text-center col-num">N°</th>
                                     <th class="px-3 py-2.5 col-product col-sticky-product">Bebida / Presentación</th>
+                                    <th class="px-3 py-2.5 w-32 border-l theme-border">Acompañamiento</th>
+                                    <th class="px-3 py-2.5 w-28 text-center border-l theme-border">Especial</th>
                                     <th class="px-3 py-2.5 w-24 text-right border-l theme-border">Precio Venta (Bs.)</th>
                                     <th class="px-3 py-2.5 w-28 text-center border-l theme-border font-bold text-[#F5B81C]">Unidades Vendidas</th>
                                     <th class="px-3 py-2.5 w-28 text-right border-l theme-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
@@ -637,9 +639,46 @@
                                         } elseif (str_contains(strtolower($drinkType), 'gin')) {
                                             $catKey = 'gins';
                                         }
+
+                                        $mixerInfo = $mapping[$sale->product_id] ?? null;
+                                        $mixerId = $mixerInfo['mixer_id'] ?? 0;
+                                        $mixerRatio = $mixerInfo['ratio'] ?? 1;
+                                        $mixerName = 'Solo';
+                                        if ($mixerId == 23) $mixerName = '1 Ginger Ale 2L';
+                                        elseif ($mixerId == 24) $mixerName = '1 Coca Cola 2L';
+                                        elseif ($mixerId == 25) $mixerName = '1 Agua Vital 2L';
+                                        elseif ($mixerId == 26) $mixerName = '2 Aguas Tónicas 1L';
+
+                                        $specialsJson = is_array($sale->selected_special_mixer) ? json_encode($sale->selected_special_mixer) : ($sale->selected_special_mixer ?? '{}');
+                                        $specialsDecoded = [];
+                                        if (!empty($sale->selected_special_mixer)) {
+                                            $decoded = is_string($sale->selected_special_mixer) ? json_decode($sale->selected_special_mixer, true) : $sale->selected_special_mixer;
+                                            if (is_array($decoded)) $specialsDecoded = $decoded;
+                                        }
+
+                                        $badgeParts = [];
+                                        foreach ($specialsDecoded as $mId => $q) {
+                                            if ($q > 0) {
+                                                $mObj = $allMixerProducts->firstWhere('id', $mId);
+                                                $shortName = $mObj ? explode(' ', $mObj->name)[0] : 'Mixer';
+                                                $badgeParts[] = "$shortName ($q)";
+                                            }
+                                        }
+                                        $badgeText = count($badgeParts) > 0 ? implode(', ', $badgeParts) : '+ Especial';
+                                        $hasSpecials = count($badgeParts) > 0;
+                                        $includedCombos = $sale->included_in_combos ?? 0;
+                                        $initialExtras = max(0, (int)$sale->vendido - $includedCombos);
                                     @endphp
                                     <tr class="hover:bg-zinc-900/40 transition-colors tienda-row"
                                         data-row-id="{{ $sale->id }}"
+                                        data-product-id="{{ $sale->product_id }}"
+                                        data-product-name="{{ $prod->name }}"
+                                        data-is-mixer="{{ $isMixer ? '1' : '0' }}"
+                                        data-mixer-id="{{ $mixerId }}"
+                                        data-mixer-name="{{ $mixerName }}"
+                                        data-mixer-ratio="{{ $mixerRatio }}"
+                                        data-included="{{ $includedCombos }}"
+                                        data-manual-extra="{{ $initialExtras }}"
                                         data-category-key="{{ $catKey }}"
                                         data-name="{{ strtolower($prod->name) }}">
                                         
@@ -656,6 +695,41 @@
                                                     {{ $isMixer ? 'Mixer / Soda' : $drinkType }} • {{ $prod->unit }}
                                                 </span>
                                             </div>
+                                        </td>
+
+                                        <!-- Acompañamiento -->
+                                        <td class="px-3 py-1.5 border-l theme-border text-zinc-300 text-xs">
+                                            @if(!$isMixer)
+                                                <span class="inline-flex px-2 py-0.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] font-medium text-zinc-300">
+                                                    + {{ $mixerName }}
+                                                </span>
+                                            @else
+                                                <span class="text-[10px] text-zinc-500 font-mono">Soda / Mixer</span>
+                                            @endif
+                                        </td>
+
+                                        <!-- Especial -->
+                                        <td class="px-3 py-1.5 border-l theme-border text-center">
+                                            @if(!$isMixer && $mixerId > 0)
+                                                <input type="hidden" 
+                                                       name="sales[{{ $sale->id }}][selected_special_mixer]" 
+                                                       id="input-specials-{{ $sale->id }}" 
+                                                       value="{{ $specialsJson }}" 
+                                                       class="input-special-mixers">
+                                                <button type="button" 
+                                                        onclick="openSpecialModal({{ $sale->id }})" 
+                                                        id="btn-special-{{ $sale->id }}"
+                                                        class="px-2 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border {{ $hasSpecials ? 'bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white' }}">
+                                                    <span id="badge-special-{{ $sale->id }}">{{ $badgeText }}</span>
+                                                </button>
+                                            @elseif($isMixer)
+                                                <span id="tienda-mixer-included-{{ $sale->id }}" 
+                                                      class="{{ ($sale->included_in_combos ?? 0) > 0 ? '' : 'hidden' }} inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold font-mono bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/20">
+                                                    {{ $sale->included_in_combos ?? 0 }} en combos
+                                                </span>
+                                            @else
+                                                <span class="text-zinc-600 text-xs">-</span>
+                                            @endif
                                         </td>
 
                                         <!-- Precio Venta Unitario -->
@@ -713,16 +787,16 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
+                                        <td colspan="7" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
                                     </tr>
                                 @endforelse
                                 <tr id="tienda-empty-filter-row" class="hidden">
-                                    <td colspan="5" class="px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
+                                    <td colspan="7" class="px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
                                 </tr>
                             </tbody>
                             <tfoot class="bg-zinc-950 border-t theme-border font-bold text-xs text-white">
                                 <tr>
-                                    <td colspan="3" class="px-4 py-2.5 text-right uppercase tracking-wider font-sans">
+                                    <td colspan="5" class="px-4 py-2.5 text-right uppercase tracking-wider font-sans">
                                         <span>Total Ventas Tienda:</span>
                                     </td>
                                     <td class="px-4 py-2.5 text-center font-mono font-black text-[#F5B81C] text-sm" id="tfoot-tienda-units">
@@ -1387,16 +1461,23 @@
 
         function openSpecialModal(rowId) {
             currentActiveRowId = rowId;
-            const row = document.querySelector(`.liquor-row[data-row-id="${rowId}"]`);
+            const row = document.querySelector(`.liquor-row[data-row-id="${rowId}"]`) || document.querySelector(`.tienda-row[data-row-id="${rowId}"]`);
             if (!row) return;
 
             const liquorName = row.getAttribute('data-product-name');
             const defaultMixerName = row.getAttribute('data-mixer-name');
-            const unitsPerPkg = parseInt(row.getAttribute('data-units-per-pkg')) || 1;
-            const pkg = parseInt(row.querySelector('.input-packages').value) || 0;
-            const units = parseInt(row.querySelector('.input-units').value) || 0;
-            const saldo = parseInt(row.querySelector('.input-saldo').value) || 0;
-            const totalCombos = Math.max(0, (pkg * unitsPerPkg + units) - saldo);
+
+            let totalCombos = 0;
+            const tiendaInput = document.getElementById(`tienda-vendido-${rowId}`);
+            if (tiendaInput) {
+                totalCombos = Math.max(0, parseInt(tiendaInput.value) || 0);
+            } else {
+                const unitsPerPkg = parseInt(row.getAttribute('data-units-per-pkg')) || 1;
+                const pkg = parseInt(row.querySelector('.input-packages')?.value) || 0;
+                const units = parseInt(row.querySelector('.input-units')?.value) || 0;
+                const saldo = parseInt(row.querySelector('.input-saldo')?.value) || 0;
+                totalCombos = Math.max(0, (pkg * unitsPerPkg + units) - saldo);
+            }
 
             document.getElementById('modal-liquor-title').textContent = liquorName;
             document.getElementById('modal-total-combos').textContent = totalCombos;
@@ -1482,7 +1563,8 @@
             }
 
             closeSpecialModal();
-            window.recalculateSales();
+            if (typeof window.recalculateSales === 'function') window.recalculateSales();
+            if (typeof window.recalculateTiendaTable === 'function') window.recalculateTiendaTable();
             window.queueSalesAutosave?.();
         }
 
@@ -1556,7 +1638,7 @@
 
             const tiendaRows = document.querySelectorAll('.tienda-row');
             if (tiendaRows.length > 0) {
-                window.recalculateTiendaTable();
+                window.recalculateTiendaTable(true, false);
             }
 
             if (!liquorRows.length && !mixerRows.length) return;
@@ -1880,25 +1962,107 @@
         };
 
         window.onTiendaRowChange = function(rowId) {
+            const row = document.querySelector(`.tienda-row[data-row-id="${rowId}"]`);
+            if (!row) return;
+
+            const isMixer = row.getAttribute('data-is-mixer') === '1';
             const inputVendido = document.getElementById(`tienda-vendido-${rowId}`);
             const inputPrice = document.getElementById(`tienda-price-${rowId}`);
             const inputSubtotal = document.getElementById(`tienda-subtotal-${rowId}`);
 
-            if (!inputVendido || !inputPrice || !inputSubtotal) return;
+            if (isMixer) {
+                const currentIncluded = parseInt(row.getAttribute('data-included')) || 0;
+                const enteredVal = Math.max(0, parseInt(inputVendido ? inputVendido.value : 0) || 0);
+                const extra = Math.max(0, enteredVal - currentIncluded);
+                row.setAttribute('data-manual-extra', extra);
+                window.recalculateTiendaTable(true, true);
+                return;
+            }
 
-            const qty = Math.max(0, parseInt(inputVendido.value) || 0);
-            const price = Math.max(0, parseFloat(inputPrice.value) || 0);
+            const qty = Math.max(0, parseInt(inputVendido ? inputVendido.value : 0) || 0);
+            const price = Math.max(0, parseFloat(inputPrice ? inputPrice.value : 0) || 0);
             const subtotal = qty * price;
 
-            inputSubtotal.value = subtotal.toFixed(2);
-            window.recalculateTiendaTable();
+            if (inputSubtotal) inputSubtotal.value = subtotal.toFixed(2);
+            window.recalculateTiendaTable(true, true);
         };
 
         window.onTiendaManualSubtotalChange = function(rowId) {
-            window.recalculateTiendaTable();
+            window.recalculateTiendaTable(false, true);
         };
 
-        window.recalculateTiendaTable = function() {
+        window.recalculateTiendaTable = function(autoUpdateMixers = true, triggerAutosave = true) {
+            // 1. Calcular mixers requeridos por los combos vendidos de licores (incluyendo especiales)
+            const combosPerMixer = {};
+
+            document.querySelectorAll('.tienda-row[data-is-mixer="0"]').forEach(row => {
+                const rowId = row.getAttribute('data-row-id');
+                const inputVendido = document.getElementById(`tienda-vendido-${rowId}`);
+                const vendido = Math.max(0, parseInt(inputVendido ? inputVendido.value : 0) || 0);
+                const defaultMixerId = parseInt(row.getAttribute('data-mixer-id')) || 0;
+                const mixerRatio = parseInt(row.getAttribute('data-mixer-ratio')) || 1;
+
+                // Parsear especiales asignados a esta fila
+                const specialInput = document.getElementById(`input-specials-${rowId}`);
+                let specials = {};
+                try {
+                    specials = JSON.parse(specialInput ? specialInput.value : '{}') || {};
+                } catch(e) {
+                    specials = {};
+                }
+
+                let specialCount = 0;
+                for (const [mId, qty] of Object.entries(specials)) {
+                    const q = parseInt(qty) || 0;
+                    if (q > 0) {
+                        const mIdInt = parseInt(mId);
+                        combosPerMixer[mIdInt] = (combosPerMixer[mIdInt] || 0) + q;
+                        specialCount += q;
+                    }
+                }
+
+                // El mixer por defecto recibe el remanente
+                if (defaultMixerId > 0) {
+                    const remaining = Math.max(0, vendido - specialCount);
+                    combosPerMixer[defaultMixerId] = (combosPerMixer[defaultMixerId] || 0) + (remaining * mixerRatio);
+                }
+            });
+
+            // 2. Actualizar mixers de Tienda
+            document.querySelectorAll('.tienda-row[data-is-mixer="1"]').forEach(row => {
+                const rowId = row.getAttribute('data-row-id');
+                const productId = parseInt(row.getAttribute('data-product-id')) || 0;
+                const inputVendido = document.getElementById(`tienda-vendido-${rowId}`);
+                const inputPrice = document.getElementById(`tienda-price-${rowId}`);
+                const inputSubtotal = document.getElementById(`tienda-subtotal-${rowId}`);
+                const badgeIncluded = document.getElementById(`tienda-mixer-included-${rowId}`);
+
+                const included = combosPerMixer[productId] || 0;
+                row.setAttribute('data-included', included);
+
+                const extra = Math.max(0, parseInt(row.getAttribute('data-manual-extra')) || 0);
+                const totalSold = included + extra;
+                const price = Math.max(0, parseFloat(inputPrice ? inputPrice.value : 0) || 0);
+
+                if (autoUpdateMixers && inputVendido) {
+                    inputVendido.value = totalSold;
+                }
+
+                if (autoUpdateMixers && inputSubtotal) {
+                    inputSubtotal.value = (extra * price).toFixed(2);
+                }
+
+                if (badgeIncluded) {
+                    if (included > 0) {
+                        badgeIncluded.textContent = `${included} en combos`;
+                        badgeIncluded.classList.remove('hidden');
+                    } else {
+                        badgeIncluded.classList.add('hidden');
+                    }
+                }
+            });
+
+            // 3. Sumar totales generales
             let totalUnits = 0;
             let totalSubtotal = 0;
 
@@ -1933,7 +2097,7 @@
             if (headerCombos) headerCombos.textContent = `${totalUnits} bebidas`;
             if (mobileStickyTotal) mobileStickyTotal.textContent = formattedTotal;
 
-            if (typeof window.queueSalesAutosave === 'function') {
+            if (triggerAutosave && typeof window.queueSalesAutosave === 'function') {
                 window.queueSalesAutosave();
             }
         };

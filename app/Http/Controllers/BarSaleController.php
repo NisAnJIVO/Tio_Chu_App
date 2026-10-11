@@ -189,8 +189,52 @@ class BarSaleController extends Controller
                     return ($a->product?->id ?? $a->product_id) <=> ($b->product?->id ?? $b->product_id);
                 })->values();
 
+                // Calcular mixers incluidos en combos para Tienda (igual que en las otras barras)
+                $combosPerMixer = [];
+                $liquorsTienda = $allBarSales->filter(fn($s) => $s->product && $s->product->category !== 'Mixers');
+
+                foreach ($liquorsTienda as $liq) {
+                    $specialMixers = [];
+                    if (!empty($liq->selected_special_mixer)) {
+                        $decoded = is_string($liq->selected_special_mixer) ? json_decode($liq->selected_special_mixer, true) : $liq->selected_special_mixer;
+                        if (is_array($decoded)) {
+                            $specialMixers = $decoded;
+                        }
+                    }
+
+                    $vendido = (int)$liq->vendido;
+                    $specialCount = 0;
+
+                    foreach ($specialMixers as $specialMixerId => $qty) {
+                        $qty = (int)$qty;
+                        if ($qty > 0 && $specialMixerId) {
+                            $specialMixerId = (int)$specialMixerId;
+                            $combosPerMixer[$specialMixerId] = ($combosPerMixer[$specialMixerId] ?? 0) + $qty;
+                            $specialCount += $qty;
+                        }
+                    }
+
+                    $mixerInfo = $mapping[$liq->product_id] ?? null;
+                    if ($mixerInfo) {
+                        $defaultMixerId = (int)$mixerInfo['mixer_id'];
+                        $ratio = $mixerInfo['ratio'] ?? 1;
+                        $remainingCombos = max(0, $vendido - $specialCount);
+                        $combosPerMixer[$defaultMixerId] = ($combosPerMixer[$defaultMixerId] ?? 0) + ($remainingCombos * $ratio);
+                    }
+                }
+
                 foreach ($allBarSales as $sale) {
-                    $sale->subtotal = (int) $sale->vendido * (float) $sale->unit_price;
+                    if ($sale->product && $sale->product->category === 'Mixers') {
+                        $included = $combosPerMixer[$sale->product_id] ?? 0;
+                        $sale->included_in_combos = $included;
+                        if ((int)$sale->vendido < $included) {
+                            $sale->vendido = $included;
+                        }
+                        $extras = max(0, (int)$sale->vendido - $included);
+                        $sale->subtotal = $extras * (float)$sale->unit_price;
+                    } else {
+                        $sale->subtotal = (int) $sale->vendido * (float) $sale->unit_price;
+                    }
                 }
 
                 $totalTiendaUnits = (int) $allBarSales->sum('vendido');
@@ -345,30 +389,114 @@ class BarSaleController extends Controller
         };
 
         if ($barName === 'Tienda') {
+            $updatedMixers = [];
+            $combosPerMixer = [];
+
+            // 1ra pasada: Licores
             foreach ($rows as $id => $data) {
                 $barSale = BarSale::with('product')->find($id);
                 if (!$barSale) continue;
+
+                if (isset($data['selected_special_mixer'])) {
+                    $specialVal = $data['selected_special_mixer'];
+                    if (is_string($specialVal) && (str_starts_with($specialVal, '{') || str_starts_with($specialVal, '['))) {
+                        $barSale->selected_special_mixer = $specialVal;
+                    } elseif (is_array($specialVal)) {
+                        $barSale->selected_special_mixer = json_encode($specialVal);
+                    } else {
+                        $barSale->selected_special_mixer = $specialVal;
+                    }
+                }
 
                 $vendido = max(0, (int)($data['vendido'] ?? 0));
                 $unitPrice = isset($data['unit_price']) && is_numeric($data['unit_price'])
                     ? (float)$data['unit_price']
                     : (float)($barSale->unit_price ?? $barSale->product?->sale_price ?? 0);
 
-                if (isset($data['subtotal']) && is_numeric($data['subtotal']) && (float)$data['subtotal'] > 0 && $vendido == 0) {
-                    $subtotal = (float)$data['subtotal'];
+                if ($barSale->product && $barSale->product->category === 'Mixers') {
+                    $updatedMixers[$id] = [
+                        'sale' => $barSale,
+                        'vendido' => $vendido,
+                        'unitPrice' => $unitPrice,
+                    ];
                 } else {
                     $subtotal = $vendido * $unitPrice;
+                    $barSale->packages = 0;
+                    $barSale->units = 0;
+                    $barSale->total_initial = $vendido;
+                    $barSale->saldo = 0;
+                    $barSale->vendido = $vendido;
+                    $barSale->unit_price = $unitPrice;
+                    $barSale->subtotal = $subtotal;
+                    $this->syncProductStock($barSale);
+                    $barSale->save();
+
+                    // Acumular mixers incluidos en combos (con especiales)
+                    $specialMixers = [];
+                    if (!empty($barSale->selected_special_mixer)) {
+                        $decoded = is_string($barSale->selected_special_mixer)
+                            ? json_decode($barSale->selected_special_mixer, true)
+                            : $barSale->selected_special_mixer;
+                        if (is_array($decoded)) $specialMixers = $decoded;
+                    }
+
+                    $specialCount = 0;
+                    foreach ($specialMixers as $specialMixerId => $qty) {
+                        $qty = (int)$qty;
+                        if ($qty > 0 && $specialMixerId) {
+                            $specialMixerId = (int)$specialMixerId;
+                            $combosPerMixer[$specialMixerId] = ($combosPerMixer[$specialMixerId] ?? 0) + $qty;
+                            $specialCount += $qty;
+                        }
+                    }
+
+                    $mixerInfo = $mapping[$barSale->product_id] ?? null;
+                    if ($mixerInfo) {
+                        $defaultMixerId = (int)$mixerInfo['mixer_id'];
+                        $ratio = $mixerInfo['ratio'] ?? 1;
+                        $remainingCombos = max(0, $vendido - $specialCount);
+                        $combosPerMixer[$defaultMixerId] = ($combosPerMixer[$defaultMixerId] ?? 0) + ($remainingCombos * $ratio);
+                    }
                 }
+            }
+
+            // 2da pasada: Mixers en Tienda
+            foreach ($updatedMixers as $id => $item) {
+                $barSale = $item['sale'];
+                $userVendido = $item['vendido'];
+                $unitPrice = $item['unitPrice'];
+
+                $includedInCombos = $combosPerMixer[$barSale->product_id] ?? 0;
+                $totalSoldOrConsumed = max($userVendido, $includedInCombos);
+                $extras = max(0, $totalSoldOrConsumed - $includedInCombos);
+                $subtotal = $extras * $unitPrice;
 
                 $barSale->packages = 0;
                 $barSale->units = 0;
-                $barSale->total_initial = $vendido;
+                $barSale->total_initial = $totalSoldOrConsumed;
                 $barSale->saldo = 0;
-                $barSale->vendido = $vendido;
+                $barSale->vendido = $totalSoldOrConsumed;
                 $barSale->unit_price = $unitPrice;
                 $barSale->subtotal = $subtotal;
                 $this->syncProductStock($barSale);
                 $barSale->save();
+            }
+
+            // Sincronizar mixers que no vinieron explícitamente en $rows pero tienen combos incluidos
+            $processedMixerIds = collect($updatedMixers)->pluck('sale.product_id')->toArray();
+            foreach ($combosPerMixer as $mixerProdId => $qtyIncluded) {
+                if ($qtyIncluded > 0 && !in_array($mixerProdId, $processedMixerIds)) {
+                    $mixerSale = BarSale::where('night_session_id', $sessionId)
+                        ->where('bar_name', 'Tienda')
+                        ->where('product_id', $mixerProdId)
+                        ->first();
+                    if ($mixerSale) {
+                        $mixerSale->vendido = max((int)$mixerSale->vendido, $qtyIncluded);
+                        $mixerSale->subtotal = max(0, (int)$mixerSale->vendido - $qtyIncluded) * (float)$mixerSale->unit_price;
+                        $this->syncProductStock($mixerSale);
+                        $mixerSale->save();
+                    }
+                }
             }
         } else {
             // 1ra pasada: Actualizar inventario de licores y calcular subtotal de combos

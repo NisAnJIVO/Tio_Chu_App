@@ -472,7 +472,13 @@ class TioChuSystemTest extends TestCase
         $singani = Product::where('name', 'like', '%Singani Casa Real%')->first() ?? Product::first();
         $singani->update(['stock_warehouse' => 15]);
 
-        // Asegurar que existe BarSale para Tienda
+        $ginger = Product::find(23); // Ginger Ale 2.0L (acompañamiento de Singani)
+        $ginger->update(['stock_warehouse' => 20]);
+
+        $sprite = Product::find(15); // Sprite 2.0L (mixer especial)
+        $sprite->update(['stock_warehouse' => 10]);
+
+        // Asegurar que existen BarSale para Tienda
         $tiendaSale = BarSale::firstOrCreate([
             'night_session_id' => $session->id,
             'product_id' => $singani->id,
@@ -483,7 +489,27 @@ class TioChuSystemTest extends TestCase
             'subtotal' => 0.00,
         ]);
 
-        // 1. Verificar que la vista de Tienda muestra la tabla simplificada y NO el ticket POS con cobrante
+        $gingerSale = BarSale::firstOrCreate([
+            'night_session_id' => $session->id,
+            'product_id' => $ginger->id,
+            'bar_name' => 'Tienda',
+        ], [
+            'vendido' => 0,
+            'unit_price' => 25.00,
+            'subtotal' => 0.00,
+        ]);
+
+        $spriteSale = BarSale::firstOrCreate([
+            'night_session_id' => $session->id,
+            'product_id' => $sprite->id,
+            'bar_name' => 'Tienda',
+        ], [
+            'vendido' => 0,
+            'unit_price' => 25.00,
+            'subtotal' => 0.00,
+        ]);
+
+        // 1. Verificar que la vista de Tienda muestra la tabla simplificada con Acompañamiento y Especial
         $viewResponse = $this->actingAs($this->user)->get(route('sales.index', [
             'session_id' => $session->id,
             'bar' => 'Tienda',
@@ -491,6 +517,8 @@ class TioChuSystemTest extends TestCase
         $viewResponse->assertStatus(200);
         $viewResponse->assertSee('Unidades Vendidas');
         $viewResponse->assertSee('Ganancia / Total (Bs.)');
+        $viewResponse->assertSee('Acompañamiento');
+        $viewResponse->assertSee('Especial');
         $viewResponse->assertDontSee('Ticket de Venta');
         $viewResponse->assertDontSee('Mesero / Quién retira o cobra');
 
@@ -498,7 +526,7 @@ class TioChuSystemTest extends TestCase
         $tiendaSalesList = $viewResponse->viewData('allBarSales');
         $this->assertStringContainsString('Agua Vital 600 ml', $tiendaSalesList->last()->product->name);
 
-        // 2. Registrar venta directa llenando únicamente unidades vendidas
+        // 2. Registrar venta de 4 combos de Singani a 250 Bs (incluye 4 Ginger Ale)
         $response = $this->actingAs($this->user)->put(route('sales.updateBulk'), [
             'night_session_id' => $session->id,
             'bar_name' => 'Tienda',
@@ -507,12 +535,17 @@ class TioChuSystemTest extends TestCase
                     'vendido' => 4,
                     'unit_price' => 250.00,
                 ],
+                $gingerSale->id => [
+                    'vendido' => 4, // 4 incluidas en combo
+                    'unit_price' => 25.00,
+                ],
             ],
         ]);
 
         $response->assertSessionHas('success');
 
-        // 3. Verificar persistencia en bar_sales y cálculo de ganancia/total
+        // 3. Verificar persistencia en bar_sales y cálculo de ganancia/total:
+        // Singani: 4 * 250 = 1000 Bs
         $this->assertDatabaseHas('bar_sales', [
             'id' => $tiendaSale->id,
             'bar_name' => 'Tienda',
@@ -521,11 +554,54 @@ class TioChuSystemTest extends TestCase
             'subtotal' => 1000.00,
         ]);
 
-        // 4. Verificar que se descontaron 4 unidades directamente de Bodega Central
+        // Ginger Ale: 4 consumidas - 4 incluidas en combo = 0 extras * 25 = 0 Bs (el combo cubre el mixer)
+        $this->assertDatabaseHas('bar_sales', [
+            'id' => $gingerSale->id,
+            'bar_name' => 'Tienda',
+            'vendido' => 4,
+            'subtotal' => 0.00,
+        ]);
+
+        // 4. Verificar que se descontaron 4 unidades de Singani y 4 de Ginger Ale directamente de Bodega Central
         $this->assertEquals(11, $singani->fresh()->stock_warehouse);
+        $this->assertEquals(16, $ginger->fresh()->stock_warehouse);
 
         // 5. Verificar que el Cierre de Caja suma los 1000 Bs. de Tienda
         $this->assertGreaterThanOrEqual(1000.00, $session->fresh()->cashClosing->total_bar_sales);
+
+        // 6. Probar venta con mixer Especial (1 Singani con Sprite en lugar de Ginger)
+        $responseSpecial = $this->actingAs($this->user)->put(route('sales.updateBulk'), [
+            'night_session_id' => $session->id,
+            'bar_name' => 'Tienda',
+            'sales' => [
+                $tiendaSale->id => [
+                    'vendido' => 1,
+                    'unit_price' => 250.00,
+                    'selected_special_mixer' => json_encode([$sprite->id => 1]),
+                ],
+                $gingerSale->id => [
+                    'vendido' => 0,
+                    'unit_price' => 25.00,
+                ],
+                $spriteSale->id => [
+                    'vendido' => 1,
+                    'unit_price' => 25.00,
+                ],
+            ],
+        ]);
+
+        $responseSpecial->assertSessionHas('success');
+
+        // Sprite debe tener subtotal 0 (cubierto por el combo especial)
+        $this->assertDatabaseHas('bar_sales', [
+            'id' => $spriteSale->id,
+            'bar_name' => 'Tienda',
+            'vendido' => 1,
+            'subtotal' => 0.00,
+        ]);
+
+        // Bodega Central: Sprite se descontó en 1 (10 - 1 = 9)
+        $this->assertEquals(9, $sprite->fresh()->stock_warehouse);
     }
 
     public function test_closing_and_expenses_module(): void
