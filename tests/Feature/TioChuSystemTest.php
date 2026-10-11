@@ -494,6 +494,10 @@ class TioChuSystemTest extends TestCase
         $viewResponse->assertDontSee('Ticket de Venta');
         $viewResponse->assertDontSee('Mesero / Quién retira o cobra');
 
+        // Verificar que el orden respeta exactamente el de las barras y la última bebida es Agua de 600 ml
+        $tiendaSalesList = $viewResponse->viewData('allBarSales');
+        $this->assertStringContainsString('Agua Vital 600 ml', $tiendaSalesList->last()->product->name);
+
         // 2. Registrar venta directa llenando únicamente unidades vendidas
         $response = $this->actingAs($this->user)->put(route('sales.updateBulk'), [
             'night_session_id' => $session->id,

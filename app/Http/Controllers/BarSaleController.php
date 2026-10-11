@@ -180,26 +180,13 @@ class BarSaleController extends Controller
             $mixerSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category === 'Mixers');
 
             if ($selectedBar === 'Tienda') {
-                $categoryOrder = [
-                    'Singanis' => 1,
-                    'Fernet' => 2,
-                    'Rones' => 3,
-                    'Whiskys' => 4,
-                    'Gins' => 5,
-                    'Tequilas' => 6,
-                    'Mixers' => 7,
-                    'Otros' => 8,
-                ];
-
-                $allBarSales = $allBarSales->sort(function ($a, $b) use ($categoryOrder) {
-                    $catA = $a->product?->category === 'Mixers' ? 'Mixers' : ($a->product?->drink_type ?? 'Otros');
-                    $catB = $b->product?->category === 'Mixers' ? 'Mixers' : ($b->product?->drink_type ?? 'Otros');
-                    $orderA = $categoryOrder[$catA] ?? 99;
-                    $orderB = $categoryOrder[$catB] ?? 99;
-                    if ($orderA !== $orderB) {
-                        return $orderA <=> $orderB;
+                $allBarSales = $allBarSales->sort(function ($a, $b) {
+                    $isMixerA = $a->product?->category === 'Mixers' ? 1 : 0;
+                    $isMixerB = $b->product?->category === 'Mixers' ? 1 : 0;
+                    if ($isMixerA !== $isMixerB) {
+                        return $isMixerA <=> $isMixerB;
                     }
-                    return strcasecmp($a->product?->name ?? '', $b->product?->name ?? '');
+                    return ($a->product?->id ?? $a->product_id) <=> ($b->product?->id ?? $b->product_id);
                 })->values();
 
                 foreach ($allBarSales as $sale) {
