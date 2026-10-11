@@ -39,6 +39,32 @@ class Product extends Model
         return $this->hasMany(BarSale::class);
     }
 
+    /**
+     * Descuenta stock directamente de Bodega Central (sin bloquear si queda negativo o en cero)
+     */
+    public function deductWarehouseStock(int $quantity): void
+    {
+        $this->stock_warehouse -= $quantity;
+        $unitsPerPackage = max(1, (int) $this->units_per_package);
+        $stock = max(0, (int) $this->stock_warehouse);
+        $this->stock_packages = intdiv($stock, $unitsPerPackage);
+        $this->stock_units = $stock % $unitsPerPackage;
+        $this->save();
+    }
+
+    /**
+     * Restaura stock a Bodega Central al anular una venta
+     */
+    public function restoreWarehouseStock(int $quantity): void
+    {
+        $this->stock_warehouse += $quantity;
+        $unitsPerPackage = max(1, (int) $this->units_per_package);
+        $stock = max(0, (int) $this->stock_warehouse);
+        $this->stock_packages = intdiv($stock, $unitsPerPackage);
+        $this->stock_units = $stock % $unitsPerPackage;
+        $this->save();
+    }
+
     public static function getDrinkSubcategories(): array
     {
         return [

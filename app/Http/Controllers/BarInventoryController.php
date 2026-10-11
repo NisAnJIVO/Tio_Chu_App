@@ -26,10 +26,9 @@ class BarInventoryController extends Controller
         $selectedBar = match($rawBar) {
             'Barra Kelly (Principal)', 'Kelly', 'Principal' => 'Barra Principal',
             'Barra Ariel (Subte)', 'Ariel', 'Subte', 'Subterraneo', 'Subterráneo' => 'Barra Subterráneo',
-            'Tienda' => 'Tienda',
-            default => $rawBar,
+            default => in_array($rawBar, ['Barra Principal', 'Barra Subterráneo']) ? $rawBar : 'Barra Principal',
         };
-        $availableBars = ['Barra Principal', 'Barra Subterráneo', 'Tienda'];
+        $availableBars = ['Barra Principal', 'Barra Subterráneo'];
 
         $liquorSales = collect();
         $mixerSales = collect();
@@ -104,8 +103,7 @@ class BarInventoryController extends Controller
         $selectedBar = match($rawBar) {
             'Barra Kelly (Principal)', 'Kelly', 'Principal' => 'Barra Principal',
             'Barra Ariel (Subte)', 'Ariel', 'Subte', 'Subterraneo', 'Subterráneo' => 'Barra Subterráneo',
-            'Tienda' => 'Tienda',
-            default => $rawBar,
+            default => in_array($rawBar, ['Barra Principal', 'Barra Subterráneo']) ? $rawBar : 'Barra Principal',
         };
 
         foreach ($rows as $id => $data) {

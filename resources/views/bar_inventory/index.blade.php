@@ -119,13 +119,11 @@
                         $barLabel = match($bar) {
                             'Barra Principal', 'Barra Kelly (Principal)' => 'Barra Principal',
                             'Barra Subterráneo', 'Barra Ariel (Subte)' => 'Barra Subterráneo',
-                            'Tienda' => 'Tienda',
                             default => $bar,
                         };
                         $barFloor = match($bar) {
                             'Barra Principal', 'Barra Kelly (Principal)' => 'Piso Principal',
                             'Barra Subterráneo', 'Barra Ariel (Subte)' => 'Subterráneo',
-                            'Tienda' => 'Unidades Sueltas',
                             default => '',
                         };
                     @endphp

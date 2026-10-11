@@ -71,6 +71,12 @@ class StoreSaleController extends Controller
                     'qr_amount' => $index === 0 ? $qrAmount : 0,
                     'cobrante_name' => $cobrante,
                 ]);
+
+                // Consumir directamente de Bodega Central (sin exigir stock previo estricto)
+                $product = Product::find($order['product_id']);
+                if ($product) {
+                    $product->deductWarehouseStock($quantity);
+                }
             }
 
             if ($qrAmount > 0) {
@@ -109,6 +115,11 @@ class StoreSaleController extends Controller
         $session = $storeSale->nightSession;
         if ($session && !$session->isOpen()) {
             return back()->with('error', 'No se pueden eliminar despachos de una noche cerrada.');
+        }
+
+        // Devolver cantidad a Bodega Central
+        if ($storeSale->product) {
+            $storeSale->product->restoreWarehouseStock($storeSale->quantity);
         }
 
         $storeSale->delete();

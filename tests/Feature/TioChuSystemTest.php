@@ -412,6 +412,16 @@ class TioChuSystemTest extends TestCase
             'operator_name' => 'ARIEL',
             'amount' => 250.00,
         ]);
+
+        // Verificar que consumió directamente de Bodega Central (stock_warehouse)
+        $this->assertEquals($singani->stock_warehouse - 2, $singani->fresh()->stock_warehouse);
+
+        // Verificar que inventario de barras no tiene Tienda
+        $responseInventory = $this->actingAs($this->user)->get(route('barInventory.index', ['session_id' => $session->id]));
+        $responseInventory->assertStatus(200);
+        $responseInventory->assertSee('Barra Principal');
+        $responseInventory->assertSee('Barra Subterráneo');
+        $responseInventory->assertDontSee('Unidades Sueltas');
     }
 
     public function test_bars_renamed_to_institutional_and_tienda_view_accessible(): void
