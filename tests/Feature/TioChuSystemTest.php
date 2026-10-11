@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\BarSale;
 use App\Models\NightSession;
 use App\Models\Product;
 use App\Models\Staff;
@@ -463,6 +464,64 @@ class TioChuSystemTest extends TestCase
         $responseBodega = $this->actingAs($this->user)->get(route('products.index'));
         $responseBodega->assertStatus(200);
         $responseBodega->assertSee('Ventas Tienda (Sueltas)');
+    }
+
+    public function test_simplified_tienda_sales_registers_directly_in_db_and_syncs_stock(): void
+    {
+        $session = NightSession::first();
+        $singani = Product::where('name', 'like', '%Singani Casa Real%')->first() ?? Product::first();
+        $singani->update(['stock_warehouse' => 15]);
+
+        // Asegurar que existe BarSale para Tienda
+        $tiendaSale = BarSale::firstOrCreate([
+            'night_session_id' => $session->id,
+            'product_id' => $singani->id,
+            'bar_name' => 'Tienda',
+        ], [
+            'vendido' => 0,
+            'unit_price' => 250.00,
+            'subtotal' => 0.00,
+        ]);
+
+        // 1. Verificar que la vista de Tienda muestra la tabla simplificada y NO el ticket POS con cobrante
+        $viewResponse = $this->actingAs($this->user)->get(route('sales.index', [
+            'session_id' => $session->id,
+            'bar' => 'Tienda',
+        ]));
+        $viewResponse->assertStatus(200);
+        $viewResponse->assertSee('Unidades Vendidas');
+        $viewResponse->assertSee('Ganancia / Total (Bs.)');
+        $viewResponse->assertDontSee('Ticket de Venta');
+        $viewResponse->assertDontSee('Mesero / Quién retira o cobra');
+
+        // 2. Registrar venta directa llenando únicamente unidades vendidas
+        $response = $this->actingAs($this->user)->put(route('sales.updateBulk'), [
+            'night_session_id' => $session->id,
+            'bar_name' => 'Tienda',
+            'sales' => [
+                $tiendaSale->id => [
+                    'vendido' => 4,
+                    'unit_price' => 250.00,
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHas('success');
+
+        // 3. Verificar persistencia en bar_sales y cálculo de ganancia/total
+        $this->assertDatabaseHas('bar_sales', [
+            'id' => $tiendaSale->id,
+            'bar_name' => 'Tienda',
+            'vendido' => 4,
+            'unit_price' => 250.00,
+            'subtotal' => 1000.00,
+        ]);
+
+        // 4. Verificar que se descontaron 4 unidades directamente de Bodega Central
+        $this->assertEquals(11, $singani->fresh()->stock_warehouse);
+
+        // 5. Verificar que el Cierre de Caja suma los 1000 Bs. de Tienda
+        $this->assertGreaterThanOrEqual(1000.00, $session->fresh()->cashClosing->total_bar_sales);
     }
 
     public function test_closing_and_expenses_module(): void

@@ -351,11 +351,13 @@
             @if($session->isOpen())
                 <div class="flex items-center gap-2">
                     @if($selectedBar === 'Tienda')
-                        <a href="#tienda-pos-terminal"
-                           class="px-3.5 py-2 sm:py-1.5 rounded-xl bg-[#F5B81C] text-black text-xs font-bold hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto shadow-sm">
-                            <span class="text-base font-black leading-none">+</span>
-                            <span>Ir al Terminal de Venta</span>
-                        </a>
+                        <button type="submit" form="sales-form"
+                                class="px-3.5 py-2 sm:py-1.5 rounded-xl bg-[#F5B81C] text-black text-xs font-bold hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto shadow-sm">
+                            <svg class="w-3.5 h-3.5 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Guardar Ventas Tienda</span>
+                        </button>
                     @else
                         <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')"
                                 class="px-3.5 py-2 sm:py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto">
@@ -379,11 +381,11 @@
                     <span class="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md bg-zinc-950 border border-zinc-800 text-zinc-400">{{ $selectedBar }}</span>
                 </div>
                 <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-[#F5B81C] tracking-tight" id="header-grand-total">
-                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($selectedBar === 'Tienda' && $totalStoreSales > 0 ? $totalStoreSales : $grandTotalBar, 2) }}
+                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($grandTotalBar, 2) }}
                 </div>
                 <p class="text-[10px] sm:text-[11px] text-zinc-400 mt-1 font-sans">
                     @if($selectedBar === 'Tienda')
-                        <span class="font-semibold text-white">{{ $storeSales->count() }} despachos</span> sueltos registrados
+                        <span id="header-tienda-units" class="font-semibold text-white">{{ $totalTiendaUnits ?? $allBarSales->sum('vendido') }} bebidas</span> vendidas
                     @else
                         <span id="header-total-combos" class="font-semibold text-white">{{ $totalLiquorCombos }} combos</span> + <span id="header-total-extras" class="font-semibold text-white">{{ $totalMixerExtras }} extras</span>
                     @endif
@@ -394,7 +396,7 @@
             <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border flex flex-col justify-between">
                 <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Efectivo {{ $selectedBar === 'Tienda' ? 'Tienda' : 'en Barra' }}</span>
                 <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-emerald-400 tracking-tight">
-                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span><span id="header-bar-cash">{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('cash_amount') : $barCashRemaining, 2) }}</span>
+                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span><span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
                 </div>
                 <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-1 font-sans">
                     Dinero físico en caja
@@ -540,22 +542,21 @@
         </div>
 
         @if($selectedBar === 'Tienda')
-            <!-- Hidden input para que el recalculador JS incluya las ventas de tienda -->
-            <input type="hidden" id="store-sales-total-val" value="{{ (float)$totalStoreSales }}">
-
             <!-- ========================================================
-                 TERMINAL POS DIRECTO — TIENDA OFICIAL TÍO CHU
+                 TABLA DE VENTAS TIENDA OFICIAL — FORMATO DIRECTO
                  ======================================================== -->
-            <div id="tienda-pos-terminal" class="space-y-6 mb-8">
+            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form" data-ajax="true" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }} space-y-5 mb-8">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="night_session_id" value="{{ $session->id }}">
+                <input type="hidden" name="bar_name" value="Tienda">
 
-                <!-- ENCABEZADO TERMINAL -->
+                <!-- ENCABEZADO TIENDA OFICIAL -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 rounded-2xl theme-card border theme-border">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-[#F5B81C]/20 border border-[#F5B81C]/40 flex items-center justify-center text-[#F5B81C] shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                                <line x1="8" y1="21" x2="16" y2="21"/>
-                                <line x1="12" y1="17" x2="12" y2="21"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                             </svg>
                         </div>
                         <div>
@@ -564,441 +565,278 @@
                                 <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Ventas Directas de Unidades Sueltas</h2>
                             </div>
                             <p class="text-xs text-zinc-400 mt-0.5">
-                                Toca cualquier bebida para cargarla al ticket de venta. Consume directamente de Bodega Central.
+                                Anota cuántas bebidas se vendieron en mostrador. La ganancia y el total se calculan en vivo y sincronizan directamente con Bodega Central.
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-zinc-400 font-mono">
-                            Total Despachado: <strong class="text-[#F5B81C] font-mono text-sm">Bs. {{ number_format($totalStoreSales, 2) }}</strong>
-                        </span>
+                    <div class="flex items-center gap-3 sm:self-center">
+                        <div class="text-right">
+                            <span class="text-[10px] text-zinc-400 block uppercase tracking-wider font-semibold">Total Tienda:</span>
+                            <span class="text-lg font-black font-mono text-[#F5B81C]" id="badge-tienda-grand-total">
+                                Bs. {{ number_format($grandTotalBar, 2) }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                @if($session->isOpen())
-                <!-- POS INTERACTIVO: 2 COLUMNAS (CATÁLOGO DE BOTONES + TICKET DE COBRO) -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-
-                    <!-- COLUMNA IZQUIERDA: CATÁLOGO DE BEBIDAS CON BOTONES GRANDES (lg:col-span-7 xl:col-span-8) -->
-                    <div class="lg:col-span-7 xl:col-span-8 space-y-4">
-
-                        <!-- FILTROS RÁPIDOS Y BUSCADOR -->
-                        <div class="p-3.5 rounded-2xl theme-card border theme-border space-y-3">
-                            <!-- Buscador Rápido -->
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <circle cx="11" cy="11" r="8"/>
-                                        <path d="M21 21l-4.35-4.35"/>
-                                    </svg>
-                                </div>
-                                <input type="text" 
-                                       id="tienda-search-input" 
-                                       oninput="filterTiendaDrinks()"
-                                       placeholder="Buscar bebida (ej: San Pedro, Casa Real, Fernet, Ginger, Johnnie Walker)..." 
-                                       class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-all">
-                                <button type="button" 
-                                        onclick="document.getElementById('tienda-search-input').value = ''; filterTiendaDrinks();" 
-                                        class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-zinc-500 hover:text-white cursor-pointer text-xs">
-                                    &times;
-                                </button>
-                            </div>
-
-                            <!-- Pastillas de Categorías -->
-                            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs" id="tienda-category-pills">
-                                <button type="button" 
-                                        onclick="setTiendaCategory('todas', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all bg-[#F5B81C] text-black shadow-sm shrink-0">
-                                    Todas
-                                </button>
-                                <button type="button" 
-                                        onclick="setTiendaCategory('singanis', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">
-                                    Singanis
-                                </button>
-                                <button type="button" 
-                                        onclick="setTiendaCategory('fernet-rones', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">
-                                    Fernet & Rones
-                                </button>
-                                <button type="button" 
-                                        onclick="setTiendaCategory('whiskys', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">
-                                    Whiskys
-                                </button>
-                                <button type="button" 
-                                        onclick="setTiendaCategory('gins', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">
-                                    Gins
-                                </button>
-                                <button type="button" 
-                                        onclick="setTiendaCategory('tequilas-otros', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">
-                                    Tequilas & Otros
-                                </button>
-                                <button type="button" 
-                                        onclick="setTiendaCategory('mixers', this)"
-                                        class="tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">
-                                    Mixers & Sodas
-                                </button>
-                            </div>
+                <!-- BUSCADOR RÁPIDO Y FILTROS POR CATEGORÍA -->
+                <div class="p-3.5 rounded-2xl theme-card border theme-border space-y-3">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
                         </div>
+                        <input type="text" 
+                               id="tienda-table-search" 
+                               oninput="filterTiendaTable()"
+                               placeholder="Buscar bebida (ej: San Pedro, Casa Real, Fernet, Ginger, Johnnie Walker)..." 
+                               class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-all">
+                        <button type="button" 
+                                onclick="document.getElementById('tienda-table-search').value = ''; filterTiendaTable();" 
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-zinc-500 hover:text-white cursor-pointer text-xs">
+                            &times;
+                        </button>
+                    </div>
 
-                        <!-- GRID DE BOTONES TÁCTILES DE BEBIDAS -->
-                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3" id="tienda-drinks-grid">
-                            @foreach($allProducts as $prod)
-                                @php
-                                    $drinkType = $prod->drink_type;
-                                    $isMixer = $prod->category === 'Mixers';
-                                    $catKey = 'otros';
-                                    if ($isMixer) {
-                                        $catKey = 'mixers';
-                                    } elseif (str_contains(strtolower($drinkType), 'singani')) {
-                                        $catKey = 'singanis';
-                                    } elseif (str_contains(strtolower($drinkType), 'ron') || str_contains(strtolower($drinkType), 'fernet')) {
-                                        $catKey = 'fernet-rones';
-                                    } elseif (str_contains(strtolower($drinkType), 'whisky')) {
-                                        $catKey = 'whiskys';
-                                    } elseif (str_contains(strtolower($drinkType), 'gin')) {
-                                        $catKey = 'gins';
-                                    } else {
+                    <!-- Pastillas de Categorías -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs" id="tienda-table-category-pills">
+                        <button type="button" onclick="setTiendaTableCategory('todas', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all bg-[#F5B81C] text-black shadow-sm shrink-0">Todas</button>
+                        <button type="button" onclick="setTiendaTableCategory('singanis', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">Singanis</button>
+                        <button type="button" onclick="setTiendaTableCategory('fernet-rones', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">Fernet & Rones</button>
+                        <button type="button" onclick="setTiendaTableCategory('whiskys', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">Whiskys</button>
+                        <button type="button" onclick="setTiendaTableCategory('gins', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">Gins</button>
+                        <button type="button" onclick="setTiendaTableCategory('tequilas-otros', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">Tequilas & Otros</button>
+                        <button type="button" onclick="setTiendaTableCategory('mixers', this)" class="tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0">Mixers & Sodas</button>
+                    </div>
+                </div>
+
+                <!-- TABLA FORMATO IDENTICO A LAS OTRAS BARRAS PERO SIMPLIFICADO -->
+                <div class="rounded-2xl theme-card border theme-border overflow-hidden">
+                    <div class="overflow-x-auto sales-table-wrapper">
+                        <table class="w-full text-xs text-left border-collapse excel-table min-w-[700px]" id="table-tienda">
+                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
+                                <tr>
+                                    <th class="px-3 py-3.5 w-10 text-center col-num">N°</th>
+                                    <th class="px-4 py-3.5 col-product col-sticky-product">Bebida / Presentación</th>
+                                    <th class="px-3 py-3.5 w-24 text-center border-l theme-border">Stock Bodega</th>
+                                    <th class="px-4 py-3.5 w-28 text-right border-l theme-border">Precio Venta (Bs.)</th>
+                                    <th class="px-4 py-3.5 w-40 text-center border-l theme-border font-bold text-[#F5B81C]">Unidades Vendidas</th>
+                                    <th class="px-4 py-3.5 w-36 text-right border-l theme-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y theme-border font-sans" id="tienda-tbody">
+                                @forelse($allBarSales as $index => $sale)
+                                    @php
+                                        $prod = $sale->product;
+                                        if (!$prod) continue;
+                                        $isMixer = $prod->category === 'Mixers';
+                                        $drinkType = $prod->drink_type;
                                         $catKey = 'tequilas-otros';
-                                    }
-                                @endphp
-                                <button type="button" 
-                                        onclick="addDrinkToTiendaCart({{ $prod->id }}, {{ json_encode($prod->name) }}, {{ (float)$prod->sale_price }}, {{ json_encode($prod->image_url) }}, {{ (int)$prod->stock_warehouse }})"
+                                        if ($isMixer) {
+                                            $catKey = 'mixers';
+                                        } elseif (str_contains(strtolower($drinkType), 'singani')) {
+                                            $catKey = 'singanis';
+                                        } elseif (str_contains(strtolower($drinkType), 'ron') || str_contains(strtolower($drinkType), 'fernet')) {
+                                            $catKey = 'fernet-rones';
+                                        } elseif (str_contains(strtolower($drinkType), 'whisky')) {
+                                            $catKey = 'whiskys';
+                                        } elseif (str_contains(strtolower($drinkType), 'gin')) {
+                                            $catKey = 'gins';
+                                        }
+                                    @endphp
+                                    <tr class="hover:bg-zinc-900/40 transition-colors tienda-row"
+                                        data-row-id="{{ $sale->id }}"
                                         data-category-key="{{ $catKey }}"
-                                        data-name="{{ strtolower($prod->name) }}"
-                                        class="tienda-drink-card p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-[#F5B81C] hover:bg-zinc-850 active:scale-95 transition-all flex flex-col justify-between text-left group cursor-pointer shadow-sm relative min-h-[165px]">
-                                    
-                                    <!-- Badge de Stock y Categoría -->
-                                    <div class="flex items-center justify-between gap-1 w-full">
-                                        <span class="text-[9px] font-extrabold uppercase tracking-wider text-zinc-400 truncate max-w-[85px]">
-                                            {{ $isMixer ? 'Mixer' : $drinkType }}
-                                        </span>
-                                        @if($prod->stock_warehouse > 0)
-                                            <span class="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
-                                                {{ $prod->stock_warehouse }} bot.
-                                            </span>
-                                        @else
-                                            <span class="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-medium bg-zinc-950 text-zinc-500 border border-zinc-800 shrink-0">
-                                                0 bot.
-                                            </span>
-                                        @endif
-                                    </div>
+                                        data-name="{{ strtolower($prod->name) }}">
+                                        
+                                        <!-- N° -->
+                                        <td class="px-3 py-2.5 text-center text-zinc-500 font-mono col-num">
+                                            {{ $index + 1 }}
+                                        </td>
 
-                                    <!-- Imagen de la Bebida -->
-                                    <div class="h-16 sm:h-20 w-full flex items-center justify-center my-1.5 pointer-events-none">
-                                        <img src="{{ $prod->image_url }}" alt="{{ $prod->name }}" 
-                                             class="max-h-full max-w-full object-contain filter drop-shadow group-hover:scale-110 transition-transform duration-200">
-                                    </div>
-
-                                    <!-- Nombre y Precio -->
-                                    <div class="w-full space-y-1">
-                                        <div class="font-bold text-white text-xs leading-tight line-clamp-2 group-hover:text-[#F5B81C] transition-colors">
-                                            {{ $prod->name }}
-                                        </div>
-                                        <div class="flex items-center justify-between pt-1 border-t border-zinc-800/60">
-                                            <span class="font-mono font-black text-[#F5B81C] text-xs sm:text-sm">
-                                                Bs. {{ number_format($prod->sale_price, 0) }}
-                                            </span>
-                                            <span class="text-[10px] font-bold text-zinc-400 group-hover:text-white flex items-center gap-0.5">
-                                                <span>+ Añadir</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            @endforeach
-                        </div>
-
-                        <!-- Estado sin resultados en búsqueda -->
-                        <div id="tienda-empty-search" class="hidden text-center py-12 px-4 rounded-2xl theme-card border theme-border">
-                            <p class="text-xs text-zinc-400">No se encontraron bebidas con ese término.</p>
-                        </div>
-                    </div>
-
-                    <!-- COLUMNA DERECHA: TICKET DE COBRO DIRECTO (lg:col-span-5 xl:col-span-4) -->
-                    <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-4 self-start">
-                        <div class="rounded-2xl theme-card border theme-border p-4 sm:p-5 shadow-2xl space-y-4">
-                            
-                            <!-- Cabecera del Ticket -->
-                            <div class="flex items-center justify-between pb-3 border-b theme-border">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-7 h-7 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center text-[#F5B81C]">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-sm font-bold text-white">Ticket de Venta</h3>
-                                    <span id="tienda-cart-badge-count" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#F5B81C]/20 text-[#F5B81C] border border-[#F5B81C]/40">
-                                        0 items
-                                    </span>
-                                </div>
-                                <button type="button" 
-                                        onclick="clearTiendaCart()" 
-                                        class="text-[11px] text-zinc-400 hover:text-rose-400 font-semibold transition-colors cursor-pointer">
-                                    Vaciar
-                                </button>
-                            </div>
-
-                            <!-- Formulario POS para envío -->
-                            <form id="tienda-pos-form" method="POST" action="{{ route('sales.storeSales.store') }}" onsubmit="return validateAndSubmitTiendaPos(event)">
-                                @csrf
-                                <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-                                
-                                <!-- Contenedor de inputs dinámicos de los items -->
-                                <div id="tienda-cart-hidden-inputs"></div>
-
-                                <!-- Inputs de Cobro -->
-                                <input type="hidden" name="cash_amount" id="tienda-input-cash" value="0">
-                                <input type="hidden" name="qr_amount" id="tienda-input-qr" value="0">
-                                <input type="hidden" name="card_amount" id="tienda-input-card" value="0">
-                                <input type="hidden" name="bank_app" id="tienda-input-bank-app" value="YASTA">
-                                <input type="hidden" name="sync_qr" value="1">
-
-                                <!-- Lista de Productos en el Ticket -->
-                                <div id="tienda-cart-list" class="max-h-64 overflow-y-auto space-y-2 pr-1 divide-y divide-zinc-850">
-                                    <div id="tienda-cart-placeholder" class="text-center py-8 text-zinc-500">
-                                        <svg class="w-8 h-8 mx-auto mb-2 opacity-40 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                            <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <p class="text-xs font-medium text-zinc-400">Ninguna bebida seleccionada</p>
-                                        <p class="text-[11px] text-zinc-500 mt-0.5">Toca los botones grandes de la izquierda para agregar.</p>
-                                    </div>
-                                </div>
-
-                                <!-- Total a Cobrar -->
-                                <div class="pt-3 border-t theme-border">
-                                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-800/80">
-                                        <span class="text-xs font-bold text-zinc-300 uppercase tracking-wider">Total a Cobrar:</span>
-                                        <span id="tienda-cart-total-display" class="text-xl sm:text-2xl font-black font-mono text-[#F5B81C]">
-                                            Bs. 0.00
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- Métodos de Pago Rápidos (1 solo toque) -->
-                                <div class="space-y-2 pt-2">
-                                    <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
-                                        Forma de Pago:
-                                    </label>
-                                    <div class="grid grid-cols-2 gap-2 text-xs">
-                                        <button type="button" onclick="setTiendaPaymentPreset('efectivo')" id="btn-pay-efectivo"
-                                                class="tienda-pay-btn py-2 px-2.5 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition-all bg-[#F5B81C] text-black border-[#F5B81C] shadow-sm">
-                                            <span>💵 Efectivo 100%</span>
-                                        </button>
-                                        <button type="button" onclick="setTiendaPaymentPreset('qr')" id="btn-pay-qr"
-                                                class="tienda-pay-btn py-2 px-2.5 rounded-xl border font-semibold flex items-center justify-center gap-1.5 transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white">
-                                            <span>📱 QR 100%</span>
-                                        </button>
-                                        <button type="button" onclick="setTiendaPaymentPreset('tarjeta')" id="btn-pay-tarjeta"
-                                                class="tienda-pay-btn py-2 px-2.5 rounded-xl border font-semibold flex items-center justify-center gap-1.5 transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white">
-                                            <span>💳 Tarjeta 100%</span>
-                                        </button>
-                                        <button type="button" onclick="setTiendaPaymentPreset('mixto')" id="btn-pay-mixto"
-                                                class="tienda-pay-btn py-2 px-2.5 rounded-xl border font-semibold flex items-center justify-center gap-1.5 transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white">
-                                            <span>⚖️ Dividido / Mixto</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Selector de App QR (si QR > 0) -->
-                                    <div id="tienda-qr-app-picker" class="hidden p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 space-y-1.5">
-                                        <div class="flex items-center justify-between text-[11px]">
-                                            <span class="font-bold text-blue-400">App para Cobro QR:</span>
-                                            <span class="text-zinc-400 text-[10px]">Se guardará en la lista de QRs</span>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <button type="button" onclick="setTiendaBankApp('YASTA')" id="btn-app-yasta"
-                                                    class="py-1.5 rounded-lg text-xs font-bold border transition-all bg-[#004b93] text-white border-blue-400">
-                                                YASTA (Unión)
-                                            </button>
-                                            <button type="button" onclick="setTiendaBankApp('YAPE')" id="btn-app-yape"
-                                                    class="py-1.5 rounded-lg text-xs font-bold border transition-all bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white">
-                                                YAPE (BCP)
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Desglose Manual para Pago Mixto / Personalizado -->
-                                    <div id="tienda-split-inputs" class="hidden p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                                        <div class="text-[11px] text-zinc-400 font-semibold">Desglose de montos:</div>
-                                        <div class="grid grid-cols-3 gap-2">
-                                            <div>
-                                                <label class="text-[10px] text-emerald-400 block mb-1">Efectivo:</label>
-                                                <input type="number" step="0.5" min="0" id="tienda-manual-cash" oninput="onTiendaManualPaymentChange()"
-                                                       class="w-full h-8 text-center rounded-lg bg-black border border-zinc-800 font-mono text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
-                                            </div>
-                                            <div>
-                                                <label class="text-[10px] text-blue-400 block mb-1">QR:</label>
-                                                <input type="number" step="0.5" min="0" id="tienda-manual-qr" oninput="onTiendaManualPaymentChange()"
-                                                       class="w-full h-8 text-center rounded-lg bg-black border border-zinc-800 font-mono text-xs font-bold text-white focus:outline-none focus:border-blue-500">
-                                            </div>
-                                            <div>
-                                                <label class="text-[10px] text-purple-400 block mb-1">Tarjeta:</label>
-                                                <input type="number" step="0.5" min="0" id="tienda-manual-card" oninput="onTiendaManualPaymentChange()"
-                                                       class="w-full h-8 text-center rounded-lg bg-black border border-zinc-800 font-mono text-xs font-bold text-white focus:outline-none focus:border-purple-500">
-                                            </div>
-                                        </div>
-                                        <div id="tienda-split-diff-msg" class="text-[10px] text-zinc-400 font-mono text-right"></div>
-                                    </div>
-                                </div>
-
-                                <!-- Mesero / Quién retira o cobra -->
-                                <div class="space-y-1.5 pt-2">
-                                    <label for="tienda-input-cobrante" class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
-                                        Mesero / Quién retira o cobra:
-                                    </label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <circle cx="9" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                        </div>
-                                        <input type="text" 
-                                               name="cobrante_name" 
-                                               id="tienda-input-cobrante" 
-                                               required 
-                                               list="waiters-list"
-                                               placeholder="Escribe el nombre del mesero..."
-                                               autocomplete="off"
-                                               class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wide focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-all">
-                                    </div>
-                                    <datalist id="waiters-list">
-                                        @foreach(\App\Models\Staff::where('is_active', true)->orderBy('name')->pluck('name') as $staffName)
-                                            <option value="{{ $staffName }}">
-                                        @endforeach
-                                    </datalist>
-                                </div>
-
-                                <!-- Botón Gigante de Cobrar y Despachar -->
-                                <div class="pt-4">
-                                    <button type="submit" 
-                                            id="tienda-btn-submit" 
-                                            disabled
-                                            class="w-full py-3.5 px-4 rounded-xl bg-zinc-800 text-zinc-500 font-black text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-not-allowed shadow-none">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                        <span id="tienda-btn-submit-text">SELECCIONA BEBIDAS PARA COBRAR</span>
-                                    </button>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-                @else
-                <div class="p-6 rounded-2xl theme-card border theme-border text-center text-zinc-400 text-xs">
-                    Noche cerrada. Abre o desbloquea la noche para registrar ventas en tienda.
-                </div>
-                @endif
-
-                <!-- ========================================================
-                     TABLA DE VENTAS REGISTRADAS ESTA NOCHE EN TIENDA
-                     ======================================================== -->
-                <div class="rounded-2xl theme-card border theme-border overflow-hidden space-y-4 p-4 sm:p-6 mt-8">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b theme-border">
-                        <div>
-                            <h3 class="text-sm font-bold text-white tracking-tight">Historial de Despachos de Esta Noche</h3>
-                            <p class="text-xs text-zinc-400 mt-0.5">Lista de todas las salidas y cobros registrados en mostrador de tienda.</p>
-                        </div>
-                        <span class="text-xs font-mono font-bold text-[#F5B81C] bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-800">
-                            {{ $storeSales->count() }} Despachos • Bs. {{ number_format($totalStoreSales, 2) }}
-                        </span>
-                    </div>
-
-                    @if($storeSales->isEmpty())
-                        <div class="text-center py-10 px-4 bg-zinc-950/50 rounded-xl border border-zinc-900">
-                            <h4 class="text-xs font-bold text-zinc-400">No hay ventas registradas esta noche en Tienda.</h4>
-                            <p class="text-[11px] text-zinc-500 mt-1">Selecciona bebidas arriba y presiona "Registrar Cobro" para empezar.</p>
-                        </div>
-                    @else
-                        <div class="overflow-x-auto rounded-xl border theme-border">
-                            <table class="w-full text-xs text-left border-collapse">
-                                <thead class="bg-zinc-950 text-zinc-400 font-semibold uppercase text-[10px] tracking-wider border-b theme-border">
-                                    <tr>
-                                        <th class="px-4 py-3 w-12 text-center">N°</th>
-                                        <th class="px-4 py-3">Hora</th>
-                                        <th class="px-4 py-3">Producto Despachado</th>
-                                        <th class="px-4 py-3 text-center">Cant. Suelta</th>
-                                        <th class="px-4 py-3 text-right">P. Unitario</th>
-                                        <th class="px-4 py-3 text-right">Total</th>
-                                        <th class="px-4 py-3 text-center">Método Pago</th>
-                                        <th class="px-4 py-3">Cobrante</th>
-                                        @if($session->isOpen())
-                                            <th class="px-4 py-3 text-center w-16">Acción</th>
-                                        @endif
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-zinc-900 font-sans">
-                                    @foreach($storeSales as $index => $ss)
-                                        <tr class="hover:bg-zinc-900/40 transition-colors">
-                                            <td class="px-4 py-3 text-center text-zinc-500 font-mono text-[11px]">{{ $index + 1 }}</td>
-                                            <td class="px-4 py-3 text-zinc-400 font-mono text-[11px]">{{ $ss->created_at->format('H:i') }}</td>
-                                            <td class="px-4 py-3 font-bold text-white">
-                                                <span>{{ $ss->product->name ?? 'Producto Eliminado' }}</span>
-                                                <span class="text-[10px] text-zinc-500 font-normal block">{{ $ss->product->category ?? '' }}</span>
-                                            </td>
-                                            <td class="px-4 py-3 text-center">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 font-mono font-bold text-white text-xs">
-                                                    {{ $ss->quantity }} unid.
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-3 text-right font-mono text-zinc-300">
-                                                Bs. {{ number_format($ss->unit_price, 2) }}
-                                            </td>
-                                            <td class="px-4 py-3 text-right font-mono font-bold text-[#F5B81C]">
-                                                Bs. {{ number_format($ss->total_price, 2) }}
-                                            </td>
-                                            <td class="px-4 py-3 text-center">
-                                                @if($ss->cash_amount > 0 && $ss->qr_amount == 0 && $ss->card_amount == 0)
-                                                    <span class="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">Efectivo</span>
-                                                @elseif($ss->qr_amount > 0 && $ss->cash_amount == 0 && $ss->card_amount == 0)
-                                                    <span class="px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold">QR</span>
-                                                @elseif($ss->card_amount > 0 && $ss->cash_amount == 0 && $ss->qr_amount == 0)
-                                                    <span class="px-2 py-0.5 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-bold">Tarjeta</span>
-                                                @else
-                                                    <span class="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold">Mixto</span>
+                                        <!-- Bebida / Presentación -->
+                                        <td class="px-4 py-2.5 col-product col-sticky-product">
+                                            <div class="flex items-center gap-3">
+                                                @if(!empty($prod->image_url))
+                                                    <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 p-1 flex items-center justify-center shrink-0">
+                                                        <img src="{{ $prod->image_url }}" alt="{{ $prod->name }}" class="max-h-full max-w-full object-contain filter drop-shadow">
+                                                    </div>
                                                 @endif
-                                            </td>
-                                            <td class="px-4 py-3 text-zinc-300 font-medium">
-                                                {{ $ss->cobrante_name }}
-                                            </td>
-                                            @if($session->isOpen())
-                                                <td class="px-4 py-3 text-center">
-                                                    <form method="POST" action="{{ route('sales.storeSales.destroy', $ss) }}" onsubmit="return confirm('¿Seguro que deseas anular esta venta de tienda? Devolverá el stock a Bodega Central.');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" title="Anular venta" class="p-1.5 rounded-lg text-rose-400 hover:text-white hover:bg-rose-500/20 transition-all cursor-pointer">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"/>
-                                                            </svg>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot class="bg-zinc-950 font-bold border-t theme-border text-xs">
-                                    <tr>
-                                        <td colspan="5" class="px-4 py-3 text-right uppercase tracking-wider text-zinc-400">Total Despachos Tienda:</td>
-                                        <td class="px-4 py-3 text-right font-mono text-[#F5B81C] text-sm">
-                                            Bs. {{ number_format($totalStoreSales, 2) }}
+                                                <div>
+                                                    <span class="font-bold text-white block text-sm sm:text-xs leading-snug">{{ $prod->name }}</span>
+                                                    <span class="text-[11px] text-zinc-400 font-normal">
+                                                        {{ $isMixer ? 'Mixer / Soda' : $drinkType }} • {{ $prod->unit }}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td colspan="{{ $session->isOpen() ? 3 : 2 }}" class="px-4 py-3 text-right text-zinc-500 text-[11px]">
-                                            Efectivo: Bs. {{ number_format($storeSales->sum('cash_amount'), 2) }} • QR: Bs. {{ number_format($storeSales->sum('qr_amount'), 2) }} • POS: Bs. {{ number_format($storeSales->sum('card_amount'), 2) }}
+
+                                        <!-- Stock Bodega Central -->
+                                        <td class="px-3 py-2.5 text-center border-l theme-border">
+                                            @if($prod->stock_warehouse > 0)
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                    {{ $prod->stock_warehouse }} bot.
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-950 text-zinc-500 border border-zinc-800">
+                                                    0 bot.
+                                                </span>
+                                            @endif
+                                        </td>
+
+                                        <!-- Precio Venta Unitario -->
+                                        <td class="px-4 py-2 text-right border-l theme-border">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                                <input type="number" 
+                                                       step="0.5" 
+                                                       min="0"
+                                                       name="sales[{{ $sale->id }}][unit_price]" 
+                                                       id="tienda-price-{{ $sale->id }}"
+                                                       value="{{ $sale->unit_price > 0 ? $sale->unit_price : $prod->sale_price }}"
+                                                       oninput="onTiendaRowChange({{ $sale->id }})"
+                                                       class="tienda-input-price w-20 sm:w-24 h-9 text-right rounded-xl px-2 font-mono font-bold text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] transition-all">
+                                            </div>
+                                        </td>
+
+                                        <!-- Unidades Vendidas (Campo de Llenado Principal) -->
+                                        <td class="px-4 py-2 border-l theme-border text-center">
+                                            <div class="inline-flex items-center gap-1.5 justify-center">
+                                                <button type="button" 
+                                                        onclick="stepTiendaRowQty({{ $sale->id }}, -1)"
+                                                        class="w-7 h-8 rounded-lg bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center font-bold text-sm cursor-pointer transition-all active:scale-95">
+                                                    -
+                                                </button>
+                                                <input type="number" 
+                                                       min="0" 
+                                                       name="sales[{{ $sale->id }}][vendido]" 
+                                                       id="tienda-vendido-{{ $sale->id }}"
+                                                       value="{{ (int)$sale->vendido }}"
+                                                       oninput="onTiendaRowChange({{ $sale->id }})"
+                                                       class="tienda-input-vendido w-16 sm:w-20 h-9 text-center rounded-xl font-mono font-black text-sm sm:text-base bg-zinc-950 border-2 border-zinc-700/80 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#181507] focus:text-[#F5B81C] transition-all">
+                                                <button type="button" 
+                                                        onclick="stepTiendaRowQty({{ $sale->id }}, 1)"
+                                                        class="w-7 h-8 rounded-lg bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center font-bold text-sm cursor-pointer transition-all active:scale-95">
+                                                    +
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                        <!-- Ganancia / Total (Bs.) -->
+                                        <td class="px-4 py-2 text-right border-l theme-border">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                                <input type="number" 
+                                                       step="0.5" 
+                                                       min="0"
+                                                       name="sales[{{ $sale->id }}][subtotal]" 
+                                                       id="tienda-subtotal-{{ $sale->id }}"
+                                                       value="{{ number_format($sale->subtotal, 2, '.', '') }}"
+                                                       oninput="onTiendaManualSubtotalChange({{ $sale->id }})"
+                                                       class="tienda-input-subtotal w-24 sm:w-28 h-9 text-right rounded-xl px-2 font-mono font-black text-xs sm:text-sm bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] transition-all">
+                                            </div>
                                         </td>
                                     </tr>
-                                </tfoot>
-                            </table>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
+                                    </tr>
+                                @endforelse
+                                <tr id="tienda-empty-filter-row" class="hidden">
+                                    <td colspan="6" class="px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-zinc-950 border-t theme-border font-bold text-xs text-white">
+                                <tr>
+                                    <td colspan="4" class="px-4 py-3 text-right uppercase tracking-wider font-sans">
+                                        <span>Total Ventas Tienda:</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-center font-mono font-black text-[#F5B81C] text-base" id="tfoot-tienda-units">
+                                        {{ $totalTiendaUnits ?? $allBarSales->sum('vendido') }}
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-mono font-black text-[#F5B81C] text-base" id="tfoot-tienda-subtotal">
+                                        Bs. {{ number_format($allBarSales->sum('subtotal'), 2) }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Guardarropa y Snacks (Para el Cierre de Caja) -->
+                <div class="p-4 sm:p-5 rounded-2xl theme-card border theme-border space-y-3">
+                    <div class="flex items-center justify-between border-b theme-border pb-2.5">
+                        <div>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">Ingresos Adicionales de Tienda</h3>
+                            <p class="text-[11px] text-zinc-400">Guardarropa y snacks recaudados durante la noche.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                            <label class="text-[11px] font-bold text-zinc-300 uppercase tracking-wider block">Guardarropa (Bs.):</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                <input type="number" 
+                                       step="0.5" 
+                                       min="0"
+                                       name="guardarropa_amount" 
+                                       value="{{ $closing->total_guardarropa ?? 0 }}"
+                                       oninput="window.queueSalesAutosave?.()"
+                                       class="w-full h-9 rounded-xl bg-black border border-zinc-800 px-3 font-mono font-bold text-sm text-white focus:outline-none focus:border-[#F5B81C]">
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                            <label class="text-[11px] font-bold text-zinc-300 uppercase tracking-wider block">Snacks / Alimentos (Bs.):</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                <input type="number" 
+                                       step="0.5" 
+                                       min="0"
+                                       name="snacks_amount" 
+                                       value="{{ $closing->total_snacks ?? 0 }}"
+                                       oninput="window.queueSalesAutosave?.()"
+                                       class="w-full h-9 rounded-xl bg-black border border-zinc-800 px-3 font-mono font-bold text-sm text-white focus:outline-none focus:border-[#F5B81C]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Inferior de Guardar -->
+                <div class="p-4 rounded-2xl theme-card border theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="text-xs text-zinc-400 block font-normal">Total Ganancia Tienda:</span>
+                            <span class="text-lg font-bold font-mono text-white" id="footer-tienda-grand-total">
+                                Bs. {{ number_format($grandTotalBar, 2) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    @if($session->isOpen())
+                        <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-2 dilemo-btn cursor-pointer shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Guardar Ventas Tienda</span>
+                        </button>
+                    @else
+                        <div class="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-semibold flex items-center gap-2 w-full sm:w-auto justify-center">
+                            <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <span>Noche cerrada (solo lectura)</span>
                         </div>
                     @endif
                 </div>
-
-            </div>
+            </form>
         @endif
 
         <!-- Formulario Tabular de Inventario y Ventas para Barras (Principal y Subterráneo) -->
@@ -1548,7 +1386,7 @@
         @endif
 
         <!-- Barra Flotante Inferior en Celular (Acceso Rápido a Guardar) -->
-        @if($session && $session->isOpen() && $selectedBar !== 'Tienda')
+        @if($session && $session->isOpen())
             <div class="sm:hidden fixed bottom-3 left-3 right-3 z-40 p-2.5 rounded-2xl bg-black/95 border border-zinc-800 shadow-2xl backdrop-blur-md flex items-center justify-between gap-2.5">
                 <div class="flex flex-col min-w-0">
                     <span class="text-[9px] text-zinc-400 uppercase tracking-wider font-semibold">Total {{ $selectedBar }}:</span>
@@ -1738,6 +1576,11 @@
             }
 
             window.queueSalesAutosave = queueAutosave;
+
+            const tiendaRows = document.querySelectorAll('.tienda-row');
+            if (tiendaRows.length > 0) {
+                window.recalculateTiendaTable();
+            }
 
             if (!liquorRows.length && !mixerRows.length) return;
 
@@ -2010,363 +1853,117 @@
         });
 
         /* ========================================================
-           TERMINAL POS TÁCTIL DE TIENDA (VENTA DIRECTA)
+           CONTROL DE VENTAS DIRECTAS TIENDA (FORMATO TABULAR SIMPLIFICADO)
            ======================================================== */
-        let tiendaCart = [];
         let tiendaActiveCategory = 'todas';
-        let tiendaActivePaymentPreset = 'efectivo';
-        let tiendaActiveCobrante = 'DON LUDO';
-        let tiendaActiveBankApp = 'YASTA';
 
-        window.addDrinkToTiendaCart = function(id, name, price, imageUrl, stock) {
-            const existing = tiendaCart.find(item => item.id === id);
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                tiendaCart.push({
-                    id: id,
-                    name: name,
-                    unit_price: parseFloat(price) || 0,
-                    image_url: imageUrl,
-                    stock: stock,
-                    quantity: 1
-                });
-            }
-            window.renderTiendaCart();
+        window.stepTiendaRowQty = function(rowId, delta) {
+            const input = document.getElementById(`tienda-vendido-${rowId}`);
+            if (!input) return;
+            let current = parseInt(input.value) || 0;
+            current = Math.max(0, current + delta);
+            input.value = current;
+            window.onTiendaRowChange(rowId);
         };
 
-        window.updateTiendaCartItemQty = function(id, delta) {
-            const index = tiendaCart.findIndex(item => item.id === id);
-            if (index !== -1) {
-                tiendaCart[index].quantity += delta;
-                if (tiendaCart[index].quantity <= 0) {
-                    tiendaCart.splice(index, 1);
-                }
-            }
-            window.renderTiendaCart();
+        window.onTiendaRowChange = function(rowId) {
+            const inputVendido = document.getElementById(`tienda-vendido-${rowId}`);
+            const inputPrice = document.getElementById(`tienda-price-${rowId}`);
+            const inputSubtotal = document.getElementById(`tienda-subtotal-${rowId}`);
+
+            if (!inputVendido || !inputPrice || !inputSubtotal) return;
+
+            const qty = Math.max(0, parseInt(inputVendido.value) || 0);
+            const price = Math.max(0, parseFloat(inputPrice.value) || 0);
+            const subtotal = qty * price;
+
+            inputSubtotal.value = subtotal.toFixed(2);
+            window.recalculateTiendaTable();
         };
 
-        window.removeDrinkFromTiendaCart = function(id) {
-            tiendaCart = tiendaCart.filter(item => item.id !== id);
-            window.renderTiendaCart();
+        window.onTiendaManualSubtotalChange = function(rowId) {
+            window.recalculateTiendaTable();
         };
 
-        window.clearTiendaCart = function() {
-            tiendaCart = [];
-            window.renderTiendaCart();
-        };
+        window.recalculateTiendaTable = function() {
+            let totalUnits = 0;
+            let totalSubtotal = 0;
 
-        window.renderTiendaCart = function() {
-            const listEl = document.getElementById('tienda-cart-list');
-            const hiddenContainer = document.getElementById('tienda-cart-hidden-inputs');
-            const badgeCountEl = document.getElementById('tienda-cart-badge-count');
-            const totalDisplayEl = document.getElementById('tienda-cart-total-display');
-            const submitBtn = document.getElementById('tienda-btn-submit');
-            const submitText = document.getElementById('tienda-btn-submit-text');
+            document.querySelectorAll('.tienda-row').forEach(row => {
+                const rowId = row.getAttribute('data-row-id');
+                const inputVendido = document.getElementById(`tienda-vendido-${rowId}`);
+                const inputSubtotal = document.getElementById(`tienda-subtotal-${rowId}`);
 
-            if (!listEl) return;
-
-            const totalItems = tiendaCart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = tiendaCart.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-
-            if (badgeCountEl) {
-                badgeCountEl.textContent = `${totalItems} ${totalItems === 1 ? 'item' : 'items'}`;
-            }
-            if (totalDisplayEl) {
-                totalDisplayEl.textContent = 'Bs. ' + totalPrice.toFixed(2);
-            }
-
-            // Hidden inputs para el form
-            if (hiddenContainer) {
-                let hiddenHtml = '';
-                tiendaCart.forEach((item, idx) => {
-                    hiddenHtml += `
-                        <input type="hidden" name="orders[${idx}][product_id]" value="${item.id}">
-                        <input type="hidden" name="orders[${idx}][quantity]" value="${item.quantity}">
-                        <input type="hidden" name="orders[${idx}][unit_price]" value="${item.unit_price}">
-                    `;
-                });
-                hiddenContainer.innerHTML = hiddenHtml;
-            }
-
-            // Render items list
-            if (tiendaCart.length === 0) {
-                listEl.innerHTML = `
-                    <div id="tienda-cart-placeholder" class="text-center py-8 text-zinc-500">
-                        <svg class="w-8 h-8 mx-auto mb-2 opacity-40 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <p class="text-xs font-medium text-zinc-400">Ninguna bebida seleccionada</p>
-                        <p class="text-[11px] text-zinc-500 mt-0.5">Toca los botones grandes de la izquierda para agregar.</p>
-                    </div>
-                `;
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.className = 'w-full py-3.5 px-4 rounded-xl bg-zinc-800 text-zinc-500 font-black text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-not-allowed shadow-none';
-                }
-                if (submitText) {
-                    submitText.textContent = 'SELECCIONA BEBIDAS PARA COBRAR';
-                }
-            } else {
-                let html = '';
-                tiendaCart.forEach(item => {
-                    const subtotal = item.quantity * item.unit_price;
-                    html += `
-                        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-850 flex items-center justify-between gap-2 transition-all hover:border-zinc-700">
-                            <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                                <img src="${item.image_url}" alt="${item.name}" class="w-8 h-8 object-contain shrink-0 rounded-lg bg-zinc-900 p-0.5 border border-zinc-800">
-                                <div class="min-w-0 flex-1">
-                                    <div class="text-xs font-bold text-white truncate">${item.name}</div>
-                                    <div class="text-[10px] text-zinc-400 font-mono">Bs. ${item.unit_price.toFixed(2)} c/u</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <div class="flex items-center rounded-lg bg-zinc-900 border border-zinc-800 p-0.5">
-                                    <button type="button" onclick="updateTiendaCartItemQty(${item.id}, -1)" 
-                                            class="w-6 h-6 rounded-md bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-all">
-                                        -
-                                    </button>
-                                    <span class="w-7 text-center font-mono font-bold text-xs text-white">${item.quantity}</span>
-                                    <button type="button" onclick="updateTiendaCartItemQty(${item.id}, 1)" 
-                                            class="w-6 h-6 rounded-md bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center font-bold text-xs cursor-pointer transition-all">
-                                        +
-                                    </button>
-                                </div>
-                                <div class="w-16 text-right font-mono font-bold text-xs text-[#F5B81C]">
-                                    Bs. ${subtotal.toFixed(2)}
-                                </div>
-                                <button type="button" onclick="removeDrinkFromTiendaCart(${item.id})" 
-                                        title="Quitar" 
-                                        class="text-zinc-500 hover:text-rose-400 text-sm font-bold px-1 transition-colors cursor-pointer">
-                                    &times;
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                listEl.innerHTML = html;
-
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.className = 'w-full py-3.5 px-4 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#F5B81C]/20 dilemo-btn active:scale-[0.99]';
-                }
-                if (submitText) {
-                    submitText.textContent = `REGISTRAR COBRO (Bs. ${totalPrice.toFixed(2)})`;
-                }
-            }
-
-            window.syncTiendaPaymentInputs(totalPrice);
-        };
-
-        window.syncTiendaPaymentInputs = function(total) {
-            const cashInput = document.getElementById('tienda-input-cash');
-            const qrInput = document.getElementById('tienda-input-qr');
-            const cardInput = document.getElementById('tienda-input-card');
-
-            if (!cashInput || !qrInput || !cardInput) return;
-
-            if (tiendaActivePaymentPreset === 'efectivo') {
-                cashInput.value = total.toFixed(2);
-                qrInput.value = '0';
-                cardInput.value = '0';
-            } else if (tiendaActivePaymentPreset === 'qr') {
-                cashInput.value = '0';
-                qrInput.value = total.toFixed(2);
-                cardInput.value = '0';
-            } else if (tiendaActivePaymentPreset === 'tarjeta') {
-                cashInput.value = '0';
-                qrInput.value = '0';
-                cardInput.value = total.toFixed(2);
-            } else if (tiendaActivePaymentPreset === 'mixto') {
-                const mCash = document.getElementById('tienda-manual-cash');
-                const mQr = document.getElementById('tienda-manual-qr');
-                const mCard = document.getElementById('tienda-manual-card');
-                if (mCash && mQr && mCard) {
-                    const currentSum = (parseFloat(mCash.value) || 0) + (parseFloat(mQr.value) || 0) + (parseFloat(mCard.value) || 0);
-                    if (currentSum === 0) {
-                        mCash.value = total.toFixed(2);
-                        mQr.value = '0';
-                        mCard.value = '0';
-                    }
-                    cashInput.value = mCash.value;
-                    qrInput.value = mQr.value;
-                    cardInput.value = mCard.value;
-                    updateTiendaSplitDifference(total);
-                }
-            }
-        };
-
-        window.setTiendaPaymentPreset = function(preset) {
-            tiendaActivePaymentPreset = preset;
-            const buttons = {
-                'efectivo': document.getElementById('btn-pay-efectivo'),
-                'qr': document.getElementById('btn-pay-qr'),
-                'tarjeta': document.getElementById('btn-pay-tarjeta'),
-                'mixto': document.getElementById('btn-pay-mixto')
-            };
-
-            Object.keys(buttons).forEach(key => {
-                const btn = buttons[key];
-                if (!btn) return;
-                if (key === preset) {
-                    btn.className = 'tienda-pay-btn py-2 px-2.5 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition-all bg-[#F5B81C] text-black border-[#F5B81C] shadow-sm';
-                } else {
-                    btn.className = 'tienda-pay-btn py-2 px-2.5 rounded-xl border font-semibold flex items-center justify-center gap-1.5 transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white';
+                if (inputVendido && inputSubtotal) {
+                    const units = Math.max(0, parseInt(inputVendido.value) || 0);
+                    const sub = Math.max(0, parseFloat(inputSubtotal.value) || 0);
+                    totalUnits += units;
+                    totalSubtotal += sub;
                 }
             });
 
-            const qrPicker = document.getElementById('tienda-qr-app-picker');
-            const splitInputs = document.getElementById('tienda-split-inputs');
+            const tfootUnits = document.getElementById('tfoot-tienda-units');
+            const tfootSubtotal = document.getElementById('tfoot-tienda-subtotal');
+            const badgeGrandTotal = document.getElementById('badge-tienda-grand-total');
+            const footerGrandTotal = document.getElementById('footer-tienda-grand-total');
+            const headerGrandTotal = document.getElementById('header-grand-total');
+            const headerCombos = document.getElementById('header-tienda-units');
+            const mobileStickyTotal = document.getElementById('mobile-sticky-grand-total');
 
-            if (qrPicker) {
-                if (preset === 'qr') {
-                    qrPicker.classList.remove('hidden');
-                } else {
-                    qrPicker.classList.add('hidden');
-                }
-            }
+            const formattedTotal = 'Bs. ' + totalSubtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-            if (splitInputs) {
-                if (preset === 'mixto') {
-                    splitInputs.classList.remove('hidden');
-                } else {
-                    splitInputs.classList.add('hidden');
-                }
-            }
+            if (tfootUnits) tfootUnits.textContent = totalUnits;
+            if (tfootSubtotal) tfootSubtotal.textContent = formattedTotal;
+            if (badgeGrandTotal) badgeGrandTotal.textContent = formattedTotal;
+            if (footerGrandTotal) footerGrandTotal.textContent = formattedTotal;
+            if (headerGrandTotal) headerGrandTotal.innerHTML = `<span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>${totalSubtotal.toFixed(2)}`;
+            if (headerCombos) headerCombos.textContent = `${totalUnits} bebidas`;
+            if (mobileStickyTotal) mobileStickyTotal.textContent = formattedTotal;
 
-            const totalPrice = tiendaCart.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-            window.syncTiendaPaymentInputs(totalPrice);
-        };
-
-        window.setTiendaBankApp = function(app) {
-            tiendaActiveBankApp = app;
-            const input = document.getElementById('tienda-input-bank-app');
-            if (input) input.value = app;
-
-            const btnYasta = document.getElementById('btn-app-yasta');
-            const btnYape = document.getElementById('btn-app-yape');
-
-            if (app === 'YASTA') {
-                if (btnYasta) btnYasta.className = 'py-1.5 rounded-lg text-xs font-bold border transition-all bg-[#004b93] text-white border-blue-400';
-                if (btnYape) btnYape.className = 'py-1.5 rounded-lg text-xs font-bold border transition-all bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white';
-            } else {
-                if (btnYasta) btnYasta.className = 'py-1.5 rounded-lg text-xs font-bold border transition-all bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-white';
-                if (btnYape) btnYape.className = 'py-1.5 rounded-lg text-xs font-bold border transition-all bg-[#742284] text-white border-purple-400';
+            if (typeof window.queueSalesAutosave === 'function') {
+                window.queueSalesAutosave();
             }
         };
 
-        window.setTiendaCobrante = function(cobrante) {
-            const input = document.getElementById('tienda-input-cobrante');
-            if (input) input.value = cobrante;
-        };
-
-        window.onTiendaManualPaymentChange = function() {
-            const mCash = parseFloat(document.getElementById('tienda-manual-cash').value) || 0;
-            const mQr = parseFloat(document.getElementById('tienda-manual-qr').value) || 0;
-            const mCard = parseFloat(document.getElementById('tienda-manual-card').value) || 0;
-
-            document.getElementById('tienda-input-cash').value = mCash.toFixed(2);
-            document.getElementById('tienda-input-qr').value = mQr.toFixed(2);
-            document.getElementById('tienda-input-card').value = mCard.toFixed(2);
-
-            const qrPicker = document.getElementById('tienda-qr-app-picker');
-            if (qrPicker) {
-                if (mQr > 0) qrPicker.classList.remove('hidden');
-                else qrPicker.classList.add('hidden');
-            }
-
-            const totalPrice = tiendaCart.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-            updateTiendaSplitDifference(totalPrice);
-        };
-
-        function updateTiendaSplitDifference(total) {
-            const mCash = parseFloat(document.getElementById('tienda-manual-cash').value) || 0;
-            const mQr = parseFloat(document.getElementById('tienda-manual-qr').value) || 0;
-            const mCard = parseFloat(document.getElementById('tienda-manual-card').value) || 0;
-            const sum = mCash + mQr + mCard;
-            const diff = total - sum;
-
-            const diffEl = document.getElementById('tienda-split-diff-msg');
-            if (!diffEl) return;
-
-            if (Math.abs(diff) < 0.01) {
-                diffEl.textContent = '✓ Total cuadrado: Bs. ' + sum.toFixed(2);
-                diffEl.className = 'text-[10px] text-emerald-400 font-mono text-right font-bold';
-            } else if (diff > 0) {
-                diffEl.textContent = `Falta asignar: Bs. ${diff.toFixed(2)}`;
-                diffEl.className = 'text-[10px] text-amber-400 font-mono text-right font-bold';
-            } else {
-                diffEl.textContent = `Excede por: Bs. ${Math.abs(diff).toFixed(2)}`;
-                diffEl.className = 'text-[10px] text-rose-400 font-mono text-right font-bold';
-            }
-        }
-
-        window.setTiendaCategory = function(cat, btn) {
+        window.setTiendaTableCategory = function(cat, btn) {
             tiendaActiveCategory = cat;
-            document.querySelectorAll('.tienda-cat-btn').forEach(b => {
-                b.className = 'tienda-cat-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0';
+            document.querySelectorAll('.tienda-pill-btn').forEach(b => {
+                b.className = 'tienda-pill-btn px-3 py-1.5 rounded-xl font-semibold text-xs cursor-pointer transition-all bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 shrink-0';
             });
             if (btn) {
-                btn.className = 'tienda-cat-btn px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all bg-[#F5B81C] text-black shadow-sm shrink-0';
+                btn.className = 'tienda-pill-btn px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition-all bg-[#F5B81C] text-black shadow-sm shrink-0';
             }
-            window.filterTiendaDrinks();
+            window.filterTiendaTable();
         };
 
-        window.filterTiendaDrinks = function() {
-            const term = (document.getElementById('tienda-search-input')?.value || '').toLowerCase().trim();
-            const cards = document.querySelectorAll('.tienda-drink-card');
+        window.filterTiendaTable = function() {
+            const term = (document.getElementById('tienda-table-search')?.value || '').toLowerCase().trim();
+            const rows = document.querySelectorAll('.tienda-row');
+            let visibleIndex = 1;
             let visibleCount = 0;
 
-            cards.forEach(card => {
-                const cat = card.getAttribute('data-category-key') || '';
-                const name = card.getAttribute('data-name') || '';
+            rows.forEach(row => {
+                const cat = row.getAttribute('data-category-key') || '';
+                const name = row.getAttribute('data-name') || '';
 
                 const matchesCat = (tiendaActiveCategory === 'todas') || (cat === tiendaActiveCategory);
                 const matchesTerm = !term || name.includes(term);
 
                 if (matchesCat && matchesTerm) {
-                    card.classList.remove('hidden');
+                    row.classList.remove('hidden');
+                    const numCol = row.querySelector('.col-num');
+                    if (numCol) numCol.textContent = visibleIndex++;
                     visibleCount++;
                 } else {
-                    card.classList.add('hidden');
+                    row.classList.add('hidden');
                 }
             });
 
-            const emptySearchEl = document.getElementById('tienda-empty-search');
-            if (emptySearchEl) {
-                if (visibleCount === 0) emptySearchEl.classList.remove('hidden');
-                else emptySearchEl.classList.add('hidden');
+            const emptyTr = document.getElementById('tienda-empty-filter-row');
+            if (emptyTr) {
+                if (visibleCount === 0) emptyTr.classList.remove('hidden');
+                else emptyTr.classList.add('hidden');
             }
-        };
-
-        window.validateAndSubmitTiendaPos = function(event) {
-            if (tiendaCart.length === 0) {
-                event.preventDefault();
-                alert('Selecciona al menos una bebida para registrar el despacho.');
-                return false;
-            }
-
-            const cobranteInput = document.getElementById('tienda-input-cobrante');
-            if (!cobranteInput || !cobranteInput.value.trim()) {
-                event.preventDefault();
-                alert('Por favor escribe el nombre del mesero que retira o cobra.');
-                cobranteInput?.focus();
-                return false;
-            }
-
-            const totalPrice = tiendaCart.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-            const cash = parseFloat(document.getElementById('tienda-input-cash')?.value) || 0;
-            const qr = parseFloat(document.getElementById('tienda-input-qr')?.value) || 0;
-            const card = parseFloat(document.getElementById('tienda-input-card')?.value) || 0;
-            const paymentTotal = cash + qr + card;
-
-            if (Math.abs(totalPrice - paymentTotal) > 0.01) {
-                event.preventDefault();
-                alert(`La suma del pago (Bs. ${paymentTotal.toFixed(2)}) no coincide con el total de las bebidas (Bs. ${totalPrice.toFixed(2)}). Ajusta los montos.`);
-                return false;
-            }
-
-            return true;
         };
         </script>
 
