@@ -40,11 +40,11 @@ class Product extends Model
     }
 
     /**
-     * Descuenta stock directamente de Bodega Central (sin bloquear si queda negativo o en cero)
+     * Descuenta stock directamente de Bodega Central (nunca baja de 0)
      */
     public function deductWarehouseStock(int $quantity): void
     {
-        $this->stock_warehouse -= $quantity;
+        $this->stock_warehouse = max(0, (int)$this->stock_warehouse - $quantity);
         $unitsPerPackage = max(1, (int) $this->units_per_package);
         $stock = max(0, (int) $this->stock_warehouse);
         $this->stock_packages = intdiv($stock, $unitsPerPackage);

@@ -373,6 +373,7 @@ class TioChuSystemTest extends TestCase
     {
         $session = NightSession::first();
         $singani = Product::where('name', 'like', '%Singani Casa Real%')->first() ?? Product::first();
+        $singani->update(['stock_warehouse' => 10]);
 
         // Mesero pide 2 combos de 250 = 500 Bs, pagando 250 en efectivo y 250 en QR
         $response = $this->actingAs($this->user)->post(route('sales.storeSales.store'), [
@@ -414,7 +415,12 @@ class TioChuSystemTest extends TestCase
         ]);
 
         // Verificar que consumió directamente de Bodega Central (stock_warehouse)
-        $this->assertEquals($singani->stock_warehouse - 2, $singani->fresh()->stock_warehouse);
+        $this->assertEquals(8, $singani->fresh()->stock_warehouse);
+
+        // Verificar restricción crítica: Si Bodega Central está en 0, nunca baja a -1
+        $singani->update(['stock_warehouse' => 0]);
+        $singani->deductWarehouseStock(1);
+        $this->assertEquals(0, $singani->fresh()->stock_warehouse);
 
         // Verificar que inventario de barras no tiene Tienda
         $responseInventory = $this->actingAs($this->user)->get(route('barInventory.index', ['session_id' => $session->id]));
