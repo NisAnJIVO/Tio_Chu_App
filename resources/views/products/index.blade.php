@@ -707,7 +707,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
-    <form method="POST" id="edit-prod-form" action="" enctype="multipart/form-data" class="drawer-body space-y-4">
+    <form method="POST" id="edit-prod-form" action="" enctype="multipart/form-data" onsubmit="handleEditProductSubmit(event); return false;" class="drawer-body space-y-4">
         @csrf
         @method('PUT')
         <div>
@@ -826,7 +826,7 @@
                 <button type="button" onclick="closeDrawer()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
+                <button type="submit" id="edit-prod-submit-btn" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                     Guardar Cambios
                 </button>
             </div>
@@ -849,7 +849,7 @@
      ======================================================== -->
 <script>
 const CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-const BASE = '{{ url("/products") }}';
+const BASE = '/products';
 let debounceTimers = {};
 
 /* --- SELECTOR DE VISTA (TARJETAS POR DEFECTO / TABLA) --- */
@@ -1162,7 +1162,9 @@ function openCreateDrawer() {
 }
 
 function openEditDrawer(id, name, cat, unit, saleP, costP, uPkg, stock, active, imgUrl, focusImage = false) {
-    document.getElementById('edit-prod-form').action = BASE + '/' + id;
+    const editForm = document.getElementById('edit-prod-form');
+    editForm.action = BASE + '/' + id;
+    editForm.dataset.productId = id;
     document.getElementById('delete-prod-inline-form').action = BASE + '/' + id;
     document.getElementById('edit-prod-title').textContent = name;
     document.getElementById('edit-prod-badge').textContent = cat;
@@ -1333,18 +1335,32 @@ function updateProductDOM(p) {
 }
 
 /* --- ENVÍO ASÍNCRONO DEL FORMULARIO DE EDICIÓN (SIN RECARGA NI PÉRDIDA DE SCROLL) --- */
-document.getElementById('edit-prod-form')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const form = this;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
+window.handleEditProductSubmit = async function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const form = document.getElementById('edit-prod-form');
+    if (!form) return false;
 
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>Guardando...</span>';
+    // Preservar la posición exacta del scroll del contenedor principal <main>
+    const mainContainer = document.querySelector('main');
+    const savedScrollTop = mainContainer ? mainContainer.scrollTop : (window.pageYOffset || document.documentElement.scrollTop || 0);
+
+    const submitBtn = document.getElementById('edit-prod-submit-btn') || form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.innerHTML : 'Guardar Cambios';
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Guardando...</span>';
+    }
 
     try {
         const formData = new FormData(form);
-        const res = await fetch(form.action, {
+        const prodId = form.dataset.productId || form.action.split('/').filter(Boolean).pop();
+        const targetUrl = BASE + '/' + prodId;
+
+        const res = await fetch(targetUrl, {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -1358,7 +1374,17 @@ document.getElementById('edit-prod-form')?.addEventListener('submit', async func
 
         if (res.ok && data.success) {
             closeDrawer();
-            updateProductDOM(data.product);
+
+            // Restaurar instantáneamente el scroll al punto exacto donde estaba el usuario
+            if (mainContainer) {
+                mainContainer.scrollTop = savedScrollTop;
+            } else {
+                window.scrollTo(0, savedScrollTop);
+            }
+
+            if (data.product) {
+                updateProductDOM(data.product);
+            }
             showAppToast(data.message || 'Bebida actualizada');
             refreshKPIs();
         } else {
@@ -1366,16 +1392,26 @@ document.getElementById('edit-prod-form')?.addEventListener('submit', async func
             showAppToast(err, 'error');
         }
     } catch(err) {
+        console.error('Error al actualizar bebida:', err);
         showAppToast('Error de conexión al guardar cambios', 'error');
     } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
     }
-});
+
+    return false;
+};
+
+document.getElementById('edit-prod-form')?.addEventListener('submit', window.handleEditProductSubmit);
 
 async function confirmDeleteProduct() {
     if (!confirm('¿Eliminar definitivamente esta bebida del inventario?')) return;
     const form = document.getElementById('delete-prod-inline-form');
+    const mainContainer = document.querySelector('main');
+    const savedScrollTop = mainContainer ? mainContainer.scrollTop : (window.pageYOffset || document.documentElement.scrollTop || 0);
+
     try {
         const res = await fetch(form.action, {
             method: 'POST',
@@ -1386,13 +1422,22 @@ async function confirmDeleteProduct() {
             },
             body: new FormData(form)
         });
+        const data = await res.json();
         closeDrawer();
-        const prodId = form.action.split('/').pop();
+
+        if (mainContainer) {
+            mainContainer.scrollTop = savedScrollTop;
+        } else {
+            window.scrollTo(0, savedScrollTop);
+        }
+
+        const prodId = form.action.split('/').filter(Boolean).pop();
         document.querySelectorAll('.product-item[data-id="' + prodId + '"]').forEach(el => el.remove());
-        showAppToast('Bebida eliminada del catálogo');
+        showAppToast(data.message || 'Bebida eliminada del catálogo');
         refreshKPIs();
     } catch(e) {
-        form.submit();
+        console.error('Error al eliminar producto:', e);
+        showAppToast('Error al eliminar la bebida', 'error');
     }
 }
 
