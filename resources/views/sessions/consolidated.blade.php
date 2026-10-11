@@ -26,9 +26,6 @@
             color: #000000 !important;
             font-weight: bold !important;
         }
-        .print-signature-block {
-            display: flex !important;
-        }
         table {
             border: 1px solid #000000 !important;
             width: 100% !important;
@@ -353,22 +350,6 @@
                     </tr>
                 </tfoot>
             </table>
-        </div>
-    </div>
-
-    <!-- ==========================================
-         5. BLOQUE DE FIRMAS OFICIALES (IMPRESIÓN)
-         ========================================== -->
-    <div class="print-signature-block pt-16 pb-8 border-t border-zinc-800 mt-12 grid grid-cols-2 gap-12 text-center text-xs">
-        <div>
-            <div class="w-56 mx-auto border-b border-zinc-600 mb-2"></div>
-            <p class="font-bold text-white uppercase">Cajero / Administrador</p>
-            <p class="text-zinc-500 text-[10px]">Responsable de Cierre de Caja</p>
-        </div>
-        <div>
-            <div class="w-56 mx-auto border-b border-zinc-600 mb-2"></div>
-            <p class="font-bold text-white uppercase">Don Ludo</p>
-            <p class="text-zinc-500 text-[10px]">Gerencia General — Discoteca Tío Chu</p>
         </div>
     </div>
 
