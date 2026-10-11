@@ -3,6 +3,14 @@
 @section('title', 'Historial de Noches & Consolidado')
 
 @section('content')
+<style>
+    /* Color amarillo dorado oficial Tío Chu para los checkboxes al marcarse */
+    input[type="checkbox"].session-chk,
+    #check-all-desktop {
+        accent-color: #F5B81C !important;
+        cursor: pointer;
+    }
+</style>
 <div class="space-y-6 max-w-7xl mx-auto pb-24">
 
     @php
@@ -32,25 +40,13 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
-            <!-- Botón Rápido: Seleccionar Fin de Semana (Vie, Sáb, Dom) -->
-            <button type="button" onclick="selectWeekend()" 
-                    class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold rounded-xl transition-all cursor-pointer">
-                <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                <span>Seleccionar Fin de Semana</span>
-            </button>
-
             <!-- Botón Generar Consolidado -->
             <button type="button" onclick="openConsolidatedModal()" id="btn-header-consolidated"
                     class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-[#F5B81C] border border-zinc-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm">
                 <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                <span>Resumen Consolidado (<span id="header-selected-count">0</span>)</span>
+                <span>Ver Resumen (<span id="header-selected-count">0</span>)</span>
             </button>
 
             <a href="{{ route('sessions.create') }}" 
@@ -133,8 +129,9 @@
                 <div class="flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
-                               class="session-chk mt-1 w-5 h-5 rounded-lg border-zinc-700 bg-black text-[#F5B81C] focus:ring-[#F5B81C] cursor-pointer"
-                               onchange="updateSelectedCount()">
+                               class="session-chk mt-1 w-5 h-5 rounded-lg border-zinc-700 bg-black text-[#F5B81C] cursor-pointer"
+                               style="accent-color: #F5B81C !important;"
+                               onchange="onSessionCheckChange(this)">
                         <div>
                             <div class="flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full {{ $isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600' }}"></span>
@@ -205,7 +202,7 @@
                 </span>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" onclick="selectWeekend()" class="text-xs text-[#F5B81C] hover:underline font-mono">
+                <button type="button" onclick="selectWeekend()" title="Seleccionar Fin de Semana" class="text-xs text-[#F5B81C] hover:underline font-mono">
                     + Marcar Fin de Semana
                 </button>
             </div>
@@ -217,7 +214,8 @@
                     <tr>
                         <th class="px-4 py-3.5 w-10 text-center">
                             <input type="checkbox" id="check-all-desktop" onchange="toggleSelectAll(this)" title="Marcar todas" 
-                                   class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] focus:ring-[#F5B81C] cursor-pointer">
+                                   class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] cursor-pointer"
+                                   style="accent-color: #F5B81C !important;">
                         </th>
                         <th class="px-5 py-3.5">Fecha</th>
                         <th class="px-5 py-3.5">Día</th>
@@ -232,11 +230,12 @@
                         @php
                             $isOpen = $s->isOpen();
                         @endphp
-                        <tr class="hover:bg-zinc-900/40 transition-colors {{ $isOpen ? 'bg-[#F5B81C]/[0.02]' : '' }}">
+                        <tr class="hover:bg-zinc-900/40 transition-colors {{ $isOpen ? 'bg-[#F5B81C]/[0.02]' : '' }}" data-session-row="{{ $s->id }}">
                             <td class="px-4 py-4 text-center">
                                 <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
-                                       class="session-chk w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] focus:ring-[#F5B81C] cursor-pointer"
-                                       onchange="updateSelectedCount()">
+                                       class="session-chk w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] cursor-pointer"
+                                       style="accent-color: #F5B81C !important;"
+                                       onchange="onSessionCheckChange(this)">
                             </td>
                             <td class="px-5 py-4 font-mono font-bold text-white text-sm">
                                 <div class="flex items-center gap-2.5">
@@ -326,7 +325,7 @@
             <div class="flex items-center gap-2">
                 <button type="button" onclick="openConsolidatedModal()" 
                         class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-extrabold text-xs rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 dilemo-btn">
-                    <span>Ver Resumen Consolidado</span>
+                    <span>Ver Resumen</span>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
                     </svg>
@@ -544,7 +543,16 @@
 
 <script>
     function getSelectedSessionIds() {
-        return Array.from(document.querySelectorAll('.session-chk:checked')).map(chk => chk.value);
+        const checked = Array.from(document.querySelectorAll('.session-chk:checked'));
+        return Array.from(new Set(checked.map(chk => String(chk.value))));
+    }
+
+    function onSessionCheckChange(chk) {
+        const val = String(chk.value);
+        const isChecked = chk.checked;
+        // Sincronizar checkbox equivalente en móvil y escritorio
+        document.querySelectorAll('.session-chk[value="' + val + '"]').forEach(c => c.checked = isChecked);
+        updateSelectedCount();
     }
 
     function updateSelectedCount() {
@@ -566,18 +574,28 @@
             }
         }
 
-        // Sincronizar master checkbox
-        const allCheckboxes = document.querySelectorAll('.session-chk');
+        // Sincronizar master checkbox con sesiones únicas
+        const totalUnique = new Set(Array.from(document.querySelectorAll('.session-chk')).map(c => String(c.value))).size;
         const master = document.getElementById('check-all-desktop');
-        if (master && allCheckboxes.length > 0) {
-            master.checked = count === allCheckboxes.length;
+        if (master && totalUnique > 0) {
+            master.checked = count === totalUnique;
         }
+
+        // Resaltar suavemente filas seleccionadas
+        document.querySelectorAll('tr[data-session-row]').forEach(tr => {
+            const rowId = tr.getAttribute('data-session-row');
+            if (selected.includes(rowId)) {
+                tr.classList.add('bg-[#F5B81C]/[0.05]');
+            } else {
+                tr.classList.remove('bg-[#F5B81C]/[0.05]');
+            }
+        });
     }
 
     function toggleSelectAll(masterChk) {
-        const checkboxes = document.querySelectorAll('.session-chk');
-        checkboxes.forEach(chk => {
-            chk.checked = masterChk.checked;
+        const isChecked = masterChk.checked;
+        document.querySelectorAll('.session-chk').forEach(chk => {
+            chk.checked = isChecked;
         });
         updateSelectedCount();
     }
@@ -591,23 +609,25 @@
 
     function selectWeekend() {
         deselectAll();
-        const checkboxes = Array.from(document.querySelectorAll('.session-chk'));
         const weekendDays = ['viernes', 'sábado', 'sabado', 'domingo'];
+        const matchedIds = new Set();
         
-        let matched = 0;
-        for (let chk of checkboxes) {
+        document.querySelectorAll('.session-chk').forEach(chk => {
             const day = (chk.getAttribute('data-day') || '').toLowerCase();
             if (weekendDays.some(d => day.includes(d))) {
-                chk.checked = true;
-                matched++;
-                if (matched >= 3) break;
+                matchedIds.add(String(chk.value));
             }
-        }
+        });
         
-        // Si no encontró suficientes de fin de semana, marca las primeras 3 más recientes
-        if (matched === 0 && checkboxes.length > 0) {
-            checkboxes.slice(0, 3).forEach(chk => chk.checked = true);
+        // Si no encontró suficientes de fin de semana, toma las 3 más recientes
+        if (matchedIds.size === 0) {
+            const allIds = Array.from(new Set(Array.from(document.querySelectorAll('.session-chk')).map(c => String(c.value))));
+            allIds.slice(0, 3).forEach(id => matchedIds.add(id));
         }
+
+        matchedIds.forEach(id => {
+            document.querySelectorAll('.session-chk[value="' + id + '"]').forEach(c => c.checked = true);
+        });
         
         updateSelectedCount();
         openConsolidatedModal();

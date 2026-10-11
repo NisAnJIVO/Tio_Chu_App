@@ -80,18 +80,43 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:100',
-            'sale_price' => 'required|numeric|min:0',
-            'cost_price' => 'nullable|numeric|min:0',
-            'unit' => 'required|string|max:50',
-            'image_path' => 'nullable|string|max:255',
-            'units_per_package' => 'required|integer|min:1',
-            'stock_warehouse' => 'required|integer|min:0',
-            'is_active' => 'required|boolean',
-            'image' => 'nullable|image|max:5120',
-        ]);
+        if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'category' => 'required|string|max:100',
+                'sale_price' => 'required|numeric|min:0',
+                'cost_price' => 'nullable|numeric|min:0',
+                'unit' => 'required|string|max:50',
+                'image_path' => 'nullable|string|max:255',
+                'units_per_package' => 'required|integer|min:1',
+                'stock_warehouse' => 'required|integer|min:0',
+                'is_active' => 'required|boolean',
+                'image' => 'nullable|image|max:5120',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first(),
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+        } else {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'category' => 'required|string|max:100',
+                'sale_price' => 'required|numeric|min:0',
+                'cost_price' => 'nullable|numeric|min:0',
+                'unit' => 'required|string|max:50',
+                'image_path' => 'nullable|string|max:255',
+                'units_per_package' => 'required|integer|min:1',
+                'stock_warehouse' => 'required|integer|min:0',
+                'is_active' => 'required|boolean',
+                'image' => 'nullable|image|max:5120',
+            ]);
+        }
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -116,7 +141,7 @@ class ProductController extends Controller
         $this->syncStockBreakdown($product);
         $product->save();
 
-        if ($request->wantsJson() || $request->ajax()) {
+        if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
             return response()->json([
                 'success' => true,
                 'message' => 'Bebida "' . $product->name . '" actualizada correctamente.',

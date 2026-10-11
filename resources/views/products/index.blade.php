@@ -707,9 +707,10 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
-    <form method="POST" id="edit-prod-form" action="" enctype="multipart/form-data" onsubmit="handleEditProductSubmit(event); return false;" class="drawer-body space-y-4">
+    <form method="POST" id="edit-prod-form" action="" enctype="multipart/form-data" onsubmit="event.preventDefault(); handleEditProductSubmit(event); return false;" class="drawer-body space-y-4">
         @csrf
         @method('PUT')
+        <input type="hidden" name="_ajax" value="1">
         <div>
             <label for="ed_name" class="block text-xs font-bold text-zinc-300 mb-1.5">Nombre de la Bebida <span class="text-[#F5B81C]">*</span></label>
             <input type="text" name="name" id="ed_name" required
@@ -826,7 +827,7 @@
                 <button type="button" onclick="closeDrawer()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                     Cancelar
                 </button>
-                <button type="submit" id="edit-prod-submit-btn" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
+                <button type="button" onclick="handleEditProductSubmit(event)" id="edit-prod-submit-btn" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                     Guardar Cambios
                 </button>
             </div>
