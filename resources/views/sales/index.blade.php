@@ -535,7 +535,7 @@
             <!-- ========================================================
                  TABLA DE VENTAS TIENDA OFICIAL — FORMATO DIRECTO
                  ======================================================== -->
-            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form" data-ajax="true" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }} space-y-5 mb-8">
+            <form method="POST" action="{{ route('sales.updateBulk') }}" id="sales-form" data-ajax="true" class="{{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }} space-y-5 mb-8 pb-16 sm:pb-0">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
@@ -605,11 +605,11 @@
                     </div>
                 </div>
 
-                <!-- TABLA FORMATO IDENTICO A LAS OTRAS BARRAS PERO SIMPLIFICADO -->
-                <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                    <div class="overflow-x-auto sales-table-wrapper">
-                        <table class="w-full text-xs text-left border-collapse excel-table min-w-[750px]" id="table-tienda">
-                            <thead class="bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
+                <!-- TABLA FORMATO IDENTICO A LAS OTRAS BARRAS PERO SIMPLIFICADO Y RESPONSIVE EN MÓVIL -->
+                <div class="rounded-2xl theme-card border-0 md:border theme-border overflow-hidden bg-transparent md:bg-zinc-950/40">
+                    <div class="overflow-x-visible md:overflow-x-auto sales-table-wrapper">
+                        <table class="w-full text-xs text-left border-collapse excel-table md:min-w-[750px]" id="table-tienda">
+                            <thead class="hidden md:table-header-group bg-zinc-950 border-b theme-border text-zinc-400 font-semibold uppercase text-[11px] tracking-wider">
                                 <tr>
                                     <th class="px-2.5 py-2.5 w-10 text-center col-num">N°</th>
                                     <th class="px-3 py-2.5 col-product col-sticky-product">Bebida / Presentación</th>
@@ -620,7 +620,7 @@
                                     <th class="px-3 py-2.5 w-28 text-right border-l theme-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y theme-border font-sans" id="tienda-tbody">
+                            <tbody class="block md:table-row-group divide-y-0 md:divide-y theme-border font-sans space-y-3 md:space-y-0" id="tienda-tbody">
                                 @forelse($allBarSales as $index => $sale)
                                     @php
                                         $prod = $sale->product;
@@ -669,7 +669,7 @@
                                         $includedCombos = $sale->included_in_combos ?? 0;
                                         $initialExtras = max(0, (int)$sale->vendido - $includedCombos);
                                     @endphp
-                                    <tr class="hover:bg-zinc-900/40 transition-colors tienda-row"
+                                    <tr class="block md:table-row p-3.5 mb-2.5 md:mb-0 rounded-2xl md:rounded-none bg-zinc-950 md:bg-transparent border border-zinc-800 md:border-0 hover:border-zinc-700 md:hover:bg-zinc-900/40 transition-all tienda-row shadow-sm md:shadow-none space-y-2.5 md:space-y-0"
                                         data-row-id="{{ $sale->id }}"
                                         data-product-id="{{ $sale->product_id }}"
                                         data-product-name="{{ $prod->name }}"
@@ -682,25 +682,30 @@
                                         data-category-key="{{ $catKey }}"
                                         data-name="{{ strtolower($prod->name) }}">
                                         
-                                        <!-- N° -->
-                                        <td class="px-2.5 py-2 text-center text-zinc-500 font-mono col-num text-xs">
+                                        <!-- N° (Oculto en móvil) -->
+                                        <td class="hidden md:table-cell px-2.5 py-2 text-center text-zinc-500 font-mono col-num text-xs">
                                             {{ $index + 1 }}
                                         </td>
 
-                                        <!-- Bebida / Presentación (Compacto, sin imagen) -->
-                                        <td class="px-3 py-2 col-product col-sticky-product max-w-[200px] sm:max-w-xs">
-                                            <div class="leading-tight">
-                                                <span class="font-bold text-white text-xs sm:text-sm block truncate">{{ $prod->name }}</span>
-                                                <span class="text-[10px] text-zinc-400 font-normal block truncate">
-                                                    {{ $isMixer ? 'Mixer / Soda' : $drinkType }} • {{ $prod->unit }}
-                                                </span>
+                                        <!-- Bebida / Presentación -->
+                                        <td class="block md:table-cell p-0 md:px-3 md:py-2 col-product md:col-sticky-product border-0">
+                                            <div class="flex items-start justify-between gap-2">
+                                                <div class="leading-tight flex-1 min-w-0">
+                                                    <div class="flex items-center gap-1.5">
+                                                        <span class="md:hidden text-[10px] font-mono text-zinc-500 font-bold">#{{ $index + 1 }}</span>
+                                                        <span class="font-bold text-white text-sm sm:text-xs md:text-sm block truncate">{{ $prod->name }}</span>
+                                                    </div>
+                                                    <span class="text-[11px] md:text-[10px] text-zinc-400 font-normal block truncate">
+                                                        {{ $isMixer ? 'Mixer / Soda' : $drinkType }} • {{ $prod->unit }}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </td>
 
                                         <!-- Acompañamiento -->
-                                        <td class="px-3 py-1.5 border-l theme-border text-zinc-300 text-xs">
+                                        <td class="inline-block md:table-cell p-0 md:px-3 md:py-1.5 md:border-l theme-border text-zinc-300 text-xs border-0 align-middle mr-2 md:mr-0">
                                             @if(!$isMixer)
-                                                <span class="inline-flex px-2 py-0.5 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] font-medium text-zinc-300">
+                                                <span class="inline-flex px-2 py-0.5 rounded-lg bg-zinc-900 border border-zinc-800 text-[11px] font-medium text-zinc-300">
                                                     + {{ $mixerName }}
                                                 </span>
                                             @else
@@ -709,7 +714,7 @@
                                         </td>
 
                                         <!-- Especial -->
-                                        <td class="px-3 py-1.5 border-l theme-border text-center">
+                                        <td class="inline-block md:table-cell p-0 md:px-3 md:py-1.5 md:border-l theme-border md:text-center border-0 align-middle">
                                             @if(!$isMixer && $mixerId > 0)
                                                 <input type="hidden" 
                                                        name="sales[{{ $sale->id }}][selected_special_mixer]" 
@@ -733,25 +738,29 @@
                                         </td>
 
                                         <!-- Precio Venta Unitario -->
-                                        <td class="px-3 py-1.5 text-right border-l theme-border">
-                                            <div class="flex items-center justify-end gap-1">
-                                                <span class="text-zinc-500 font-mono text-[11px]">Bs.</span>
-                                                <input type="number" 
-                                                       step="0.5" 
-                                                       min="0"
-                                                       name="sales[{{ $sale->id }}][unit_price]" 
-                                                       id="tienda-price-{{ $sale->id }}"
-                                                       value="{{ $sale->unit_price > 0 ? $sale->unit_price : $prod->sale_price }}"
-                                                       oninput="onTiendaRowChange({{ $sale->id }})"
-                                                       onfocus="this.select()"
-                                                       onclick="this.select()"
-                                                       class="tienda-input-price w-20 h-8 text-right rounded-lg px-2 font-mono font-bold text-xs bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-[#F5B81C] focus:border-[#F5B81C]">
+                                        <td class="block md:table-cell p-0 md:px-3 md:py-1.5 md:text-right md:border-l theme-border border-0">
+                                            <div class="flex items-center justify-between md:justify-end gap-1.5 pt-2 md:pt-0 border-t border-zinc-800/60 md:border-0 text-xs">
+                                                <span class="md:hidden text-[11px] text-zinc-400 font-medium">Precio Unitario:</span>
+                                                <div class="flex items-center gap-1">
+                                                    <span class="text-zinc-500 font-mono text-[11px]">Bs.</span>
+                                                    <input type="number" 
+                                                           step="0.5" 
+                                                           min="0"
+                                                           name="sales[{{ $sale->id }}][unit_price]" 
+                                                           id="tienda-price-{{ $sale->id }}"
+                                                           value="{{ $sale->unit_price > 0 ? $sale->unit_price : $prod->sale_price }}"
+                                                           oninput="onTiendaRowChange({{ $sale->id }})"
+                                                           onfocus="this.select()"
+                                                           onclick="this.select()"
+                                                           class="tienda-input-price w-20 h-7 md:h-8 text-right rounded-lg px-2 font-mono font-bold text-xs bg-zinc-950 border border-zinc-800 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-[#F5B81C] focus:border-[#F5B81C]">
+                                                </div>
                                             </div>
                                         </td>
 
-                                        <!-- Unidades Vendidas (Sin botones -/+, reemplazo de 0 automático, Enter/Flechas) -->
-                                        <td class="px-3 py-1.5 border-l theme-border text-center">
-                                            <div class="flex justify-center items-center">
+                                        <!-- Unidades Vendidas (Grande y cómodo en móvil, Enter/Flechas en desktop) -->
+                                        <td class="inline-block w-[48%] md:w-28 md:table-cell p-0 md:px-3 md:py-1.5 md:border-l theme-border md:text-center border-0 align-top mr-[3%] md:mr-0 pt-2 md:pt-0">
+                                            <div class="flex flex-col md:flex-row md:justify-center items-stretch md:items-center gap-1">
+                                                <span class="md:hidden text-[10px] font-bold uppercase tracking-wider text-zinc-400">Vendidas</span>
                                                 <input type="text" 
                                                        inputmode="numeric" 
                                                        pattern="[0-9]*"
@@ -764,45 +773,48 @@
                                                        oninput="handleTiendaVendidoInput(this, {{ $sale->id }})"
                                                        onkeydown="handleTiendaKeyDown(event, this)"
                                                        onblur="if(this.value.trim()==='') { this.value='0'; onTiendaRowChange({{ $sale->id }}); }"
-                                                       class="tienda-input-vendido w-20 h-8 text-center rounded-lg font-mono font-black text-sm bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#1a1606] focus:text-[#F5B81C] transition-all">
+                                                       class="tienda-input-vendido w-full md:w-20 h-10 md:h-8 text-center rounded-xl md:rounded-lg font-mono font-black text-base md:text-sm bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F5B81C] focus:border-[#F5B81C] focus:bg-[#1a1606] focus:text-[#F5B81C] transition-all shadow-inner">
                                             </div>
                                         </td>
 
                                         <!-- Ganancia / Total (Bs.) -->
-                                        <td class="px-3 py-1.5 text-right border-l theme-border">
-                                            <div class="flex items-center justify-end gap-1">
-                                                <span class="text-zinc-500 font-mono text-[11px]">Bs.</span>
-                                                <input type="number" 
-                                                       step="0.5" 
-                                                       min="0"
-                                                       name="sales[{{ $sale->id }}][subtotal]" 
-                                                       id="tienda-subtotal-{{ $sale->id }}"
-                                                       value="{{ number_format($sale->subtotal, 2, '.', '') }}"
-                                                       oninput="onTiendaManualSubtotalChange({{ $sale->id }})"
-                                                       onfocus="this.select()"
-                                                       onclick="this.select()"
-                                                       class="tienda-input-subtotal w-24 h-8 text-right rounded-lg px-2 font-mono font-black text-xs bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:ring-1 focus:ring-[#F5B81C] focus:border-[#F5B81C]">
+                                        <td class="inline-block w-[48%] md:w-28 md:table-cell p-0 md:px-3 md:py-1.5 text-right md:border-l theme-border border-0 align-top pt-2 md:pt-0">
+                                            <div class="flex flex-col md:flex-row md:justify-end items-stretch md:items-center gap-1">
+                                                <span class="md:hidden text-[10px] font-bold uppercase tracking-wider text-[#F5B81C] text-right">Ganancia</span>
+                                                <div class="flex items-center justify-end gap-1 w-full md:w-auto">
+                                                    <span class="text-zinc-500 font-mono text-[11px] hidden md:inline">Bs.</span>
+                                                    <input type="number" 
+                                                           step="0.5" 
+                                                           min="0"
+                                                           name="sales[{{ $sale->id }}][subtotal]" 
+                                                           id="tienda-subtotal-{{ $sale->id }}"
+                                                           value="{{ number_format($sale->subtotal, 2, '.', '') }}"
+                                                           oninput="onTiendaManualSubtotalChange({{ $sale->id }})"
+                                                           onfocus="this.select()"
+                                                           onclick="this.select()"
+                                                           class="tienda-input-subtotal w-full md:w-24 h-10 md:h-8 text-right rounded-xl md:rounded-lg px-2.5 font-mono font-black text-sm md:text-xs bg-zinc-950 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:ring-1 focus:ring-[#F5B81C] focus:border-[#F5B81C]">
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="7" class="px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
+                                    <tr class="block md:table-row p-6 bg-zinc-950 rounded-2xl border border-zinc-800 text-center">
+                                        <td colspan="7" class="block md:table-cell px-4 py-8 text-center text-zinc-500 font-sans">No hay bebidas registradas en Tienda.</td>
                                     </tr>
                                 @endforelse
-                                <tr id="tienda-empty-filter-row" class="hidden">
-                                    <td colspan="7" class="px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
+                                <tr id="tienda-empty-filter-row" class="hidden block md:table-row p-6 bg-zinc-950 rounded-2xl border border-zinc-800 text-center">
+                                    <td colspan="7" class="block md:table-cell px-4 py-8 text-center text-zinc-500 font-sans">No se encontraron bebidas con ese filtro o búsqueda.</td>
                                 </tr>
                             </tbody>
-                            <tfoot class="bg-zinc-950 border-t theme-border font-bold text-xs text-white">
-                                <tr>
-                                    <td colspan="5" class="px-4 py-2.5 text-right uppercase tracking-wider font-sans">
+                            <tfoot class="block md:table-footer-group bg-zinc-950 border-t theme-border font-bold text-xs text-white rounded-2xl md:rounded-none p-3.5 mt-3 md:p-0 md:mt-0">
+                                <tr class="flex items-center justify-between md:table-row">
+                                    <td colspan="5" class="px-0 md:px-4 py-0 md:py-2.5 text-left md:text-right uppercase tracking-wider font-sans text-xs text-zinc-400 md:text-white">
                                         <span>Total Ventas Tienda:</span>
                                     </td>
-                                    <td class="px-4 py-2.5 text-center font-mono font-black text-[#F5B81C] text-sm" id="tfoot-tienda-units">
+                                    <td class="hidden md:table-cell px-4 py-2.5 text-center font-mono font-black text-[#F5B81C] text-sm" id="tfoot-tienda-units">
                                         {{ $totalTiendaUnits ?? $allBarSales->sum('vendido') }}
                                     </td>
-                                    <td class="px-4 py-2.5 text-right font-mono font-black text-[#F5B81C] text-sm" id="tfoot-tienda-subtotal">
+                                    <td class="px-0 md:px-4 py-0 md:py-2.5 text-right font-mono font-black text-[#F5B81C] text-base md:text-sm" id="tfoot-tienda-subtotal">
                                         Bs. {{ number_format($allBarSales->sum('subtotal'), 2) }}
                                     </td>
                                 </tr>
