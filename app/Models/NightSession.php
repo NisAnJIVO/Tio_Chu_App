@@ -63,6 +63,11 @@ class NightSession extends Model
         return $this->hasMany(Expense::class);
     }
 
+    public function beerPayments(): HasMany
+    {
+        return $this->hasMany(BeerPayment::class);
+    }
+
     public function cashClosing(): HasOne
     {
         return $this->hasOne(CashClosing::class);

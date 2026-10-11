@@ -41,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard principal
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/beer-payments', [DashboardController::class, 'storeBeerPayment'])->name('beerPayments.store');
+    Route::delete('/beer-payments/{beerPayment}', [DashboardController::class, 'destroyBeerPayment'])->name('beerPayments.destroy');
+    Route::post('/reported-cash', [DashboardController::class, 'updateReportedCash'])->name('cash.reported.update');
 
     // 1. Catálogo e Inventario Base (Módulo 2)
     Route::patch('products/{product}/quick-stock', [ProductController::class, 'updateQuickStock'])->name('products.quickStock');

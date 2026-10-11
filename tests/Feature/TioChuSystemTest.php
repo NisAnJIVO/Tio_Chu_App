@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\BarSale;
+use App\Models\BeerPayment;
 use App\Models\NightSession;
 use App\Models\Product;
 use App\Models\Staff;
@@ -47,6 +48,32 @@ class TioChuSystemTest extends TestCase
         $response = $this->actingAs($this->user)->get(route('dashboard'));
         $response->assertStatus(200);
         $response->assertSee('TÍO CHU');
+    }
+
+    public function test_user_can_register_and_delete_beer_payment(): void
+    {
+        $session = NightSession::first();
+
+        $response = $this->actingAs($this->user)->post(route('beerPayments.store'), [
+            'night_session_id' => $session->id,
+            'payment_method' => 'qr',
+            'qr_provider' => 'YASTA',
+            'amount' => 85.50,
+            'notes' => 'Cerveza para staff',
+        ]);
+
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('beer_payments', [
+            'night_session_id' => $session->id,
+            'payment_method' => 'qr',
+            'qr_provider' => 'YASTA',
+            'amount' => '85.50',
+        ]);
+
+        $payment = BeerPayment::where('night_session_id', $session->id)->first();
+        $deleteResponse = $this->actingAs($this->user)->delete(route('beerPayments.destroy', $payment));
+        $deleteResponse->assertSessionHas('success');
+        $this->assertDatabaseMissing('beer_payments', ['id' => $payment->id]);
     }
 
     public function test_products_catalog_lists_seeded_drinks(): void
