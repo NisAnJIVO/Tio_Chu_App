@@ -753,7 +753,6 @@
                                 <input type="hidden" name="cash_amount" id="tienda-input-cash" value="0">
                                 <input type="hidden" name="qr_amount" id="tienda-input-qr" value="0">
                                 <input type="hidden" name="card_amount" id="tienda-input-card" value="0">
-                                <input type="hidden" name="cobrante_name" id="tienda-input-cobrante" value="DON LUDO">
                                 <input type="hidden" name="bank_app" id="tienda-input-bank-app" value="YASTA">
                                 <input type="hidden" name="sync_qr" value="1">
 
@@ -844,25 +843,32 @@
                                     </div>
                                 </div>
 
-                                <!-- Cobrante Rápido -->
+                                <!-- Mesero / Quién retira o cobra -->
                                 <div class="space-y-1.5 pt-2">
-                                    <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
-                                        ¿Quién cobra?
+                                    <label for="tienda-input-cobrante" class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                                        Mesero / Quién retira o cobra:
                                     </label>
-                                    <div class="grid grid-cols-3 gap-1.5 text-xs">
-                                        <button type="button" onclick="setTiendaCobrante('DON LUDO')" id="btn-cob-ludo"
-                                                class="tienda-cob-btn py-1.5 rounded-lg border font-bold transition-all bg-[#F5B81C] text-black border-[#F5B81C]">
-                                            Don Ludo
-                                        </button>
-                                        <button type="button" onclick="setTiendaCobrante('ARIEL')" id="btn-cob-ariel"
-                                                class="tienda-cob-btn py-1.5 rounded-lg border font-semibold transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white">
-                                            Ariel
-                                        </button>
-                                        <button type="button" onclick="setTiendaCobrante('KELLY')" id="btn-cob-kelly"
-                                                class="tienda-cob-btn py-1.5 rounded-lg border font-semibold transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white">
-                                            Kelly
-                                        </button>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <circle cx="9" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                        <input type="text" 
+                                               name="cobrante_name" 
+                                               id="tienda-input-cobrante" 
+                                               required 
+                                               list="waiters-list"
+                                               placeholder="Escribe el nombre del mesero..."
+                                               autocomplete="off"
+                                               class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 text-xs sm:text-sm font-semibold uppercase tracking-wide focus:outline-none focus:border-[#F5B81C] focus:ring-1 focus:ring-[#F5B81C] transition-all">
                                     </div>
+                                    <datalist id="waiters-list">
+                                        @foreach(\App\Models\Staff::where('is_active', true)->orderBy('name')->pluck('name') as $staffName)
+                                            <option value="{{ $staffName }}">
+                                        @endforeach
+                                    </datalist>
                                 </div>
 
                                 <!-- Botón Gigante de Cobrar y Despachar -->
@@ -2250,25 +2256,8 @@
         };
 
         window.setTiendaCobrante = function(cobrante) {
-            tiendaActiveCobrante = cobrante;
             const input = document.getElementById('tienda-input-cobrante');
             if (input) input.value = cobrante;
-
-            const btns = {
-                'DON LUDO': document.getElementById('btn-cob-ludo'),
-                'ARIEL': document.getElementById('btn-cob-ariel'),
-                'KELLY': document.getElementById('btn-cob-kelly')
-            };
-
-            Object.keys(btns).forEach(key => {
-                const b = btns[key];
-                if (!b) return;
-                if (key === cobrante) {
-                    b.className = 'tienda-cob-btn py-1.5 rounded-lg border font-bold transition-all bg-[#F5B81C] text-black border-[#F5B81C]';
-                } else {
-                    b.className = 'tienda-cob-btn py-1.5 rounded-lg border font-semibold transition-all bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white';
-                }
-            });
         };
 
         window.onTiendaManualPaymentChange = function() {
@@ -2354,6 +2343,14 @@
             if (tiendaCart.length === 0) {
                 event.preventDefault();
                 alert('Selecciona al menos una bebida para registrar el despacho.');
+                return false;
+            }
+
+            const cobranteInput = document.getElementById('tienda-input-cobrante');
+            if (!cobranteInput || !cobranteInput.value.trim()) {
+                event.preventDefault();
+                alert('Por favor escribe el nombre del mesero que retira o cobra.');
+                cobranteInput?.focus();
                 return false;
             }
 
