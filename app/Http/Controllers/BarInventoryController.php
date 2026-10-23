@@ -7,6 +7,7 @@ use App\Models\NightSession;
 use App\Models\Product;
 use App\Services\NightSessionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BarInventoryController extends Controller
 {
@@ -106,9 +107,10 @@ class BarInventoryController extends Controller
             default => in_array($rawBar, ['Barra Principal', 'Barra Subterráneo']) ? $rawBar : 'Barra Principal',
         };
 
-        foreach ($rows as $id => $data) {
-            $barSale = BarSale::with('product')->find($id);
-            if (!$barSale || !$barSale->product) continue;
+        DB::transaction(function () use ($rows): void {
+            foreach ($rows as $id => $data) {
+                $barSale = BarSale::with('product')->find($id);
+                if (!$barSale || !$barSale->product) continue;
 
             $unitsPerPkg = $barSale->product->units_per_package > 0 ? (int)$barSale->product->units_per_package : 1;
 
@@ -147,8 +149,9 @@ class BarInventoryController extends Controller
                 $barSale->subtotal = $barSale->vendido * (float)$barSale->unit_price;
             }
 
-            $barSale->save();
-        }
+                $barSale->save();
+            }
+        });
 
         return redirect()->route('barInventory.index', [
             'session_id' => $sessionId,

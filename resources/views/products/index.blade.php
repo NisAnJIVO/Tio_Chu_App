@@ -8,20 +8,6 @@
     $totalBottles   = $products->sum('stock_warehouse');
     $totalValuation = $products->sum(fn($p) => $p->stock_warehouse * $p->sale_price);
     $lowStockCount  = $products->filter(fn($p) => $p->stock_warehouse <= 10 && $p->is_active)->count();
-
-    if (!function_exists('getDrinkCategory')) {
-        function getDrinkCategory(string $name, string $cat): string {
-            $n = mb_strtolower($name);
-            if (str_contains($n, 'singani')) return 'Singani';
-            if (str_contains($n, 'whisky') || str_contains($n, 'whiskey') || str_contains($n, 'jack daniel')) return 'Whisky';
-            if (str_contains($n, 'ron') || str_contains($n, 'abuelo') || str_contains($n, 'havana') || str_contains($n, 'fernet')) return 'Ron';
-            if (str_contains($n, 'gin') || str_contains($n, 'tanqueray') || str_contains($n, 'beefeater') || str_contains($n, 'dharma') || str_contains($n, 'ganesha') || str_contains($n, 'james cook')) return 'Gin';
-            if (str_contains($n, 'tequila') || str_contains($n, 'jager') || str_contains($n, 'cuervo') || str_contains($n, 'olmeca')) return 'Tequila';
-            if ($cat === 'Mixers' || str_contains($n, 'coca') || str_contains($n, 'ginger') || str_contains($n, 'agua') || str_contains($n, 'sprite') || str_contains($n, 'aquarius') || str_contains($n, 'tónica') || str_contains($n, 'tonica')) return 'Mixer';
-            if ($cat === 'Cervezas' || str_contains($n, 'cerveza') || str_contains($n, 'huari') || str_contains($n, 'paceña')) return 'Cerveza';
-            return 'Otro';
-        }
-    }
 @endphp
 
 <style>
@@ -42,7 +28,7 @@
     <!-- ========================================================
          1. CABECERA: TÍTULO, SELECTOR DE VISTA & NUEVO PRODUCTO
          ======================================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl theme-card border theme-border shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
         <div>
             <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
                 Bodega Central
@@ -256,7 +242,7 @@
                 <tbody class="divide-y theme-border font-sans" id="table-products-tbody">
                     @foreach($products as $prod)
                     @php
-                        $sub = getDrinkCategory($prod->name, $prod->category);
+                        $sub = \App\Models\Product::getDrinkCategory($prod->name, $prod->category);
                         $stock = (int) $prod->stock_warehouse;
                         $unitsPerPackage = max(1, (int) $prod->units_per_package);
                         $stockPackages = intdiv($stock, $unitsPerPackage);
@@ -396,7 +382,7 @@
     <div id="view-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
         @foreach($products as $prod)
         @php
-            $sub = getDrinkCategory($prod->name, $prod->category);
+            $sub = \App\Models\Product::getDrinkCategory($prod->name, $prod->category);
             $stock = (int) $prod->stock_warehouse;
             $unitsPerPackage = max(1, (int) $prod->units_per_package);
             $stockPackages = intdiv($stock, $unitsPerPackage);

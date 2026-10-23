@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\StoreSale;
 use App\Services\NightSessionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\CategoryMixerOption;
 
 class BarSaleController extends Controller
@@ -87,21 +88,6 @@ class BarSaleController extends Controller
             $barTotalCardCommission = (float)$barCardInvoices->sum('commission_amount');
             $barTotalCardNet        = (float)$barCardInvoices->sum('net_amount');
 
-            // Barras tradicionales (Principal y Subte): Apertura, Unidades, Saldo y deducción de sodas
-            if ($session->isOpen()) {
-                BarSale::where('night_session_id', $session->id)
-                    ->whereHas('product')
-                    ->with('product')
-                    ->get()
-                    ->each(function (BarSale $barSale): void {
-                        $barSale->unit_price = $barSale->product->sale_price;
-                        if ($barSale->product->category !== 'Mixers') {
-                            $barSale->subtotal = (int) $barSale->vendido * (float) $barSale->product->sale_price;
-                        }
-                        $barSale->save();
-                    });
-            }
-
             $existingCount = BarSale::where('night_session_id', $session->id)
                 ->where('bar_name', $selectedBar)
                 ->count();
@@ -175,6 +161,17 @@ class BarSaleController extends Controller
                 ->where('night_session_id', $session->id)
                 ->where('bar_name', $selectedBar)
                 ->get();
+
+            if ($session->isOpen()) {
+                $allBarSales->each(function (BarSale $barSale): void {
+                    if ($barSale->product) {
+                        $barSale->unit_price = $barSale->product->sale_price;
+                        if ($barSale->product->category !== 'Mixers') {
+                            $barSale->subtotal = (int) $barSale->vendido * (float) $barSale->product->sale_price;
+                        }
+                    }
+                });
+            }
 
             $liquorSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category !== 'Mixers');
             $mixerSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category === 'Mixers');
@@ -296,7 +293,7 @@ class BarSaleController extends Controller
             $totalStoreSales = (float)$storeSales->sum('total_price');
             $allProducts = Product::where('is_active', true)->orderBy('name')->get();
 
-            $barCashRemaining = max(0, $grandTotalBar - $barTotalQr - $barTotalCardNet);
+            $barCashRemaining = max(0, $grandTotalBar - $barTotalQr - $barTotalCard);
         } else {
             $totalTiendaUnits = 0;
             $allBarSales = collect();
@@ -388,7 +385,8 @@ class BarSaleController extends Controller
             default => $rawBar,
         };
 
-        if ($barName === 'Tienda') {
+        DB::transaction(function () use ($barName, $rows, $mapping, $sessionId, $request): void {
+            if ($barName === 'Tienda') {
             $updatedMixers = [];
             $combosPerMixer = [];
 
@@ -653,6 +651,7 @@ class BarSaleController extends Controller
                 $this->sessionService->recalculateClosing($session);
             }
         }
+        });
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

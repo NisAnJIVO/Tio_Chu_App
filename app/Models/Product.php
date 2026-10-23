@@ -78,6 +78,19 @@ class Product extends Model
         ];
     }
 
+    public static function getDrinkCategory(string $name, string $cat): string
+    {
+        $n = mb_strtolower($name);
+        if (str_contains($n, 'singani')) return 'Singani';
+        if (str_contains($n, 'whisky') || str_contains($n, 'whiskey') || str_contains($n, 'jack daniel')) return 'Whisky';
+        if (str_contains($n, 'ron') || str_contains($n, 'abuelo') || str_contains($n, 'havana') || str_contains($n, 'fernet')) return 'Ron';
+        if (str_contains($n, 'gin') || str_contains($n, 'tanqueray') || str_contains($n, 'beefeater') || str_contains($n, 'dharma') || str_contains($n, 'ganesha') || str_contains($n, 'james cook')) return 'Gin';
+        if (str_contains($n, 'tequila') || str_contains($n, 'jager') || str_contains($n, 'cuervo') || str_contains($n, 'olmeca')) return 'Tequila';
+        if ($cat === 'Mixers' || str_contains($n, 'coca') || str_contains($n, 'ginger') || str_contains($n, 'agua') || str_contains($n, 'sprite') || str_contains($n, 'aquarius') || str_contains($n, 'tónica') || str_contains($n, 'tonica')) return 'Mixer';
+        if ($cat === 'Cervezas' || str_contains($n, 'cerveza') || str_contains($n, 'huari') || str_contains($n, 'paceña')) return 'Cerveza';
+        return 'Otro';
+    }
+
     public function getDrinkTypeAttribute(): string
     {
         $name = strtolower($this->name);

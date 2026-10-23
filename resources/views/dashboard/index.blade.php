@@ -3,65 +3,7 @@
 @section('title', 'Resumen General')
 
 @section('content')
-@php
-    $salesPrincipal = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal') : 0;
-    $salesSubte = $session ? (float) $session->barSales()->whereIn('bar_name', ['Barra Subterráneo', 'Barra Ariel (Subte)', 'Subterráneo', 'Subterraneo', 'Subte', 'Ariel'])->sum('subtotal') : 0;
-    $salesTienda = $session ? ((float) $session->barSales()->whereIn('bar_name', ['Tienda', 'tienda'])->sum('subtotal') + (float) $session->storeSales()->sum('total_price')) : 0;
-    $totalSales = $salesPrincipal + $salesSubte + $salesTienda;
 
-    $totalExpenses = $closing->total_expenses ?? 0;
-
-    $staffPaid = $closing->total_staff_paid ?? 0;
-
-    $barPayments = [
-        'principal' => [
-            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Barra Principal', 'Principal', 'Barra Kelly (Principal)', 'Kelly'])->sum('amount') : 0,
-            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
-            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Principal', 'Barra Principal', 'Barra Kelly (Principal)', 'Kelly'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
-        ],
-        'subte' => [
-            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Subte', 'Barra Subte', 'Subterráneo', 'Subterraneo', 'Barra Ariel (Subte)', 'Barra Subterráneo', 'Ariel'])->sum('amount') : 0,
-            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Barra Subterráneo', 'Ariel'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
-            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Subterráneo', 'Subterraneo', 'Subte', 'Barra Ariel (Subte)', 'Barra Subterráneo', 'Ariel'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
-        ],
-        'tienda' => [
-            'qr' => $session ? (float) $session->qrPayments()->whereIn('point_of_sale', ['Tienda', 'tienda'])->sum('amount') : 0,
-            'card' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Tienda', 'tienda'])->where('payment_method', 'tarjeta')->sum('amount') : 0,
-            'card_net' => $session ? (float) $session->invoices()->whereIn('bar_name', ['Tienda', 'tienda'])->where('payment_method', 'tarjeta')->sum('net_amount') : 0,
-        ],
-    ];
-    $barPayments['principal']['cash'] = max(0, $salesPrincipal - $barPayments['principal']['qr'] - $barPayments['principal']['card']);
-    $barPayments['subte']['cash'] = max(0, $salesSubte - $barPayments['subte']['qr'] - $barPayments['subte']['card']);
-    $barPayments['tienda']['cash'] = max(0, $salesTienda - $barPayments['tienda']['qr'] - $barPayments['tienda']['card']);
-
-    $qrTotal = $barPayments['principal']['qr'] + $barPayments['subte']['qr'] + $barPayments['tienda']['qr'];
-    $totalQrYasta = $session ? (float) $session->qrPayments()->where('bank_app', 'YASTA')->sum('amount') : 0;
-    $totalQrYape = $session ? (float) $session->qrPayments()->where('bank_app', 'YAPE')->sum('amount') : 0;
-    $posGross = $barPayments['principal']['card'] + $barPayments['subte']['card'] + $barPayments['tienda']['card'];
-    $posNet = $barPayments['principal']['card_net'] + $barPayments['subte']['card_net'] + $barPayments['tienda']['card_net'];
-    $posCommission = $posGross - $posNet;
-    $barTotal = $totalSales;
-    $netCash = $barPayments['principal']['cash'] + $barPayments['subte']['cash'] + $barPayments['tienda']['cash'];
-    $totalIncome = $posGross + $qrTotal + $netCash;
-
-    $beerPayments = $session ? $session->beerPayments()->orderByDesc('id')->get() : collect();
-    $beerPaymentCash = $beerPayments->where('payment_method', 'efectivo')->sum('amount');
-    $beerPaymentYasta = $beerPayments->where('payment_method', 'qr')->where('qr_provider', 'YASTA')->sum('amount');
-    $beerPaymentYape = $beerPayments->where('payment_method', 'qr')->where('qr_provider', 'YAPE')->sum('amount');
-    $beerPaymentQrTotal = $beerPaymentYasta + $beerPaymentYape;
-    $beerPaymentTotal = $beerPaymentCash + $beerPaymentQrTotal;
-    $qrRemaining = $qrTotal - $beerPaymentQrTotal;
-    $yastaRemaining = $totalQrYasta - $beerPaymentYasta;
-    $yapeRemaining = $totalQrYape - $beerPaymentYape;
-    $reportedCash = $closing && isset($closing->reported_cash) ? (float) $closing->reported_cash : 0;
-    $staffTotalDue = $session ? (float) $session->staffAttendances()->sum('pay_amount') : 0;
-    $staffAlreadyPaid = $session ? (float) $session->staffAttendances()->where('is_paid', true)->sum('pay_amount') : 0;
-    $cashBeforeBeer = $barTotal - ($posGross + $qrTotal);
-    $netCash = $barTotal - ($posGross + $qrRemaining + ($beerPayments->isNotEmpty() ? $staffTotalDue : 0));
-    $cashRemaining = $netCash - $beerPaymentCash;
-    $cashComparisonTotal = $reportedCash + $posGross + $qrRemaining + $staffTotalDue;
-    $cashDifference = $barTotal - $cashComparisonTotal;
-@endphp
 
 <div class="space-y-4 max-w-7xl mx-auto w-full pb-8">
 

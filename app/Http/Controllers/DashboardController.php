@@ -24,16 +24,21 @@ class DashboardController extends Controller
         $allSessions = NightSession::orderByDesc('session_date')->get();
 
         $closing = null;
-        $beerPayments = collect();
         if ($session) {
             $closing = $this->sessionService->recalculateClosing($session);
-            $beerPayments = $session->beerPayments()->orderByDesc('id')->get();
         }
 
+        $metrics = $this->sessionService->getDashboardMetrics($session, $closing);
         $totalProducts = Product::where('is_active', true)->count();
         $totalStaff = Staff::where('is_active', true)->count();
 
-        return view('dashboard.index', compact('session', 'allSessions', 'closing', 'beerPayments', 'totalProducts', 'totalStaff'));
+        return view('dashboard.index', array_merge([
+            'session' => $session,
+            'allSessions' => $allSessions,
+            'closing' => $closing,
+            'totalProducts' => $totalProducts,
+            'totalStaff' => $totalStaff,
+        ], $metrics));
     }
 
     public function storeBeerPayment(Request $request)

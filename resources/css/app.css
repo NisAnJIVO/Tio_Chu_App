@@ -256,10 +256,10 @@ input:-webkit-autofill:focus {
    ======================================================== */
 :root {
     --app-bg: #000000;
-    --main-bg: #08080a;
-    --card-bg: #14151b;
-    --card-surface: #1a1b22;
-    --card-border: #292a36;
+    --main-bg: #000000;
+    --card-bg: #09090b;
+    --card-surface: #101014;
+    --card-border: #27272a;
     --text-primary: #ffffff;
     --text-secondary: #a1a1aa;
     --text-muted: #71717a;

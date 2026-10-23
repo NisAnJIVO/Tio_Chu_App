@@ -18,6 +18,9 @@ class StoreSale extends Model
         'total_price',
         'cash_amount',
         'qr_amount',
+        'card_amount',
+        'qr_payment_id',
+        'invoice_id',
         'cobrante_name',
     ];
 
@@ -27,6 +30,9 @@ class StoreSale extends Model
         'total_price' => 'decimal:2',
         'cash_amount' => 'decimal:2',
         'qr_amount' => 'decimal:2',
+        'card_amount' => 'decimal:2',
+        'qr_payment_id' => 'integer',
+        'invoice_id' => 'integer',
     ];
 
     public function nightSession(): BelongsTo

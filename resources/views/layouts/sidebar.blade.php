@@ -387,24 +387,6 @@
                     <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
                 @endif
             </a>
-
-            <!-- Servidor (Acceso Remoto para Celulares) -->
-            <a href="{{ route('server.index') }}" 
-               title="Servidor"
-               class="sidebar-item group flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all duration-150 {{ request()->routeIs('server.*') ? 'border-[#F5B81C] bg-[#F5B81C] text-black font-extrabold' : 'border-transparent text-zinc-300 font-semibold hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white' }}">
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <svg class="w-4 h-4 shrink-0 {{ request()->routeIs('server.*') ? 'text-black' : 'text-[#F5B81C]' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/>
-                        <rect width="20" height="8" x="2" y="14" rx="2" ry="2"/>
-                        <line x1="6" x2="6.01" y1="6" y2="6"/>
-                        <line x1="6" x2="6.01" y1="18" y2="18"/>
-                    </svg>
-                    <span class="sidebar-text text-[13px] truncate">Servidor</span>
-                </div>
-                @if(request()->routeIs('server.*'))
-                    <span class="sidebar-dot w-1.5 h-1.5 rounded-full bg-black shrink-0"></span>
-                @endif
-            </a>
         </div>
 
     </nav>

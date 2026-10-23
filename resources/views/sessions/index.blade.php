@@ -22,19 +22,19 @@
     <!-- ==========================================
          CABECERA MINIMALISTA (iOS PURE DARK)
          ========================================== -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-zinc-800/80">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
         <div>
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
+            <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[10px] font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
                     Control Operativo
                 </span>
                 <span class="text-zinc-600 text-xs">•</span>
-                <span class="text-xs text-zinc-400 font-mono">Jornadas Nocturnas</span>
+                <span class="text-[10px] text-zinc-400 font-mono">Jornadas Nocturnas</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
                 Historial de Noches de Atención
             </h1>
-            <p class="text-xs text-zinc-400 mt-1">
+            <p class="text-xs text-zinc-400 mt-0.5">
                 Selecciona noches individuales o fines de semana para consolidar arqueos y métodos de pago.
             </p>
         </div>

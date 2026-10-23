@@ -121,12 +121,23 @@ class PaymentHistoryController extends Controller
      */
     public function paySingle(Request $request, StaffAttendance $attendance)
     {
+        $session = $attendance->nightSession;
+        if ($session && !$session->isOpen()) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se pueden liquidar pagos en una noche cerrada. Reabre la noche desde Cierre de Caja para modificarla.',
+                ], 422);
+            }
+            return back()->with('error', 'No se pueden liquidar pagos en una noche cerrada. Reabre la noche desde Cierre de Caja para modificarla.');
+        }
+
         $attendance->update([
             'is_paid' => true,
         ]);
 
-        if ($attendance->nightSession) {
-            $this->sessionService->recalculateClosing($attendance->nightSession);
+        if ($session) {
+            $this->sessionService->recalculateClosing($session);
         }
 
         $workerName = $attendance->staff->name ?? 'Personal';

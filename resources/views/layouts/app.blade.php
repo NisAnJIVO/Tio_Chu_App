@@ -35,10 +35,11 @@
     <!-- Main Content Area -->
     <main class="flex-1 min-w-0 w-full max-w-full h-screen overflow-y-auto overflow-x-hidden p-2.5 sm:p-4 lg:p-6 theme-main-bg transition-colors duration-200 flex flex-col">
         <!-- Alerta Discreta Estilo iOS (Bottom-Right Toast sin bloqueo visual) -->
+        <!-- Alertas Efímeras Estilo iOS (Bottom-Center Toasts Minimalistas) -->
         @if(session('success'))
-            <div id="flash-success-toast" class="fixed bottom-5 right-5 z-50 px-4 py-2.5 bg-[#09090b]/95 border border-zinc-800 text-xs text-zinc-300 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300">
-                <span class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
-                <span class="font-semibold">{{ session('success') }}</span>
+            <div id="flash-success-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-black/95 border border-zinc-800 text-xs text-zinc-200 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300 pointer-events-auto">
+                <span class="w-2 h-2 rounded-full bg-[#F5B81C] shrink-0"></span>
+                <span class="font-medium truncate max-w-sm sm:max-w-md">{{ session('success') }}</span>
                 <button type="button" onclick="document.getElementById('flash-success-toast')?.remove()" class="text-zinc-500 hover:text-white text-sm ml-1 cursor-pointer">&times;</button>
             </div>
             <script>
@@ -46,26 +47,30 @@
                     const toast = document.getElementById('flash-success-toast');
                     if (toast) {
                         toast.style.opacity = '0';
-                        toast.style.transform = 'translateY(8px)';
-                        setTimeout(() => toast.remove(), 300);
+                        toast.style.transform = 'translate(-50%, 8px)';
+                        setTimeout(() => toast.remove(), 250);
                     }
-                }, 2400);
+                }, 1800);
             </script>
         @endif
-        @if($errors->any())
-            <div class="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 rounded-2xl">
-                <div class="flex items-center gap-2 mb-1.5 font-bold text-rose-400">
-                    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                    <span>Por favor corrige los siguientes errores:</span>
-                </div>
-                <ul class="list-disc list-inside space-y-1 pl-6">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        @if(session('error') || $errors->any())
+            <div id="flash-error-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-black/95 border border-rose-900/60 text-xs text-rose-300 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300 pointer-events-auto">
+                <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                <span class="font-medium truncate max-w-sm sm:max-w-md">
+                    {{ session('error') ?? $errors->first() }}
+                </span>
+                <button type="button" onclick="document.getElementById('flash-error-toast')?.remove()" class="text-zinc-500 hover:text-white text-sm ml-1 cursor-pointer">&times;</button>
             </div>
+            <script>
+                setTimeout(function() {
+                    const toast = document.getElementById('flash-error-toast');
+                    if (toast) {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translate(-50%, 8px)';
+                        setTimeout(() => toast.remove(), 250);
+                    }
+                }, 2200);
+            </script>
         @endif
 
         @yield('content')

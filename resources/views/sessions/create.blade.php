@@ -5,17 +5,17 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+    <div class="flex items-center justify-between px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
         <div>
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
+            <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[10px] font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
                     Apertura Operativa
                 </span>
                 <span class="text-zinc-600 text-xs">•</span>
-                <span class="text-xs text-zinc-400 font-mono">Nueva Jornada</span>
+                <span class="text-[10px] text-zinc-400 font-mono">Nueva Jornada</span>
             </div>
-            <h2 class="text-2xl font-black text-white tracking-tight">Aperturar Nueva Noche</h2>
-            <p class="text-xs text-zinc-400 mt-1">Inicializa automáticamente los inventarios de las 3 barras y la planilla de asistencia.</p>
+            <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Aperturar Nueva Noche</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Inicializa automáticamente los inventarios de las 3 barras y la planilla de asistencia.</p>
         </div>
         <a href="{{ route('sessions.index') }}" 
            class="px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all">

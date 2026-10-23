@@ -58,29 +58,11 @@ class StoreSaleController extends Controller
         }
 
         DB::transaction(function () use ($validated, $session, $cobrante, $cashAmount, $qrAmount, $cardAmount, $request): void {
-            foreach ($validated['orders'] as $index => $order) {
-                $quantity = (int)$order['quantity'];
-                $unitPrice = (float)$order['unit_price'];
-                StoreSale::create([
-                    'night_session_id' => $session->id,
-                    'product_id' => $order['product_id'],
-                    'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
-                    'total_price' => $quantity * $unitPrice,
-                    'cash_amount' => $index === 0 ? $cashAmount : 0,
-                    'qr_amount' => $index === 0 ? $qrAmount : 0,
-                    'cobrante_name' => $cobrante,
-                ]);
-
-                // Consumir directamente de Bodega Central (sin exigir stock previo estricto)
-                $product = Product::find($order['product_id']);
-                if ($product) {
-                    $product->deductWarehouseStock($quantity);
-                }
-            }
+            $qrPaymentId = null;
+            $invoiceId = null;
 
             if ($qrAmount > 0) {
-                QrPayment::create([
+                $qrPayment = QrPayment::create([
                     'night_session_id' => $session->id,
                     'point_of_sale' => 'Tienda',
                     'operator_name' => $cobrante,
@@ -89,6 +71,7 @@ class StoreSaleController extends Controller
                     'reference_code' => null,
                     'is_confirmed' => true,
                 ]);
+                $qrPaymentId = $qrPayment->id;
             }
 
             if ($cardAmount > 0) {
@@ -102,6 +85,31 @@ class StoreSaleController extends Controller
                 $invoice->notes = 'Pago Tarjeta POS Tienda';
                 $invoice->calculateNet();
                 $invoice->save();
+                $invoiceId = $invoice->id;
+            }
+
+            foreach ($validated['orders'] as $index => $order) {
+                $quantity = (int)$order['quantity'];
+                $unitPrice = (float)$order['unit_price'];
+                StoreSale::create([
+                    'night_session_id' => $session->id,
+                    'product_id' => $order['product_id'],
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'total_price' => $quantity * $unitPrice,
+                    'cash_amount' => $index === 0 ? $cashAmount : 0,
+                    'qr_amount' => $index === 0 ? $qrAmount : 0,
+                    'card_amount' => $index === 0 ? $cardAmount : 0,
+                    'qr_payment_id' => $index === 0 ? $qrPaymentId : null,
+                    'invoice_id' => $index === 0 ? $invoiceId : null,
+                    'cobrante_name' => $cobrante,
+                ]);
+
+                // Consumir directamente de Bodega Central (sin exigir stock previo estricto)
+                $product = Product::find($order['product_id']);
+                if ($product) {
+                    $product->deductWarehouseStock($quantity);
+                }
             }
         });
 
@@ -117,12 +125,22 @@ class StoreSaleController extends Controller
             return back()->with('error', 'No se pueden eliminar despachos de una noche cerrada.');
         }
 
-        // Devolver cantidad a Bodega Central
-        if ($storeSale->product) {
-            $storeSale->product->restoreWarehouseStock($storeSale->quantity);
-        }
+        DB::transaction(function () use ($storeSale): void {
+            // Devolver cantidad a Bodega Central
+            if ($storeSale->product) {
+                $storeSale->product->restoreWarehouseStock($storeSale->quantity);
+            }
 
-        $storeSale->delete();
+            // Anular cobros vinculados si existen
+            if ($storeSale->qr_payment_id) {
+                QrPayment::where('id', $storeSale->qr_payment_id)->delete();
+            }
+            if ($storeSale->invoice_id) {
+                Invoice::where('id', $storeSale->invoice_id)->delete();
+            }
+
+            $storeSale->delete();
+        });
 
         if ($session) {
             $this->sessionService->recalculateClosing($session);

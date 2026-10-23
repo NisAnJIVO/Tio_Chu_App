@@ -82,25 +82,7 @@ if not exist "database\database.sqlite" (
 )
 if %ERRORLEVEL% neq 0 exit /b 1
 
-echo [6/7] Verificando soporte para Servidor Remoto (Ngrok)...
-set "NGROK_OK=0"
-where ngrok >nul 2>nul
-if %ERRORLEVEL% equ 0 set "NGROK_OK=1"
-if exist "%~dp0ngrok.exe" set "NGROK_OK=1"
-
-if "%NGROK_OK%"=="0" (
-    echo       - Descargando Ngrok portable para conexion remota...
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "$ProgressPreference='SilentlyContinue'; Invoke-WebRequest -Uri 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip' -OutFile '%TEMP%\tio-chu-ngrok.zip'; Expand-Archive -Path '%TEMP%\tio-chu-ngrok.zip' -DestinationPath '%~dp0' -Force; Remove-Item '%TEMP%\tio-chu-ngrok.zip' -Force"
-    if exist "%~dp0ngrok.exe" (
-        echo       - Ngrok portable listo.
-    ) else (
-        echo       - (Opcional) No se descargo Ngrok. Se podra descargar al iniciar el servidor.
-    )
-) else (
-    echo       - Componente de servidor remoto listo.
-)
-
-echo [7/7] Optimizando enlaces y caché...
+echo [6/6] Optimizando enlaces y caché...
 call "%PHP_BIN%" artisan storage:link 2>nul
 call "%PHP_BIN%" artisan optimize:clear
 

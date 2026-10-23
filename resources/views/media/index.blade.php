@@ -6,17 +6,17 @@
 <div class="space-y-5 sm:space-y-8 max-w-7xl mx-auto pb-12 w-full min-w-0 max-w-full overflow-x-hidden">
 
     <!-- Cabecera Minimalista iOS -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b w-full min-w-0" style="border-color: #1e1f24;">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm w-full min-w-0">
         <div>
-            <div class="flex items-center gap-2 mb-1">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/20">
+            <div class="flex items-center gap-2 mb-0.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#F5B81C]/10 text-[#F5B81C] border border-[#F5B81C]/20">
                     Galería & Identidad
                 </span>
                 <span class="text-zinc-600 text-xs">•</span>
                 <span class="text-xs text-zinc-500 font-mono">{{ $counts['all'] }} Recursos</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Multimedia</h1>
-            <p class="text-xs text-zinc-400 mt-1">
+            <p class="text-xs text-zinc-400 mt-0.5">
                 Administra el logo oficial, el fondo de acceso y la biblioteca visual de bebidas, local y personal.
             </p>
         </div>
