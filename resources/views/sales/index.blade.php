@@ -257,7 +257,7 @@
     <!-- ========================================================
          1. CABECERA PRINCIPAL: TÍTULO, NOCHE & ACCIÓN DE GUARDAR
          ======================================================== -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-3.5 sm:px-5 sm:py-3.5 rounded-2xl theme-card border theme-border">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-3.5 sm:px-5 sm:py-3.5 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm">
         <div>
             <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">
                 Ventas por Barra & Combos
@@ -319,7 +319,7 @@
 
     @if(!$session)
         <!-- Estado Vacío -->
-        <div class="p-8 sm:p-12 text-center rounded-2xl theme-card border theme-border">
+        <div class="p-8 sm:p-12 text-center rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm">
             <h3 class="text-sm font-bold uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
             <p class="text-xs text-zinc-400 mt-1 mb-4">Apertura una noche para registrar las ventas.</p>
             <a href="{{ route('sessions.create') }}" class="px-4 py-2 rounded-xl bg-[#F5B81C] text-black font-bold text-xs hover:bg-[#e5ac18] transition-all dilemo-btn inline-block">
@@ -331,7 +331,7 @@
         <!-- ========================================================
              2. SELECTOR DE PUNTOS DE VENTA (iOS SEGMENTED CONTROL)
              ======================================================== -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 p-2 rounded-2xl theme-card border theme-border">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 p-2.5 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm">
             <div class="grid grid-cols-3 sm:inline-flex p-1 rounded-xl bg-zinc-950 border border-zinc-800 w-full sm:w-auto">
                 @foreach($availableBars as $bar)
                     @php
@@ -365,7 +365,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
             
             <!-- Total Bebidas Liquidado / Total Tienda -->
-            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border flex flex-col justify-between">
+            <div class="bg-[#09090b] rounded-xl p-3.5 sm:p-5 border border-zinc-800 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">{{ $selectedBar === 'Tienda' ? 'Total Tienda' : 'Total Bebidas' }}</span>
                     <span class="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md bg-zinc-950 border border-zinc-800 text-zinc-400">{{ $selectedBar }}</span>
@@ -383,7 +383,7 @@
             </div>
 
             <!-- Efectivo en Mano en Barra / Tienda -->
-            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border flex flex-col justify-between">
+            <div class="bg-[#09090b] rounded-xl p-3.5 sm:p-5 border border-zinc-800 shadow-sm flex flex-col justify-between">
                 <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Efectivo {{ $selectedBar === 'Tienda' ? 'Tienda' : 'en Barra' }}</span>
                 <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-emerald-400 tracking-tight">
                     <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span><span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
@@ -394,7 +394,7 @@
             </div>
 
             <!-- En QR (YASTA / YAPE) -->
-            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border flex flex-col justify-between">
+            <div class="bg-[#09090b] rounded-xl p-3.5 sm:p-5 border border-zinc-800 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">Cobrado QR</span>
                     <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[10px] font-semibold text-blue-400 hover:underline">Ver QR &rarr;</a>
@@ -412,7 +412,7 @@
             </div>
 
             <!-- En Tarjetas POS -->
-            <div class="theme-card rounded-2xl p-3.5 sm:p-5 border theme-border flex flex-col justify-between">
+            <div class="bg-[#09090b] rounded-xl p-3.5 sm:p-5 border border-zinc-800 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">Tarjetas (POS)</span>
                     <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[10px] font-semibold text-purple-400 hover:underline">Ver POS &rarr;</a>
@@ -1467,7 +1467,7 @@
         <!-- Script Reactivo para Combos, Deducción Automática y Mixers Especiales -->
         <script>
         const barQrTotal = {{ (float)$barTotalQr }};
-        const barCardNetTotal = {{ (float)$barTotalCardNet }};
+        const barCardTotal = {{ (float)$barTotalCard }};
         let currentActiveRowId = null;
 
 
@@ -1752,7 +1752,7 @@
                 const storeSalesTotalEl = document.getElementById('store-sales-total-val');
                 const storeSalesTotal = storeSalesTotalEl ? parseFloat(storeSalesTotalEl.value || 0) : 0;
                 const grandTotal = subtotalLiquors + subtotalMixers + storeSalesTotal;
-                const cashRemaining = Math.max(0, grandTotal - barQrTotal - barCardNetTotal);
+                const cashRemaining = Math.max(0, grandTotal - barQrTotal - barCardTotal);
 
                 const headerCombos = document.getElementById('header-total-combos');
                 if (headerCombos) headerCombos.textContent = `${totalLiquorCombos} combos`;

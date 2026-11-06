@@ -19,7 +19,7 @@
     </div>
 
     <!-- Form Panel -->
-    <form method="POST" action="{{ route('staff.store') }}" class="p-6 sm:p-8 rounded-2xl theme-card border theme-border shadow-xl space-y-5">
+    <form method="POST" action="{{ route('staff.store') }}" class="p-6 sm:p-8 rounded-xl bg-[#09090b] border border-zinc-800 shadow-xl space-y-5">
         @csrf
 
         <div>

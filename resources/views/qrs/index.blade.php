@@ -22,23 +22,23 @@
     <!-- ========================================================
          1. CABECERA PRINCIPAL: ESTADO DE NOCHE & SELECTOR
          ======================================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl notoria-card shadow-sm">
         
         <!-- Izquierda: Título y Selector de Noche -->
         <div class="flex flex-wrap items-center gap-3">
             <div>
-                <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white font-sans">
+                <h1 class="text-lg sm:text-xl font-black tracking-tight theme-text-primary font-sans">
                     Cobros por QR
                 </h1>
-                <p class="text-[11px] text-zinc-400 mt-0.5">
+                <p class="text-[11px] theme-text-secondary mt-0.5">
                     Transferencias registradas por Yasta (Banco Unión) y Yape (Banco BCP)
                 </p>
             </div>
 
             @if($session)
-                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800">
-                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500' : 'bg-zinc-600' }}"></span>
-                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-zinc-200' : 'text-zinc-500' }}">
+                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl notoria-subtile">
+                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-500' }}"></span>
+                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-emerald-500' : 'theme-text-muted' }}">
                         {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
                     </span>
                 </div>
@@ -47,16 +47,16 @@
             <!-- Selector de Noche en Píldora -->
             @if($allSessions->isNotEmpty())
                 <form method="GET" action="{{ route('qrs.index') }}" class="flex items-center">
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-[#F5B81C] transition-colors">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl notoria-subtile text-xs hover:border-[#F5B81C] transition-colors">
                         <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-bold text-zinc-300 focus:outline-none cursor-pointer pr-1">
+                                class="bg-transparent border-0 text-xs font-bold theme-text-primary focus:outline-none cursor-pointer pr-1">
                             @foreach($allSessions as $s)
-                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-zinc-950 text-white">
+                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-slate-900 text-white">
                                     {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
                                 </option>
                             @endforeach
@@ -69,8 +69,8 @@
         <!-- Derecha: Estado o Acceso a Cierre -->
         <div class="flex items-center gap-2 shrink-0">
             @if($session && !$session->isOpen())
-                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400">
-                    <svg class="w-3.5 h-3.5 text-zinc-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl notoria-subtile text-xs theme-text-muted">
+                    <svg class="w-3.5 h-3.5 theme-text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
@@ -84,8 +84,8 @@
 
     @if(!$session)
         <!-- Estado Vacío -->
-        <div class="p-12 text-center rounded-2xl bg-[#09090b] border border-zinc-800/80 flex flex-col items-center justify-center">
-            <div class="w-12 h-12 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-600 mb-3">
+        <div class="p-12 text-center rounded-2xl notoria-card flex flex-col items-center justify-center shadow-sm">
+            <div class="w-12 h-12 rounded-2xl notoria-subtile flex items-center justify-center theme-text-muted mb-3">
                 <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <rect width="6" height="6" x="3" y="3" rx="1"/>
                     <rect width="6" height="6" x="15" y="3" rx="1"/>
@@ -93,8 +93,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
                 </svg>
             </div>
-            <h3 class="text-sm font-black uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
-            <p class="text-xs text-zinc-400 mt-1 mb-5">Apertura una noche para registrar cobros por QR.</p>
+            <h3 class="text-sm font-black uppercase tracking-wider theme-text-primary">No hay ninguna noche abierta o seleccionada</h3>
+            <p class="text-xs theme-text-secondary mt-1 mb-5">Apertura una noche para registrar cobros por QR.</p>
             <a href="{{ route('sessions.create') }}" class="px-5 py-2.5 rounded-xl bg-[#F5B81C] text-black font-black text-xs hover:bg-[#e5ac18] transition-all active:scale-95 shadow-sm">
                 + Aperturar Nueva Noche
             </a>
@@ -102,24 +102,24 @@
     @else
 
         <!-- ========================================================
-             2. 4 TARJETAS KPI RESUMEN: SOBRIAS Y MINIMALISTAS
+             2. 4 TARJETAS KPI RESUMEN: CARDS NOTORIAS
              ======================================================== -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
             
             <!-- TARJETA 1: Total General QR -->
-            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-xl notoria-card flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                    <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Total QR
                     </span>
-                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalGeneral, 2) }}
                     </div>
-                    <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
                         Yasta: {{ number_format($totalYasta, 0) }} • Yape: {{ number_format($totalYape, 0) }}
                     </span>
                 </div>
-                <div class="hidden sm:flex w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 items-center justify-center text-zinc-300 shrink-0 ml-3">
+                <div class="hidden sm:flex w-10 h-10 rounded-xl notoria-subtile items-center justify-center text-[#F5B81C] shrink-0 ml-3 shadow-sm">
                     <svg class="w-5 h-5 text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect width="6" height="6" x="3" y="3" rx="1"/>
                         <rect width="6" height="6" x="15" y="3" rx="1"/>
@@ -130,19 +130,19 @@
             </div>
 
             <!-- TARJETA 2: Barra Principal -->
-            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-xl notoria-card flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                    <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Barra Principal
                     </span>
-                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Barra Principal']['total'], 2) }}
                     </div>
-                    <span class="text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                    <span class="text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
                         Yasta: Bs. {{ number_format($totalsByPos['Barra Principal']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Barra Principal']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-300 shrink-0 ml-3">
+                <div class="w-10 h-10 rounded-xl notoria-subtile flex items-center justify-center theme-text-primary shrink-0 ml-3 shadow-sm">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
                     </svg>
@@ -150,19 +150,19 @@
             </div>
 
             <!-- TARJETA 3: Tienda (Entrada) -->
-            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-xl notoria-card flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                    <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Tienda
                     </span>
-                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Tienda']['total'], 2) }}
                     </div>
-                    <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
+                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
                         Yasta: {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="hidden sm:flex w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 items-center justify-center text-zinc-300 shrink-0 ml-3">
+                <div class="hidden sm:flex w-10 h-10 rounded-xl notoria-subtile items-center justify-center theme-text-primary shrink-0 ml-3 shadow-sm">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
@@ -170,12 +170,12 @@
             </div>
 
             <!-- TARJETA 4: Barra Subterráneo -->
-            <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border flex items-center justify-between shadow-sm">
+            <div class="p-3 sm:p-4 rounded-xl notoria-card flex items-center justify-between shadow-sm">
                 <div class="min-w-0">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block truncate">
+                    <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Barra Subterráneo
                     </span>
-                    <div class="text-lg sm:text-2xl font-black text-white font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Subte']['total'], 2) }}
                     </div>
                     <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono block mt-0.5 truncate">
@@ -194,8 +194,8 @@
         <!-- ========================================================
              3. FORMULARIO MINIMALISTA CON SWITCHES MODO IPHONE & LOGOS
              ======================================================== -->
-        <div class="p-5 rounded-2xl theme-card border theme-border shadow-sm">
-            <div class="border-b theme-border pb-3 mb-4 flex items-center justify-between">
+        <div class="p-5 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm">
+            <div class="border-b border-zinc-800 pb-3 mb-4 flex items-center justify-between">
                 <div>
                     <h2 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                         Registrar Nuevo Cobro QR
@@ -451,10 +451,10 @@
                         default => $posName,
                     };
                 @endphp
-                <div class="rounded-2xl theme-card border theme-border flex flex-col h-full overflow-hidden shadow-sm">
+                <div class="rounded-xl bg-[#09090b] border border-zinc-800 flex flex-col h-full overflow-hidden shadow-sm">
                     
                     <!-- Encabezado de Columna -->
-                    <div class="px-4 py-3.5 bg-zinc-950 border-b theme-border">
+                    <div class="px-4 py-3.5 bg-zinc-950 border-b border-zinc-800">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                                 {{ $displayPosName }}

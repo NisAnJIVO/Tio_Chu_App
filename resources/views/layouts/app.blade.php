@@ -6,11 +6,40 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Sistema de Gestión') — Discoteca Tío Chu</title>
 
-    <!-- Modo Oscuro Oficial Tío Chu -->
+    <!-- Bootstrap de Tema Tío Chu: Persistencia Local (Claro / Oscuro) -->
     <script>
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-        try { localStorage.removeItem('tiochu_theme'); } catch(e) {}
+        (function() {
+            var theme = localStorage.getItem('tiochu_theme') || 'dark';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        window.toggleTioChuTheme = function() {
+            var isDark = document.documentElement.classList.contains('dark');
+            var newTheme = isDark ? 'light' : 'dark';
+            if (newTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('tiochu_theme', newTheme);
+            document.querySelectorAll('.theme-toggle-text').forEach(function(el) {
+                el.textContent = newTheme === 'dark' ? 'Modo Oscuro' : 'Modo Claro';
+            });
+            document.querySelectorAll('.theme-toggle-icon-dark').forEach(function(el) {
+                el.style.display = newTheme === 'dark' ? 'inline-block' : 'none';
+            });
+            document.querySelectorAll('.theme-toggle-icon-light').forEach(function(el) {
+                el.style.display = newTheme === 'light' ? 'inline-block' : 'none';
+            });
+        };
     </script>
 
     <!-- Favicon Oficial Tío Chu -->

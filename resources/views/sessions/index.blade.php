@@ -20,21 +20,21 @@
     @endphp
 
     <!-- ==========================================
-         CABECERA MINIMALISTA (iOS PURE DARK)
+         CABECERA NOTORIA: CONTROL OPERATIVO
          ========================================== -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+    <div class="notoria-card px-6 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 mb-0.5">
                 <span class="text-[10px] font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
                     Control Operativo
                 </span>
-                <span class="text-zinc-600 text-xs">•</span>
-                <span class="text-[10px] text-zinc-400 font-mono">Jornadas Nocturnas</span>
+                <span class="theme-text-muted text-xs">•</span>
+                <span class="text-[10px] theme-text-secondary font-mono">Jornadas Nocturnas</span>
             </div>
-            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
                 Historial de Noches de Atención
             </h1>
-            <p class="text-xs text-zinc-400 mt-0.5">
+            <p class="text-xs theme-text-secondary mt-0.5">
                 Selecciona noches individuales o fines de semana para consolidar arqueos y métodos de pago.
             </p>
         </div>
@@ -42,7 +42,7 @@
         <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
             <!-- Botón Generar Consolidado -->
             <button type="button" onclick="openConsolidatedModal()" id="btn-header-consolidated"
-                    class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-[#F5B81C] border border-zinc-800 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm">
+                    class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-4 py-2.5 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm">
                 <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
@@ -50,7 +50,7 @@
             </button>
 
             <a href="{{ route('sessions.create') }}" 
-               class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl shadow-sm active:scale-95 transition-all">
+               class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl shadow-md active:scale-95 transition-all">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -60,54 +60,88 @@
     </div>
 
     <!-- ==========================================
-         KPIs RESUMEN DE JORNADAS
+         KPIs RESUMEN DE JORNADAS (CARDS NOTORIAS)
          ========================================== -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         
         <!-- Total Noches -->
-        <div class="theme-card rounded-2xl p-3.5 sm:p-5 border border-zinc-800/80 bg-[#09090b]">
-            <span class="text-[11px] sm:text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Total Noches</span>
-            <div class="mt-1 sm:mt-2 text-xl sm:text-2xl font-black font-mono text-white tracking-tight">
-                {{ $totalCount }}
+        <div class="notoria-card p-4 sm:p-5 flex items-center justify-between shadow-sm">
+            <div class="min-w-0">
+                <span class="text-[11px] font-black uppercase tracking-wider theme-text-secondary block truncate">Total Noches</span>
+                <div class="mt-1 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight">
+                    {{ $totalCount }}
+                </div>
+                <p class="text-[10px] theme-text-muted mt-0.5 font-mono truncate">Jornadas registradas</p>
             </div>
-            <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 font-mono truncate">Jornadas registradas</p>
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-500 shrink-0 ml-2 shadow-sm">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+            </div>
         </div>
 
         <!-- Noche Activa -->
-        <div class="theme-card rounded-2xl p-3.5 sm:p-5 border {{ $openSession ? 'border-emerald-500/30' : 'border-zinc-800/80' }} bg-[#09090b]">
-            <span class="text-[11px] sm:text-xs font-mono font-semibold {{ $openSession ? 'text-emerald-400' : 'text-zinc-400' }} uppercase tracking-wider">Noche en Curso</span>
-            <div class="mt-1 sm:mt-2 text-xl sm:text-2xl font-black font-mono {{ $openSession ? 'text-emerald-400' : 'text-zinc-500' }} tracking-tight truncate">
-                @if($openSession)
-                    {{ $openSession->day_name }}
-                @else
-                    Ninguna
-                @endif
+        <div class="notoria-card p-4 sm:p-5 flex items-center justify-between shadow-sm {{ $openSession ? 'border-2 border-emerald-500/70' : '' }}">
+            <div class="min-w-0">
+                <span class="text-[11px] font-black uppercase tracking-wider {{ $openSession ? 'text-emerald-500' : 'theme-text-secondary' }} block truncate">Noche en Curso</span>
+                <div class="mt-1 text-2xl sm:text-3xl font-black font-mono {{ $openSession ? 'text-emerald-500' : 'theme-text-primary' }} tracking-tight truncate">
+                    @if($openSession)
+                        {{ $openSession->day_name }}
+                    @else
+                        Ninguna
+                    @endif
+                </div>
+                <p class="text-[10px] theme-text-muted mt-0.5 font-mono truncate">
+                    @if($openSession)
+                        {{ \Carbon\Carbon::parse($openSession->session_date)->format('d/m/Y') }} (Abierta)
+                    @else
+                        Todas cerradas
+                    @endif
+                </p>
             </div>
-            <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 font-mono truncate">
-                @if($openSession)
-                    {{ \Carbon\Carbon::parse($openSession->session_date)->format('d/m/Y') }} (Abierta)
-                @else
-                    Todas cerradas
-                @endif
-            </p>
+            <div class="w-10 h-10 rounded-xl {{ $openSession ? 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-500 animate-pulse' : 'bg-slate-500/10 border border-slate-500/30 text-slate-400' }} flex items-center justify-center shrink-0 ml-2 shadow-sm">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
         </div>
 
         <!-- Noches Cerradas -->
-        <div class="theme-card rounded-2xl p-3.5 sm:p-5 border border-zinc-800/80 bg-[#09090b]">
-            <span class="text-[11px] sm:text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Noches Cerradas</span>
-            <div class="mt-1 sm:mt-2 text-xl sm:text-2xl font-black font-mono text-zinc-200 tracking-tight">
-                {{ $closedCount }}
+        <div class="notoria-card p-4 sm:p-5 flex items-center justify-between shadow-sm">
+            <div class="min-w-0">
+                <span class="text-[11px] font-black uppercase tracking-wider theme-text-secondary block truncate">Noches Cerradas</span>
+                <div class="mt-1 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight">
+                    {{ $closedCount }}
+                </div>
+                <p class="text-[10px] theme-text-muted mt-0.5 font-mono truncate">Arqueadas en Cierre</p>
             </div>
-            <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 font-mono truncate">Arqueadas en Cierre</p>
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-500 shrink-0 ml-2 shadow-sm">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+            </div>
         </div>
 
         <!-- Comisión POS Promedio -->
-        <div class="theme-card rounded-2xl p-3.5 sm:p-5 border border-zinc-800/80 bg-[#09090b]">
-            <span class="text-[11px] sm:text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">Comisión POS</span>
-            <div class="mt-1 sm:mt-2 text-xl sm:text-2xl font-black font-mono text-[#F5B81C] tracking-tight">
-                {{ number_format(($sessions->avg('pos_commission_rate') ?? 0.013) * 100, 2) }}%
+        <div class="notoria-card p-4 sm:p-5 flex items-center justify-between shadow-sm">
+            <div class="min-w-0">
+                <span class="text-[11px] font-black uppercase tracking-wider theme-text-secondary block truncate">Comisión POS</span>
+                <div class="mt-1 text-2xl sm:text-3xl font-black font-mono text-[#F5B81C] tracking-tight">
+                    {{ number_format(($sessions->avg('pos_commission_rate') ?? 0.013) * 100, 2) }}%
+                </div>
+                <p class="text-[10px] theme-text-muted mt-0.5 font-mono truncate">Tasa promedio</p>
             </div>
-            <p class="text-[10px] sm:text-[11px] text-zinc-500 mt-0.5 sm:mt-1 font-mono truncate">Tasa promedio</p>
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-[#F5B81C] shrink-0 ml-2 shadow-sm">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <line x1="2" y1="10" x2="22" y2="10"/>
+                </svg>
+            </div>
         </div>
 
     </div>
@@ -125,7 +159,7 @@
             @php
                 $isOpen = $s->isOpen();
             @endphp
-            <div class="theme-card rounded-2xl p-4 border {{ $isOpen ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-zinc-800/80 bg-[#09090b]' }} space-y-3">
+            <div class="rounded-xl p-4 border {{ $isOpen ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-zinc-800 bg-[#09090b]' }} space-y-3">
                 <div class="flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
@@ -181,7 +215,7 @@
                 </div>
             </div>
         @empty
-            <div class="p-8 text-center text-zinc-500 theme-card rounded-2xl border border-zinc-800/80 bg-[#09090b]">
+            <div class="p-8 text-center text-zinc-500 rounded-xl border border-zinc-800 bg-[#09090b]">
                 <p class="text-sm font-semibold text-zinc-400">No hay noches registradas</p>
                 <p class="text-xs text-zinc-500 mt-1">Apertura una nueva noche para comenzar.</p>
             </div>
@@ -189,20 +223,20 @@
     </div>
 
     <!-- ==========================================
-         TABLA DE NOCHES (DESKTOP: hidden md:block)
+         TABLA DE NOCHES (DESKTOP: hidden md:block) - CARD NOTORIA
          ========================================== -->
-    <div class="hidden md:block theme-card rounded-2xl border border-zinc-800/80 bg-[#09090b] shadow-xl overflow-hidden">
-        <div class="px-5 py-3.5 bg-zinc-950/60 border-b border-zinc-800/80 flex items-center justify-between">
+    <div class="hidden md:block notoria-card overflow-hidden shadow-xl">
+        <div class="notoria-card-header flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <h3 class="text-xs font-bold text-zinc-200 uppercase tracking-wider font-mono">
+                <h3 class="text-xs font-black text-white uppercase tracking-wider font-mono">
                     Registro de Jornadas Nocturnas
                 </h3>
-                <span class="text-xs font-mono text-zinc-500">
+                <span class="text-xs font-mono text-zinc-300">
                     ({{ $totalCount }} noches en total)
                 </span>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" onclick="selectWeekend()" title="Seleccionar Fin de Semana" class="text-xs text-[#F5B81C] hover:underline font-mono">
+                <button type="button" onclick="selectWeekend()" title="Seleccionar Fin de Semana" class="text-xs text-[#F5B81C] hover:underline font-mono font-bold">
                     + Marcar Fin de Semana
                 </button>
             </div>
@@ -210,72 +244,72 @@
 
         <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
-                <thead class="bg-zinc-950/40 border-b border-zinc-800/80 text-zinc-400 font-mono uppercase text-[10px] tracking-wider">
+                <thead class="bg-slate-950 text-white font-mono uppercase text-[11px] tracking-wider border-b notoria-border">
                     <tr>
                         <th class="px-4 py-3.5 w-10 text-center">
                             <input type="checkbox" id="check-all-desktop" onchange="toggleSelectAll(this)" title="Marcar todas" 
                                    class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] cursor-pointer"
                                    style="accent-color: #F5B81C !important;">
                         </th>
-                        <th class="px-5 py-3.5">Fecha</th>
-                        <th class="px-5 py-3.5">Día</th>
-                        <th class="px-5 py-3.5 text-center">Comisión POS</th>
-                        <th class="px-5 py-3.5 text-center">Estado</th>
-                        <th class="px-5 py-3.5">Observaciones</th>
-                        <th class="px-5 py-3.5 text-right">Acciones</th>
+                        <th class="px-5 py-3.5 text-zinc-200">Fecha</th>
+                        <th class="px-5 py-3.5 text-zinc-200">Día</th>
+                        <th class="px-5 py-3.5 text-center text-zinc-200">Comisión POS</th>
+                        <th class="px-5 py-3.5 text-center text-zinc-200">Estado</th>
+                        <th class="px-5 py-3.5 text-zinc-200">Observaciones</th>
+                        <th class="px-5 py-3.5 text-right text-zinc-200">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-800/60 font-sans">
+                <tbody class="divide-y notoria-border font-sans">
                     @forelse($sessions as $s)
                         @php
                             $isOpen = $s->isOpen();
                         @endphp
-                        <tr class="hover:bg-zinc-900/40 transition-colors {{ $isOpen ? 'bg-[#F5B81C]/[0.02]' : '' }}" data-session-row="{{ $s->id }}">
+                        <tr class="hover:bg-slate-500/10 transition-colors {{ $isOpen ? 'bg-[#F5B81C]/[0.05]' : '' }}" data-session-row="{{ $s->id }}">
                             <td class="px-4 py-4 text-center">
                                 <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
                                        class="session-chk w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] cursor-pointer"
                                        style="accent-color: #F5B81C !important;"
                                        onchange="onSessionCheckChange(this)">
                             </td>
-                            <td class="px-5 py-4 font-mono font-bold text-white text-sm">
+                            <td class="px-5 py-4 font-mono font-bold theme-text-primary text-sm">
                                 <div class="flex items-center gap-2.5">
                                     @if($isOpen)
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
                                     @else
-                                        <span class="w-2 h-2 rounded-full bg-zinc-600"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-zinc-400"></span>
                                     @endif
                                     <span>{{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}</span>
                                     @if($isOpen)
-                                        <span class="text-[9px] font-bold text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/10 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">
+                                        <span class="text-[9px] font-black text-[#F5B81C] uppercase tracking-wider bg-[#F5B81C]/10 px-2 py-0.5 rounded-md border border-[#F5B81C]/30">
                                             En curso
                                         </span>
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-5 py-4 font-semibold text-zinc-200">
+                            <td class="px-5 py-4 font-bold theme-text-secondary">
                                 {{ $s->day_name }}
                             </td>
-                            <td class="px-5 py-4 text-center font-mono font-bold text-zinc-300">
+                            <td class="px-5 py-4 text-center font-mono font-bold theme-text-primary">
                                 {{ number_format($s->pos_commission_rate * 100, 2) }}%
                             </td>
                             <td class="px-5 py-4 text-center">
                                 @if($isOpen)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                         Abierta
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-900 text-zinc-400 border border-zinc-800">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold notoria-subtile theme-text-secondary">
                                         Cerrada
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4 text-zinc-400 font-sans">
+                            <td class="px-5 py-4 theme-text-muted font-sans">
                                 {{ $s->notes ?? 'Sin observaciones' }}
                             </td>
                             <td class="px-5 py-4 text-right space-x-2.5 whitespace-nowrap">
                                 <a href="{{ route('dashboard', ['session_id' => $s->id]) }}" 
-                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono font-bold text-[#F5B81C] hover:text-amber-300 transition-all">
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl notoria-subtile hover:border-amber-500 text-xs font-mono font-bold text-[#F5B81C] hover:text-amber-400 transition-all shadow-sm">
                                     <span>Operar</span>
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -286,7 +320,7 @@
                                       onsubmit="return confirm('¿Estás seguro de eliminar esta noche del {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}? Se borrarán sus inventarios, facturas y cobros asociados.');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-2.5 py-1.5 text-xs text-rose-400 hover:text-rose-300 font-semibold rounded-lg hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer">
+                                    <button type="submit" class="px-2.5 py-1.5 text-xs text-rose-500 hover:text-rose-400 font-bold rounded-lg hover:bg-rose-500/10 transition-all cursor-pointer">
                                         Eliminar
                                     </button>
                                 </form>
@@ -294,10 +328,10 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-5 py-12 text-center text-zinc-500">
+                            <td colspan="7" class="px-5 py-12 text-center theme-text-muted">
                                 <div class="max-w-xs mx-auto space-y-2">
-                                    <p class="text-sm font-semibold text-zinc-400">No hay noches registradas</p>
-                                    <p class="text-xs text-zinc-500">Apertura una nueva noche para comenzar a operar inventarios, personal y cobros.</p>
+                                    <p class="text-sm font-semibold theme-text-secondary">No hay noches registradas</p>
+                                    <p class="text-xs theme-text-muted">Apertura una nueva noche para comenzar a operar inventarios, personal y cobros.</p>
                                 </div>
                             </td>
                         </tr>
@@ -311,7 +345,7 @@
          FLOATING ACTION BAR (STICKY BOTTOM PILL)
          ========================================== -->
     <div id="floating-consolidated-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[92%] sm:w-auto">
-        <div class="theme-card bg-[#09090b]/95 backdrop-blur-md border border-[#F5B81C]/50 rounded-2xl p-2.5 sm:px-5 sm:py-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="bg-[#09090b]/95 backdrop-blur-md border border-[#F5B81C]/50 rounded-xl p-2.5 sm:px-5 sm:py-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C] animate-pulse"></span>
                 <span class="font-bold text-white font-sans">
@@ -345,7 +379,7 @@
          MODAL INTERACTIVO DE RESUMEN CONSOLIDADO
          ========================================== -->
     <div id="modal-consolidated-summary" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-5 backdrop-blur-sm overflow-y-auto">
-        <div class="theme-card p-4 sm:p-6 rounded-2xl border border-zinc-800 bg-[#09090b] max-w-4xl w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-5 my-auto">
+        <div class="p-4 sm:p-6 rounded-xl border border-zinc-800 bg-[#09090b] max-w-4xl w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-5 my-auto">
             
             <!-- Encabezado Modal -->
             <div class="flex items-start justify-between border-b border-zinc-800 pb-3">

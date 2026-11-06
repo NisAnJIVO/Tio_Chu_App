@@ -111,24 +111,24 @@
 <div class="space-y-4 max-w-5xl mx-auto pb-16">
 
     <!-- BARRA SUPERIOR DE ACCIONES (NO IMPRIMIBLE) -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-zinc-900 border border-zinc-800 rounded-2xl no-print shadow-lg">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-white border border-zinc-200 rounded-xl no-print shadow-sm">
         <div class="flex items-center gap-3">
             <a href="{{ route('sessions.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-xl text-xs font-bold transition-all">
+               class="inline-flex items-center gap-1.5 px-3 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 hover:text-black rounded-lg text-xs font-bold transition-all border border-zinc-300">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                 </svg>
                 <span>Volver a Historial</span>
             </a>
             <div>
-                <h2 class="text-sm font-bold text-white tracking-tight">Informe de Auditoría Consolidada</h2>
-                <p class="text-[11px] text-zinc-400 font-mono">{{ $summary['date_range'] }} • {{ $summary['count'] }} noches seleccionadas</p>
+                <h2 class="text-sm font-bold text-zinc-950 tracking-tight">Informe de Auditoría Consolidada</h2>
+                <p class="text-[11px] text-zinc-500 font-mono">{{ $summary['date_range'] }} • {{ $summary['count'] }} noches seleccionadas</p>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
             <button type="button" onclick="window.print()" 
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black tracking-wider uppercase rounded-xl transition-all cursor-pointer shadow-md shadow-[#F5B81C]/15 active:scale-95">
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black tracking-wider uppercase rounded-lg transition-all cursor-pointer shadow-sm active:scale-95 border border-[#dfa414]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                 </svg>
@@ -242,6 +242,19 @@
                             Insumos, compras de emergencia y operaciones
                         </td>
                     </tr>
+                    @if($summary['totals']['beer_total'] > 0)
+                    <tr class="bg-amber-50/40">
+                        <td class="p-2 border border-black pl-5 font-sans text-zinc-800">
+                            ( - ) Pagos por Compra de Cerveza
+                        </td>
+                        <td class="p-2 border border-black text-right text-rose-700 font-bold">
+                            - Bs. {{ number_format($summary['totals']['beer_total'], 2) }}
+                        </td>
+                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
+                            Descontado de QR: Bs. {{ number_format($summary['totals']['beer_qr'], 2) }} | Efectivo: Bs. {{ number_format($summary['totals']['beer_cash'], 2) }}
+                        </td>
+                    </tr>
+                    @endif
                     <tr class="bg-zinc-50/50">
                         <td class="p-2 border border-black pl-5 font-sans text-zinc-800">
                             ( - ) Retención Comisión Bancaria POS (1.30%)
@@ -342,9 +355,33 @@
                             Bs. {{ number_format($summary['totals']['qr_total'], 2) }}
                         </td>
                         <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            YASTA + YAPE acreditados
+                            YASTA (Bs. {{ number_format($summary['totals']['qr_yasta'], 2) }}) + YAPE (Bs. {{ number_format($summary['totals']['qr_yape'], 2) }})
                         </td>
                     </tr>
+                    @if($summary['totals']['beer_qr'] > 0)
+                    <tr class="bg-amber-50/50 text-rose-800">
+                        <td class="p-2 border border-black pl-5 font-sans">
+                            ( - ) Pagos de Cerveza Descontados de QR
+                        </td>
+                        <td class="p-2 border border-black text-right font-bold">
+                            - Bs. {{ number_format($summary['totals']['beer_qr'], 2) }}
+                        </td>
+                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
+                            Deducción directa de cuentas bancarias (YAPE/YASTA) por cerveza
+                        </td>
+                    </tr>
+                    <tr class="bg-emerald-50 font-bold">
+                        <td class="p-2 border border-black font-sans uppercase text-[10px] text-emerald-950">
+                            (=) Saldo QR Líquido en Banco (Disponible):
+                        </td>
+                        <td class="p-2 border border-black text-right font-black text-emerald-900">
+                            Bs. {{ number_format($summary['totals']['qr_remaining'], 2) }}
+                        </td>
+                        <td class="p-2 border border-black text-[10px] text-emerald-800 font-sans">
+                            Saldo real en cuentas tras pagos a proveedores (Kelly / Banco)
+                        </td>
+                    </tr>
+                    @endif
                     <!-- Tarjeta POS Bruto -->
                     <tr>
                         <td class="p-2 border border-black font-bold font-sans">

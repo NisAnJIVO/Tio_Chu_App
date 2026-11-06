@@ -81,7 +81,7 @@
     <!-- ==========================================
          CABECERA (iOS PURE DARK - ESTILO TÍO CHU)
          ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-3.5 sm:px-5 sm:py-4 rounded-2xl theme-card border theme-border shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-3.5 sm:px-5 sm:py-4 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm">
         
         <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
             <div class="flex items-center gap-2.5">
@@ -170,7 +170,7 @@
     @endif
 
     @if(!$session)
-        <div class="rounded-2xl p-8 sm:p-12 text-center shadow-sm theme-card border theme-border">
+        <div class="rounded-xl p-8 sm:p-12 text-center shadow-sm bg-[#09090b] border border-zinc-800">
             <h3 class="text-base font-bold text-white">No hay ninguna noche abierta o seleccionada</h3>
             <p class="text-sm text-zinc-400 mt-1 mb-6">Crea o selecciona una noche para registrar la planilla de pagos.</p>
             <a href="{{ route('sessions.create') }}" class="inline-flex items-center px-6 py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-sm font-black rounded-xl transition-all shadow-md">
@@ -197,7 +197,7 @@
              ========================================== -->
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
             
-            <div class="col-span-2 sm:col-span-1 rounded-2xl p-3.5 sm:p-5 theme-card border theme-border shadow-sm">
+            <div class="col-span-2 sm:col-span-1 rounded-xl p-3.5 sm:p-5 bg-[#09090b] border border-zinc-800 shadow-sm">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Total Planilla</span>
                     <span class="text-[11px] sm:text-xs font-bold text-zinc-500 font-mono">{{ $attendances->count() }} pers.</span>
@@ -207,7 +207,7 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl p-3.5 sm:p-5 theme-card border border-emerald-500/25 shadow-sm">
+            <div class="rounded-xl p-3.5 sm:p-5 bg-[#09090b] border border-emerald-500/25 shadow-sm">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-wider truncate">Total Pagado</span>
                     <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
@@ -217,7 +217,7 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl p-3.5 sm:p-5 theme-card border theme-border shadow-sm">
+            <div class="rounded-xl p-3.5 sm:p-5 bg-[#09090b] border border-zinc-800 shadow-sm">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider truncate">Por Pagar</span>
                     <span class="w-2 h-2 rounded-full {{ $totalPendiente > 0 ? 'bg-amber-400' : 'bg-zinc-600' }} shrink-0"></span>
@@ -230,7 +230,7 @@
         </div>
 
         <!-- Desglose por Cargo -->
-        <div class="rounded-2xl p-3.5 sm:p-5 theme-card border theme-border shadow-sm space-y-2.5">
+        <div class="rounded-xl p-3.5 sm:p-5 bg-[#09090b] border border-zinc-800 shadow-sm space-y-2.5">
             <span class="text-xs font-black uppercase tracking-wider text-white block font-sans">Desglose por Cargo</span>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs">
                 <div class="p-2.5 sm:p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between">
@@ -257,8 +257,7 @@
         </div>
 
         <!-- Barra de Acciones Rápidas -->
-        <!-- Barra de Acciones Rápidas -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 sm:p-4 rounded-2xl theme-card border theme-border shadow-sm {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 sm:p-4 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
             @if($availableStaff->isNotEmpty())
                 <form method="POST" action="{{ route('staffPayments.store') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1">
                     @csrf
@@ -332,7 +331,7 @@
             @method('PUT')
             <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
-            <div class="rounded-2xl overflow-hidden theme-card border theme-border shadow-sm">
+            <div class="rounded-xl overflow-hidden bg-[#09090b] border border-zinc-800 shadow-sm">
                 <!-- Encabezado de la planilla -->
                 <div class="px-4 sm:px-5 py-3.5 bg-zinc-900/90 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <h3 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-sans">

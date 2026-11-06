@@ -51,7 +51,7 @@
     @endif
 
     <!-- Form Panel -->
-    <form method="POST" action="{{ route('sessions.store') }}" class="theme-card p-6 sm:p-8 rounded-2xl border border-zinc-800/80 bg-[#09090b] shadow-xl space-y-6">
+    <form method="POST" action="{{ route('sessions.store') }}" class="p-6 sm:p-8 rounded-xl border border-zinc-800 bg-[#09090b] shadow-xl space-y-6">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">

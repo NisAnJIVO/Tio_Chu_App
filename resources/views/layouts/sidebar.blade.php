@@ -391,8 +391,58 @@
 
     </nav>
 
-    <!-- 3. Base Ficha de Usuario -->
+    <!-- 3. Base Ficha de Usuario & Tema -->
     <div class="px-2.5 py-2 border-t border-zinc-800/80 shrink-0">
+        
+        <!-- Selector de Modo Claro / Modo Oscuro (Expandido) -->
+        <div class="sidebar-header-expanded mb-2">
+            <button type="button" 
+                    onclick="window.toggleTioChuTheme()" 
+                    title="Alternar Modo Claro / Modo Oscuro"
+                    class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800/90 text-xs font-bold text-zinc-300 hover:text-[#F5B81C] transition-all cursor-pointer">
+                <div class="flex items-center gap-2">
+                    <!-- Icono Sol (Modo Claro) -->
+                    <svg class="w-4 h-4 text-[#F5B81C] theme-toggle-icon-light" style="display: none;" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <!-- Icono Luna (Modo Oscuro) -->
+                    <svg class="w-4 h-4 text-[#F5B81C] theme-toggle-icon-dark" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <span class="theme-toggle-text text-zinc-300">Modo Oscuro</span>
+                </div>
+                <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">Cambiar</span>
+            </button>
+        </div>
+
+        <!-- Botón Tema Colapsado -->
+        <div class="sidebar-user-collapsed hidden flex-col items-center justify-center mb-2">
+            <button type="button" 
+                    onclick="window.toggleTioChuTheme()" 
+                    title="Alternar Modo Claro / Oscuro"
+                    class="p-2 rounded-xl bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800/90 text-[#F5B81C] cursor-pointer">
+                <svg class="w-4 h-4 theme-toggle-icon-light" style="display: none;" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                </svg>
+                <svg class="w-4 h-4 theme-toggle-icon-dark" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
         
         <!-- Ficha de Usuario Expandida -->
         <div class="sidebar-user-expanded p-2 rounded-xl bg-zinc-950/80 border border-zinc-800/90 flex items-center justify-between">
@@ -475,5 +525,17 @@
         const btnCollapsed = document.getElementById('toggle-sidebar-btn-collapsed');
         if (btnExpanded) btnExpanded.addEventListener('click', toggleSidebar);
         if (btnCollapsed) btnCollapsed.addEventListener('click', toggleSidebar);
+
+        // Inicializar texto e icono del tema según localStorage
+        var theme = localStorage.getItem('tiochu_theme') || 'dark';
+        document.querySelectorAll('.theme-toggle-text').forEach(function(el) {
+            el.textContent = theme === 'dark' ? 'Modo Oscuro' : 'Modo Claro';
+        });
+        document.querySelectorAll('.theme-toggle-icon-dark').forEach(function(el) {
+            el.style.display = theme === 'dark' ? 'inline-block' : 'none';
+        });
+        document.querySelectorAll('.theme-toggle-icon-light').forEach(function(el) {
+            el.style.display = theme === 'light' ? 'inline-block' : 'none';
+        });
     });
 </script>

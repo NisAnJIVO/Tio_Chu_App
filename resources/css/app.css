@@ -252,28 +252,165 @@ input:-webkit-autofill:focus {
 }
 
 /* ========================================================
-   SISTEMA DE TEMAS: DARK & LIGHT MODE (TÍO CHU)
+   SISTEMA DE TEMAS TÍO CHU — "CARDS NOTORIAS" (CLARO & OSCURO)
+   Contraste de alto impacto, tarjetas con presencia y máxima legibilidad
    ======================================================== */
 :root {
-    --app-bg: #000000;
-    --main-bg: #000000;
-    --card-bg: #09090b;
-    --card-surface: #101014;
-    --card-border: #27272a;
-    --text-primary: #ffffff;
-    --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
-}
-
-html.light {
-    --app-bg: #e4e4e7;
-    --main-bg: #f4f4f5;
+    /* MODO CLARO (Ejecutivo / Don Ludo Spreadsheet Clarity) */
+    --app-bg: #cbd5e1;
+    --main-bg: #e2e8f0;
     --card-bg: #ffffff;
     --card-surface: #f8fafc;
-    --card-border: #e2e8f0;
-    --text-primary: #09090b;
-    --text-secondary: #475569;
+    --card-border: #94a3b8;
+    --card-border-strong: #64748b;
+    --card-header-bg: #0f172a;
+    --card-header-text: #ffffff;
+    --card-subtile-bg: #f1f5f9;
+    --card-subtile-border: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
     --text-muted: #64748b;
+    --text-accent: #b45309;
+    --card-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.12), 0 2px 6px -1px rgba(15, 23, 42, 0.08);
+    --card-shadow-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.18), 0 4px 10px -2px rgba(15, 23, 42, 0.10);
+    --table-header-bg: #0f172a;
+    --table-header-text: #ffffff;
+    --table-row-hover: #f1f5f9;
+    --input-bg: #ffffff;
+    --input-border: #94a3b8;
+    --input-text: #0f172a;
+}
+
+html.dark {
+    /* MODO OSCURO (Executive Deep Obsidian & Amber Gold) */
+    --app-bg: #070a10;
+    --main-bg: #0a0e17;
+    --card-bg: #111827;
+    --card-surface: #162035;
+    --card-border: #26334d;
+    --card-border-strong: #3b4d6b;
+    --card-header-bg: #0b0f19;
+    --card-header-text: #ffffff;
+    --card-subtile-bg: #0d131f;
+    --card-subtile-border: #1f2b40;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-accent: #F5B81C;
+    --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
+    --card-shadow-hover: 0 16px 36px -4px rgba(0, 0, 0, 0.8), 0 0 24px -2px rgba(245, 184, 28, 0.18);
+    --table-header-bg: #0b0f19;
+    --table-header-text: #ffffff;
+    --table-row-hover: #162035;
+    --input-bg: #0d131f;
+    --input-border: #26334d;
+    --input-text: #ffffff;
+}
+
+/* ========================================================
+   CLASES UTILITARIAS "CARDS NOTORIAS" (ESTÁNDAR TÍO CHU)
+   ======================================================== */
+.notoria-canvas {
+    background-color: var(--app-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.notoria-main {
+    background-color: var(--main-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.notoria-card {
+    background-color: var(--card-bg) !important;
+    border: 1.5px solid var(--card-border) !important;
+    border-radius: 1rem !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.notoria-card:hover {
+    box-shadow: var(--card-shadow-hover) !important;
+    border-color: var(--card-border-strong) !important;
+}
+
+.notoria-card-elevated {
+    background-color: var(--card-surface) !important;
+    border: 1.5px solid var(--card-border) !important;
+    border-radius: 1rem !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.notoria-card-header {
+    background-color: var(--card-header-bg) !important;
+    color: var(--card-header-text) !important;
+    border-bottom: 1.5px solid var(--card-border) !important;
+    padding: 0.875rem 1.25rem !important;
+    border-top-left-radius: calc(1rem - 1.5px) !important;
+    border-top-right-radius: calc(1rem - 1.5px) !important;
+}
+
+.notoria-subtile {
+    background-color: var(--card-subtile-bg) !important;
+    border: 1.5px solid var(--card-subtile-border) !important;
+    border-radius: 0.75rem !important;
+    padding: 0.875rem 1rem !important;
+    color: var(--text-primary) !important;
+}
+
+.notoria-input {
+    background-color: var(--card-subtile-bg) !important;
+    border: 1.5px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+    border-radius: 0.5rem !important;
+    font-feature-settings: "tnum" 1, "lnum" 1 !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.notoria-input:focus {
+    border-color: #F5B81C !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(245, 184, 28, 0.25) !important;
+}
+
+.notoria-table {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1.5px solid var(--card-border) !important;
+    border-radius: 1rem !important;
+    overflow: hidden !important;
+    background-color: var(--card-bg) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.notoria-table thead th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-size: 0.6875rem !important;
+    padding: 0.875rem 1rem !important;
+    border-bottom: 1.5px solid var(--card-border) !important;
+}
+
+.notoria-table tbody tr {
+    transition: background-color 0.12s ease !important;
+    border-bottom: 1px solid var(--card-subtile-border) !important;
+}
+
+.notoria-table tbody tr:hover {
+    background-color: var(--table-row-hover) !important;
+}
+
+.notoria-table tbody td {
+    padding: 0.875rem 1rem !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--card-subtile-border) !important;
 }
 
 /* Clases Dinámicas de Tema */
@@ -287,6 +424,7 @@ html.light {
     background-color: var(--card-bg) !important;
     border-color: var(--card-border) !important;
     color: var(--text-primary) !important;
+    box-shadow: var(--card-shadow) !important;
 }
 .theme-surface {
     background-color: var(--card-surface) !important;
@@ -327,48 +465,26 @@ html.dark .moon-icon {
     display: none !important;
 }
 
-/* Adaptación del Sidebar a Modo Claro */
-html.light aside#main-sidebar {
-    background-color: #ffffff !important;
-    border-color: #e4e4e7 !important;
-}
-html.light aside#main-sidebar .sidebar-header-expanded,
-html.light aside#main-sidebar .sidebar-user-expanded,
-html.light aside#main-sidebar .sidebar-header-collapsed,
-html.light aside#main-sidebar .sidebar-user-collapsed {
-    background-color: #f8fafc !important;
-    border-color: #e2e8f0 !important;
-}
-html.light aside#main-sidebar span.font-sans,
-html.light aside#main-sidebar p.text-white {
-    color: #09090b !important;
-}
-html.light aside#main-sidebar .sidebar-item {
-    color: #52525b !important;
-}
-html.light aside#main-sidebar .sidebar-item:hover {
-    background-color: #f1f5f9 !important;
-    color: #09090b !important;
-    border-color: #cbd5e1 !important;
+
+
+/* ========================================================
+   ESTILO ADMINISTRATIVO TÍO CHU (OBSIDIAN & DORADO)
+   ======================================================== */
+.admin-box {
+    background-color: #09090b;
+    border: 1px solid #27272a;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
 }
 
-/* Adaptación Global de Componentes a Modo Claro */
-html.light .bg-zinc-900,
-html.light .bg-zinc-950,
-html.light .bg-black {
-    background-color: #f8fafc !important;
-    border-color: #e2e8f0 !important;
+.admin-header-dark {
+    background-color: #09090b;
+    color: #ffffff;
+    border: 1px solid #27272a;
 }
-html.light .text-white {
-    color: #09090b !important;
-}
-html.light .text-zinc-400,
-html.light .text-zinc-300 {
-    color: #475569 !important;
-}
-html.light .border-zinc-800,
-html.light .border-zinc-700 {
-    border-color: #e2e8f0 !important;
+.admin-badge-amber {
+    background-color: rgba(245, 184, 28, 0.15);
+    color: #F5B81C;
+    border: 1px solid rgba(245, 184, 28, 0.3);
 }
 
 /* ========================================================
@@ -450,47 +566,50 @@ html.light .border-zinc-700 {
 
 /* ========================================================
    ESTILOS EXCEL SPEED-ENTRY (TÍO CHU SPREADSHEET MATRIX)
-   Cuadros más claros y bordes de cuadrícula bien definidos
+   Cuadros nítidos, bordes adaptables y contraste perfecto
    ======================================================== */
 .excel-table {
     border-collapse: collapse !important;
     width: 100%;
+    background-color: var(--card-bg) !important;
 }
 
 .excel-table th,
 .excel-table td {
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
 }
 
 .excel-table thead th {
-    background-color: #141418 !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.35) !important;
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+    border-bottom: 2px solid var(--card-border) !important;
 }
 
 .excel-table tfoot td {
-    background-color: #141418 !important;
-    border-top: 2px solid rgba(255, 255, 255, 0.35) !important;
+    background-color: var(--card-surface) !important;
+    border-top: 2px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
 }
 
-/* Cajas de entrada numérica estilo Excel: más blancas y contrastadas */
+/* Cajas de entrada numérica estilo Excel: adaptativas, legibles y nítidas */
 .excel-input {
-    background-color: #1e1e24 !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
-    color: #ffffff !important;
+    background-color: var(--input-bg) !important;
+    border: 1.5px solid var(--input-border) !important;
+    color: var(--input-text) !important;
     font-feature-settings: "tnum" 1, "lnum" 1;
     user-select: all;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
 }
 
 .excel-input:hover {
-    background-color: #26262e !important;
-    border-color: rgba(255, 255, 255, 0.6) !important;
+    border-color: #F5B81C !important;
 }
 
 .excel-input:focus {
-    box-shadow: 0 0 0 2px #F5B81C, 0 0 16px rgba(245, 184, 28, 0.45) !important;
-    background-color: #241e06 !important;
+    box-shadow: 0 0 0 2px #F5B81C, 0 0 12px rgba(245, 184, 28, 0.3) !important;
+    background-color: var(--card-subtile-bg) !important;
     color: #F5B81C !important;
     border-color: #F5B81C !important;
     outline: none !important;
@@ -502,13 +621,46 @@ html.light .border-zinc-700 {
 .excel-table .cell-extras,
 .excel-table .stat-pill,
 .excel-table .cell-summary-box {
-    background-color: #181820 !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    background-color: var(--card-subtile-bg) !important;
+    border: 1.5px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 tr.excel-active-row {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    outline: 1px solid rgba(245, 184, 28, 0.4);
+    background-color: rgba(245, 184, 28, 0.08) !important;
+    outline: 1.5px solid rgba(245, 184, 28, 0.6);
+}
+
+/* ========================================================
+   COMPATIBILIDAD GLOBAL CON CARDS NOTORIAS (ZERO MISMATCH)
+   Garantiza que ningún contenedor quede con fondo negro en Modo Claro
+   ======================================================== */
+html.light main .bg-\[\#09090b\],
+html.light main .bg-zinc-950,
+html.light main .bg-zinc-900:not(.badge-protected):not(button):not(.category-btn) {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+html.light main .bg-black:not(button):not(input) {
+    background-color: var(--card-subtile-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+html.light main .border-zinc-800,
+html.light main .border-zinc-700 {
+    border-color: var(--card-border) !important;
+}
+
+html.light main .text-zinc-400,
+html.light main .text-zinc-500 {
+    color: var(--text-secondary) !important;
+}
+
+html.light main .divide-zinc-800\/80 > * + * {
+    border-color: var(--card-subtile-border) !important;
 }
 

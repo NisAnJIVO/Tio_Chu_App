@@ -73,7 +73,7 @@
     <!-- ==========================================
          CABECERA (iOS PURE DARK - SIN RELLENO DE IA)
          ========================================== -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl theme-card border theme-border shadow-sm font-sans">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm font-sans">
         <!-- Título + Estado de Noche -->
         <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0">
@@ -145,7 +145,7 @@
     <!-- ========================================================
          2. BARRA DE CONTROL: TURNOS POR DÍA, BUSCADOR & ROLES
          ======================================================== -->
-    <div class="p-3 rounded-2xl theme-card border theme-border shadow-sm space-y-3 font-sans">
+    <div class="p-3 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm space-y-3 font-sans">
         <!-- Fila 1: Segmented Control de Días y Buscador Directo -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <!-- iOS Segmented Control de Días (Viernes, Sábado, Domingo, Todos, etc.) -->
@@ -222,9 +222,9 @@
     </div>
 
     <!-- ========================================================
-         3. TABLA Y TARJETAS DE PERSONAL (FONDO PLOMO OSCURO THEME-CARD)
+         3. TABLA Y TARJETAS DE PERSONAL
          ======================================================== -->
-    <div class="rounded-2xl theme-card border theme-border overflow-hidden font-sans min-h-[480px] shadow-sm">
+    <div class="rounded-xl bg-[#09090b] border border-zinc-800 overflow-hidden font-sans min-h-[480px] shadow-sm">
         @php
             if (!function_exists('staffNormalizeDay')) {
                 function staffNormalizeDay(?string $day): string {
@@ -845,7 +845,7 @@
      MODAL DE SELECCIÓN DE PERSONAL DE TURNO (TAREA 2 & 3)
      ======================================================== -->
 <div id="shift-selector-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm transition-opacity duration-200">
-    <div class="theme-card border theme-border rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden font-sans">
+    <div class="bg-[#09090b] border border-zinc-800 rounded-xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden font-sans">
         
         <!-- Modal Header -->
         <div class="p-4 sm:p-5 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/90 shrink-0">

@@ -58,16 +58,19 @@ class CashClosingController extends Controller
                     }
                     return $rankA <=> $rankB;
                 })->values();
+            $metrics = $this->sessionService->getDashboardMetrics($session, $closing);
+        } else {
+            $metrics = [];
         }
 
-        return view('closing.index', compact(
-            'session',
-            'allSessions',
-            'closing',
-            'attendances',
-            'expenses',
-            'availableStaff'
-        ));
+        return view('closing.index', array_merge([
+            'session' => $session,
+            'allSessions' => $allSessions,
+            'closing' => $closing,
+            'attendances' => $attendances,
+            'expenses' => $expenses,
+            'availableStaff' => $availableStaff,
+        ], $metrics));
     }
 
     public function storeExpense(Request $request)

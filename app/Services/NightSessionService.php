@@ -47,14 +47,28 @@ class NightSessionService
         $cardInvoices = $session->invoices()->where('payment_method', 'tarjeta')->get();
         $cashInvoices = $session->invoices()->where('payment_method', 'efectivo')->get();
 
-        $totalCard           = $cardInvoices->sum('amount');
-        $totalCardCommission = $cardInvoices->sum('commission_amount');
-        $totalCardNet        = $cardInvoices->sum('net_amount');
-        $totalCashInvoices   = $cashInvoices->sum('amount');
+        $totalCard           = (float) $cardInvoices->sum('amount'); // Bruto nominal sin descuento diario
+        $totalCardCommission = (float) $cardInvoices->sum('commission_amount');
+        $totalCardNet        = (float) $cardInvoices->sum('net_amount');
+        $totalCashInvoices   = (float) $cashInvoices->sum('amount');
 
-        // Pagos QR globales
+        // Pagos QR globales recaudados
         $totalQrYasta = (float) $session->qrPayments()->where('bank_app', 'YASTA')->sum('amount');
         $totalQrYape  = (float) $session->qrPayments()->where('bank_app', 'YAPE')->sum('amount');
+        $totalQrCollected = $totalQrYasta + $totalQrYape;
+
+        // Pagos de Cerveza
+        $beerPayments = $session->beerPayments()->get();
+        $beerPaymentCash  = (float) $beerPayments->where('payment_method', 'efectivo')->sum('amount');
+        $beerPaymentYasta = (float) $beerPayments->where('payment_method', 'qr')->where('qr_provider', 'YASTA')->sum('amount');
+        $beerPaymentYape  = (float) $beerPayments->where('payment_method', 'qr')->where('qr_provider', 'YAPE')->sum('amount');
+        $beerPaymentQrTotal = $beerPaymentYasta + $beerPaymentYape;
+        $beerPaymentTotal = $beerPaymentCash + $beerPaymentQrTotal;
+
+        // QR disponible en bancos (descontando gastos en QR como Cerveza)
+        $yastaRemaining = max(0, $totalQrYasta - $beerPaymentYasta);
+        $yapeRemaining  = max(0, $totalQrYape - $beerPaymentYape);
+        $qrRemaining    = $yastaRemaining + $yapeRemaining;
 
         // 1. Efectivo en Barra Principal: Ventas - QR - Tarjeta bruto
         $salesPrincipal = (float) $session->barSales()->whereIn('bar_name', ['Barra Principal', 'Barra Kelly (Principal)', 'Principal', 'Kelly'])->sum('subtotal');
@@ -75,43 +89,49 @@ class NightSessionService
         $cardTienda = (float) $session->invoices()->whereIn('bar_name', ['Tienda', 'tienda'])->where('payment_method', 'tarjeta')->sum('amount');
         $cashTienda = max(0, $salesTienda - $qrTienda - $cardTienda);
 
-        // Efectivo total en Cierre de Caja = Suma de efectivos de las barras y tienda
-        $totalEfectivo = $cashPrincipal + $cashSubte + $cashTienda;
+        // Efectivo total recaudado por ventas en barras y tienda
+        $totalCashCollected = $cashPrincipal + $cashSubte + $cashTienda;
 
         // Ventas totales de referencia (barras + tienda)
         $totalBarSales = $salesPrincipal + $salesSubte + $salesTienda;
 
-        // Personal
+        // Personal efectivamente pagado
         $totalStaffPaid = (float) $session->staffAttendances()->where('is_paid', true)->sum('pay_amount');
 
-        // Gastos
+        // Gastos operativos en efectivo
         $totalExpenses = (float) $session->expenses()->sum('amount');
+        $totalCashOutflows = $totalStaffPaid + $totalExpenses + $beerPaymentCash;
 
-        // Ingresos extras de Tienda (Guardarropa y Snacks) — se mantienen guardados pero no se suman al cuadre
+        // Efectivo físico restante en caja (teórico) — NUNCA negativo
+        $theoreticalCashRemaining = max(0, $totalCashCollected - $totalCashOutflows);
+        $reportedCash = (float)($closing->reported_cash ?? 0);
+        $effectiveCashInHand = ($reportedCash > 0) ? $reportedCash : $theoreticalCashRemaining;
+
+        // Ingresos extras de Tienda (Guardarropa y Snacks)
         $totalGuardarropa = (float)($closing->total_guardarropa ?? 0);
         $totalSnacks      = (float)($closing->total_snacks ?? 0);
 
-        // Total Ingresos = Tarjeta bruto + QR YASTA + QR YAPE + Efectivo Barras
-        $totalIngresos = $totalCard + $totalQrYasta + $totalQrYape + $totalEfectivo;
+        // Total Ingresos Brutos (Tarjeta bruto + QR cobrado + Efectivo recaudado)
+        $totalIngresos = $totalCard + $totalQrCollected + $totalCashCollected;
 
-        // Total Egresos (Personal + Gastos)
-        $totalEgresos = $totalStaffPaid + $totalExpenses;
+        // Total Egresos del Turno (Personal pagado + Gastos + Cerveza pagada en efectivo o QR)
+        $totalEgresos = $totalStaffPaid + $totalExpenses + $beerPaymentTotal;
 
-        // Saldo Neto en Caja
-        $netCashClosing = $totalIngresos - $totalEgresos;
+        // Balance Neto del Turno: Dinero líquido real que queda (Tarjetas Bruto + QR en banco + Efectivo en mano)
+        $netCashClosing = max(0, $totalIngresos - $totalEgresos);
 
         $closing->update([
             'total_card'            => $totalCard,
             'total_card_commission' => $totalCardCommission,
             'total_card_net'        => $totalCardNet,
-            'total_cash_invoices'   => $totalEfectivo,  // reutilizamos este campo para el efectivo calculado
+            'total_cash_invoices'   => $effectiveCashInHand,  // efectivo físico restante en mano
             'total_qr_yasta'        => $totalQrYasta,
             'total_qr_yape'         => $totalQrYape,
             'total_bar_sales'       => $totalBarSales,
             'total_guardarropa'     => $totalGuardarropa,
             'total_snacks'          => $totalSnacks,
             'total_staff_paid'      => $totalStaffPaid,
-            'total_expenses'        => $totalExpenses,
+            'total_expenses'        => $totalExpenses + $beerPaymentCash,
             'net_cash_closing'      => $netCashClosing,
         ]);
 
@@ -172,6 +192,9 @@ class NightSessionService
         $totalCardNet = 0;
         $totalPersonal = 0;
         $totalGastos = 0;
+        $totalBeer = 0;
+        $totalBeerQr = 0;
+        $totalBeerCash = 0;
         $totalGuardarropa = 0;
         $totalSnacks = 0;
 
@@ -232,6 +255,16 @@ class NightSessionService
             $tiendaStoreOrdersCount += $session->storeSales()->count();
             $tiendaStoreItemsQty += (int) $session->storeSales()->sum('quantity');
 
+            // Pagos de cerveza de esta noche
+            $sBeerPayments = $session->beerPayments()->get();
+            $sBeerCash = (float) $sBeerPayments->where('payment_method', 'efectivo')->sum('amount');
+            $sBeerQr = (float) $sBeerPayments->where('payment_method', 'qr')->sum('amount');
+            $sBeerTotal = $sBeerCash + $sBeerQr;
+
+            $totalBeerCash += $sBeerCash;
+            $totalBeerQr += $sBeerQr;
+            $totalBeer += $sBeerTotal;
+
             // Métricas nocturnas individuales
             $nightVentas = (float)$closing->total_bar_sales;
             $nightEfectivo = (float)$closing->total_cash_invoices;
@@ -244,7 +277,7 @@ class NightSessionService
             $nightPersonal = (float)$closing->total_staff_paid;
             $nightGastos = (float)$closing->total_expenses;
             $nightIngresos = $nightCardGross + $nightQr + $nightEfectivo;
-            $nightEgresos = $nightPersonal + $nightGastos;
+            $nightEgresos = $nightPersonal + $nightGastos + $sBeerTotal;
             $nightNeto = $nightIngresos - $nightEgresos;
 
             $totalVentas += $nightVentas;
@@ -253,8 +286,6 @@ class NightSessionService
             $totalQrYape += $nightQrYape;
             $totalQr += $nightQr;
             $totalCardGross += $nightCardGross;
-            $totalCardCommission += $nightCardCommission;
-            $totalCardNet += $nightCardNet;
             $totalPersonal += $nightPersonal;
             $totalGastos += $nightGastos;
             $totalGuardarropa += (float)$closing->total_guardarropa;
@@ -269,18 +300,29 @@ class NightSessionService
                 'ventas' => $nightVentas,
                 'efectivo' => $nightEfectivo,
                 'qr' => $nightQr,
+                'qr_spent' => $sBeerQr,
+                'qr_remaining' => max(0, $nightQr - $sBeerQr),
                 'tarjeta_bruto' => $nightCardGross,
                 'tarjeta_neto' => $nightCardNet,
                 'personal' => $nightPersonal,
                 'gastos' => $nightGastos,
+                'cerveza' => $sBeerTotal,
+                'cerveza_qr' => $sBeerQr,
+                'cerveza_cash' => $sBeerCash,
                 'ingresos' => $nightIngresos,
                 'egresos' => $nightEgresos,
                 'neto' => $nightNeto,
             ];
         }
 
+        // Comisión calculada al final del fin de semana (3 días) a 1.3% (0.013) como en el Excel
+        $weekendCommissionRate = 0.013;
+        $totalCardCommission = round($totalCardGross * $weekendCommissionRate, 2);
+        $totalCardNet = $totalCardGross - $totalCardCommission;
+        $totalQrRemaining = max(0, $totalQr - $totalBeerQr);
+
         $totalIngresos = $totalCardGross + $totalQr + $totalEfectivo;
-        $totalEgresos = $totalPersonal + $totalGastos;
+        $totalEgresos = $totalPersonal + $totalGastos + $totalBeer;
         $totalNeto = $totalIngresos - $totalEgresos;
 
         $startDate = $sessions->first() ? \Carbon\Carbon::parse($sessions->first()->session_date)->format('d/m/Y') : '';
@@ -298,11 +340,16 @@ class NightSessionService
                 'qr_total' => $totalQr,
                 'qr_yasta' => $totalQrYasta,
                 'qr_yape' => $totalQrYape,
+                'qr_spent' => $totalBeerQr,
+                'qr_remaining' => $totalQrRemaining,
                 'card_gross' => $totalCardGross,
                 'card_commission' => $totalCardCommission,
                 'card_net' => $totalCardNet,
                 'personal' => $totalPersonal,
                 'gastos' => $totalGastos,
+                'beer_total' => $totalBeer,
+                'beer_qr' => $totalBeerQr,
+                'beer_cash' => $totalBeerCash,
                 'egresos' => $totalEgresos,
                 'neto' => $totalNeto,
                 'guardarropa' => $totalGuardarropa,
@@ -376,8 +423,10 @@ class NightSessionService
                 'reportedCash' => 0,
                 'staffTotalDue' => 0,
                 'staffAlreadyPaid' => 0,
+                'cashCollectedFromSales' => 0,
                 'cashBeforeBeer' => 0,
                 'cashRemaining' => 0,
+                'effectiveCashInHand' => 0,
                 'cashComparisonTotal' => 0,
                 'cashDifference' => 0,
             ];
@@ -435,11 +484,33 @@ class NightSessionService
         $reportedCash = $closing && isset($closing->reported_cash) ? (float) $closing->reported_cash : 0;
         $staffTotalDue = (float) $session->staffAttendances()->sum('pay_amount');
         $staffAlreadyPaid = (float) $session->staffAttendances()->where('is_paid', true)->sum('pay_amount');
-        $cashBeforeBeer = $barTotal - ($posGross + $qrTotal);
-        $netCash = $barTotal - ($posGross + $qrRemaining + ($beerPayments->isNotEmpty() ? $staffTotalDue : 0));
-        $cashRemaining = $netCash - $beerPaymentCash;
-        $cashComparisonTotal = $reportedCash + $posGross + $qrRemaining + $staffTotalDue;
-        $cashDifference = $barTotal - $cashComparisonTotal;
+        $staffPending = max(0, $staffTotalDue - $staffAlreadyPaid);
+
+        // Efectivo recaudado por ventas en barras
+        $cashCollectedFromSales = $barPayments['principal']['cash'] + $barPayments['subte']['cash'] + $barPayments['tienda']['cash'];
+
+        // Egresos pagados en efectivo (personal pagado + gastos + cerveza en efectivo)
+        $cashOutflows = $staffAlreadyPaid + $totalExpenses + $beerPaymentCash;
+
+        // Efectivo restante en caja (físico teórico) — NUNCA NEGATIVO
+        $cashRemaining = max(0, $cashCollectedFromSales - $cashOutflows);
+
+        // Efectivo reportado por el cajero / dueño (arqueo físico de billetes)
+        $reportedCash = $closing && isset($closing->reported_cash) ? (float) $closing->reported_cash : 0;
+        $effectiveCashInHand = ($reportedCash > 0) ? $reportedCash : $cashRemaining;
+        $netCash = $effectiveCashInHand;
+
+        $totalIncome = $posGross + $qrTotal + $cashCollectedFromSales;
+        $cashBeforeBeer = max(0, $cashCollectedFromSales - $staffAlreadyPaid - $totalExpenses);
+
+        // Cuadre de Caja Oficial estilo Excel Tío Chu:
+        // Total Rendido = Tarjetas (Bruto) + QR Disponible en Banco + Personal Pagado en Efectivo + Gastos en Efectivo + Cerveza en Efectivo + Efectivo Físico en Mano
+        $cashComparisonTotal = $posGross + $qrRemaining + $staffAlreadyPaid + $totalExpenses + $beerPaymentCash + $effectiveCashInHand;
+
+        // Comparado con las ventas registradas de barras:
+        // Si Rendición > Ventas => Sobrante (+)
+        // Si Rendición < Ventas => Faltante (-)
+        $cashDifference = $cashComparisonTotal - $barTotal;
 
         return compact(
             'salesPrincipal',
@@ -470,8 +541,10 @@ class NightSessionService
             'reportedCash',
             'staffTotalDue',
             'staffAlreadyPaid',
+            'cashCollectedFromSales',
             'cashBeforeBeer',
             'cashRemaining',
+            'effectiveCashInHand',
             'cashComparisonTotal',
             'cashDifference'
         );

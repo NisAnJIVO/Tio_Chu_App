@@ -50,4 +50,14 @@ class CashClosing extends Model
     {
         return $this->belongsTo(NightSession::class);
     }
+
+    public function getTotalQrAttribute(): float
+    {
+        return (float) ($this->total_qr_yasta ?? 0) + (float) ($this->total_qr_yape ?? 0);
+    }
+
+    public function getTotalCashRemainingAttribute(): float
+    {
+        return (float) ($this->total_cash_invoices ?? 0);
+    }
 }
