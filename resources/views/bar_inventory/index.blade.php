@@ -27,9 +27,6 @@
             <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
                 Inventario de Barras
             </h1>
-            <p class="text-xs theme-text-secondary mt-0.5">
-                Control de stock, saldo inicial y reposición de botellas por barra
-            </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5 shrink-0">
@@ -112,7 +109,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-2.5 rounded-xl notoria-card shadow-sm">
             
             <!-- Selector de Barras (iOS Segmented Control) -->
-            <div class="inline-flex p-1 rounded-xl notoria-subtile">
+            <div class="inline-flex p-1.5 rounded-2xl notoria-subtile gap-1.5 w-full sm:w-auto">
                 @foreach($availableBars as $bar)
                     @php
                         $isSelected = $selectedBar === $bar;
@@ -121,18 +118,10 @@
                             'Barra Subterráneo', 'Barra Ariel (Subte)' => 'Barra Subterráneo',
                             default => $bar,
                         };
-                        $barFloor = match($bar) {
-                            'Barra Principal', 'Barra Kelly (Principal)' => 'Piso Principal',
-                            'Barra Subterráneo', 'Barra Ariel (Subte)' => 'Subterráneo',
-                            default => '',
-                        };
                     @endphp
                     <a href="{{ route('barInventory.index', ['session_id' => $session->id, 'bar' => $bar]) }}" 
-                       class="px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 cursor-pointer {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'theme-text-secondary hover:theme-text-primary' }}">
+                       class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base transition-all flex items-center justify-center cursor-pointer {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-md font-black' : 'theme-text-secondary hover:theme-text-primary hover:bg-black/5 dark:hover:bg-white/5' }}">
                         <span>{{ $barLabel }}</span>
-                        @if($barFloor)
-                            <span class="text-[10px] font-medium opacity-75">({{ $barFloor }})</span>
-                        @endif
                     </a>
                 @endforeach
             </div>

@@ -399,17 +399,17 @@
                     <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
                         Efectivo {{ $selectedBar === 'Tienda' ? 'Tienda' : 'en Barra' }}
                     </span>
-                    <span class="text-[11px] font-black px-2 py-0.5 rounded-lg notoria-subtile text-emerald-600 dark:text-emerald-400 shrink-0">
+                    <span class="text-[11px] font-black px-2.5 py-1 rounded-lg notoria-subtile theme-text-primary shrink-0">
                         Caja Física
                     </span>
                 </div>
-                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-emerald-500 tracking-tight flex items-baseline gap-1">
-                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight flex items-baseline gap-1">
+                    <span class="text-sm font-sans font-bold opacity-75">Bs.</span>
                     <span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
                 </div>
                 <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-sans">
                     <span>Dinero físico en caja</span>
-                    <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">En Mano</span>
+                    <span class="font-bold theme-text-primary font-mono">En Mano</span>
                 </div>
             </div>
 
@@ -419,12 +419,12 @@
                     <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
                         Cobrado QR
                     </span>
-                    <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[11px] font-bold px-2 py-0.5 rounded-lg notoria-subtile text-blue-600 dark:text-blue-400 hover:border-blue-500 transition-colors shrink-0">
+                    <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[11px] font-bold px-2.5 py-1 rounded-lg notoria-subtile theme-text-primary hover:border-amber-500 transition-colors shrink-0">
                         Ver QR &rarr;
                     </a>
                 </div>
-                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-blue-500 tracking-tight flex items-baseline gap-1">
-                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight flex items-baseline gap-1">
+                    <span class="text-sm font-sans font-bold opacity-75">Bs.</span>
                     <span>{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('qr_amount') : $barTotalQr, 2) }}</span>
                 </div>
                 <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-mono">
@@ -444,12 +444,12 @@
                     <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
                         Tarjetas (POS)
                     </span>
-                    <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[11px] font-bold px-2 py-0.5 rounded-lg notoria-subtile text-purple-600 dark:text-purple-400 hover:border-purple-500 transition-colors shrink-0">
+                    <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[11px] font-bold px-2.5 py-1 rounded-lg notoria-subtile theme-text-primary hover:border-amber-500 transition-colors shrink-0">
                         Ver POS &rarr;
                     </a>
                 </div>
-                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-purple-500 tracking-tight flex items-baseline gap-1">
-                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight flex items-baseline gap-1">
+                    <span class="text-sm font-sans font-bold opacity-75">Bs.</span>
                     <span>{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('card_amount') : $barTotalCard, 2) }}</span>
                 </div>
                 <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-mono">
@@ -1341,7 +1341,7 @@
                     <div class="rounded-2xl notoria-card notoria-border shadow-md overflow-hidden">
                         <div class="p-4 sm:p-5 notoria-card-header flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 shrink-0">
+                                <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <rect width="6" height="6" x="3" y="3" rx="1"/>
                                         <rect width="6" height="6" x="15" y="3" rx="1"/>
@@ -1357,13 +1357,13 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2.5 shrink-0">
-                                <span class="text-sm sm:text-base font-mono font-black text-cyan-300">
+                                <span class="text-sm sm:text-base font-mono font-black text-white">
                                     Bs. {{ number_format($barTotalQr, 2) }}
                                 </span>
                                 <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                                   class="px-3 py-1.5 text-xs font-bold rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 hover:text-white transition-all flex items-center gap-1.5 shadow-sm">
+                                   class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                                     <span>Ver QR</span>
-                                    <span class="text-cyan-400">&rarr;</span>
+                                    <span>&rarr;</span>
                                 </a>
                             </div>
                         </div>
@@ -1403,7 +1403,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-4 py-2.5 theme-text-muted text-xs truncate max-w-[130px] font-mono">{{ $qr->reference_code ?? '—' }}</td>
-                                            <td class="px-4 py-2.5 text-right font-black font-mono text-sm text-cyan-600 dark:text-cyan-400">Bs. {{ number_format($qr->amount, 2) }}</td>
+                                            <td class="px-4 py-2.5 text-right font-black font-mono text-sm theme-text-primary">Bs. {{ number_format($qr->amount, 2) }}</td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -1419,7 +1419,7 @@
                     <div class="rounded-2xl notoria-card notoria-border shadow-md overflow-hidden">
                         <div class="p-4 sm:p-5 notoria-card-header flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 shrink-0">
+                                <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <rect width="20" height="14" x="2" y="5" rx="2"/>
                                         <line x1="2" x2="22" y1="10" y2="10"/>
@@ -1433,13 +1433,13 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2.5 shrink-0">
-                                <span class="text-sm sm:text-base font-mono font-black text-purple-300">
+                                <span class="text-sm sm:text-base font-mono font-black text-white">
                                     Bs. {{ number_format($barTotalCard, 2) }}
                                 </span>
                                 <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                                   class="px-3 py-1.5 text-xs font-bold rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 hover:bg-purple-500/30 hover:text-white transition-all flex items-center gap-1.5 shadow-sm">
+                                   class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                                     <span>Ver POS</span>
-                                    <span class="text-purple-400">&rarr;</span>
+                                    <span>&rarr;</span>
                                 </a>
                             </div>
                         </div>
@@ -1457,14 +1457,10 @@
                                 <tbody class="divide-y notoria-border font-sans">
                                     @forelse($barCardInvoices as $inv)
                                         <tr class="hover:bg-zinc-500/5 transition-colors">
-                                            <td class="px-4 py-2.5 text-center">
-                                                <span class="px-2 py-0.5 rounded-md notoria-subtile font-mono font-bold text-xs theme-text-primary">
-                                                    #{{ $inv->correlative_num }}
-                                                </span>
-                                            </td>
+                                            <td class="px-4 py-2.5 text-center font-mono font-bold text-xs theme-text-secondary">#{{ $inv->correlative_num }}</td>
                                             <td class="px-4 py-2.5 theme-text-secondary text-xs truncate max-w-[140px]">{{ $inv->notes ?? 'Pago Tarjeta POS' }}</td>
                                             <td class="px-4 py-2.5 text-right text-rose-500 text-xs font-mono font-bold">- Bs. {{ number_format($inv->commission_amount, 2) }}</td>
-                                            <td class="px-4 py-2.5 text-right font-black font-mono text-sm text-purple-600 dark:text-purple-400">Bs. {{ number_format($inv->amount, 2) }}</td>
+                                            <td class="px-4 py-2.5 text-right font-black font-mono text-sm theme-text-primary">Bs. {{ number_format($inv->amount, 2) }}</td>
                                         </tr>
                                     @empty
                                         <tr>
