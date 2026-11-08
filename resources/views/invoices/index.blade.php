@@ -123,15 +123,16 @@
             
             <!-- Cabecera de la Card -->
             <div class="flex items-center justify-between pb-3.5 border-b notoria-border">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl notoria-subtile flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                <div class="flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-xl bg-[#F5B81C]/15 border border-[#F5B81C]/50 flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
+                        <svg class="w-7 h-7 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <rect width="20" height="14" x="2" y="5" rx="2.5"/>
                             <line x1="2" y1="10" x2="22" y2="10"/>
+                            <circle cx="7" cy="15" r="1.25" fill="currentColor"/>
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-sm sm:text-base font-black theme-text-primary uppercase tracking-wider font-sans">
+                        <h2 class="text-base sm:text-lg font-black theme-text-primary uppercase tracking-wider font-sans">
                             Registrar Tarjeta (POS)
                         </h2>
                         <p class="text-xs theme-text-secondary mt-0.5">
@@ -142,7 +143,7 @@
 
                 <!-- Insignia del Siguiente N° de Factura -->
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-mono font-black text-[#F5B81C] bg-[#F5B81C]/10 border border-[#F5B81C]/30 px-3 py-1.5 rounded-xl shadow-xs" title="Número autoincremental de factura">
+                    <span class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] bg-[#F5B81C]/10 border border-[#F5B81C]/30 px-3.5 py-1.5 rounded-xl shadow-xs" title="Número autoincremental de factura">
                         Factura #{{ $nextCorrelative }}
                     </span>
                 </div>
@@ -158,7 +159,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5 sm:gap-4 items-end">
                     
-                    <!-- 1. Punto de Venta / Barra (Píldoras iOS) -->
+                    <!-- 1. Punto de Venta / Barra (Píldoras iOS con texto destacado) -->
                     <div class="md:col-span-5 space-y-1.5">
                         <label class="block text-xs font-bold uppercase tracking-wider theme-text-secondary">
                             Punto de Venta / Barra
@@ -167,19 +168,19 @@
                             <button type="button"
                                     id="btn-bar-Principal"
                                     onclick="selectBar('Principal')"
-                                    class="py-2.5 px-2 rounded-lg text-xs font-black transition-all cursor-pointer bg-[#F5B81C] text-black shadow-sm text-center truncate active:scale-95">
+                                    class="py-2.5 px-2 rounded-lg text-sm sm:text-base font-black transition-all cursor-pointer bg-[#F5B81C] text-black shadow-sm text-center truncate active:scale-95">
                                 Principal
                             </button>
                             <button type="button"
                                     id="btn-bar-Subterraneo"
                                     onclick="selectBar('Subterraneo')"
-                                    class="py-2.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer theme-text-secondary hover:theme-text-primary text-center truncate active:scale-95">
+                                    class="py-2.5 px-2 rounded-lg text-sm sm:text-base font-bold transition-all cursor-pointer theme-text-secondary hover:theme-text-primary text-center truncate active:scale-95">
                                 Subterráneo
                             </button>
                             <button type="button"
                                     id="btn-bar-Tienda"
                                     onclick="selectBar('Tienda')"
-                                    class="py-2.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer theme-text-secondary hover:theme-text-primary text-center truncate active:scale-95">
+                                    class="py-2.5 px-2 rounded-lg text-sm sm:text-base font-bold transition-all cursor-pointer theme-text-secondary hover:theme-text-primary text-center truncate active:scale-95">
                                 Tienda
                             </button>
                         </div>
@@ -296,9 +297,9 @@ function selectBar(bar) {
         const btn = document.getElementById('btn-bar-' + b);
         if (btn) {
             if (b === bar) {
-                btn.className = 'py-2.5 px-2 rounded-lg text-xs font-black transition-all bg-[#F5B81C] text-black shadow-sm text-center truncate cursor-pointer active:scale-95';
+                btn.className = 'py-2.5 px-2 rounded-lg text-sm sm:text-base font-black transition-all bg-[#F5B81C] text-black shadow-sm text-center truncate cursor-pointer active:scale-95';
             } else {
-                btn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all theme-text-secondary hover:theme-text-primary text-center truncate cursor-pointer active:scale-95';
+                btn.className = 'py-2.5 px-2 rounded-lg text-sm sm:text-base font-bold transition-all theme-text-secondary hover:theme-text-primary text-center truncate cursor-pointer active:scale-95';
             }
         }
     });
