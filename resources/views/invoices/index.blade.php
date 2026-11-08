@@ -159,7 +159,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5 sm:gap-4 items-end">
                     
                     <!-- 1. Punto de Venta / Barra (Píldoras iOS) -->
-                    <div class="md:col-span-4 space-y-1.5">
+                    <div class="md:col-span-5 space-y-1.5">
                         <label class="block text-xs font-bold uppercase tracking-wider theme-text-secondary">
                             Punto de Venta / Barra
                         </label>
@@ -186,7 +186,7 @@
                     </div>
 
                     <!-- 2. Monto Cobrado (Bs.) -->
-                    <div class="md:col-span-3 space-y-1.5">
+                    <div class="md:col-span-4 space-y-1.5">
                         <label for="amount" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary">
                             Monto Cobrado (Bs.)
                         </label>
@@ -204,26 +204,14 @@
                         </div>
                     </div>
 
-                    <!-- 3. N° Voucher / Detalle (Opcional) -->
-                    <div class="md:col-span-3 space-y-1.5">
-                        <label for="notes" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary">
-                            N° Voucher / Detalle (Opcional)
-                        </label>
-                        <input type="text" 
-                               name="notes" 
-                               id="notes" 
-                               placeholder="Ej: Voucher #1042, Visa..."
-                               class="w-full text-xs sm:text-sm rounded-xl px-3.5 py-2.5 notoria-input focus:outline-none focus:border-[#F5B81C]">
-                    </div>
-
-                    <!-- 4. Botón Registrar -->
-                    <div class="md:col-span-2">
+                    <!-- 3. Botón Registrar -->
+                    <div class="md:col-span-3">
                         <button type="submit" 
                                 class="w-full py-2.5 sm:py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
-                            <span>+ Registrar</span>
+                            <span>+ Registrar Tarjeta</span>
                         </button>
                     </div>
 
@@ -254,7 +242,6 @@
                             <th class="px-4 py-3 text-right">Monto Bruto</th>
                             <th class="px-4 py-3 text-right">Comisión Banco</th>
                             <th class="px-4 py-3 text-right">Neto al Banco</th>
-                            <th class="px-4 py-3">N° Voucher / Detalle</th>
                             <th class="px-4 py-3 text-right w-20">Acción</th>
                         </tr>
                     </thead>
@@ -276,7 +263,6 @@
                                 <td class="px-4 py-3 text-right font-black font-mono text-[#F5B81C] text-sm">
                                     Bs. {{ number_format($inv->net_amount, 2) }}
                                 </td>
-                                <td class="px-4 py-3 theme-text-muted text-xs truncate max-w-[220px]">{{ $inv->notes ?? '—' }}</td>
                                 <td class="px-4 py-3 text-right">
                                     <button type="button" 
                                             onclick="deleteInvoice({{ $inv->id }})" 
@@ -287,7 +273,7 @@
                             </tr>
                         @empty
                             <tr id="empty-invoices-row">
-                                <td colspan="7" class="px-4 py-10 text-center theme-text-muted font-sans">
+                                <td colspan="6" class="px-4 py-10 text-center theme-text-muted font-sans">
                                     No hay facturas registradas en esta noche.
                                 </td>
                             </tr>
