@@ -141,8 +141,9 @@ input[type=number] {
     height: 100dvh;
     width: 100%;
     max-width: 480px;
-    background: #09090b;
-    border-left: 1px solid #27272a;
+    background-color: var(--card-bg) !important;
+    border-left: 1.5px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
     z-index: 105 !important;
     transform: translateX(100%);
     visibility: hidden;
@@ -158,35 +159,39 @@ input[type=number] {
     transform: translateX(0);
     visibility: visible;
     pointer-events: all;
-    box-shadow: -15px 0 45px rgba(0, 0, 0, 0.9);
+    box-shadow: -15px 0 45px rgba(0, 0, 0, 0.4);
 }
 
 .drawer-header {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #27272a;
+    border-bottom: 1.5px solid var(--card-border) !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     position: sticky;
     top: 0;
-    background: #09090b;
+    background-color: var(--card-header-bg) !important;
+    color: var(--card-header-text) !important;
     z-index: 10;
 }
 
 .drawer-body {
     padding: 1.5rem;
     flex: 1;
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
 }
 
 .drawer-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid #27272a;
+    border-top: 1.5px solid var(--card-border) !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    background: #09090b;
+    background-color: var(--card-surface) !important;
+    color: var(--text-primary) !important;
     position: sticky;
     bottom: 0;
 }
@@ -255,7 +260,7 @@ input:-webkit-autofill:focus {
    SISTEMA DE TEMAS TÍO CHU — "CARDS NOTORIAS" (CLARO & OSCURO)
    Contraste de alto impacto, tarjetas con presencia y máxima legibilidad
    ======================================================== */
-:root {
+:root, html.light {
     /* MODO CLARO (Ejecutivo / Don Ludo Spreadsheet Clarity) */
     --app-bg: #cbd5e1;
     --main-bg: #e2e8f0;
@@ -634,33 +639,130 @@ tr.excel-active-row {
 
 /* ========================================================
    COMPATIBILIDAD GLOBAL CON CARDS NOTORIAS (ZERO MISMATCH)
-   Garantiza que ningún contenedor quede con fondo negro en Modo Claro
+   Garantiza que ningún contenedor ni texto quede perdido en Modo Claro
    ======================================================== */
-html.light main .bg-\[\#09090b\],
-html.light main .bg-zinc-950,
-html.light main .bg-zinc-900:not(.badge-protected):not(button):not(.category-btn) {
+html:not(.dark) main .bg-\[\#09090b\],
+html:not(.dark) main .bg-zinc-950,
+html:not(.dark) main .bg-zinc-900:not(.badge-protected):not(button):not(.category-btn) {
     background-color: var(--card-bg) !important;
     border-color: var(--card-border) !important;
     color: var(--text-primary) !important;
 }
 
-html.light main .bg-black:not(button):not(input) {
+html:not(.dark) main .bg-black:not(button):not(input) {
     background-color: var(--card-subtile-bg) !important;
     border-color: var(--card-border) !important;
     color: var(--text-primary) !important;
 }
 
-html.light main .border-zinc-800,
-html.light main .border-zinc-700 {
+html:not(.dark) main .border-zinc-800,
+html:not(.dark) main .border-zinc-700 {
     border-color: var(--card-border) !important;
 }
 
+/* Textos legibles en Modo Claro: cero textos blancos invisibles */
+html:not(.dark) main :where(.text-white, .text-zinc-100, .text-zinc-200, .text-zinc-300),
+html.light main :where(.text-white, .text-zinc-100, .text-zinc-200, .text-zinc-300) {
+    color: var(--text-primary);
+}
+
+html:not(.dark) main .text-zinc-400,
+html:not(.dark) main .text-zinc-500,
 html.light main .text-zinc-400,
 html.light main .text-zinc-500 {
     color: var(--text-secondary) !important;
 }
 
+html:not(.dark) main .divide-zinc-800\/80 > * + *,
 html.light main .divide-zinc-800\/80 > * + * {
     border-color: var(--card-subtile-border) !important;
+}
+
+/* Excepciones que SIEMPRE deben preservar texto blanco nítido */
+html:not(.dark) .notoria-card-header,
+html:not(.dark) .notoria-card-header *,
+html.light .notoria-card-header,
+html.light .notoria-card-header *,
+html:not(.dark) thead.notoria-card-header *,
+html.light thead.notoria-card-header *,
+html:not(.dark) .notoria-table thead *,
+html.light .notoria-table thead *,
+html:not(.dark) .badge-dark,
+html:not(.dark) .badge-dark *,
+html.light .badge-dark,
+html.light .badge-dark *,
+html:not(.dark) .pill-dark,
+html:not(.dark) .pill-dark *,
+html.light .pill-dark,
+html.light .pill-dark *,
+html:not(.dark) .btn-notoria-dark,
+html:not(.dark) .btn-notoria-dark *,
+html.light .btn-notoria-dark,
+html.light .btn-notoria-dark *,
+html:not(.dark) .bg-slate-950,
+html:not(.dark) .bg-slate-950 *,
+html.light .bg-slate-950,
+html.light .bg-slate-950 *,
+html:not(.dark) .bg-slate-900,
+html:not(.dark) .bg-slate-900 *,
+html.light .bg-slate-900,
+html.light .bg-slate-900 *,
+html:not(.dark) .bg-black:not(main *),
+html:not(.dark) .bg-black:not(main *) *,
+html.light .bg-black:not(main *),
+html.light .bg-black:not(main *) *,
+html:not(.dark) .bg-rose-600,
+html:not(.dark) .bg-rose-600 *,
+html.light .bg-rose-600,
+html.light .bg-rose-600 *,
+html:not(.dark) .bg-rose-500,
+html:not(.dark) .bg-rose-500 *,
+html.light .bg-rose-500,
+html.light .bg-rose-500 *,
+html:not(.dark) .bg-emerald-600,
+html:not(.dark) .bg-emerald-600 *,
+html.light .bg-emerald-600,
+html.light .bg-emerald-600 *,
+html:not(.dark) .bg-emerald-500,
+html:not(.dark) .bg-emerald-500 *,
+html.light .bg-emerald-500,
+html.light .bg-emerald-500 *,
+html:not(.dark) .bg-blue-600,
+html:not(.dark) .bg-blue-600 *,
+html.light .bg-blue-600,
+html.light .bg-blue-600 *,
+html:not(.dark) .bg-purple-600,
+html:not(.dark) .bg-purple-600 *,
+html.light .bg-purple-600,
+html.light .bg-purple-600 * {
+    color: #ffffff !important;
+}
+
+/* Modales y Drawers en Modo Claro */
+html:not(.dark) #modal-add-special .theme-card,
+html:not(.dark) #modal-assign-special .theme-card,
+html:not(.dark) .modal-content,
+html:not(.dark) dialog {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Ventas por Barra en Modo Claro */
+html.light #sales-form .col-sticky-product {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+html.light #sales-form .liquor-row,
+html.light #sales-form .mixer-row,
+html.light #sales-form .tienda-row {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+html.light #sales-form tfoot {
+    background-color: var(--card-surface) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
 }
 

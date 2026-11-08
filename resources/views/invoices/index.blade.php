@@ -238,47 +238,47 @@
                                 <th class="px-3 py-3 text-right w-16">Acción</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-zinc-800/80 font-sans" id="invoices-table-body">
+                        <tbody class="divide-y notoria-border font-sans" id="invoices-table-body">
                             @forelse($invoices as $inv)
-                                <tr id="invoice-row-{{ $inv->id }}" class="hover:bg-zinc-900/30 transition-all duration-200">
-                                    <td class="px-3 py-2.5 text-center font-bold font-mono text-zinc-300">#{{ $inv->correlative_num }}</td>
+                                <tr id="invoice-row-{{ $inv->id }}" class="hover:bg-slate-500/10 transition-colors">
+                                    <td class="px-3 py-2.5 text-center font-bold font-mono theme-text-secondary">#{{ $inv->correlative_num }}</td>
                                     <td class="px-3.5 py-2.5">
                                         @if($inv->payment_method === 'tarjeta')
-                                            <span class="inline-flex items-center gap-1 text-[#F5B81C] font-semibold text-xs">
+                                            <span class="inline-flex items-center gap-1 text-[#F5B81C] font-bold text-xs">
                                                 <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                                 Tarjeta
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 text-zinc-300 font-semibold text-xs">
+                                            <span class="inline-flex items-center gap-1 theme-text-secondary font-semibold text-xs">
                                                 <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                                 Efectivo
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-zinc-300 font-medium">
+                                    <td class="px-3.5 py-2.5 theme-text-secondary font-medium">
                                         {{ $inv->bar_name ?? 'Principal' }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-right font-bold font-mono text-white">
+                                    <td class="px-3.5 py-2.5 text-right font-black font-mono theme-text-primary text-xs">
                                         Bs. {{ number_format($inv->amount, 2) }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-right font-mono text-rose-400 font-semibold">
+                                    <td class="px-3.5 py-2.5 text-right font-mono text-rose-500 font-semibold">
                                         {{ $inv->commission_amount > 0 ? '- Bs. ' . number_format($inv->commission_amount, 2) : '—' }}
                                     </td>
                                     <td class="px-3.5 py-2.5 text-right font-black font-mono text-[#F5B81C]">
                                         Bs. {{ number_format($inv->net_amount, 2) }}
                                     </td>
-                                    <td class="px-3.5 py-2.5 text-zinc-400 text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? '—' }}</td>
+                                    <td class="px-3.5 py-2.5 theme-text-muted text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? '—' }}</td>
                                     <td class="px-3 py-2.5 text-right">
                                         <button type="button" 
                                                 onclick="deleteInvoice({{ $inv->id }})" 
-                                                class="text-rose-400 hover:text-rose-300 font-semibold text-xs cursor-pointer transition-colors active:scale-95 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                                                class="text-rose-500 hover:text-rose-400 font-bold text-xs cursor-pointer transition-colors active:scale-95 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                                             Borrar
                                         </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr id="empty-invoices-row">
-                                    <td colspan="8" class="px-4 py-8 text-center text-zinc-500 font-sans">
+                                    <td colspan="8" class="px-4 py-8 text-center theme-text-muted font-sans">
                                         No hay facturas registradas en esta noche.
                                     </td>
                                 </tr>
@@ -303,9 +303,9 @@ function selectBar(bar) {
         const btn = document.getElementById('btn-bar-' + b);
         if (btn) {
             if (b === bar) {
-                btn.className = 'py-1.5 px-2 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-[0_0_12px_rgba(245,184,28,0.35)] text-center truncate active:scale-95';
+                btn.className = 'py-1.5 px-2 rounded-lg text-xs font-black transition-all duration-200 cursor-pointer bg-[#F5B81C] text-black shadow-sm text-center truncate active:scale-95';
             } else {
-                btn.className = 'py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-zinc-400 hover:text-white text-center truncate active:scale-95';
+                btn.className = 'py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer theme-text-secondary hover:theme-text-primary text-center truncate active:scale-95';
             }
         }
     });

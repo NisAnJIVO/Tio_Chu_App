@@ -62,7 +62,7 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('image');
-        $galleryDir = public_path('images/gallery');
+        $galleryDir = public_path('images' . DIRECTORY_SEPARATOR . 'gallery');
 
         if (!File::isDirectory($galleryDir)) {
             File::makeDirectory($galleryDir, 0755, true);
@@ -71,10 +71,14 @@ class MediaController extends Controller
         $extension = $file->getClientOriginalExtension();
         $slugTitle = Str::slug($request->input('title'));
         $filename = ($slugTitle ?: 'media') . '_' . time() . '.' . $extension;
-        $file->move($galleryDir, $filename);
-
         $relPath = 'images/gallery/' . $filename;
         $fullPath = public_path($relPath);
+
+        try {
+            $file->move($galleryDir, $filename);
+        } catch (\Throwable $e) {
+            @copy($file->getRealPath(), $fullPath);
+        }
 
         $dimensions = null;
         if (file_exists($fullPath)) {
@@ -136,7 +140,7 @@ class MediaController extends Controller
         }
 
         // Activo común de la galería
-        $galleryDir = public_path('images/gallery');
+        $galleryDir = public_path('images' . DIRECTORY_SEPARATOR . 'gallery');
         if (!File::isDirectory($galleryDir)) {
             File::makeDirectory($galleryDir, 0755, true);
         }
@@ -195,7 +199,7 @@ class MediaController extends Controller
         // Si es foto de perfil del usuario en sesión
         if ($target === 'avatar') {
             $user = $request->user();
-            $avatarDir = public_path('images/avatars');
+            $avatarDir = public_path('images' . DIRECTORY_SEPARATOR . 'avatars');
             if (!File::isDirectory($avatarDir)) {
                 File::makeDirectory($avatarDir, 0755, true);
             }
@@ -247,7 +251,7 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('avatar');
-        $avatarDir = public_path('images/avatars');
+        $avatarDir = public_path('images' . DIRECTORY_SEPARATOR . 'avatars');
 
         if (!File::isDirectory($avatarDir)) {
             File::makeDirectory($avatarDir, 0755, true);
@@ -262,9 +266,14 @@ class MediaController extends Controller
 
         $extension = $file->getClientOriginalExtension();
         $filename = 'user_' . $user->id . '_' . time() . '.' . $extension;
-        $file->move($avatarDir, $filename);
-
         $relPath = 'images/avatars/' . $filename;
+        $fullPath = public_path($relPath);
+
+        try {
+            $file->move($avatarDir, $filename);
+        } catch (\Throwable $e) {
+            @copy($file->getRealPath(), $fullPath);
+        }
 
         $user->update([
             'avatar' => $relPath,

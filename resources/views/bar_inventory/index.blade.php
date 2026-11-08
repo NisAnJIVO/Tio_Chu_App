@@ -380,32 +380,32 @@
             </div>
 
             <!-- ========================================================
-                 4. PIE DE FORMULARIO ESTÁTICO (NO FLOTANTE / NO TOAST)
+                 4. PIE DE FORMULARIO ESTÁTICO (CARD NOTORIA)
                  ======================================================== -->
-            <div class="mt-4 p-4 rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="mt-4 p-4 notoria-card shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0">
+                    <div class="w-9 h-9 rounded-xl notoria-subtile flex items-center justify-center text-[#F5B81C] shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                         </svg>
                     </div>
                     <div>
-                        <span class="text-xs text-zinc-400 block font-normal">Total botellas disponibles en {{ $selectedBar }}:</span>
-                        <span class="text-base font-bold font-mono text-white" id="bar-total-sum">0 botellas</span>
+                        <span class="text-xs theme-text-secondary block font-bold">Total botellas disponibles en {{ $selectedBar }}:</span>
+                        <span class="text-base font-black font-mono theme-text-primary" id="bar-total-sum">0 botellas</span>
                     </div>
                 </div>
 
                 @if($session->isOpen())
                     <button type="submit" 
-                            class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-2 dilemo-btn cursor-pointer shadow-sm">
+                            class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#F5B81C] text-black font-black text-xs uppercase tracking-wider hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-2 dilemo-btn cursor-pointer shadow-md active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
                         <span>Guardar Inventario de {{ $selectedBar }}</span>
                     </button>
                 @else
-                    <div class="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-semibold flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="px-4 py-2 rounded-xl notoria-subtile theme-text-muted text-xs font-bold flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 theme-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
@@ -671,9 +671,9 @@
         /* --- FILTROS DE CATEGORÍA --- */
         function filterCategory(cat, btn) {
             document.querySelectorAll('#filter-all-btn, #filter-licores-btn, #filter-mixers-btn').forEach(b => {
-                b.className = 'px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer text-zinc-400 hover:text-white';
+                b.className = 'px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer theme-text-secondary hover:theme-text-primary';
             });
-            btn.className = 'px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer bg-[#F5B81C] text-black';
+            btn.className = 'px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer bg-[#F5B81C] text-black shadow-sm';
 
             document.querySelectorAll('.inv-row').forEach(row => {
                 if (cat === 'all' || row.dataset.category === cat) {

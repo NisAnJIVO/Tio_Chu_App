@@ -4,21 +4,21 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between px-5 py-3.5 rounded-2xl bg-[#09090b] border border-zinc-800/80 shadow-sm">
+    <!-- Header Notorio -->
+    <div class="notoria-card px-6 py-4 shadow-sm flex items-center justify-between">
         <div>
             <div class="flex items-center gap-2 mb-0.5">
                 <span class="text-[10px] font-mono font-bold text-[#F5B81C] uppercase tracking-wider">
                     Apertura Operativa
                 </span>
-                <span class="text-zinc-600 text-xs">•</span>
-                <span class="text-[10px] text-zinc-400 font-mono">Nueva Jornada</span>
+                <span class="theme-text-muted text-xs">•</span>
+                <span class="text-[10px] theme-text-muted font-mono">Nueva Jornada</span>
             </div>
-            <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Aperturar Nueva Noche</h2>
-            <p class="text-xs text-zinc-400 mt-0.5">Inicializa automáticamente los inventarios de las 3 barras y la planilla de asistencia.</p>
+            <h2 class="text-xl sm:text-2xl font-black theme-text-primary tracking-tight font-sans">Aperturar Nueva Noche</h2>
+            <p class="text-xs theme-text-secondary mt-0.5">Inicializa automáticamente los inventarios de las 3 barras y la planilla de asistencia.</p>
         </div>
         <a href="{{ route('sessions.index') }}" 
-           class="px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all">
+           class="px-3.5 py-2 rounded-xl notoria-subtile theme-text-secondary hover:theme-text-primary text-xs font-bold flex items-center gap-1.5 transition-all">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
@@ -27,7 +27,7 @@
     </div>
 
     @if(isset($openSession) && $openSession)
-        <div class="p-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="notoria-card p-4 border-amber-500/50 bg-amber-500/10 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-[#F5B81C] flex items-center justify-center font-bold text-sm shrink-0 border border-amber-500/30">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -38,73 +38,73 @@
                 </div>
                 <div>
                     <h4 class="text-xs font-black text-[#F5B81C] uppercase tracking-wider font-mono">Jornada Anterior Aún Abierta</h4>
-                    <p class="text-xs text-zinc-300 mt-0.5">
-                        La noche del <strong class="text-white">{{ $openSession->day_name }} ({{ \Carbon\Carbon::parse($openSession->session_date)->format('d/m/Y') }})</strong> está en curso. Debes cerrarla antes de aperturar una nueva.
+                    <p class="text-xs theme-text-secondary mt-0.5">
+                        La noche del <strong class="theme-text-primary">{{ $openSession->day_name }} ({{ \Carbon\Carbon::parse($openSession->session_date)->format('d/m/Y') }})</strong> está en curso. Debes cerrarla antes de aperturar una nueva.
                     </p>
                 </div>
             </div>
             <a href="{{ route('closing.index', ['session_id' => $openSession->id]) }}" 
-               class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm whitespace-nowrap">
+               class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm whitespace-nowrap">
                 Ir a Cerrar Noche
             </a>
         </div>
     @endif
 
-    <!-- Form Panel -->
-    <form method="POST" action="{{ route('sessions.store') }}" class="p-6 sm:p-8 rounded-xl border border-zinc-800 bg-[#09090b] shadow-xl space-y-6">
+    <!-- Form Panel Notorio -->
+    <form method="POST" action="{{ route('sessions.store') }}" class="notoria-card p-6 sm:p-8 shadow-xl space-y-6">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-                <label for="session_date" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 font-mono">
+                <label for="session_date" class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-2 font-mono">
                     Fecha de la Noche <span class="text-[#F5B81C]">*</span>
                 </label>
                 <input type="date" name="session_date" id="session_date" required 
                        value="{{ old('session_date', \Carbon\Carbon::now()->format('Y-m-d')) }}"
-                       class="w-full px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-sm font-mono text-white focus:outline-none focus:border-[#F5B81C] transition-all [color-scheme:dark]">
-                <p class="text-[11px] text-zinc-500 mt-1.5">Inicio de la jornada nocturna.</p>
+                       class="w-full px-4 py-2.5 rounded-xl notoria-input theme-text-primary text-sm font-mono focus:outline-none focus:border-[#F5B81C] transition-all">
+                <p class="text-[11px] theme-text-muted mt-1.5 font-mono">Inicio de la jornada nocturna.</p>
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 font-mono">
+                <label class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-2 font-mono">
                     Día Detectado (Automático)
                 </label>
-                <div class="flex items-center h-[42px] px-4 rounded-xl bg-zinc-950 border border-zinc-800 text-sm font-bold text-[#F5B81C] font-mono" id="detected_day_display">
+                <div class="flex items-center h-[42px] px-4 rounded-xl notoria-subtile text-sm font-black text-[#F5B81C] font-mono" id="detected_day_display">
                     Calculando...
                 </div>
-                <p class="text-[11px] text-zinc-500 mt-1.5">Fija la tarifa y turnos del personal.</p>
+                <p class="text-[11px] theme-text-muted mt-1.5 font-mono">Fija la tarifa y turnos del personal.</p>
             </div>
         </div>
 
         <div>
-            <label for="pos_commission_rate" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 font-mono">
+            <label for="pos_commission_rate" class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-2 font-mono">
                 Tasa de Comisión Tarjetero / POS (Decimal) <span class="text-[#F5B81C]">*</span>
             </label>
             <div class="flex items-center gap-3">
                 <input type="number" step="0.0001" inputmode="decimal" name="pos_commission_rate" id="pos_commission_rate" required value="{{ old('pos_commission_rate', 0.0130) }}"
-                       class="w-full px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#F5B81C] transition-all">
-                <span class="text-xs font-mono font-bold text-[#F5B81C] whitespace-nowrap bg-zinc-950 px-3.5 py-2.5 rounded-xl border border-zinc-800">
+                       class="w-full px-4 py-2.5 rounded-xl notoria-input theme-text-primary text-sm font-mono font-bold focus:outline-none focus:border-[#F5B81C] transition-all">
+                <span class="text-xs font-mono font-black text-[#F5B81C] whitespace-nowrap notoria-subtile px-3.5 py-2.5 rounded-xl">
                     = 1.30%
                 </span>
             </div>
-            <p class="text-[11px] text-zinc-500 mt-1.5 font-mono">Por defecto 0.0130 (1.30% bancario estándar).</p>
+            <p class="text-[11px] theme-text-muted mt-1.5 font-mono">Por defecto 0.0130 (1.30% bancario estándar Don Ludo).</p>
         </div>
 
         <div>
-            <label for="notes" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2 font-mono">
+            <label for="notes" class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-2 font-mono">
                 Notas del Evento (Opcional)
             </label>
             <textarea name="notes" id="notes" rows="2" placeholder="Ej. Fiesta temática, artista invitado, feriado..."
-                      class="w-full px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C] transition-all font-sans">{{ old('notes') }}</textarea>
+                      class="w-full px-4 py-2.5 rounded-xl notoria-input theme-text-primary placeholder-zinc-400 text-sm focus:outline-none focus:border-[#F5B81C] transition-all font-sans">{{ old('notes') }}</textarea>
         </div>
 
-        <div class="pt-5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 border-t border-zinc-800/80">
+        <div class="pt-5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 border-t notoria-border">
             <a href="{{ route('sessions.index') }}" 
-               class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white text-xs font-bold transition-all">
+               class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl notoria-subtile theme-text-secondary hover:theme-text-primary text-xs font-bold transition-all">
                 Cancelar
             </a>
             <button type="submit" 
-                    class="w-full sm:w-auto px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl transition-all shadow-sm active:scale-95">
+                    class="w-full sm:w-auto px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black tracking-wider uppercase rounded-xl transition-all shadow-md active:scale-95">
                 Aperturar Noche
             </button>
         </div>

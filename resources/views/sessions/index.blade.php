@@ -147,19 +147,19 @@
     </div>
 
     <!-- ==========================================
-         TARJETAS MÓVILES (md:hidden)
+         TARJETAS MÓVILES (md:hidden) (CARDS NOTORIAS)
          ========================================== -->
     <div class="md:hidden space-y-3">
         <div class="flex items-center justify-between px-1">
-            <span class="text-xs font-bold text-zinc-400 font-mono uppercase tracking-wider">Jornadas ({{ $totalCount }})</span>
-            <span class="text-[11px] text-zinc-500">Toca las casillas para consolidar</span>
+            <span class="text-xs font-bold theme-text-muted font-mono uppercase tracking-wider">Jornadas ({{ $totalCount }})</span>
+            <span class="text-[11px] theme-text-muted font-mono">Toca las casillas para consolidar</span>
         </div>
         
         @forelse($sessions as $s)
             @php
                 $isOpen = $s->isOpen();
             @endphp
-            <div class="rounded-xl p-4 border {{ $isOpen ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-zinc-800 bg-[#09090b]' }} space-y-3">
+            <div class="notoria-card p-4 space-y-3 {{ $isOpen ? 'border-2 border-emerald-500/70 shadow-sm' : '' }}">
                 <div class="flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <input type="checkbox" value="{{ $s->id }}" data-day="{{ $s->day_name }}" data-date="{{ $s->session_date }}"
@@ -168,36 +168,36 @@
                                onchange="onSessionCheckChange(this)">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full {{ $isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600' }}"></span>
-                                <span class="text-base font-bold font-mono text-white">{{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}</span>
-                                <span class="text-xs text-zinc-400 font-medium">({{ $s->day_name }})</span>
+                                <span class="w-2.5 h-2.5 rounded-full {{ $isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-400' }}"></span>
+                                <span class="text-base font-black font-mono theme-text-primary">{{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}</span>
+                                <span class="text-xs theme-text-secondary font-bold">({{ $s->day_name }})</span>
                             </div>
                             @if($s->notes)
-                                <p class="text-xs text-zinc-400 mt-1 italic">{{ $s->notes }}</p>
+                                <p class="text-xs theme-text-muted mt-1 italic font-sans">{{ $s->notes }}</p>
                             @endif
                         </div>
                     </div>
                     <div>
                         @if($isOpen)
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                                 Abierta
                             </span>
                         @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-900 text-zinc-400 border border-zinc-800">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold notoria-subtile theme-text-muted">
                                 Cerrada
                             </span>
                         @endif
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between text-xs pt-2 border-t border-zinc-800/60 font-mono">
-                    <span class="text-zinc-500">Comisión POS:</span>
-                    <span class="font-bold text-zinc-300">{{ number_format($s->pos_commission_rate * 100, 2) }}%</span>
+                <div class="flex items-center justify-between text-xs pt-2 border-t notoria-border font-mono">
+                    <span class="theme-text-muted">Comisión POS:</span>
+                    <span class="font-bold theme-text-primary">{{ number_format($s->pos_commission_rate * 100, 2) }}%</span>
                 </div>
 
                 <div class="flex items-center gap-2 pt-1">
                     <a href="{{ route('dashboard', ['session_id' => $s->id]) }}" 
-                       class="flex-1 justify-center inline-flex items-center gap-1.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700/80 active:bg-zinc-800 text-xs font-mono font-bold text-[#F5B81C] transition-all">
+                       class="flex-1 justify-center inline-flex items-center gap-1.5 py-2.5 rounded-xl notoria-subtile hover:border-amber-500 active:scale-95 text-xs font-mono font-bold text-[#F5B81C] hover:text-amber-400 transition-all shadow-sm">
                         <span>Operar Noche</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -208,16 +208,16 @@
                           onsubmit="return confirm('¿Estás seguro de eliminar esta noche del {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }}? Se borrarán sus inventarios, facturas y cobros asociados.');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="px-3 py-2.5 text-xs text-rose-400 active:bg-rose-500/20 font-semibold rounded-xl bg-rose-500/10 border border-rose-500/20 transition-all cursor-pointer">
+                        <button type="submit" class="px-3 py-2.5 text-xs text-rose-500 active:bg-rose-500/20 font-bold rounded-xl bg-rose-500/10 border border-rose-500/20 transition-all cursor-pointer">
                             Eliminar
                         </button>
                     </form>
                 </div>
             </div>
         @empty
-            <div class="p-8 text-center text-zinc-500 rounded-xl border border-zinc-800 bg-[#09090b]">
-                <p class="text-sm font-semibold text-zinc-400">No hay noches registradas</p>
-                <p class="text-xs text-zinc-500 mt-1">Apertura una nueva noche para comenzar.</p>
+            <div class="p-8 text-center theme-text-muted rounded-xl notoria-card">
+                <p class="text-sm font-bold theme-text-primary">No hay noches registradas</p>
+                <p class="text-xs theme-text-muted mt-1 font-sans">Apertura una nueva noche para comenzar.</p>
             </div>
         @endforelse
     </div>
@@ -244,19 +244,19 @@
 
         <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
-                <thead class="bg-slate-950 text-white font-mono uppercase text-[11px] tracking-wider border-b notoria-border">
+                <thead class="notoria-card-header text-white font-mono uppercase text-[11px] tracking-wider border-b notoria-border">
                     <tr>
                         <th class="px-4 py-3.5 w-10 text-center">
                             <input type="checkbox" id="check-all-desktop" onchange="toggleSelectAll(this)" title="Marcar todas" 
                                    class="w-4 h-4 rounded border-zinc-700 bg-black text-[#F5B81C] cursor-pointer"
                                    style="accent-color: #F5B81C !important;">
                         </th>
-                        <th class="px-5 py-3.5 text-zinc-200">Fecha</th>
-                        <th class="px-5 py-3.5 text-zinc-200">Día</th>
-                        <th class="px-5 py-3.5 text-center text-zinc-200">Comisión POS</th>
-                        <th class="px-5 py-3.5 text-center text-zinc-200">Estado</th>
-                        <th class="px-5 py-3.5 text-zinc-200">Observaciones</th>
-                        <th class="px-5 py-3.5 text-right text-zinc-200">Acciones</th>
+                        <th class="px-5 py-3.5 text-white font-bold">Fecha</th>
+                        <th class="px-5 py-3.5 text-white font-bold">Día</th>
+                        <th class="px-5 py-3.5 text-center text-white font-bold">Comisión POS</th>
+                        <th class="px-5 py-3.5 text-center text-white font-bold">Estado</th>
+                        <th class="px-5 py-3.5 text-white font-bold">Observaciones</th>
+                        <th class="px-5 py-3.5 text-right text-white font-bold">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y notoria-border font-sans">

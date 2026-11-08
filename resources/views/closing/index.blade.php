@@ -174,16 +174,16 @@
 
     @if(!$session)
         <!-- Estado Vacío -->
-        <div class="p-12 text-center rounded-xl bg-[#09090b] border border-zinc-800 shadow-sm flex flex-col items-center justify-center">
-            <div class="w-14 h-14 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-4">
+        <div class="p-12 text-center rounded-xl notoria-card shadow-sm flex flex-col items-center justify-center">
+            <div class="w-14 h-14 rounded-xl notoria-subtile flex items-center justify-center theme-text-muted mb-4">
                 <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                     <line x1="16" y1="2" x2="16" y2="6"/>
                     <line x1="8" y1="2" x2="8" y2="6"/>
                 </svg>
             </div>
-            <h3 class="text-base font-black uppercase tracking-wider text-white">No hay ninguna noche abierta o seleccionada</h3>
-            <p class="text-sm text-zinc-400 mt-1 mb-6">Apertura una noche para consultar y registrar el cierre de caja.</p>
+            <h3 class="text-base font-black uppercase tracking-wider theme-text-primary">No hay ninguna noche abierta o seleccionada</h3>
+            <p class="text-sm theme-text-secondary mt-1 mb-6">Apertura una noche para consultar y registrar el cierre de caja.</p>
             <a href="{{ route('sessions.create') }}" class="px-6 py-3 rounded-lg bg-[#F5B81C] text-black font-black text-sm hover:bg-[#e5ac18] transition-all shadow-sm">
                 + Aperturar Nueva Noche
             </a>
@@ -676,12 +676,12 @@
              class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-200"></div>
 
         <aside id="staff-drawer" 
-               class="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] bg-[#09090b] border-l border-zinc-800 shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out">
+               class="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] notoria-card rounded-none border-y-0 border-r-0 border-l notoria-border shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out">
             
             <!-- Cabecera del Drawer -->
-            <div class="p-5 border-b border-zinc-800 bg-zinc-950 text-white flex items-center justify-between">
+            <div class="p-5 notoria-card-header rounded-none flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded bg-[#F5B81C] text-black font-black flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-xl bg-[#F5B81C] text-black font-black flex items-center justify-center shadow-sm">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
@@ -690,66 +690,66 @@
                         <h3 class="text-sm font-black uppercase tracking-wider text-white">
                             Personal del Turno
                         </h3>
-                        <p class="text-xs text-zinc-400">
+                        <p class="text-xs text-zinc-300">
                             {{ $session->day_name }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }} • {{ $attendances->count() }} personas
                         </p>
                     </div>
                 </div>
                 <button type="button" onclick="closeStaffDrawer()" 
-                        class="w-8 h-8 rounded bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center cursor-pointer">
+                        class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-white flex items-center justify-center cursor-pointer transition-colors text-lg">
                     &times;
                 </button>
             </div>
 
             <!-- Buscador -->
-            <div class="px-5 py-3 border-b border-zinc-800 bg-zinc-950">
+            <div class="px-5 py-3 border-b notoria-border notoria-subtile rounded-none">
                 <input type="text" id="staff-drawer-search" oninput="filterDrawerStaff(this.value)" placeholder="Buscar por nombre o cargo..." 
-                       class="w-full text-xs sm:text-sm bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
+                       class="w-full text-xs sm:text-sm notoria-input px-3 py-2 focus:outline-none focus:border-[#F5B81C]">
             </div>
 
             <!-- Lista de Trabajadores -->
-            <div class="flex-1 overflow-y-auto p-5 space-y-2" id="drawer-staff-list">
+            <div class="flex-1 overflow-y-auto p-5 space-y-2.5" id="drawer-staff-list">
                 @forelse($attendances as $att)
                     @php
                         $workerRole = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $att->staff->role ?? 'Staff');
                     @endphp
-                    <div class="drawer-staff-item p-3 rounded-lg bg-zinc-950/70 border border-zinc-800/80 flex items-center justify-between gap-3 hover:border-zinc-700 transition-colors"
+                    <div class="drawer-staff-item p-3.5 rounded-xl notoria-subtile flex items-center justify-between gap-3 hover:border-amber-500/60 transition-colors"
                          data-search="{{ strtolower(($att->staff->name ?? '') . ' ' . $workerRole) }}">
                         <div class="min-w-0">
-                            <span class="text-xs sm:text-sm font-bold text-white block truncate uppercase">{{ $att->staff->name }}</span>
-                            <span class="text-[11px] text-zinc-400 font-semibold block truncate">{{ strtoupper($workerRole) }}</span>
+                            <span class="text-xs sm:text-sm font-bold theme-text-primary block truncate uppercase">{{ $att->staff->name }}</span>
+                            <span class="text-[11px] theme-text-secondary font-semibold block truncate">{{ strtoupper($workerRole) }}</span>
                         </div>
 
                         <div class="text-right shrink-0 flex flex-col items-end gap-1">
-                            <span class="text-sm sm:text-base font-mono font-black text-white">
+                            <span class="text-sm sm:text-base font-mono font-black theme-text-primary">
                                 Bs. {{ number_format($att->pay_amount, 2) }}
                             </span>
                             @if($att->is_paid)
-                                <span class="px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                                <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 text-[10px] font-bold">
                                     Pagado
                                 </span>
                             @else
-                                <span class="px-2 py-0.5 rounded bg-amber-950/60 text-amber-400 border border-amber-500/30 text-[10px] font-bold">
+                                <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-500 border border-amber-500/30 text-[10px] font-bold">
                                     Pendiente
                                 </span>
                             @endif
                         </div>
                     </div>
                 @empty
-                    <div class="py-10 text-center text-zinc-500 text-sm">
+                    <div class="py-10 text-center theme-text-muted text-sm">
                         No hay personal asignado a este turno.
                     </div>
                 @endforelse
             </div>
 
             <!-- Pie del Drawer -->
-            <div class="p-4 border-t border-zinc-800 bg-zinc-950 flex items-center justify-between">
+            <div class="p-4 border-t notoria-border notoria-subtile rounded-none flex items-center justify-between">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Total Pagado</span>
-                    <span class="text-base font-black font-mono text-white">Bs. {{ number_format($closing->total_staff_paid ?? 0, 2) }}</span>
+                    <span class="text-xs font-bold uppercase tracking-wider theme-text-secondary block">Total Pagado</span>
+                    <span class="text-base font-black font-mono theme-text-primary">Bs. {{ number_format($closing->total_staff_paid ?? 0, 2) }}</span>
                 </div>
                 <a href="{{ route('staffPayments.index', ['session_id' => $session->id]) }}" 
-                   class="px-4 py-2.5 rounded-lg bg-[#F5B81C] text-black font-bold text-xs sm:text-sm hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 shadow-sm">
+                   class="px-4 py-2.5 rounded-xl bg-[#F5B81C] text-black font-black text-xs sm:text-sm hover:bg-[#e5ac18] transition-all flex items-center gap-1.5 shadow-sm">
                     <span>Gestionar Pagos &rarr;</span>
                 </a>
             </div>

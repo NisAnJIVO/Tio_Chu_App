@@ -223,23 +223,23 @@
     </div>
 
     <!-- ========================================================
-         4. VISTA 1: TABLA EJECUTIVA (OPCIONAL)
+         4. VISTA 1: TABLA EJECUTIVA (OPCIONAL) - CARD NOTORIA
          ======================================================== -->
-    <div id="view-table-container" class="hidden rounded-xl bg-[#09090b] border border-zinc-800 overflow-hidden shadow-sm">
+    <div id="view-table-container" class="hidden notoria-card overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="border-b border-zinc-800 bg-zinc-950 text-zinc-300 font-bold uppercase tracking-wider text-[11px]">
-                        <th class="py-3 px-4">Bebida / Marca</th>
-                        <th class="py-3 px-3">Categoría</th>
-                        <th class="py-3 px-3 text-right">Precio Venta</th>
-                        <th class="py-3 px-4 text-center">Cajas & Sueltas</th>
-                        <th class="py-3 px-4 text-center">Botellas en Bodega</th>
-                        <th class="py-3 px-4 text-center">Ajuste Rápido</th>
-                        <th class="py-3 px-4 text-right whitespace-nowrap w-24">Acción</th>
+                    <tr class="bg-slate-950 text-white font-mono uppercase tracking-wider text-[10px] font-bold border-b notoria-border">
+                        <th class="py-3.5 px-4 text-zinc-300">Bebida / Marca</th>
+                        <th class="py-3.5 px-3 text-zinc-200">Categoría</th>
+                        <th class="py-3.5 px-3 text-right text-zinc-200">Precio Venta</th>
+                        <th class="py-3.5 px-4 text-center text-zinc-200">Cajas & Sueltas</th>
+                        <th class="py-3.5 px-4 text-center text-zinc-200">Botellas en Bodega</th>
+                        <th class="py-3.5 px-4 text-center text-zinc-200">Ajuste Rápido</th>
+                        <th class="py-3.5 px-4 text-right whitespace-nowrap w-24 text-zinc-200">Acción</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-800/80 font-sans" id="table-products-tbody">
+                <tbody class="divide-y notoria-border font-sans" id="table-products-tbody">
                     @foreach($products as $prod)
                     @php
                         $sub = \App\Models\Product::getDrinkCategory($prod->name, $prod->category);
@@ -248,7 +248,7 @@
                         $stockPackages = intdiv($stock, $unitsPerPackage);
                         $stockUnits = $stock % $unitsPerPackage;
                     @endphp
-                    <tr class="product-item hover:bg-zinc-900/50 transition-colors"
+                    <tr class="product-item hover:bg-slate-500/10 transition-colors"
                         data-id="{{ $prod->id }}"
                         data-name="{{ strtolower($prod->name) }}"
                         data-subcat="{{ $sub }}"
@@ -259,12 +259,12 @@
                         <!-- Columna 1: Nombre & Presentación -->
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0 font-bold text-xs">
+                                <div class="w-8 h-8 rounded-lg notoria-subtile flex items-center justify-center text-[#F5B81C] shrink-0 font-black text-xs">
                                     {{ mb_substr($prod->name, 0, 1) }}
                                 </div>
                                 <div class="min-w-0">
-                                    <span class="font-black text-white text-xs block truncate">{{ $prod->name }}</span>
-                                    <span class="text-[10px] text-zinc-400 font-medium block">
+                                    <span class="font-black theme-text-primary text-xs block truncate">{{ $prod->name }}</span>
+                                    <span class="text-[10px] theme-text-secondary font-medium block">
                                         {{ $prod->unit }} • {{ $unitsPerPackage }} unid. x caja
                                     </span>
                                 </div>
@@ -273,38 +273,38 @@
 
                         <!-- Columna 2: Categoría -->
                         <td class="py-3 px-3">
-                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-900 border border-zinc-800 text-zinc-300">
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider notoria-subtile theme-text-secondary">
                                 {{ $sub }}
                             </span>
                         </td>
 
                         <!-- Columna 3: Precio Venta -->
-                        <td class="py-3 px-3 text-right font-mono font-bold text-white text-xs">
+                        <td class="py-3 px-3 text-right font-mono font-black theme-text-primary text-xs">
                             <span class="text-[#F5B81C] text-[10px] mr-0.5">Bs.</span>{{ number_format($prod->sale_price, 2) }}
                         </td>
 
                         <!-- Columna 4: Desglose Cajas y Sueltas -->
                         <td class="py-3 px-4">
                             <div class="flex items-center justify-center gap-1.5">
-                                <div class="flex items-center gap-1 bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-800">
-                                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Cajas:</span>
+                                <div class="flex items-center gap-1 notoria-subtile px-2 py-1 rounded-lg">
+                                    <span class="text-[10px] font-bold theme-text-muted uppercase">Cajas:</span>
                                     <input type="number" 
                                            min="0" 
                                            value="{{ $stockPackages }}"
                                            id="stock-packages-table-{{ $prod->id }}"
                                            data-product-id="{{ $prod->id }}"
                                            onchange="onStockPartChange({{ $prod->id }}, 'table')"
-                                           class="w-10 text-center font-mono font-bold text-xs bg-transparent border-0 text-white focus:outline-none focus:ring-0 p-0">
+                                           class="w-10 text-center font-mono font-bold text-xs bg-transparent border-0 theme-text-primary focus:outline-none focus:ring-0 p-0">
                                 </div>
-                                <div class="flex items-center gap-1 bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-800">
-                                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Sueltas:</span>
+                                <div class="flex items-center gap-1 notoria-subtile px-2 py-1 rounded-lg">
+                                    <span class="text-[10px] font-bold theme-text-muted uppercase">Sueltas:</span>
                                     <input type="number" 
                                            min="0" 
                                            value="{{ $stockUnits }}"
                                            id="stock-units-table-{{ $prod->id }}"
                                            data-product-id="{{ $prod->id }}"
                                            onchange="onStockPartChange({{ $prod->id }}, 'table')"
-                                           class="w-8 text-center font-mono font-bold text-xs bg-transparent border-0 text-white focus:outline-none focus:ring-0 p-0">
+                                           class="w-8 text-center font-mono font-bold text-xs bg-transparent border-0 theme-text-primary focus:outline-none focus:ring-0 p-0">
                                 </div>
                             </div>
                         </td>
@@ -322,8 +322,8 @@
                                        oninput="onStockInput(this, {{ $prod->id }})"
                                        onchange="onStockChange(this, {{ $prod->id }})"
                                        onkeydown="if(event.key==='Enter'){this.blur();event.preventDefault();}"
-                                       class="stock-total-input w-24 text-center text-base font-black font-mono rounded-xl py-1 px-2 border transition-all cursor-text bg-zinc-900 border-zinc-800 focus:border-[#F5B81C] focus:outline-none {{ $stock <= 0 ? 'text-zinc-600' : ($stock <= 10 ? 'text-amber-400' : 'text-emerald-400') }}">
-                                <span class="save-indicator absolute -top-2 -right-2 text-[9px] font-mono opacity-0 transition-opacity duration-300 pointer-events-none bg-zinc-950 px-1 py-0.5 rounded border border-zinc-800"></span>
+                                       class="stock-total-input excel-input w-24 text-center text-base font-black font-mono rounded-xl py-1 px-2 focus:outline-none transition-all cursor-text {{ $stock <= 0 ? 'text-zinc-400' : ($stock <= 10 ? 'text-amber-500' : 'text-emerald-500') }}">
+                                <span class="save-indicator absolute -top-2 -right-2 text-[9px] font-mono opacity-0 transition-opacity duration-300 pointer-events-none notoria-subtile px-1 py-0.5 rounded border"></span>
                             </div>
                         </td>
 
@@ -333,25 +333,25 @@
                                 <button type="button" 
                                         onclick="stepStock({{ $prod->id }}, -10)"
                                         title="Restar 10 botellas"
-                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black bg-zinc-900 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-500/30 transition-all active:scale-95 cursor-pointer">
+                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-rose-500 hover:border-rose-500 transition-all active:scale-95 cursor-pointer">
                                     -10
                                 </button>
                                 <button type="button" 
                                         onclick="stepStock({{ $prod->id }}, -1)"
                                         title="Restar 1 botella"
-                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black bg-zinc-900 text-zinc-300 hover:text-rose-400 border border-zinc-800 hover:border-rose-500/30 transition-all active:scale-95 cursor-pointer">
+                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-rose-500 hover:border-rose-500 transition-all active:scale-95 cursor-pointer">
                                     -1
                                 </button>
                                 <button type="button" 
                                         onclick="stepStock({{ $prod->id }}, 1)"
                                         title="Sumar 1 botella"
-                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black bg-zinc-900 text-zinc-300 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 transition-all active:scale-95 cursor-pointer">
+                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-emerald-500 hover:border-emerald-500 transition-all active:scale-95 cursor-pointer">
                                     +1
                                 </button>
                                 <button type="button" 
                                         onclick="stepStock({{ $prod->id }}, 10)"
                                         title="Sumar 10 botellas"
-                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black bg-zinc-900 text-zinc-300 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 transition-all active:scale-95 cursor-pointer">
+                                        class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-emerald-500 hover:border-emerald-500 transition-all active:scale-95 cursor-pointer">
                                     +10
                                 </button>
                             </div>
@@ -361,7 +361,7 @@
                         <td class="py-3 px-4 text-right whitespace-nowrap w-24">
                             <button type="button"
                                     onclick="openEditDrawer({{ $prod->id }}, {{ json_encode($prod->name) }}, {{ json_encode($prod->category) }}, {{ json_encode($prod->unit) }}, {{ $prod->sale_price }}, {{ $prod->cost_price ?? 0 }}, {{ $prod->units_per_package }}, {{ $prod->stock_warehouse }}, {{ $prod->is_active ? 1 : 0 }}, {{ json_encode($prod->image_url) }})"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl notoria-subtile hover:border-[#F5B81C] theme-text-secondary hover:theme-text-primary text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95">
                                 <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
