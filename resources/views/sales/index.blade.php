@@ -339,19 +339,15 @@
         <!-- ========================================================
              2. SELECTOR DE PUNTOS DE VENTA (iOS SEGMENTED CONTROL)
              ======================================================== -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 p-2.5 rounded-xl notoria-card shadow-sm">
-            <div class="grid grid-cols-3 sm:inline-flex p-1 rounded-xl notoria-subtile w-full sm:w-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-2xl notoria-card shadow-sm">
+            <div class="grid grid-cols-3 sm:inline-flex p-1.5 rounded-2xl notoria-subtile w-full sm:w-auto gap-1.5">
                 @foreach($availableBars as $bar)
                     @php
                         $isSelected = $selectedBar === $bar;
-                        $isPrincipal = str_contains($bar, 'Kelly') || str_contains($bar, 'Principal');
-                        $isSubte = str_contains($bar, 'Ariel') || str_contains($bar, 'Subterráneo') || str_contains($bar, 'Subte');
-                        $badgeLabel = $isPrincipal ? 'Piso Principal' : ($isSubte ? 'Subterráneo' : 'Unidades Sueltas');
                     @endphp
                     <a href="{{ route('sales.index', ['session_id' => $session->id, 'bar' => $bar]) }}" 
-                       class="px-3 sm:px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer text-center {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-sm font-black' : 'theme-text-secondary hover:theme-text-primary' }}">
+                       class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base transition-all flex items-center justify-center cursor-pointer text-center {{ $isSelected ? 'bg-[#F5B81C] text-black shadow-md font-black' : 'theme-text-secondary hover:theme-text-primary hover:bg-black/5 dark:hover:bg-white/5' }}">
                         <span>{{ $bar }}</span>
-                        <span class="text-[10px] font-medium opacity-75 hidden md:inline">({{ $badgeLabel }})</span>
                     </a>
                 @endforeach
             </div>
@@ -359,8 +355,8 @@
             @if($session->isOpen() && $selectedBar !== 'Tienda')
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="document.getElementById('modal-add-special').classList.remove('hidden')"
-                            class="px-3.5 py-2 sm:py-1.5 rounded-xl notoria-subtile text-xs font-semibold theme-text-primary hover:border-amber-500 transition-all flex items-center justify-center gap-1.5 cursor-pointer dilemo-btn w-full sm:w-auto">
-                        <span class="text-[#F5B81C] font-bold">+</span>
+                            class="px-4 py-2.5 rounded-xl notoria-subtile text-xs sm:text-sm font-bold theme-text-primary hover:border-amber-500 transition-all flex items-center justify-center gap-2 cursor-pointer dilemo-btn w-full sm:w-auto">
+                        <span class="text-[#F5B81C] font-black text-base">+</span>
                         <span>Nueva Soda en Catálogo</span>
                     </button>
                 </div>
@@ -370,71 +366,101 @@
         <!-- ======================================================== -->
         <!-- MÉTRICAS CLARAS DE LA BARRA / TIENDA (CARDS NOTORIAS) -->
         <!-- ======================================================== -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             
-            <!-- Total Bebidas Liquidado / Total Tienda -->
-            <div class="notoria-card p-3.5 sm:p-5 shadow-sm flex flex-col justify-between">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs font-black theme-text-secondary uppercase tracking-wider">{{ $selectedBar === 'Tienda' ? 'Total Tienda' : 'Total Bebidas' }}</span>
-                    <span class="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md notoria-subtile theme-text-secondary">{{ $selectedBar }}</span>
+            <!-- Card 1: Total Bebidas Liquidado / Total Tienda -->
+            <div class="notoria-card p-4 sm:p-5 rounded-2xl notoria-border shadow-sm flex flex-col justify-between hover:border-[#F5B81C]/40 transition-colors">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
+                        {{ $selectedBar === 'Tienda' ? 'Total Tienda' : 'Total Bebidas' }}
+                    </span>
+                    <span class="text-[11px] font-black px-2 py-0.5 rounded-lg notoria-subtile theme-text-secondary shrink-0">
+                        {{ $selectedBar }}
+                    </span>
                 </div>
-                <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-[#F5B81C] tracking-tight" id="header-grand-total">
-                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($grandTotalBar, 2) }}
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-[#F5B81C] tracking-tight flex items-baseline gap-1" id="header-grand-total">
+                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                    <span>{{ number_format($grandTotalBar, 2) }}</span>
                 </div>
-                <p class="text-[10px] sm:text-[11px] theme-text-secondary mt-1 font-sans">
+                <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-sans">
                     @if($selectedBar === 'Tienda')
-                        <span id="header-tienda-units" class="font-bold theme-text-primary">{{ $totalTiendaUnits ?? $allBarSales->sum('vendido') }} bebidas</span> vendidas
+                        <span>Bebidas Despachadas</span>
+                        <span id="header-tienda-units" class="font-bold theme-text-primary font-mono">{{ $totalTiendaUnits ?? $allBarSales->sum('vendido') }}</span>
                     @else
-                        <span id="header-total-combos" class="font-bold theme-text-primary">{{ $totalLiquorCombos }} combos</span> + <span id="header-total-extras" class="font-bold theme-text-primary">{{ $totalMixerExtras }} extras</span>
+                        <span>Combos y Extras</span>
+                        <span class="font-bold theme-text-primary font-mono"><span id="header-total-combos">{{ $totalLiquorCombos }}</span> c / <span id="header-total-extras">{{ $totalMixerExtras }}</span> e</span>
                     @endif
-                </p>
+                </div>
             </div>
 
-            <!-- Efectivo en Mano en Barra / Tienda -->
-            <div class="notoria-card p-3.5 sm:p-5 shadow-sm flex flex-col justify-between">
-                <span class="text-[11px] sm:text-xs font-black theme-text-secondary uppercase tracking-wider block">Efectivo {{ $selectedBar === 'Tienda' ? 'Tienda' : 'en Barra' }}</span>
-                <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-emerald-500 tracking-tight">
-                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span><span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
+            <!-- Card 2: Efectivo en Mano en Barra / Tienda -->
+            <div class="notoria-card p-4 sm:p-5 rounded-2xl notoria-border shadow-sm flex flex-col justify-between hover:border-emerald-500/40 transition-colors">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
+                        Efectivo {{ $selectedBar === 'Tienda' ? 'Tienda' : 'en Barra' }}
+                    </span>
+                    <span class="text-[11px] font-black px-2 py-0.5 rounded-lg notoria-subtile text-emerald-600 dark:text-emerald-400 shrink-0">
+                        Caja Física
+                    </span>
                 </div>
-                <p class="text-[10px] sm:text-[11px] theme-text-muted mt-1 font-sans">
-                    Dinero físico en caja
-                </p>
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-emerald-500 tracking-tight flex items-baseline gap-1">
+                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                    <span id="header-bar-cash">{{ number_format($barCashRemaining, 2) }}</span>
+                </div>
+                <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-sans">
+                    <span>Dinero físico en caja</span>
+                    <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">En Mano</span>
+                </div>
             </div>
 
-            <!-- En QR (YASTA / YAPE) -->
-            <div class="notoria-card p-3.5 sm:p-5 shadow-sm flex flex-col justify-between">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs font-black theme-text-secondary uppercase tracking-wider">Cobrado QR</span>
-                    <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[10px] font-bold text-blue-500 hover:underline">Ver QR &rarr;</a>
+            <!-- Card 3: En QR (YASTA / YAPE) -->
+            <div class="notoria-card p-4 sm:p-5 rounded-2xl notoria-border shadow-sm flex flex-col justify-between hover:border-blue-500/40 transition-colors">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
+                        Cobrado QR
+                    </span>
+                    <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" class="text-[11px] font-bold px-2 py-0.5 rounded-lg notoria-subtile text-blue-600 dark:text-blue-400 hover:border-blue-500 transition-colors shrink-0">
+                        Ver QR &rarr;
+                    </a>
                 </div>
-                <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-blue-500 tracking-tight">
-                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('qr_amount') : $barTotalQr, 2) }}
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-blue-500 tracking-tight flex items-baseline gap-1">
+                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                    <span>{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('qr_amount') : $barTotalQr, 2) }}</span>
                 </div>
-                <p class="text-[10px] sm:text-[11px] theme-text-muted mt-1 font-mono truncate">
+                <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-mono">
                     @if($selectedBar === 'Tienda')
-                        Despachos cobrados con QR
+                        <span>Despachos Tienda</span>
+                        <span class="font-bold theme-text-primary">QR</span>
                     @else
-                        YASTA: {{ number_format($barTotalQrYasta, 0) }} • YAPE: {{ number_format($barTotalQrYape, 0) }}
+                        <span>YASTA: {{ number_format($barTotalQrYasta, 0) }}</span>
+                        <span class="font-bold theme-text-primary">YAPE: {{ number_format($barTotalQrYape, 0) }}</span>
                     @endif
-                </p>
+                </div>
             </div>
 
-            <!-- En Tarjetas POS -->
-            <div class="notoria-card p-3.5 sm:p-5 shadow-sm flex flex-col justify-between">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs font-black theme-text-secondary uppercase tracking-wider">Tarjetas (POS)</span>
-                    <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[10px] font-bold text-purple-500 hover:underline">Ver POS &rarr;</a>
+            <!-- Card 4: En Tarjetas POS -->
+            <div class="notoria-card p-4 sm:p-5 rounded-2xl notoria-border shadow-sm flex flex-col justify-between hover:border-purple-500/40 transition-colors">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-black theme-text-secondary uppercase tracking-wider font-sans truncate">
+                        Tarjetas (POS)
+                    </span>
+                    <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" class="text-[11px] font-bold px-2 py-0.5 rounded-lg notoria-subtile text-purple-600 dark:text-purple-400 hover:border-purple-500 transition-colors shrink-0">
+                        Ver POS &rarr;
+                    </a>
                 </div>
-                <div class="mt-2 text-xl sm:text-2xl font-black font-mono text-purple-500 tracking-tight">
-                    <span class="text-xs sm:text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('card_amount') : $barTotalCard, 2) }}
+                <div class="my-3 text-2xl sm:text-3xl font-black font-mono text-purple-500 tracking-tight flex items-baseline gap-1">
+                    <span class="text-sm font-sans font-bold opacity-80">Bs.</span>
+                    <span>{{ number_format($selectedBar === 'Tienda' ? $storeSales->sum('card_amount') : $barTotalCard, 2) }}</span>
                 </div>
-                <p class="text-[10px] sm:text-[11px] theme-text-muted mt-1 font-mono truncate">
+                <div class="pt-2.5 border-t notoria-border flex items-center justify-between text-xs theme-text-secondary font-mono">
                     @if($selectedBar === 'Tienda')
-                        Despachos cobrados con POS
+                        <span>Despachos Tienda</span>
+                        <span class="font-bold theme-text-primary">POS</span>
                     @else
-                        Neto: Bs. {{ number_format($barTotalCardNet, 2) }}
+                        <span>Neto acreditado</span>
+                        <span class="font-bold theme-text-primary">Bs. {{ number_format($barTotalCardNet, 2) }}</span>
                     @endif
-                </p>
+                </div>
             </div>
         </div>
 
@@ -732,7 +758,7 @@
                                                 <button type="button" 
                                                         onclick="openSpecialModal({{ $sale->id }})" 
                                                         id="btn-special-{{ $sale->id }}"
-                                                        class="px-2 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border {{ $hasSpecials ? 'bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white' }}">
+                                                        class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all inline-flex items-center justify-center gap-1 cursor-pointer {{ $hasSpecials ? 'btn-special-active' : 'btn-special-empty' }}">
                                                     <span id="badge-special-{{ $sale->id }}">{{ $badgeText }}</span>
                                                 </button>
                                             @elseif($isMixer)
@@ -832,69 +858,69 @@
                 </div>
 
                 <!-- Guardarropa y Snacks (Para el Cierre de Caja) -->
-                <div class="p-4 sm:p-5 rounded-2xl theme-card border theme-border space-y-3">
-                    <div class="flex items-center justify-between border-b theme-border pb-2.5">
+                <div class="p-4 sm:p-5 rounded-2xl notoria-card notoria-border space-y-3 shadow-sm">
+                    <div class="flex items-center justify-between border-b notoria-border pb-2.5">
                         <div>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">Ingresos Adicionales de Tienda</h3>
-                            <p class="text-[11px] text-zinc-400">Guardarropa y snacks recaudados durante la noche.</p>
+                            <h3 class="text-xs font-bold theme-text-primary uppercase tracking-wider font-sans">Ingresos Adicionales de Tienda</h3>
+                            <p class="text-xs theme-text-secondary">Guardarropa y snacks recaudados durante la noche.</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
-                            <label class="text-[11px] font-bold text-zinc-300 uppercase tracking-wider block">Guardarropa (Bs.):</label>
+                        <div class="p-3.5 rounded-xl notoria-subtile space-y-1.5">
+                            <label class="text-xs font-bold theme-text-secondary uppercase tracking-wider block">Guardarropa (Bs.):</label>
                             <div class="flex items-center gap-2">
-                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                <span class="theme-text-muted font-mono text-xs">Bs.</span>
                                 <input type="number" 
                                        step="0.5" 
                                        min="0"
                                        name="guardarropa_amount" 
                                        value="{{ $closing->total_guardarropa ?? 0 }}"
                                        oninput="window.queueSalesAutosave?.()"
-                                       class="w-full h-9 rounded-xl bg-black border border-zinc-800 px-3 font-mono font-bold text-sm text-white focus:outline-none focus:border-[#F5B81C]">
+                                       class="w-full h-10 rounded-xl notoria-input px-3 font-mono font-bold text-sm theme-text-primary focus:outline-none focus:border-[#F5B81C]">
                             </div>
                         </div>
-                        <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
-                            <label class="text-[11px] font-bold text-zinc-300 uppercase tracking-wider block">Snacks / Alimentos (Bs.):</label>
+                        <div class="p-3.5 rounded-xl notoria-subtile space-y-1.5">
+                            <label class="text-xs font-bold theme-text-secondary uppercase tracking-wider block">Snacks / Alimentos (Bs.):</label>
                             <div class="flex items-center gap-2">
-                                <span class="text-zinc-500 font-mono text-xs">Bs.</span>
+                                <span class="theme-text-muted font-mono text-xs">Bs.</span>
                                 <input type="number" 
                                        step="0.5" 
                                        min="0"
                                        name="snacks_amount" 
                                        value="{{ $closing->total_snacks ?? 0 }}"
                                        oninput="window.queueSalesAutosave?.()"
-                                       class="w-full h-9 rounded-xl bg-black border border-zinc-800 px-3 font-mono font-bold text-sm text-white focus:outline-none focus:border-[#F5B81C]">
+                                       class="w-full h-10 rounded-xl notoria-input px-3 font-mono font-bold text-sm theme-text-primary focus:outline-none focus:border-[#F5B81C]">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Botón Inferior de Guardar -->
-                <div class="p-4 rounded-2xl theme-card border theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div class="flex items-center gap-3 w-full sm:w-auto">
-                        <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <div class="p-4 sm:p-5 rounded-2xl notoria-card notoria-border shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5 w-full sm:w-auto">
+                        <div class="w-12 h-12 rounded-2xl bg-[#F5B81C]/20 border border-[#F5B81C]/40 flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
                         <div>
-                            <span class="text-xs text-zinc-400 block font-normal">Total Ganancia Tienda:</span>
-                            <span class="text-lg font-bold font-mono text-white" id="footer-tienda-grand-total">
+                            <span class="text-xs font-bold theme-text-secondary uppercase tracking-wider block">Total Ganancia Tienda:</span>
+                            <span class="text-2xl sm:text-3xl font-black font-mono text-[#F5B81C] tracking-tight" id="footer-tienda-grand-total">
                                 Bs. {{ number_format($grandTotalBar, 2) }}
                             </span>
                         </div>
                     </div>
 
                     @if($session->isOpen())
-                        <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-2 dilemo-btn cursor-pointer shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                            <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                             </svg>
                             <span>Guardar Ventas Tienda</span>
                         </button>
                     @else
-                        <div class="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-semibold flex items-center gap-2 w-full sm:w-auto justify-center">
-                            <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="px-4 py-2.5 rounded-xl notoria-subtile theme-text-muted text-xs font-bold flex items-center gap-2 w-full sm:w-auto justify-center">
+                            <svg class="w-4 h-4 theme-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                             </svg>
@@ -1032,7 +1058,7 @@
                                             <button type="button" 
                                                     onclick="openSpecialModal({{ $sale->id }})" 
                                                     id="btn-special-{{ $sale->id }}"
-                                                    class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border {{ $hasSpecials ? 'bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white' }}">
+                                                    class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all inline-flex items-center justify-center gap-1 cursor-pointer {{ $hasSpecials ? 'btn-special-active' : 'btn-special-empty' }}">
                                                 <span id="badge-special-{{ $sale->id }}">{{ $badgeText }}</span>
                                             </button>
                                         </td>
@@ -1312,50 +1338,76 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     
                     <!-- 1. TABLA COBROS QR EN ESTA BARRA -->
-                    <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                        <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
-                            <div>
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
-                                    Cobros QR en {{ $selectedBar }}
-                                </h3>
-                                <p class="text-[11px] text-zinc-400">Transferencias YASTA & YAPE</p>
+                    <div class="rounded-2xl notoria-card notoria-border shadow-md overflow-hidden">
+                        <div class="p-4 sm:p-5 notoria-card-header flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect width="6" height="6" x="3" y="3" rx="1"/>
+                                        <rect width="6" height="6" x="15" y="3" rx="1"/>
+                                        <rect width="6" height="6" x="3" y="15" rx="1"/>
+                                        <path d="M15 15h2v2h-2zM19 19h2v2h-2zM15 19h2v2h-2zM19 15h2v2h-2z"/>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider font-mono truncate">
+                                        Cobros QR en {{ $selectedBar }}
+                                    </h3>
+                                    <p class="text-[11px] text-zinc-300 font-sans">Transferencias directas YASTA & YAPE</p>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-xs font-mono font-bold text-blue-400">
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <span class="text-sm sm:text-base font-mono font-black text-cyan-300">
                                     Bs. {{ number_format($barTotalQr, 2) }}
                                 </span>
                                 <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                                   class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-blue-400 hover:text-white transition-all">
-                                    Ver QR &rarr;
+                                   class="px-2.5 py-1 text-xs font-bold rounded-lg notoria-subtile text-cyan-300 hover:text-white hover:border-cyan-400 transition-all flex items-center gap-1">
+                                    <span>Ver QR</span>
+                                    <span>&rarr;</span>
                                 </a>
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        <div class="overflow-x-auto max-h-64 overflow-y-auto">
                             <table class="w-full text-xs text-left border-collapse">
-                                <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
+                                <thead class="notoria-card-header text-white font-mono uppercase text-xs tracking-wider border-b notoria-border sticky top-0 z-10">
                                     <tr>
-                                        <th class="px-4 py-2.5">Cobrante</th>
-                                        <th class="px-3 py-2.5 text-center">App</th>
-                                        <th class="px-4 py-2.5">Ref / Comprobante</th>
-                                        <th class="px-4 py-2.5 text-right">Monto (Bs.)</th>
+                                        <th class="px-4 py-3">Cobrante</th>
+                                        <th class="px-3 py-3 text-center">App Bancaria</th>
+                                        <th class="px-4 py-3">Ref / Comprobante</th>
+                                        <th class="px-4 py-3 text-right">Monto (Bs.)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y theme-border font-sans">
+                                <tbody class="divide-y notoria-border font-sans">
                                     @forelse($barQrPayments as $qr)
-                                        <tr class="hover:bg-zinc-900/30">
-                                            <td class="px-4 py-2 text-zinc-200 font-medium">{{ $qr->operator_name ?? '—' }}</td>
-                                            <td class="px-3 py-2 text-center">
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-zinc-300">
-                                                    {{ $qr->bank_app }}
-                                                </span>
+                                        @php
+                                            $appUpper = strtoupper(trim($qr->bank_app ?? ''));
+                                            $isYasta = str_contains($appUpper, 'YASTA');
+                                            $isYape = str_contains($appUpper, 'YAPE');
+                                        @endphp
+                                        <tr class="hover:bg-zinc-500/5 transition-colors">
+                                            <td class="px-4 py-2.5 theme-text-primary font-bold text-xs uppercase">{{ $qr->operator_name ?? '—' }}</td>
+                                            <td class="px-3 py-2.5 text-center">
+                                                @if($isYasta)
+                                                    <span class="badge-qr-yasta inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-black tracking-wider uppercase shadow-xs">
+                                                        YASTA
+                                                    </span>
+                                                @elseif($isYape)
+                                                    <span class="badge-qr-yape inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-black tracking-wider uppercase shadow-xs">
+                                                        YAPE
+                                                    </span>
+                                                @else
+                                                    <span class="notoria-subtile inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-bold theme-text-secondary uppercase">
+                                                        {{ $qr->bank_app }}
+                                                    </span>
+                                                @endif
                                             </td>
-                                            <td class="px-4 py-2 text-zinc-400 text-[11px] truncate max-w-[120px] font-mono">{{ $qr->reference_code ?? '—' }}</td>
-                                            <td class="px-4 py-2 text-right font-bold font-mono text-blue-400">Bs. {{ number_format($qr->amount, 2) }}</td>
+                                            <td class="px-4 py-2.5 theme-text-muted text-xs truncate max-w-[130px] font-mono">{{ $qr->reference_code ?? '—' }}</td>
+                                            <td class="px-4 py-2.5 text-right font-black font-mono text-sm text-cyan-600 dark:text-cyan-400">Bs. {{ number_format($qr->amount, 2) }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay cobros QR registrados para esta barra.</td>
+                                            <td colspan="4" class="px-4 py-8 text-center theme-text-muted text-xs font-medium">No hay cobros QR registrados para esta barra.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -1364,46 +1416,59 @@
                     </div>
 
                     <!-- 2. TABLA TARJETAS POS EN ESTA BARRA -->
-                    <div class="rounded-2xl theme-card border theme-border overflow-hidden">
-                        <div class="px-4 py-3 bg-zinc-950 border-b theme-border flex items-center justify-between">
-                            <div>
-                                <h3 class="text-xs font-bold text-white uppercase tracking-wider font-sans">
-                                    Pagos con Tarjeta (POS) en {{ $selectedBar }}
-                                </h3>
-                                <p class="text-[11px] text-zinc-400">Facturas y cobro con tarjeta</p>
+                    <div class="rounded-2xl notoria-card notoria-border shadow-md overflow-hidden">
+                        <div class="p-4 sm:p-5 notoria-card-header flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect width="20" height="14" x="2" y="5" rx="2"/>
+                                        <line x1="2" x2="22" y1="10" y2="10"/>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider font-mono truncate">
+                                        Tarjetas (POS) en {{ $selectedBar }}
+                                    </h3>
+                                    <p class="text-[11px] text-zinc-300 font-sans">Cobros procesados con terminal POS</p>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-xs font-mono font-bold text-purple-400">
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <span class="text-sm sm:text-base font-mono font-black text-purple-300">
                                     Bs. {{ number_format($barTotalCard, 2) }}
                                 </span>
                                 <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                                   class="px-2.5 py-1 text-[10px] font-semibold rounded-lg bg-zinc-900 border border-zinc-800 text-purple-400 hover:text-white transition-all">
-                                    Ver POS &rarr;
+                                   class="px-2.5 py-1 text-xs font-bold rounded-lg notoria-subtile text-purple-300 hover:text-white hover:border-purple-400 transition-all flex items-center gap-1">
+                                    <span>Ver POS</span>
+                                    <span>&rarr;</span>
                                 </a>
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        <div class="overflow-x-auto max-h-64 overflow-y-auto">
                             <table class="w-full text-xs text-left border-collapse">
-                                <thead class="bg-zinc-950 border-b theme-border text-zinc-400 uppercase text-[10px] tracking-wider sticky top-0 font-semibold">
+                                <thead class="notoria-card-header text-white font-mono uppercase text-xs tracking-wider border-b notoria-border sticky top-0 z-10">
                                     <tr>
-                                        <th class="px-4 py-2.5 text-center"># Factura</th>
-                                        <th class="px-4 py-2.5">Detalle</th>
-                                        <th class="px-4 py-2.5 text-right">Comisión</th>
-                                        <th class="px-4 py-2.5 text-right">Monto Bruto</th>
+                                        <th class="px-4 py-3 text-center"># Factura</th>
+                                        <th class="px-4 py-3">Detalle</th>
+                                        <th class="px-4 py-3 text-right">Comisión</th>
+                                        <th class="px-4 py-3 text-right">Monto Bruto</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y theme-border font-sans">
+                                <tbody class="divide-y notoria-border font-sans">
                                     @forelse($barCardInvoices as $inv)
-                                        <tr class="hover:bg-zinc-900/30">
-                                            <td class="px-4 py-2 text-center text-zinc-400 font-mono font-bold">#{{ $inv->correlative_num }}</td>
-                                            <td class="px-4 py-2 text-zinc-300 text-[11px] truncate max-w-[140px]">{{ $inv->notes ?? 'Pago Tarjeta POS' }}</td>
-                                            <td class="px-4 py-2 text-right text-zinc-500 text-[11px] font-mono">- Bs. {{ number_format($inv->commission_amount, 2) }}</td>
-                                            <td class="px-4 py-2 text-right font-bold font-mono text-purple-400">Bs. {{ number_format($inv->amount, 2) }}</td>
+                                        <tr class="hover:bg-zinc-500/5 transition-colors">
+                                            <td class="px-4 py-2.5 text-center">
+                                                <span class="px-2 py-0.5 rounded-md notoria-subtile font-mono font-bold text-xs theme-text-primary">
+                                                    #{{ $inv->correlative_num }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-2.5 theme-text-secondary text-xs truncate max-w-[140px]">{{ $inv->notes ?? 'Pago Tarjeta POS' }}</td>
+                                            <td class="px-4 py-2.5 text-right text-rose-500 text-xs font-mono font-bold">- Bs. {{ number_format($inv->commission_amount, 2) }}</td>
+                                            <td class="px-4 py-2.5 text-right font-black font-mono text-sm text-purple-600 dark:text-purple-400">Bs. {{ number_format($inv->amount, 2) }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="px-4 py-6 text-center text-zinc-500 text-xs">No hay pagos con tarjeta registrados para esta barra.</td>
+                                            <td colspan="4" class="px-4 py-8 text-center theme-text-muted text-xs font-medium">No hay pagos con tarjeta registrados para esta barra.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -1413,32 +1478,32 @@
 
                 </div>
 
-                <!-- Pie de Formulario Estático con Guardado -->
-                <div class="p-4 rounded-2xl theme-card border theme-border flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div class="flex items-center gap-3 w-full sm:w-auto">
-                        <div class="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-[#F5B81C] shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <!-- Pie de Formulario Estático con Guardado (Card Notoria) -->
+                <div class="p-4 sm:p-5 rounded-2xl notoria-card notoria-border shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5 w-full sm:w-auto">
+                        <div class="w-12 h-12 rounded-2xl bg-[#F5B81C]/20 border border-[#F5B81C]/40 flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
                         <div>
-                            <span class="text-xs text-zinc-400 block font-normal">Total Bebidas Liquidado en {{ $selectedBar }}:</span>
-                            <span class="text-lg font-bold font-mono text-white" id="footer-grand-total">
+                            <span class="text-xs font-bold theme-text-secondary uppercase tracking-wider block">Total Liquidado en {{ $selectedBar }}:</span>
+                            <span class="text-2xl sm:text-3xl font-black font-mono text-[#F5B81C] tracking-tight" id="footer-grand-total">
                                 Bs. {{ number_format($grandTotalBar, 2) }}
                             </span>
                         </div>
                     </div>
 
                     @if($session->isOpen())
-                        <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#F5B81C] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#e5ac18] transition-all flex items-center justify-center gap-2 dilemo-btn cursor-pointer shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                            <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                             </svg>
                             <span>Guardar Cambios de {{ $selectedBar }}</span>
                         </button>
                     @else
-                        <div class="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-400 text-xs font-semibold flex items-center gap-2 w-full sm:w-auto justify-center">
-                            <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="px-4 py-2.5 rounded-xl notoria-subtile theme-text-muted text-xs font-bold flex items-center gap-2 w-full sm:w-auto justify-center">
+                            <svg class="w-4 h-4 theme-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                             </svg>
@@ -1576,10 +1641,10 @@
 
             if (badgeParts.length > 0) {
                 badgeEl.textContent = badgeParts.join(', ');
-                btnEl.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border bg-zinc-900 text-[#F5B81C] border-[#F5B81C]/50';
+                btnEl.className = 'btn-special-active px-3 py-1.5 rounded-xl text-xs font-black transition-all inline-flex items-center justify-center gap-1 cursor-pointer';
             } else {
                 badgeEl.textContent = '+ Especial';
-                btnEl.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1 cursor-pointer border bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white';
+                btnEl.className = 'btn-special-empty px-3 py-1.5 rounded-xl text-xs font-bold transition-all inline-flex items-center justify-center gap-1 cursor-pointer';
             }
 
             closeSpecialModal();

@@ -750,20 +750,47 @@ html:not(.dark) dialog {
     color: var(--text-primary) !important;
 }
 
-/* Salvaguarda de botones oscuros: si un botón conserva fondo oscuro, su texto SIEMPRE debe ser blanco */
-html:not(.dark) button.bg-zinc-900,
-html:not(.dark) button.bg-zinc-900 *,
-html:not(.dark) button.bg-zinc-950,
-html:not(.dark) button.bg-zinc-950 *,
-html:not(.dark) button.bg-black,
-html:not(.dark) button.bg-black *,
-html.light button.bg-zinc-900,
-html.light button.bg-zinc-900 *,
-html.light button.bg-zinc-950,
-html.light button.bg-zinc-950 *,
-html.light button.bg-black,
-html.light button.bg-black * {
-    color: #ffffff !important;
+/* Botones de Mezclador Especial (+ Especial) en Ventas por Barra */
+.btn-special-empty {
+    background-color: var(--card-subtile-bg) !important;
+    border: 1.5px solid var(--card-subtile-border) !important;
+    color: var(--text-secondary) !important;
+}
+.btn-special-empty:hover {
+    border-color: #F5B81C !important;
+    color: var(--text-primary) !important;
+}
+.btn-special-active {
+    background-color: rgba(245, 184, 28, 0.15) !important;
+    border: 1.5px solid rgba(245, 184, 28, 0.6) !important;
+    color: #F5B81C !important;
+}
+.btn-special-active:hover {
+    background-color: rgba(245, 184, 28, 0.25) !important;
+}
+
+/* Badges oficiales de Bancos QR (YASTA celeste agua, YAPE morado) */
+.badge-qr-yasta {
+    background-color: #cffafe !important;
+    border: 1px solid #67e8f9 !important;
+    color: #0e7490 !important;
+}
+html.dark .badge-qr-yasta,
+html:not(.light) .badge-qr-yasta {
+    background-color: rgba(6, 182, 212, 0.2) !important;
+    border: 1px solid rgba(6, 182, 212, 0.5) !important;
+    color: #67e8f9 !important;
+}
+.badge-qr-yape {
+    background-color: #f3e8ff !important;
+    border: 1px solid #d8b4fe !important;
+    color: #6b21a8 !important;
+}
+html.dark .badge-qr-yape,
+html:not(.light) .badge-qr-yape {
+    background-color: rgba(168, 85, 247, 0.2) !important;
+    border: 1px solid rgba(168, 85, 247, 0.5) !important;
+    color: #d8b4fe !important;
 }
 
 /* Ventas por Barra: Diferenciación estricta entre sticky cabecera y sticky filas */
