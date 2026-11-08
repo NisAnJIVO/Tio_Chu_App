@@ -527,10 +527,10 @@
 
         <!-- MODAL PAGO DE CERVEZA -->
         <div id="beer-payment-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-xs px-4">
-            <div class="w-full max-w-md rounded-xl border border-zinc-800 bg-[#09090b] p-6 shadow-2xl">
-                <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
-                    <h3 class="text-sm font-black uppercase tracking-wider text-white">Registrar Pago de Cerveza</h3>
-                    <button type="button" data-close-beer-modal class="text-zinc-400 hover:text-white text-lg font-bold">&times;</button>
+            <div class="w-full max-w-md rounded-2xl notoria-card p-6 shadow-2xl notoria-border">
+                <div class="flex items-center justify-between pb-3 border-b notoria-border">
+                    <h3 class="text-sm font-black uppercase tracking-wider theme-text-primary">Registrar Pago de Cerveza</h3>
+                    <button type="button" data-close-beer-modal class="theme-text-muted hover:theme-text-primary text-xl font-bold cursor-pointer transition-colors">&times;</button>
                 </div>
 
                 <form method="POST" action="{{ route('beerPayments.store') }}" class="mt-4 space-y-4">
@@ -538,36 +538,36 @@
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
                     <div>
-                        <label for="beer-payment-method" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Método de pago</label>
-                        <select id="beer-payment-method" name="payment_method" class="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-white font-bold focus:border-[#F5B81C] focus:outline-none">
-                            <option value="efectivo">Efectivo de caja</option>
-                            <option value="qr">Pago por QR</option>
+                        <label for="beer-payment-method" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary mb-1.5">Método de pago</label>
+                        <select id="beer-payment-method" name="payment_method" class="w-full rounded-xl notoria-input px-3.5 py-2.5 text-sm theme-text-primary font-bold focus:border-[#F5B81C] focus:outline-none cursor-pointer">
+                            <option value="efectivo" class="bg-slate-900 text-white">Efectivo de caja</option>
+                            <option value="qr" class="bg-slate-900 text-white">Pago por QR</option>
                         </select>
                     </div>
 
                     <div id="beer-payment-qr-provider" class="hidden">
-                        <label for="beer-qr-provider" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Aplicación Bancaria QR</label>
-                        <select id="beer-qr-provider" name="qr_provider" class="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-white font-bold focus:border-[#F5B81C] focus:outline-none">
-                            <option value="YAPE">YAPE (Banco BCP)</option>
-                            <option value="YASTA">YASTA (Banco Unión)</option>
+                        <label for="beer-qr-provider" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary mb-1.5">Aplicación Bancaria QR</label>
+                        <select id="beer-qr-provider" name="qr_provider" class="w-full rounded-xl notoria-input px-3.5 py-2.5 text-sm theme-text-primary font-bold focus:border-[#F5B81C] focus:outline-none cursor-pointer">
+                            <option value="YAPE" class="bg-slate-900 text-white">YAPE (Banco BCP)</option>
+                            <option value="YASTA" class="bg-slate-900 text-white">YASTA (Banco Unión)</option>
                         </select>
                     </div>
 
                     <div>
-                        <label for="beer-payment-amount" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Importe (Bs.)</label>
-                        <input id="beer-payment-amount" type="number" name="amount" min="0.01" step="0.01" required class="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-white font-mono font-bold focus:border-[#F5B81C] focus:outline-none" placeholder="0.00">
+                        <label for="beer-payment-amount" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary mb-1.5">Importe (Bs.)</label>
+                        <input id="beer-payment-amount" type="number" name="amount" min="0.01" step="0.01" required class="w-full rounded-xl notoria-input px-3.5 py-2.5 text-sm theme-text-primary font-mono font-bold focus:border-[#F5B81C] focus:outline-none" placeholder="0.00">
                     </div>
 
                     <div>
-                        <label for="beer-payment-notes" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Observación / Detalle</label>
-                        <input id="beer-payment-notes" type="text" name="notes" maxlength="255" class="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-white focus:border-[#F5B81C] focus:outline-none" placeholder="Ej: reposición de cerveza Huari / Paceña">
+                        <label for="beer-payment-notes" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary mb-1.5">Observación / Detalle</label>
+                        <input id="beer-payment-notes" type="text" name="notes" maxlength="255" class="w-full rounded-xl notoria-input px-3.5 py-2.5 text-sm theme-text-primary focus:border-[#F5B81C] focus:outline-none placeholder-zinc-400" placeholder="Ej: reposición de cerveza Huari / Paceña">
                     </div>
 
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
-                        <button type="button" data-close-beer-modal class="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 hover:bg-zinc-800">
+                    <div class="flex items-center justify-end gap-2.5 pt-3 border-t notoria-border">
+                        <button type="button" data-close-beer-modal class="rounded-xl notoria-subtile px-4 py-2.5 text-xs sm:text-sm font-bold theme-text-secondary hover:theme-text-primary hover:border-zinc-400 transition-all cursor-pointer">
                             Cancelar
                         </button>
-                        <button type="submit" class="rounded-lg bg-[#F5B81C] text-black px-5 py-2 text-xs font-black hover:bg-[#e5ac18] shadow-sm">
+                        <button type="submit" class="rounded-xl bg-[#F5B81C] text-black px-5 py-2.5 text-xs sm:text-sm font-black hover:bg-[#e5ac18] shadow-sm transition-all cursor-pointer active:scale-95">
                             Guardar Pago
                         </button>
                     </div>
@@ -577,26 +577,26 @@
 
         <!-- MODAL ARQUEO FÍSICO DE EFECTIVO -->
         <div id="cash-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-xs px-4">
-            <div class="w-full max-w-md rounded-xl border border-zinc-800 bg-[#09090b] p-6 shadow-2xl">
-                <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
-                    <h3 class="text-sm font-black uppercase tracking-wider text-white">Arqueo Físico de Efectivo</h3>
-                    <button type="button" data-close-cash-modal class="text-zinc-400 hover:text-white text-lg font-bold">&times;</button>
+            <div class="w-full max-w-md rounded-2xl notoria-card p-6 shadow-2xl notoria-border">
+                <div class="flex items-center justify-between pb-3 border-b notoria-border">
+                    <h3 class="text-sm font-black uppercase tracking-wider theme-text-primary">Arqueo Físico de Efectivo</h3>
+                    <button type="button" data-close-cash-modal class="theme-text-muted hover:theme-text-primary text-xl font-bold cursor-pointer transition-colors">&times;</button>
                 </div>
 
                 <form method="POST" action="{{ route('cash.reported.update') }}" class="mt-4 space-y-4">
                     @csrf
                     <input type="hidden" name="night_session_id" value="{{ $session->id }}">
                     <div>
-                        <label for="reported-cash-amount" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Monto de Billetes en Mano (Bs.)</label>
-                        <input id="reported-cash-amount" type="number" name="reported_cash" min="0" step="0.01" value="{{ number_format($reportedCash, 2, '.', '') }}" required class="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-base text-white font-mono font-black focus:border-[#F5B81C] focus:outline-none" placeholder="0.00">
-                        <p class="text-[11px] text-zinc-400 mt-1">Conteo físico de billetes y monedas que entregó el cajero o encargado de barra.</p>
+                        <label for="reported-cash-amount" class="block text-xs font-bold uppercase tracking-wider theme-text-secondary mb-1.5">Monto de Billetes en Mano (Bs.)</label>
+                        <input id="reported-cash-amount" type="number" name="reported_cash" min="0" step="0.01" value="{{ number_format($reportedCash, 2, '.', '') }}" required class="w-full rounded-xl notoria-input px-3.5 py-2.5 text-base theme-text-primary font-mono font-black focus:border-[#F5B81C] focus:outline-none" placeholder="0.00">
+                        <p class="text-xs theme-text-muted mt-1.5">Conteo físico de billetes y monedas que entregó el cajero o encargado de barra.</p>
                     </div>
 
-                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
-                        <button type="button" data-close-cash-modal class="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-bold text-zinc-300 hover:bg-zinc-800">
+                    <div class="flex items-center justify-end gap-2.5 pt-3 border-t notoria-border">
+                        <button type="button" data-close-cash-modal class="rounded-xl notoria-subtile px-4 py-2.5 text-xs sm:text-sm font-bold theme-text-secondary hover:theme-text-primary hover:border-zinc-400 transition-all cursor-pointer">
                             Cancelar
                         </button>
-                        <button type="submit" class="rounded-lg bg-[#F5B81C] text-black px-5 py-2 text-xs font-black hover:bg-[#e5ac18] shadow-sm">
+                        <button type="submit" class="rounded-xl bg-[#F5B81C] text-black px-5 py-2.5 text-xs sm:text-sm font-black hover:bg-[#e5ac18] shadow-sm transition-all cursor-pointer active:scale-95">
                             Actualizar Arqueo
                         </button>
                     </div>

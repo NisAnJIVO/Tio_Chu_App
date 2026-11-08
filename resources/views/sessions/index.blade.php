@@ -379,30 +379,30 @@
          MODAL INTERACTIVO DE RESUMEN CONSOLIDADO
          ========================================== -->
     <div id="modal-consolidated-summary" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-5 backdrop-blur-sm overflow-y-auto">
-        <div class="p-4 sm:p-6 rounded-xl border border-zinc-800 bg-[#09090b] max-w-4xl w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-5 my-auto">
+        <div class="p-4 sm:p-6 rounded-2xl notoria-card notoria-border max-w-4xl w-full shadow-2xl max-h-[92vh] overflow-y-auto space-y-5 my-auto">
             
             <!-- Encabezado Modal -->
-            <div class="flex items-start justify-between border-b border-zinc-800 pb-3">
+            <div class="flex items-start justify-between border-b notoria-border pb-3">
                 <div>
-                    <span class="text-[10px] uppercase tracking-wider text-[#F5B81C] font-mono font-bold block">
+                    <span class="text-xs uppercase tracking-wider text-[#F5B81C] font-mono font-bold block">
                         Liquidación Multisesión • Tío Chu
                     </span>
-                    <h2 class="text-lg sm:text-xl font-bold text-white font-sans mt-0.5">
+                    <h2 class="text-lg sm:text-xl font-bold theme-text-primary font-sans mt-0.5">
                         Resumen Consolidado de Jornadas Nocturnas
                     </h2>
-                    <p class="text-xs text-zinc-400 mt-0.5" id="modal-consolidated-dates">
+                    <p class="text-xs theme-text-secondary mt-0.5" id="modal-consolidated-dates">
                         Cargando información...
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="goToPrintConsolidated()" title="Abrir versión para impresión"
-                            class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-200 hover:text-white flex items-center gap-1 cursor-pointer">
+                            class="px-3 py-1.5 rounded-xl notoria-subtile text-xs font-bold theme-text-primary hover:border-amber-500 flex items-center gap-1.5 cursor-pointer transition-all">
                         <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                         </svg>
                         <span class="hidden sm:inline">Imprimir Oficial</span>
                     </button>
-                    <button type="button" onclick="closeConsolidatedModal()" class="text-zinc-400 hover:text-white text-xl font-bold cursor-pointer p-1">&times;</button>
+                    <button type="button" onclick="closeConsolidatedModal()" class="theme-text-muted hover:theme-text-primary text-2xl font-bold cursor-pointer p-1 transition-colors leading-none">&times;</button>
                 </div>
             </div>
 
@@ -558,11 +558,11 @@
             </div>
 
             <!-- Footer Acciones -->
-            <div class="flex flex-col sm:flex-row justify-end gap-2 pt-3 border-t border-zinc-800">
-                <button type="button" onclick="closeConsolidatedModal()" class="px-4 py-2 rounded-xl text-xs text-zinc-400 font-semibold bg-zinc-950 border border-zinc-800 hover:text-white cursor-pointer w-full sm:w-auto">
+            <div class="flex flex-col sm:flex-row justify-end gap-2.5 pt-3 border-t notoria-border">
+                <button type="button" onclick="closeConsolidatedModal()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-zinc-400 cursor-pointer w-full sm:w-auto transition-all">
                     Cerrar
                 </button>
-                <button type="button" onclick="goToPrintConsolidated()" class="px-5 py-2.5 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer dilemo-btn w-full sm:w-auto flex items-center justify-center gap-1.5 shadow-md shadow-[#F5B81C]/10">
+                <button type="button" onclick="goToPrintConsolidated()" class="px-5 py-2.5 bg-[#F5B81C] text-black font-black text-xs sm:text-sm rounded-xl hover:bg-[#e5ac18] cursor-pointer w-full sm:w-auto flex items-center justify-center gap-1.5 shadow-md shadow-[#F5B81C]/10 transition-all active:scale-95">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>

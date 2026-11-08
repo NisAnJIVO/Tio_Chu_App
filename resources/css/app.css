@@ -741,6 +741,8 @@ html.light .bg-purple-600 * {
 /* Modales y Drawers en Modo Claro */
 html:not(.dark) #modal-add-special .theme-card,
 html:not(.dark) #modal-assign-special .theme-card,
+html:not(.dark) #beer-payment-modal .notoria-card,
+html:not(.dark) #cash-modal .notoria-card,
 html:not(.dark) .modal-content,
 html:not(.dark) dialog {
     background-color: var(--card-bg) !important;
@@ -748,10 +750,36 @@ html:not(.dark) dialog {
     color: var(--text-primary) !important;
 }
 
-/* Ventas por Barra en Modo Claro */
-html.light #sales-form .col-sticky-product {
+/* Salvaguarda de botones oscuros: si un botón conserva fondo oscuro, su texto SIEMPRE debe ser blanco */
+html:not(.dark) button.bg-zinc-900,
+html:not(.dark) button.bg-zinc-900 *,
+html:not(.dark) button.bg-zinc-950,
+html:not(.dark) button.bg-zinc-950 *,
+html:not(.dark) button.bg-black,
+html:not(.dark) button.bg-black *,
+html.light button.bg-zinc-900,
+html.light button.bg-zinc-900 *,
+html.light button.bg-zinc-950,
+html.light button.bg-zinc-950 *,
+html.light button.bg-black,
+html.light button.bg-black * {
+    color: #ffffff !important;
+}
+
+/* Ventas por Barra: Diferenciación estricta entre sticky cabecera y sticky filas */
+#sales-form thead th.col-sticky-product,
+html.light #sales-form thead th.col-sticky-product,
+html:not(.dark) #sales-form thead th.col-sticky-product {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+    z-index: 30 !important;
+}
+#sales-form tbody td.col-sticky-product,
+html.light #sales-form tbody td.col-sticky-product,
+html:not(.dark) #sales-form tbody td.col-sticky-product {
     background-color: var(--card-bg) !important;
     color: var(--text-primary) !important;
+    z-index: 20 !important;
 }
 html.light #sales-form .liquor-row,
 html.light #sales-form .mixer-row,

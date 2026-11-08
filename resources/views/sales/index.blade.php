@@ -244,13 +244,21 @@
 
     /* En PC (>= 768px): Columna de producto congelada sticky */
     @media (min-width: 768px) {
-        #sales-form .col-sticky-product {
+        #sales-form thead th.col-sticky-product {
+            position: sticky !important;
+            left: 0 !important;
+            z-index: 30 !important;
+            background-color: var(--table-header-bg) !important;
+            color: var(--table-header-text) !important;
+            box-shadow: 3px 0 8px -2px rgba(0,0,0,0.2) !important;
+        }
+        #sales-form tbody td.col-sticky-product {
             position: sticky !important;
             left: 0 !important;
             z-index: 20 !important;
             background-color: var(--card-bg) !important;
             color: var(--text-primary) !important;
-            box-shadow: 3px 0 8px -2px rgba(0,0,0,0.15) !important;
+            box-shadow: 3px 0 8px -2px rgba(0,0,0,0.12) !important;
         }
     }
 </style>
@@ -263,11 +271,8 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-3.5 sm:px-5 sm:py-3.5 rounded-xl notoria-card shadow-sm">
         <div>
             <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
-                Ventas por Barra & Combos
+                Ventas por Barra
             </h1>
-            <p class="text-xs theme-text-secondary mt-0.5">
-                Liquidación de combos, consumo de botellas y recaudación por punto de venta
-            </p>
         </div>
 
         <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full md:w-auto shrink-0">
@@ -434,102 +439,102 @@
         </div>
 
         <!-- Modal: Registrar Variante Especial en Catálogo -->
-        <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4">
-            <div class="theme-card p-4 sm:p-6 rounded-2xl border theme-border max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-                <div class="flex items-center justify-between border-b theme-border pb-3 mb-4">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider font-sans">Nueva Soda en Catálogo</h3>
-                    <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" class="text-zinc-400 hover:text-white text-base font-bold cursor-pointer">&times;</button>
+        <div id="modal-add-special" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
+            <div class="notoria-card p-4 sm:p-6 rounded-2xl notoria-border max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b notoria-border pb-3 mb-4">
+                    <h3 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">Nueva Soda en Catálogo</h3>
+                    <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" class="theme-text-muted hover:theme-text-primary text-xl font-bold cursor-pointer transition-colors">&times;</button>
                 </div>
-                <p class="text-xs text-zinc-400 mb-4">Define una soda especial para una categoría de tragos (ej: Sprite para Rones o Fernet).</p>
+                <p class="text-xs theme-text-secondary mb-4">Define una soda especial para una categoría de tragos (ej: Sprite para Rones o Fernet).</p>
                 
                 <form method="POST" action="{{ route('sales.specialMixers.store') }}" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                     @csrf
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-300 mb-1">Categoría del Trago</label>
-                        <select name="category" required class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                            <option value="" disabled selected class="bg-zinc-950">-- Seleccionar Categoría --</option>
+                        <label class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-1.5">Categoría del Trago</label>
+                        <select name="category" required class="w-full text-xs sm:text-sm rounded-xl px-3.5 py-2.5 notoria-input theme-text-primary font-bold focus:outline-none focus:border-[#F5B81C] cursor-pointer">
+                            <option value="" disabled selected class="bg-slate-900 text-white">-- Seleccionar Categoría --</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat }}" class="bg-zinc-950">{{ $cat }}</option>
+                                <option value="{{ $cat }}" class="bg-slate-900 text-white">{{ $cat }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-300 mb-1">Nombre de la Variante / Soda</label>
+                        <label class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-1.5">Nombre de la Variante / Soda</label>
                         <input type="text" name="mixer_name" placeholder="Ej: Sprite 2.0L, Aquarius Pera" required 
-                               class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C]">
+                               class="w-full text-xs sm:text-sm rounded-xl px-3.5 py-2.5 notoria-input theme-text-primary placeholder-zinc-400 focus:outline-none focus:border-[#F5B81C]">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-300 mb-1">Producto Mixer para Descuento en Barra</label>
-                        <select name="product_id" required class="w-full text-xs rounded-xl px-3 py-2 bg-zinc-950 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] cursor-pointer">
-                            <option value="" disabled selected class="bg-zinc-950">-- Seleccionar Soda / Mixer en Almacén --</option>
+                        <label class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-1.5">Producto Mixer para Descuento en Barra</label>
+                        <select name="product_id" required class="w-full text-xs sm:text-sm rounded-xl px-3.5 py-2.5 notoria-input theme-text-primary font-bold focus:outline-none focus:border-[#F5B81C] cursor-pointer">
+                            <option value="" disabled selected class="bg-slate-900 text-white">-- Seleccionar Soda / Mixer en Almacén --</option>
                             @foreach($allMixerProducts as $mix)
-                                <option value="{{ $mix->id }}" class="bg-zinc-950">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
+                                <option value="{{ $mix->id }}" class="bg-slate-900 text-white">{{ $mix->name }} (Bs. {{ number_format($mix->sale_price, 2) }})</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row justify-end gap-2 pt-3">
+                    <div class="flex flex-col sm:flex-row justify-end gap-2.5 pt-3 border-t notoria-border">
                         <button type="button" onclick="document.getElementById('modal-add-special').classList.add('hidden')" 
-                                class="px-4 py-2 rounded-xl text-xs text-zinc-400 font-semibold bg-zinc-950 border border-zinc-800 hover:text-white cursor-pointer w-full sm:w-auto">Cancelar</button>
-                        <button type="submit" class="px-5 py-2 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer dilemo-btn w-full sm:w-auto">Guardar en Catálogo</button>
+                                class="px-4 py-2.5 rounded-xl text-xs font-bold notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-zinc-400 transition-all cursor-pointer w-full sm:w-auto">Cancelar</button>
+                        <button type="submit" class="px-5 py-2.5 bg-[#F5B81C] text-black font-black text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer shadow-sm active:scale-95 w-full sm:w-auto">Guardar en Catálogo</button>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Modal: Asignar Mixers Especiales a la Fila de Venta -->
-        <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4">
-            <div class="theme-card p-4 sm:p-6 rounded-2xl border theme-border max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-                <div class="flex items-center justify-between border-b theme-border pb-3">
+        <div id="modal-assign-special" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
+            <div class="notoria-card p-4 sm:p-6 rounded-2xl notoria-border max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b notoria-border pb-3">
                     <div>
-                        <span class="text-[10px] uppercase tracking-wider text-[#F5B81C] font-bold block">Acompañamiento Alternativo</span>
-                        <h3 class="text-base font-bold text-white" id="modal-liquor-title">Licor</h3>
+                        <span class="text-xs uppercase tracking-wider text-[#F5B81C] font-black block">Acompañamiento Alternativo</span>
+                        <h3 class="text-base font-black theme-text-primary" id="modal-liquor-title">Licor</h3>
                     </div>
-                    <button type="button" onclick="closeSpecialModal()" class="text-zinc-400 hover:text-white text-lg font-bold cursor-pointer">&times;</button>
+                    <button type="button" onclick="closeSpecialModal()" class="theme-text-muted hover:theme-text-primary text-xl font-bold cursor-pointer transition-colors">&times;</button>
                 </div>
 
-                <div class="bg-zinc-950 rounded-xl p-3 border border-zinc-800 flex items-center justify-between text-xs">
+                <div class="notoria-subtile rounded-xl p-3 flex items-center justify-between text-xs sm:text-sm">
                     <div>
-                        <span class="text-zinc-400">Total Combos Vendidos:</span>
-                        <span class="font-bold text-white ml-1 text-sm font-mono" id="modal-total-combos">0</span>
+                        <span class="theme-text-secondary font-medium">Total Combos Vendidos:</span>
+                        <span class="font-black theme-text-primary ml-1 text-sm sm:text-base font-mono" id="modal-total-combos">0</span>
                     </div>
                     <div>
-                        <span class="text-zinc-400">Soda por Defecto:</span>
+                        <span class="theme-text-secondary font-medium">Soda por Defecto:</span>
                         <span class="font-bold text-[#F5B81C] ml-1" id="modal-default-mixer-name">-</span>
                     </div>
                 </div>
 
                 <div class="space-y-3 max-h-60 overflow-y-auto pr-1">
-                    <p class="text-[11px] text-zinc-400">
+                    <p class="text-xs theme-text-secondary">
                         Asigna cuántos combos salieron con un mixer alternativo (se restarán automáticamente de la soda por defecto):
                     </p>
                     
                     <div class="space-y-2">
                         @foreach($allMixerProducts as $mixer)
-                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-all gap-2">
-                                <span class="text-xs font-medium text-white flex-1 min-w-0 truncate">{{ $mixer->name }}</span>
+                            <div class="flex items-center justify-between p-2.5 rounded-xl notoria-subtile hover:border-zinc-400 transition-all gap-2">
+                                <span class="text-xs sm:text-sm font-bold theme-text-primary flex-1 min-w-0 truncate">{{ $mixer->name }}</span>
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <label class="text-[11px] text-zinc-400">Combos:</label>
+                                    <label class="text-xs theme-text-secondary font-semibold">Combos:</label>
                                     <input type="number" inputmode="numeric" min="0" value="0" 
                                            data-mixer-id="{{ $mixer->id }}" 
                                            data-mixer-name="{{ $mixer->name }}"
-                                           class="modal-special-qty w-16 h-9 text-center rounded-lg px-2 py-1 text-xs font-mono font-bold bg-black border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C]">
+                                           class="modal-special-qty w-16 h-9 text-center rounded-lg px-2 py-1 text-xs sm:text-sm font-mono font-bold notoria-input theme-text-primary focus:outline-none focus:border-[#F5B81C]">
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-between text-xs">
-                    <span class="text-zinc-300">Sodas por defecto restantes:</span>
-                    <span class="font-bold text-[#F5B81C] text-sm font-mono" id="modal-remaining-default">0</span>
+                <div class="p-3 notoria-subtile rounded-xl flex items-center justify-between text-xs sm:text-sm">
+                    <span class="theme-text-secondary font-semibold">Sodas por defecto restantes:</span>
+                    <span class="font-black text-[#F5B81C] text-sm sm:text-base font-mono" id="modal-remaining-default">0</span>
                 </div>
 
-                <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2 border-t theme-border">
-                    <button type="button" onclick="closeSpecialModal()" class="px-4 py-2 rounded-xl text-xs text-zinc-400 font-semibold bg-zinc-950 border border-zinc-800 hover:text-white cursor-pointer w-full sm:w-auto">Cancelar</button>
-                    <button type="button" onclick="saveSpecialModal()" class="px-5 py-2 bg-[#F5B81C] text-black font-bold text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer dilemo-btn w-full sm:w-auto">Listo / Aplicar</button>
+                <div class="flex flex-col sm:flex-row justify-end gap-2.5 pt-2 border-t notoria-border">
+                    <button type="button" onclick="closeSpecialModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-zinc-400 transition-all cursor-pointer w-full sm:w-auto">Cancelar</button>
+                    <button type="button" onclick="saveSpecialModal()" class="px-5 py-2.5 bg-[#F5B81C] text-black font-black text-xs rounded-xl hover:bg-[#e5ac18] cursor-pointer shadow-sm active:scale-95 w-full sm:w-auto">Listo / Aplicar</button>
                 </div>
             </div>
         </div>
@@ -612,15 +617,15 @@
                 <div class="rounded-2xl notoria-card border-0 md:border notoria-border overflow-hidden bg-transparent">
                     <div class="overflow-x-visible md:overflow-x-auto sales-table-wrapper">
                         <table class="w-full text-xs text-left border-collapse excel-table md:min-w-[750px]" id="table-tienda">
-                            <thead class="hidden md:table-header-group notoria-card-header text-white font-mono uppercase text-[11px] tracking-wider border-b notoria-border">
+                            <thead class="hidden md:table-header-group notoria-card-header text-white font-mono uppercase text-xs tracking-wider border-b notoria-border">
                                 <tr>
-                                    <th class="px-2.5 py-2.5 w-10 text-center col-num">N°</th>
-                                    <th class="px-3 py-2.5 col-product col-sticky-product">Bebida / Presentación</th>
-                                    <th class="px-3 py-2.5 w-32 border-l theme-border">Acompañamiento</th>
-                                    <th class="px-3 py-2.5 w-28 text-center border-l theme-border">Especial</th>
-                                    <th class="px-3 py-2.5 w-24 text-right border-l theme-border">Precio Venta (Bs.)</th>
-                                    <th class="px-3 py-2.5 w-28 text-center border-l theme-border font-bold text-[#F5B81C]">Unidades Vendidas</th>
-                                    <th class="px-3 py-2.5 w-28 text-right border-l theme-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
+                                    <th class="px-2.5 py-3 w-10 text-center col-num">N°</th>
+                                    <th class="px-3.5 py-3 col-product col-sticky-product">Bebida / Presentación</th>
+                                    <th class="px-3.5 py-3 w-32 border-l notoria-border">Acompañamiento</th>
+                                    <th class="px-3.5 py-3 w-28 text-center border-l notoria-border">Especial</th>
+                                    <th class="px-3.5 py-3 w-24 text-right border-l notoria-border">Precio Venta (Bs.)</th>
+                                    <th class="px-3.5 py-3 w-28 text-center border-l notoria-border font-bold text-[#F5B81C]">Unidades Vendidas</th>
+                                    <th class="px-3.5 py-3 w-28 text-right border-l notoria-border font-bold text-[#F5B81C]">Ganancia / Total (Bs.)</th>
                                 </tr>
                             </thead>
                             <tbody class="block md:table-row-group divide-y-0 md:divide-y theme-border font-sans space-y-3 md:space-y-0" id="tienda-tbody">
@@ -928,29 +933,29 @@
 
                     <div class="overflow-x-auto sales-table-wrapper">
                         <table class="w-full text-xs text-left border-collapse excel-table" id="table-liquors">
-                            <thead class="notoria-card-header text-white font-mono uppercase text-[11px] tracking-wider border-b notoria-border">
+                            <thead class="notoria-card-header text-white font-mono uppercase text-xs tracking-wider border-b notoria-border">
                                 <tr>
                                     <th class="px-3 py-3.5 w-8 text-center col-num">N°</th>
                                     <th class="px-4 py-3.5 col-product col-sticky-product">Licor / Presentación</th>
                                     <th class="px-4 py-3.5 col-mixer">Acompañamiento</th>
                                     <th class="px-3 py-3.5 text-center col-special">Especial</th>
-                                    <th class="px-2 py-3.5 w-16 text-center border-l notoria-border col-pkg">
+                                    <th class="px-2.5 py-3.5 w-16 text-center border-l notoria-border col-pkg">
                                         <div class="flex flex-col items-center">
-                                            <span class="text-zinc-200">Cajas</span>
-                                            <span class="text-[9px] text-zinc-300 lowercase">stock</span>
+                                            <span class="text-zinc-100 font-bold">Cajas</span>
+                                            <span class="text-[10px] text-zinc-300 font-semibold lowercase">stock</span>
                                         </div>
                                     </th>
-                                    <th class="px-2 py-3.5 w-16 text-center border-l notoria-border col-units">
+                                    <th class="px-2.5 py-3.5 w-16 text-center border-l notoria-border col-units">
                                         <div class="flex flex-col items-center">
-                                            <span class="text-zinc-200">Sueltas</span>
-                                            <span class="text-[9px] text-zinc-300 lowercase">stock</span>
+                                            <span class="text-zinc-100 font-bold">Sueltas</span>
+                                            <span class="text-[10px] text-zinc-300 font-semibold lowercase">stock</span>
                                         </div>
                                     </th>
                                     <th class="px-3 py-3.5 w-20 text-center border-l notoria-border col-totini">Total Inicial</th>
                                     <th class="px-3 py-3.5 w-24 text-center border-l notoria-border col-saldo">
                                         <div class="flex flex-col items-center text-[#F5B81C]">
                                             <span class="font-black">Saldo Cierre</span>
-                                            <span class="text-[9px] text-zinc-300 lowercase">conteo</span>
+                                            <span class="text-[10px] text-zinc-300 font-semibold lowercase">conteo</span>
                                         </div>
                                     </th>
                                     <th class="px-4 py-3.5 w-24 text-center border-l notoria-border font-black text-[#F5B81C] col-vendido">Combos Vendidos</th>
@@ -1142,27 +1147,27 @@
 
                     <div class="overflow-x-auto sales-table-wrapper">
                         <table class="w-full text-xs text-left border-collapse excel-table" id="table-mixers">
-                            <thead class="notoria-card-header text-white font-mono uppercase text-[11px] tracking-wider border-b notoria-border">
+                            <thead class="notoria-card-header text-white font-mono uppercase text-xs tracking-wider border-b notoria-border">
                                 <tr>
                                     <th class="px-3 py-3.5 w-8 text-center col-num">N°</th>
                                     <th class="px-4 py-3.5 col-product col-sticky-product">Mixer / Soda</th>
-                                    <th class="px-2 py-3.5 w-16 text-center border-l notoria-border col-pkg">
+                                    <th class="px-2.5 py-3.5 w-16 text-center border-l notoria-border col-pkg">
                                         <div class="flex flex-col items-center">
-                                            <span class="text-zinc-200">Cajas</span>
-                                            <span class="text-[9px] text-zinc-300 lowercase">stock</span>
+                                            <span class="text-zinc-100 font-bold">Cajas</span>
+                                            <span class="text-[10px] text-zinc-300 font-semibold lowercase">stock</span>
                                         </div>
                                     </th>
-                                    <th class="px-2 py-3.5 w-16 text-center border-l notoria-border col-units">
+                                    <th class="px-2.5 py-3.5 w-16 text-center border-l notoria-border col-units">
                                         <div class="flex flex-col items-center">
-                                            <span class="text-zinc-200">Sueltas</span>
-                                            <span class="text-[9px] text-zinc-300 lowercase">stock</span>
+                                            <span class="text-zinc-100 font-bold">Sueltas</span>
+                                            <span class="text-[10px] text-zinc-300 font-semibold lowercase">stock</span>
                                         </div>
                                     </th>
                                     <th class="px-3 py-3.5 w-20 text-center border-l notoria-border col-totini">Total Inicial</th>
                                     <th class="px-3 py-3.5 w-24 text-center border-l notoria-border col-saldo">
                                         <div class="flex flex-col items-center text-[#F5B81C]">
                                             <span class="font-black">Saldo Cierre</span>
-                                            <span class="text-[9px] text-zinc-300 lowercase">conteo</span>
+                                            <span class="text-[10px] text-zinc-300 font-semibold lowercase">conteo</span>
                                         </div>
                                     </th>
                                     <th class="px-4 py-3.5 w-20 text-center border-l notoria-border col-mixer-consumido">Consumidas</th>
