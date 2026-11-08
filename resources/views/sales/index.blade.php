@@ -1361,9 +1361,9 @@
                                     Bs. {{ number_format($barTotalQr, 2) }}
                                 </span>
                                 <a href="{{ route('qrs.index', ['session_id' => $session->id]) }}" 
-                                   class="px-2.5 py-1 text-xs font-bold rounded-lg notoria-subtile text-cyan-300 hover:text-white hover:border-cyan-400 transition-all flex items-center gap-1">
+                                   class="px-3 py-1.5 text-xs font-bold rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 hover:text-white transition-all flex items-center gap-1.5 shadow-sm">
                                     <span>Ver QR</span>
-                                    <span>&rarr;</span>
+                                    <span class="text-cyan-400">&rarr;</span>
                                 </a>
                             </div>
                         </div>
@@ -1437,9 +1437,9 @@
                                     Bs. {{ number_format($barTotalCard, 2) }}
                                 </span>
                                 <a href="{{ route('invoices.index', ['session_id' => $session->id]) }}" 
-                                   class="px-2.5 py-1 text-xs font-bold rounded-lg notoria-subtile text-purple-300 hover:text-white hover:border-purple-400 transition-all flex items-center gap-1">
+                                   class="px-3 py-1.5 text-xs font-bold rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 hover:bg-purple-500/30 hover:text-white transition-all flex items-center gap-1.5 shadow-sm">
                                     <span>Ver POS</span>
-                                    <span>&rarr;</span>
+                                    <span class="text-purple-400">&rarr;</span>
                                 </a>
                             </div>
                         </div>

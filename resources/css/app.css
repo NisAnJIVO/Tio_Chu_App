@@ -738,6 +738,45 @@ html.light .bg-purple-600 * {
     color: #ffffff !important;
 }
 
+/* Preservar acentos de color y botones dentro de .notoria-card-header en Modo Claro */
+.notoria-card-header .notoria-subtile,
+html.light .notoria-card-header .notoria-subtile,
+html:not(.dark) .notoria-card-header .notoria-subtile {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+.notoria-card-header .notoria-subtile:hover,
+html.light .notoria-card-header .notoria-subtile:hover,
+html:not(.dark) .notoria-card-header .notoria-subtile:hover {
+    background-color: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    color: #ffffff !important;
+}
+
+html:not(.dark) .notoria-card-header [class*="text-cyan-"],
+html.light .notoria-card-header [class*="text-cyan-"] {
+    color: #67e8f9 !important;
+}
+html:not(.dark) .notoria-card-header [class*="text-purple-"],
+html.light .notoria-card-header [class*="text-purple-"] {
+    color: #d8b4fe !important;
+}
+html:not(.dark) .notoria-card-header [class*="text-[#F5B81C]"],
+html.light .notoria-card-header [class*="text-[#F5B81C]"],
+html:not(.dark) .notoria-card-header .text-amber-400,
+html.light .notoria-card-header .text-amber-400 {
+    color: #F5B81C !important;
+}
+html:not(.dark) .notoria-card-header [class*="text-emerald-"],
+html.light .notoria-card-header [class*="text-emerald-"] {
+    color: #34d399 !important;
+}
+html:not(.dark) .notoria-card-header [class*="text-blue-"],
+html.light .notoria-card-header [class*="text-blue-"] {
+    color: #60a5fa !important;
+}
+
 /* Modales y Drawers en Modo Claro */
 html:not(.dark) #modal-add-special .theme-card,
 html:not(.dark) #modal-assign-special .theme-card,
