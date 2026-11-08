@@ -30,9 +30,6 @@
                 <h1 class="text-lg sm:text-xl font-black tracking-tight theme-text-primary font-sans">
                     Cobros por QR
                 </h1>
-                <p class="text-[11px] theme-text-secondary mt-0.5">
-                    Transferencias registradas por Yasta (Banco Unión) y Yape (Banco BCP)
-                </p>
             </div>
 
             @if($session)
@@ -194,15 +191,22 @@
         <!-- ========================================================
              3. FORMULARIO MINIMALISTA CON SWITCHES MODO IPHONE & LOGOS
              ======================================================== -->
-        <div class="p-5 notoria-card shadow-sm">
-            <div class="border-b notoria-border pb-3 mb-4 flex items-center justify-between">
-                <div>
-                    <h2 class="text-xs font-black theme-text-primary uppercase tracking-wider font-sans">
-                        Registrar Nuevo Cobro QR
-                    </h2>
-                    <p class="text-[11px] theme-text-secondary mt-0.5">
-                        Selecciona el punto de venta, la app y el mesero o bartender
-                    </p>
+        <div class="p-4 sm:p-5 notoria-card shadow-sm">
+            <div class="border-b notoria-border pb-3.5 mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-[#F5B81C]/15 border border-[#F5B81C]/50 flex items-center justify-center text-[#F5B81C] shadow-sm shrink-0">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="6" height="6" x="3" y="3" rx="1"/>
+                            <rect width="6" height="6" x="15" y="3" rx="1"/>
+                            <rect width="6" height="6" x="3" y="15" rx="1"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
+                            Registrar Nuevo Cobro QR
+                        </h2>
+                    </div>
                 </div>
             </div>
             
@@ -211,29 +215,29 @@
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end">
                     
                     <!-- 1. PUNTO DE VENTA (SWITCHES MODO IPHONE) -->
-                    <div class="md:col-span-4 space-y-1.5">
-                        <label class="block text-[11px] font-bold uppercase tracking-wider theme-text-secondary">
+                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5">
+                        <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Punto de Venta
                         </label>
-                        <div class="grid grid-cols-3 p-1 rounded-xl notoria-subtile text-xs gap-1">
-                            <label class="cursor-pointer">
+                        <div class="grid grid-cols-3 p-1 rounded-xl notoria-subtile gap-1 h-[48px] items-center">
+                            <label class="cursor-pointer h-full">
                                 <input type="radio" name="point_of_sale" value="Barra Principal" class="peer sr-only" checked>
-                                <div class="py-2 text-center rounded-lg font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-full flex items-center justify-center py-2 text-center rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Principal
                                 </div>
                             </label>
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer h-full">
                                 <input type="radio" name="point_of_sale" value="Tienda" class="peer sr-only">
-                                <div class="py-2 text-center rounded-lg font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-full flex items-center justify-center py-2 text-center rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Tienda
                                 </div>
                             </label>
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer h-full">
                                 <input type="radio" name="point_of_sale" value="Subte" class="peer sr-only">
-                                <div class="py-2 text-center rounded-lg font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-full flex items-center justify-center py-2 text-center rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Subte
                                 </div>
                             </label>
@@ -241,66 +245,66 @@
                     </div>
 
                     <!-- 2. APLICACIÓN BANCARIA (SWITCHES MODO IPHONE CON LOGOS) -->
-                    <div class="md:col-span-3 space-y-1.5">
-                        <label class="block text-[11px] font-bold uppercase tracking-wider theme-text-secondary">
+                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5">
+                        <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Aplicación
                         </label>
-                        <div class="grid grid-cols-2 p-1 rounded-xl notoria-subtile text-xs gap-1">
+                        <div class="grid grid-cols-2 p-1 rounded-xl notoria-subtile gap-1.5 h-[48px] items-center">
                             <!-- YASTA -->
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer h-full">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="py-1.5 px-2 flex items-center justify-center gap-2 rounded-lg font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
-                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-5 w-auto object-contain rounded">
+                                <div class="app-switch-yasta h-full flex items-center justify-center gap-2 px-2.5 rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all cursor-pointer">
+                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-6 sm:h-7 w-auto object-contain rounded shrink-0">
                                     <span class="tracking-wide">YASTA</span>
                                 </div>
                             </label>
                             <!-- YAPE -->
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer h-full">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="py-1.5 px-2 flex items-center justify-center gap-2 rounded-lg font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
-                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-5 w-auto object-contain rounded">
+                                <div class="app-switch-yape h-full flex items-center justify-center gap-2 px-2.5 rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all cursor-pointer">
+                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-6 sm:h-7 w-auto object-contain rounded shrink-0">
                                     <span class="tracking-wide">YAPE</span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- 3. COBRANTE (DROPDOWN PERSONALIZADO CARDS NOTORIAS) -->
-                    <div class="md:col-span-3 space-y-1.5 relative" id="cobrante-container">
-                        <label class="block text-[11px] font-bold uppercase tracking-wider theme-text-secondary">
+                    <!-- 3. COBRANTE (COMBOBOX DIRECTO ULTRA USABLE) -->
+                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5 relative" id="cobrante-container">
+                        <label for="cobrante-search-input" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Cobrante
                         </label>
                         <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
-                        
-                        <!-- Botón Trigger Personalizado -->
-                        <button type="button" 
-                                id="cobrante-trigger"
-                                onclick="toggleCobranteMenu()"
-                                class="w-full flex items-center justify-between text-xs font-bold rounded-xl px-3 py-2.5 notoria-input theme-text-primary hover:border-[#F5B81C] focus:outline-none transition-all cursor-pointer shadow-sm">
-                            <div class="flex items-center gap-2 truncate">
-                                <span id="cobrante-dot" class="w-2 h-2 rounded-full bg-zinc-400 shrink-0"></span>
-                                <span id="cobrante-display" class="truncate theme-text-secondary font-bold">Cobrante</span>
-                            </div>
-                            <svg id="cobrante-chevron" class="w-4 h-4 theme-text-muted transition-transform duration-200 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
 
-                        <!-- Ventana Desplegable Notoria Flotante -->
+                        <div class="relative flex items-center h-[48px]">
+                            <!-- Indicador / Avatar -->
+                            <div id="cobrante-avatar" class="absolute left-3 w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-muted pointer-events-none transition-colors shrink-0">
+                                <svg class="w-3.5 h-3.5 theme-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                            </div>
+
+                            <!-- Input directo con autocompletado y búsqueda -->
+                            <input type="text" 
+                                   id="cobrante-search-input" 
+                                   autocomplete="off" 
+                                   placeholder="Escribe o elige cobrante..."
+                                   class="w-full h-full text-sm font-bold notoria-input theme-text-primary rounded-xl pl-11 pr-8 focus:outline-none focus:border-[#F5B81C] transition-all cursor-pointer">
+
+                            <!-- Botón Limpiar Selección -->
+                            <button type="button" 
+                                    id="cobrante-clear-btn" 
+                                    onclick="clearCobrante()"
+                                    class="hidden absolute right-2.5 w-5 h-5 rounded-full notoria-subtile flex items-center justify-center text-xs theme-text-muted hover:theme-text-primary transition-colors cursor-pointer"
+                                    title="Limpiar cobrante">
+                                ✕
+                            </button>
+                        </div>
+
+                        <!-- Menú Desplegable con Staff Agrupado -->
                         <div id="cobrante-menu" 
-                             class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl notoria-card shadow-2xl p-2 max-h-72 overflow-y-auto space-y-2">
+                             class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl notoria-card shadow-2xl p-2 max-h-72 overflow-y-auto space-y-2 border notoria-border">
                             
-                            <!-- Buscador Rápido -->
-                            <div class="sticky top-0 bg-inherit pb-1 z-10">
-                                <div class="relative">
-                                    <svg class="w-3.5 h-3.5 theme-text-muted absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                    </svg>
-                                    <input type="text" id="cobrante-search" oninput="filterCobrantes(this.value)" placeholder="Buscar cobrante..." 
-                                           class="w-full text-xs notoria-input rounded-xl pl-8 pr-3 py-1.5 theme-text-primary placeholder-zinc-400 focus:outline-none focus:border-[#F5B81C]">
-                                </div>
-                            </div>
-
                             @php
                                 $bartenders = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'bartender') || str_contains(mb_strtolower($s->role), 'barra'));
                                 $refuerzos  = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'refuerzo'));
@@ -322,12 +326,12 @@
                                             @php
                                                 $bRole = str_ireplace('mozo', 'MESERO', $b->role);
                                             @endphp
-                                            <div onclick="selectCobrante('{{ $b->name }}')" 
+                                            <div onclick="selectCobrante('{{ $b->name }}', '{{ strtoupper($bRole) }}')" 
                                                  class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F5B81C]/15 cursor-pointer transition-colors group"
                                                  data-name="{{ $b->name }}"
                                                  data-search="{{ strtolower($b->name . ' ' . $bRole) }}">
-                                                <div class="flex items-center gap-2 min-w-0">
-                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-[10px] font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
+                                                <div class="flex items-center gap-2.5 min-w-0">
+                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
                                                         {{ substr($b->name, 0, 1) }}
                                                     </div>
                                                     <div class="min-w-0 truncate">
@@ -356,12 +360,12 @@
                                                      $cleanRole = 'MESERO';
                                                 }
                                             @endphp
-                                            <div onclick="selectCobrante('{{ $m->name }}')" 
+                                            <div onclick="selectCobrante('{{ $m->name }}', '{{ strtoupper($cleanRole) }}')" 
                                                  class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F5B81C]/15 cursor-pointer transition-colors group"
                                                  data-name="{{ $m->name }}"
                                                  data-search="{{ strtolower($m->name . ' ' . $cleanRole) }}">
-                                                <div class="flex items-center gap-2 min-w-0">
-                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-[10px] font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
+                                                <div class="flex items-center gap-2.5 min-w-0">
+                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
                                                         {{ substr($m->name, 0, 1) }}
                                                     </div>
                                                     <div class="min-w-0 truncate">
@@ -387,12 +391,12 @@
                                             @php
                                                 $rRole = str_ireplace('mozo', 'MESERO', $r->role);
                                             @endphp
-                                            <div onclick="selectCobrante('{{ $r->name }}')" 
+                                            <div onclick="selectCobrante('{{ $r->name }}', '{{ strtoupper($rRole) }}')" 
                                                  class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F5B81C]/15 cursor-pointer transition-colors group"
                                                  data-name="{{ $r->name }}"
                                                  data-search="{{ strtolower($r->name . ' ' . $rRole) }}">
-                                                <div class="flex items-center gap-2 min-w-0">
-                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-[10px] font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
+                                                <div class="flex items-center gap-2.5 min-w-0">
+                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
                                                         {{ substr($r->name, 0, 1) }}
                                                     </div>
                                                     <div class="min-w-0 truncate">
@@ -411,18 +415,18 @@
                     </div>
 
                     <!-- 4. MONTO COBRADO & BOTÓN AGREGAR -->
-                    <div class="md:col-span-2 space-y-1.5">
-                        <label for="amount" class="block text-[11px] font-bold uppercase tracking-wider theme-text-secondary">
+                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5">
+                        <label for="amount" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Monto
                         </label>
-                        <div class="flex items-center gap-2">
-                            <div class="relative flex-1">
+                        <div class="flex items-center gap-2 h-[48px]">
+                            <div class="relative flex-1 h-full">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 font-sans font-bold text-xs text-[#F5B81C]">Bs.</span>
                                 <input type="number" step="any" min="0.01" inputmode="decimal" name="amount" id="amount" required placeholder="0.00"
-                                       class="w-full text-base font-mono font-black rounded-xl pl-8 pr-2 py-2 notoria-input theme-text-primary focus:outline-none focus:border-[#F5B81C] placeholder:text-zinc-400">
+                                       class="w-full h-full text-base sm:text-lg font-mono font-black rounded-xl pl-9 pr-2 notoria-input theme-text-primary focus:outline-none focus:border-[#F5B81C] placeholder:text-zinc-400">
                             </div>
                             <button type="submit" 
-                                    class="py-2.5 px-3.5 bg-[#F5B81C] text-black font-black text-xs rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all shadow-sm shrink-0 flex items-center gap-1 cursor-pointer">
+                                    class="h-full px-4 bg-[#F5B81C] text-black font-black text-sm rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all shadow-sm shrink-0 flex items-center gap-1.5 cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -488,14 +492,14 @@
                                         </td>
                                         <td class="px-2 py-2.5 text-center">
                                             @if($qr->bank_app === 'YASTA')
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg notoria-subtile text-[10px] font-bold theme-text-secondary font-mono">
+                                                <span class="badge-qr-yasta inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-black tracking-wider uppercase shadow-xs">
                                                     <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-3.5 w-auto object-contain rounded">
-                                                    <span>Yasta</span>
+                                                    <span>YASTA</span>
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg notoria-subtile text-[10px] font-bold theme-text-secondary font-mono">
+                                                <span class="badge-qr-yape inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-black tracking-wider uppercase shadow-xs">
                                                     <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-3.5 w-auto object-contain rounded">
-                                                    <span>Yape</span>
+                                                    <span>YAPE</span>
                                                 </span>
                                             @endif
                                         </td>
@@ -545,46 +549,39 @@
 
 </div>
 
-<!-- Script para eliminación asíncrona sin parpadeo de página -->
+<!-- Script para interacción rápida y eliminación asíncrona -->
 <script>
-// Control del Selector Personalizado de Cobrante (Estilo iOS)
-function toggleCobranteMenu() {
+// Control del Selector Personalizado de Cobrante (Directo & Usable)
+function openCobranteMenu() {
     const menu = document.getElementById('cobrante-menu');
-    const chevron = document.getElementById('cobrante-chevron');
     if (!menu) return;
-    const isHidden = menu.classList.contains('hidden');
-    if (isHidden) {
-        menu.classList.remove('hidden');
-        if (chevron) chevron.style.transform = 'rotate(180deg)';
-        const search = document.getElementById('cobrante-search');
-        if (search) {
-            search.value = '';
-            filterCobrantes('');
-            setTimeout(() => search.focus(), 60);
-        }
-    } else {
-        menu.classList.add('hidden');
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
-    }
+    menu.classList.remove('hidden');
 }
 
-function selectCobrante(name) {
-    const input = document.getElementById('cobrante_name_input');
-    const display = document.getElementById('cobrante-display');
-    const dot = document.getElementById('cobrante-dot');
-    const trigger = document.getElementById('cobrante-trigger');
+function closeCobranteMenu() {
+    const menu = document.getElementById('cobrante-menu');
+    if (!menu) return;
+    menu.classList.add('hidden');
+}
 
-    if (input) input.value = name;
-    if (display) {
-        display.textContent = name;
-        display.className = 'truncate text-white font-black';
+function selectCobrante(name, role) {
+    const hiddenInput = document.getElementById('cobrante_name_input');
+    const searchInput = document.getElementById('cobrante-search-input');
+    const avatar = document.getElementById('cobrante-avatar');
+    const clearBtn = document.getElementById('cobrante-clear-btn');
+
+    if (hiddenInput) hiddenInput.value = name;
+    if (searchInput) {
+        searchInput.value = name;
+        searchInput.classList.remove('border-rose-500');
+        searchInput.classList.add('border-[#F5B81C]');
     }
-    if (dot) {
-        dot.className = 'w-2 h-2 rounded-full bg-[#F5B81C] shadow-[0_0_8px_rgba(245,184,28,0.5)] shrink-0';
+    if (avatar) {
+        avatar.innerHTML = `<span class="text-xs font-black">${name.charAt(0).toUpperCase()}</span>`;
+        avatar.className = 'absolute left-3 w-6 h-6 rounded-lg bg-[#F5B81C] text-black flex items-center justify-center text-xs font-black shadow-sm shrink-0 pointer-events-none';
     }
-    if (trigger) {
-        trigger.classList.remove('border-rose-500/80');
-        trigger.classList.add('border-[#F5B81C]/70');
+    if (clearBtn) {
+        clearBtn.classList.remove('hidden');
     }
 
     // Actualizar checks
@@ -599,17 +596,47 @@ function selectCobrante(name) {
         }
     });
 
-    toggleCobranteMenu();
+    closeCobranteMenu();
 
     const amountInput = document.getElementById('amount');
     if (amountInput) amountInput.focus();
+}
+
+function clearCobrante() {
+    const hiddenInput = document.getElementById('cobrante_name_input');
+    const searchInput = document.getElementById('cobrante-search-input');
+    const avatar = document.getElementById('cobrante-avatar');
+    const clearBtn = document.getElementById('cobrante-clear-btn');
+
+    if (hiddenInput) hiddenInput.value = '';
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.classList.remove('border-rose-500', 'border-[#F5B81C]');
+        searchInput.focus();
+    }
+    if (avatar) {
+        avatar.innerHTML = `<svg class="w-3.5 h-3.5 theme-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>`;
+        avatar.className = 'absolute left-3 w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-muted pointer-events-none transition-colors shrink-0';
+    }
+    if (clearBtn) {
+        clearBtn.classList.add('hidden');
+    }
+
+    document.querySelectorAll('.cobrante-item').forEach(item => {
+        item.classList.remove('bg-zinc-800/80');
+        const check = item.querySelector('.cobrante-check');
+        if (check) check.classList.add('hidden');
+    });
+
+    filterCobrantes('');
+    openCobranteMenu();
 }
 
 function filterCobrantes(query) {
     const q = (query || '').toLowerCase().trim();
     document.querySelectorAll('.cobrante-item').forEach(item => {
         const searchData = item.getAttribute('data-search') || '';
-        if (searchData.includes(q)) {
+        if (!q || searchData.includes(q)) {
             item.style.display = 'flex';
         } else {
             item.style.display = 'none';
@@ -623,30 +650,62 @@ function filterCobrantes(query) {
     });
 }
 
-// Cerrar al hacer clic afuera
-document.addEventListener('click', (e) => {
-    const container = document.getElementById('cobrante-container');
-    const menu = document.getElementById('cobrante-menu');
-    if (container && menu && !container.contains(e.target)) {
-        menu.classList.add('hidden');
-        const chevron = document.getElementById('cobrante-chevron');
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
-    }
-});
-
-// Validación al enviar el formulario
+// Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('cobrante-search-input');
+    const container = document.getElementById('cobrante-container');
+
+    if (searchInput) {
+        searchInput.addEventListener('focus', () => {
+            filterCobrantes(searchInput.value);
+            openCobranteMenu();
+        });
+
+        searchInput.addEventListener('input', () => {
+            openCobranteMenu();
+            filterCobrantes(searchInput.value);
+            const hidden = document.getElementById('cobrante_name_input');
+            if (hidden) hidden.value = searchInput.value.trim();
+            const clearBtn = document.getElementById('cobrante-clear-btn');
+            if (clearBtn) {
+                if (searchInput.value.trim()) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const firstVisible = Array.from(document.querySelectorAll('.cobrante-item')).find(i => i.style.display !== 'none');
+                if (firstVisible) {
+                    e.preventDefault();
+                    firstVisible.click();
+                }
+            } else if (e.key === 'Escape') {
+                closeCobranteMenu();
+            }
+        });
+    }
+
+    // Cerrar al hacer clic afuera
+    document.addEventListener('click', (e) => {
+        if (container && !container.contains(e.target)) {
+            closeCobranteMenu();
+        }
+    });
+
+    // Validación al enviar el formulario
     const qrForm = document.querySelector('form[action="{{ route('qrs.store') }}"]');
     if (qrForm) {
         qrForm.addEventListener('submit', function(e) {
             const cobranteVal = (document.getElementById('cobrante_name_input')?.value || '').trim();
             if (!cobranteVal) {
                 e.preventDefault();
-                const trigger = document.getElementById('cobrante-trigger');
-                if (trigger) {
-                    trigger.classList.add('border-rose-500');
+                const input = document.getElementById('cobrante-search-input');
+                if (input) {
+                    input.classList.add('border-rose-500');
+                    input.focus();
                 }
-                toggleCobranteMenu();
+                openCobranteMenu();
             }
         });
     }
