@@ -256,35 +256,15 @@
                 </div>
             </div>
 
-            <!-- Fila 2: Filtros de Rol Oficiales + Acciones Rápidas Niveladas -->
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-t notoria-border pt-2.5 text-xs">
-                <!-- Píldoras de Rol -->
-                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-                    <button type="button" onclick="filterPayrollByRole('all')" id="payroll-role-pill-all" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap bg-[#F5B81C] text-black shadow-sm font-black">
-                        Todos ({{ $attendances->count() }})
-                    </button>
-                    <button type="button" onclick="filterPayrollByRole('seguridad')" id="payroll-role-pill-seguridad" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
-                        1. Seguridad ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'seguridad')->count() }})
-                    </button>
-                    <button type="button" onclick="filterPayrollByRole('barra')" id="payroll-role-pill-barra" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
-                        2. Barra ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'barra')->count() }})
-                    </button>
-                    <button type="button" onclick="filterPayrollByRole('mozos')" id="payroll-role-pill-mozos" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
-                        3. Mozos ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'mozos')->count() }})
-                    </button>
-                    <button type="button" onclick="filterPayrollByRole('limpieza')" id="payroll-role-pill-limpieza" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
-                        4. Limpieza ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'limpieza')->count() }})
-                    </button>
-                </div>
-
-                <!-- Acciones Rápidas (Compactas y Niveladas) -->
-                <div class="flex flex-wrap items-center gap-2 shrink-0 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+            <!-- Fila 2: Acciones Rápidas (Agregar Trabajador, Editar por Área, Marcar Pagados) -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 border-t notoria-border pt-2.5 text-xs {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                <div class="flex-1 min-w-0">
                     @if($availableStaff->isNotEmpty())
-                        <form method="POST" action="{{ route('staffPayments.store') }}" class="flex items-center gap-1.5">
+                        <form method="POST" action="{{ route('staffPayments.store') }}" class="flex items-center gap-1.5 w-full sm:w-auto">
                             @csrf
                             <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-                            <select name="staff_id" required class="notoria-input text-xs px-2.5 py-1.5 rounded-xl cursor-pointer max-w-[210px] focus:outline-none focus:border-[#F5B81C]">
-                                <option value="" disabled selected class="bg-slate-900 text-white">+ Agregar trabajador...</option>
+                            <select name="staff_id" required class="notoria-input text-xs px-3 py-1.5 rounded-xl cursor-pointer flex-1 sm:max-w-xs focus:outline-none focus:border-[#F5B81C]">
+                                <option value="" disabled selected class="bg-slate-900 text-white">+ Agregar trabajador a la noche...</option>
                                 @foreach($availableStaff as $as)
                                     @php
                                         $roleDisplay = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $as->role);
@@ -294,12 +274,16 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="px-3 py-1.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black rounded-xl active:scale-95 transition-all whitespace-nowrap cursor-pointer shadow-sm text-center">
+                            <button type="submit" class="px-3.5 py-1.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black rounded-xl active:scale-95 transition-all whitespace-nowrap cursor-pointer shadow-sm text-center">
                                 + Agregar
                             </button>
                         </form>
+                    @else
+                        <span class="text-xs theme-text-muted font-medium">Todo el personal activo está incluido en esta planilla.</span>
                     @endif
+                </div>
 
+                <div class="flex items-center gap-2 shrink-0">
                     <!-- Editar por Área -->
                     <button type="button" onclick="openWageBatchDrawer()" 
                             class="px-3 py-1.5 notoria-subtile hover:border-[#F5B81C] theme-text-primary rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95">
@@ -320,6 +304,25 @@
                         </button>
                     </form>
                 </div>
+            </div>
+
+            <!-- Fila 3: Filtros de Rol Oficiales (Abajo de acciones, sin scroll) -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar border-t notoria-border pt-2.5 text-xs">
+                <button type="button" onclick="filterPayrollByRole('all')" id="payroll-role-pill-all" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap bg-[#F5B81C] text-black shadow-sm font-black">
+                    Todos ({{ $attendances->count() }})
+                </button>
+                <button type="button" onclick="filterPayrollByRole('seguridad')" id="payroll-role-pill-seguridad" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                    1. Seguridad ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'seguridad')->count() }})
+                </button>
+                <button type="button" onclick="filterPayrollByRole('barra')" id="payroll-role-pill-barra" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                    2. Barra ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'barra')->count() }})
+                </button>
+                <button type="button" onclick="filterPayrollByRole('mozos')" id="payroll-role-pill-mozos" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                    3. Mozos ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'mozos')->count() }})
+                </button>
+                <button type="button" onclick="filterPayrollByRole('limpieza')" id="payroll-role-pill-limpieza" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                    4. Limpieza ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'limpieza')->count() }})
+                </button>
             </div>
         </div>
 
