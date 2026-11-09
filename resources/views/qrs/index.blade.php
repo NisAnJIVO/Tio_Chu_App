@@ -241,7 +241,7 @@
                         </div>
                     </div>
 
-                    <!-- APLICACIÓN (Logos con Hover Naranja y Selección Ámbar) -->
+                    <!-- APLICACIÓN (Sin hover, Selección Ámbar Limpia) -->
                     <div class="md:col-span-5 flex flex-col gap-1.5">
                         <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
                             Aplicación
@@ -250,14 +250,14 @@
                             <!-- YASTA -->
                             <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="h-10 flex items-center justify-center px-3 rounded-lg transition-all border border-transparent hover:border-[#F5B81C]/40 hover:bg-[#F5B81C]/10 peer-checked:bg-[#F5B81C] peer-checked:border-[#F5B81C] peer-checked:shadow-sm">
+                                <div class="h-10 flex items-center justify-center px-3 rounded-lg transition-all border border-transparent peer-checked:bg-[#F5B81C] peer-checked:border-[#F5B81C] peer-checked:shadow-sm active:scale-95">
                                     <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-6 sm:h-7 w-auto object-contain">
                                 </div>
                             </label>
                             <!-- YAPE -->
                             <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="h-10 flex items-center justify-center px-3 rounded-lg transition-all border border-transparent hover:border-[#F5B81C]/40 hover:bg-[#F5B81C]/10 peer-checked:bg-[#F5B81C] peer-checked:border-[#F5B81C] peer-checked:shadow-sm">
+                                <div class="h-10 flex items-center justify-center px-3 rounded-lg transition-all border border-transparent peer-checked:bg-[#F5B81C] peer-checked:border-[#F5B81C] peer-checked:shadow-sm active:scale-95">
                                     <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-6 sm:h-7 w-auto object-contain">
                                 </div>
                             </label>
