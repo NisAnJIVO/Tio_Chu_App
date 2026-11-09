@@ -70,5 +70,63 @@ class BarSale extends Model
         $this->vendido = max(0, $this->total_initial - (int)$this->saldo);
         $this->subtotal = $this->vendido * (float)$this->unit_price;
     }
+
+    /**
+     * Formato Don Ludo para PAQUETES en planilla impresa:
+     * - Saldo previo de ayer sin paréntesis: 1, 3, etc.
+     * - Adición antes de abrir entre paréntesis: +(1), (3), etc.
+     * - Adición en el transcurso de la noche separada: 1+(1) 1
+     * - Si no hay nada: string vacío ""
+     */
+    public function getPrintPackageNotation(): string
+    {
+        $init  = (int)$this->initial_packages;
+        $add   = (int)$this->added_packages;
+        $night = (int)$this->night_packages;
+
+        $parts = [];
+        if ($init > 0 && $add > 0) {
+            $parts[] = "{$init}+({$add})";
+        } elseif ($init > 0) {
+            $parts[] = "{$init}";
+        } elseif ($add > 0) {
+            $parts[] = "({$add})";
+        }
+
+        if ($night > 0) {
+            $parts[] = "{$night}";
+        }
+
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Formato Don Ludo para UNIDADES en planilla impresa:
+     * - Saldo previo de ayer sin paréntesis: 5, 2, 4, etc.
+     * - Adición antes de abrir entre paréntesis: +(2), (12), (2), etc.
+     * - Adición en el transcurso de la noche separada: 4+(2) 1
+     * - Si no hay nada: string vacío ""
+     */
+    public function getPrintUnitNotation(): string
+    {
+        $init  = (int)$this->initial_units;
+        $add   = (int)$this->added_units;
+        $night = (int)$this->night_units;
+
+        $parts = [];
+        if ($init > 0 && $add > 0) {
+            $parts[] = "{$init}+({$add})";
+        } elseif ($init > 0) {
+            $parts[] = "{$init}";
+        } elseif ($add > 0) {
+            $parts[] = "({$add})";
+        }
+
+        if ($night > 0) {
+            $parts[] = "{$night}";
+        }
+
+        return implode(' ', $parts);
+    }
 }
 

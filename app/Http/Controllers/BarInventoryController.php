@@ -33,6 +33,7 @@ class BarInventoryController extends Controller
 
         $liquorSales = collect();
         $mixerSales = collect();
+        $allBarSales = collect();
         $previousSession = null;
 
         if ($session) {
@@ -74,6 +75,7 @@ class BarInventoryController extends Controller
             $allBarSales = BarSale::with('product')
                 ->where('night_session_id', $session->id)
                 ->where('bar_name', $selectedBar)
+                ->orderBy('product_id')
                 ->get();
 
             $liquorSales = $allBarSales->filter(fn($s) => $s->product && $s->product->category !== 'Mixers');
@@ -87,6 +89,7 @@ class BarInventoryController extends Controller
             'availableBars',
             'liquorSales',
             'mixerSales',
+            'allBarSales',
             'previousSession'
         ));
     }

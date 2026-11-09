@@ -15,9 +15,213 @@
         -moz-appearance: textfield !important;
         appearance: textfield !important;
     }
+
+    /* ========================================================
+       ESTILOS DE IMPRESIÓN OFICIAL DON LUDO (IDÉNTICO A PLANILLA FÍSICA)
+       ======================================================== */
+    @media print {
+        #main-sidebar, header, nav, .print-hide, .no-print,
+        .screen-only, #bar-inventory-form, .dilemo-btn,
+        #flash-success-toast, #flash-error-toast, #discreet-toast,
+        button, input, select, form {
+            display: none !important;
+        }
+
+        body, html, main, #bar-inventory-app {
+            background: #ffffff !important;
+            color: #000000 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+        }
+
+        .print-only {
+            display: block !important;
+        }
+
+        @page {
+            size: portrait;
+            margin: 6mm 10mm 6mm 10mm;
+        }
+
+        .don-ludo-print-table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            border: 2px solid #000000 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+            color: #000000 !important;
+            background: #ffffff !important;
+        }
+
+        .don-ludo-print-table th,
+        .don-ludo-print-table td {
+            border: 1px solid #000000 !important;
+            color: #000000 !important;
+        }
+
+        .don-ludo-print-table .header-main {
+            border-bottom: 2px solid #000000 !important;
+            text-align: center !important;
+            font-size: 14px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.08em !important;
+            padding: 4px 6px !important;
+            text-transform: uppercase !important;
+            color: #000000 !important;
+            background: #ffffff !important;
+        }
+
+        .don-ludo-print-table .header-info {
+            border-bottom: 2px solid #000000 !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            padding: 3.5px 8px !important;
+            color: #000000 !important;
+            background: #ffffff !important;
+        }
+
+        .don-ludo-print-table .header-value {
+            font-weight: 900 !important;
+            margin-left: 6px !important;
+            font-size: 12px !important;
+            text-transform: capitalize !important;
+        }
+
+        .don-ludo-print-table .header-bar-badge {
+            font-size: 10px !important;
+            font-weight: normal !important;
+            margin-left: 4px !important;
+            color: #444444 !important;
+        }
+
+        .don-ludo-print-table .col-header {
+            border-bottom: 2px solid #000000 !important;
+            font-size: 10.5px !important;
+            font-weight: 900 !important;
+            text-transform: uppercase !important;
+            padding: 3px 6px !important;
+            color: #000000 !important;
+            background: #ffffff !important;
+        }
+
+        .don-ludo-print-table .cell-num {
+            text-align: center !important;
+            font-weight: bold !important;
+            font-family: monospace, sans-serif !important;
+            font-size: 11px !important;
+            padding: 2.5px 4px !important;
+            width: 6% !important;
+        }
+
+        .don-ludo-print-table .cell-desc {
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            font-size: 10px !important;
+            padding: 2.5px 6px !important;
+            white-space: nowrap !important;
+            width: 54% !important;
+        }
+
+        .don-ludo-print-table .cell-qty {
+            text-align: center !important;
+            font-weight: 900 !important;
+            font-family: monospace, sans-serif !important;
+            font-size: 12px !important;
+            padding: 2.5px 4px !important;
+            width: 20% !important;
+        }
+    }
 </style>
 
 <div class="space-y-4 max-w-7xl mx-auto w-full pb-8" id="bar-inventory-app">
+
+    @if($session)
+        <!-- ========================================================
+             PLANILLA DE INVENTARIO FÍSICA DON LUDO (SOLO IMPRESIÓN)
+             Idéntica a la planilla manual oficial de Tío Chu
+             ======================================================== -->
+        <div class="hidden print-only font-sans text-black bg-white">
+            <table class="don-ludo-print-table">
+                <thead>
+                    <!-- 1. TÍTULO PRINCIPAL -->
+                    <tr>
+                        <th colspan="4" class="header-main">
+                            INVENTARIO BEBIDAS
+                        </th>
+                    </tr>
+                    <!-- 2. NOMBRE Y FECHA -->
+                    <tr>
+                        <th colspan="2" class="header-info" style="text-align: left; width: 60%;">
+                            <span>NOMBRE:</span>
+                            <span class="header-value">
+                                {{ str_contains($selectedBar, 'Subte') ? 'Ariel' : 'Kelly' }}
+                            </span>
+                            <span class="header-bar-badge">({{ $selectedBar }})</span>
+                        </th>
+                        <th colspan="2" class="header-info" style="text-align: left; width: 40%;">
+                            <span>DIA Y FECHA:</span>
+                            <span class="header-value">
+                                {{ ucfirst($session->day_name) }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/y') }}
+                            </span>
+                        </th>
+                    </tr>
+                    <!-- 3. CABECERA DE COLUMNAS -->
+                    <tr>
+                        <th class="col-header" style="text-align: center;">N°</th>
+                        <th class="col-header" style="text-align: left;">DESCRIPCION</th>
+                        <th class="col-header" style="text-align: center;">PAQUETE</th>
+                        <th class="col-header" style="text-align: center;">UNIDAD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $printSales = $allBarSales->sortBy('product_id')->values();
+                    @endphp
+                    @forelse($printSales as $idx => $sale)
+                        @php
+                            $prodName = $sale->product ? mb_strtoupper($sale->product->name) : '—';
+                            $prodName = str_replace(
+                                ['GINGER ALE 2.0L', 'COCA COLA 2.0L', 'AGUA VITAL 2.0L', 'AGUA TÓNICA 1.0L', 'SPRITE 2.0L', 'AQUARIUS PERA 2.0L', 'AGUA VITAL 600 ML'],
+                                ['GINGER ALE 2.0 LITROS', 'COCA COLA 2.0 LITROS', 'AGUA VITAL 2.0 LITROS', 'AGUA TONICA 1.0 LITRO', 'SPRITE 2.0 LITROS', 'AQUARIUS PERA 2.0 LITROS', 'AGUA VITAL 600 ML'],
+                                $prodName
+                            );
+                            $pkgNotation = $sale->getPrintPackageNotation();
+                            $unitNotation = $sale->getPrintUnitNotation();
+                        @endphp
+                        <tr>
+                            <td class="cell-num">{{ $idx + 1 }}</td>
+                            <td class="cell-desc">{{ $prodName }}</td>
+                            <td class="cell-qty">{{ $pkgNotation }}</td>
+                            <td class="cell-qty">{{ $unitNotation }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 10px;">No hay productos asignados a esta barra.</td>
+                        </tr>
+                    @endforelse
+
+                    <!-- Filas adicionales vacías como en la planilla original para extras manuales -->
+                    <tr>
+                        <td class="cell-num">{{ $printSales->count() + 1 }}</td>
+                        <td class="cell-desc"></td>
+                        <td class="cell-qty"></td>
+                        <td class="cell-qty"></td>
+                    </tr>
+                    <tr>
+                        <td class="cell-num">{{ $printSales->count() + 2 }}</td>
+                        <td class="cell-desc"></td>
+                        <td class="cell-qty"></td>
+                        <td class="cell-qty"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    @endif
+
+    <!-- CONTENIDO INTERACTIVO VISIBLE EN PANTALLA -->
+    <div class="screen-only space-y-4">
 
     <!-- ========================================================
          1. CABECERA PRINCIPAL: TÍTULO, NOCHE & ACCIÓN DE GUARDAR
@@ -50,6 +254,16 @@
                         </select>
                     </div>
                 </form>
+            @endif
+
+            <!-- Botón Imprimir Planilla Inventario Oficial Don Ludo -->
+            @if($session)
+                <button type="button" onclick="window.print()" class="px-3.5 py-1.5 rounded-xl notoria-subtile hover:border-amber-500 text-xs font-bold theme-text-primary transition-all flex items-center gap-1.5 cursor-pointer dilemo-btn shadow-sm active:scale-95">
+                    <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    <span>Imprimir Planilla</span>
+                </button>
             @endif
 
             <!-- Estado de Noche Cerrada -->
@@ -707,5 +921,7 @@
 
     @endif
 
-</div>
+    </div> <!-- Fin .screen-only -->
+
+</div> <!-- Fin #bar-inventory-app -->
 @endsection
