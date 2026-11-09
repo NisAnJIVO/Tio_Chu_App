@@ -870,11 +870,11 @@
     function filterPayrollByRole(role) {
         payrollRoleFilter = role;
         document.querySelectorAll('.payroll-role-pill').forEach(btn => {
-            btn.className = 'payroll-role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer';
+            btn.className = 'payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40';
         });
         const activeBtn = document.getElementById('payroll-role-pill-' + role);
         if (activeBtn) {
-            activeBtn.className = 'payroll-role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer';
+            activeBtn.className = 'payroll-role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer shadow-sm';
         }
         applyPayrollFilters();
     }

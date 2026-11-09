@@ -44,6 +44,16 @@ class Staff extends Model
     }
 
     /**
+     * Normaliza un día a minúsculas y sin acentos
+     */
+    public static function normalizeDay(?string $day): string
+    {
+        if (!$day) return '';
+        $d = mb_strtolower(trim($day));
+        return str_replace(['á', 'é', 'í', 'ó', 'ú', 'ñ'], ['a', 'e', 'i', 'o', 'u', 'n'], $d);
+    }
+
+    /**
      * Verifica si el trabajador está programado para un día específico
      */
     public function worksOnDay(string $dayName): bool

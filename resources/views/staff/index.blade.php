@@ -4,6 +4,14 @@
 
 @section('content')
 
+@php
+    if (!function_exists('staffNormalizeDay')) {
+        function staffNormalizeDay(?string $day): string {
+            return \App\Models\Staff::normalizeDay($day);
+        }
+    }
+@endphp
+
 <style>
 @media print {
     #main-sidebar, header, nav, .drawer-panel, .drawer-overlay,
@@ -268,13 +276,6 @@
          ======================================================== -->
     <div class="notoria-card overflow-hidden font-sans min-h-[480px] shadow-xl">
         @php
-            if (!function_exists('staffNormalizeDay')) {
-                function staffNormalizeDay(?string $day): string {
-                    if (!$day) return '';
-                    $d = mb_strtolower(trim($day));
-                    return str_replace(['á', 'é', 'í', 'ó', 'ú', 'ñ'], ['a', 'e', 'i', 'o', 'u', 'n'], $d);
-                }
-            }
             $catLabels = [
                 1 => '1. SEGURIDAD',
                 2 => '2. BARRA',
@@ -1115,11 +1116,11 @@
         currentRoleFilter = role;
         
         document.querySelectorAll('.role-pill').forEach(btn => {
-            btn.className = 'role-pill px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700 hover:text-white transition-all cursor-pointer whitespace-nowrap';
+            btn.className = 'role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40';
         });
         const activeBtn = document.getElementById('role-pill-' + role);
         if (activeBtn) {
-            activeBtn.className = 'role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer whitespace-nowrap shadow-sm';
+            activeBtn.className = 'role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap bg-[#F5B81C] text-black shadow-sm font-black';
         }
 
         applyStaffFilters();
