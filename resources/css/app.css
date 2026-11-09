@@ -759,10 +759,10 @@ html:not(.dark) .bg-slate-900,
 html:not(.dark) .bg-slate-900 *,
 html.light .bg-slate-900,
 html.light .bg-slate-900 *,
-html:not(.dark) .bg-black:not(main *),
-html:not(.dark) .bg-black:not(main *) *,
-html.light .bg-black:not(main *),
-html.light .bg-black:not(main *) *,
+html:not(.dark) .bg-black:not(main *, #main-sidebar, #main-sidebar *),
+html:not(.dark) .bg-black:not(main *, #main-sidebar, #main-sidebar *) *,
+html.light .bg-black:not(main *, #main-sidebar, #main-sidebar *),
+html.light .bg-black:not(main *, #main-sidebar, #main-sidebar *) *,
 html:not(.dark) .bg-rose-600,
 html:not(.dark) .bg-rose-600 *,
 html.light .bg-rose-600,
@@ -1024,5 +1024,149 @@ html:not(.dark) .drawer-header button svg,
 html:not(.dark) .notoria-card-header button svg {
     color: #ffffff !important;
     stroke: #ffffff !important;
+}
+
+/* ==========================================================================
+   SIDEBAR TÍO CHU: MODO CLARO AZUL CORPORATIVO Y MODO OSCURO NEGRO PURO
+   Preservación de íconos amarillos (#F5B81C) y opción activa con texto negrito
+   ========================================================================== */
+#main-sidebar {
+    background-color: #000000;
+    border-right-color: rgba(39, 39, 42, 0.8);
+    transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+}
+
+/* 1. Fondo del Sidebar en Modo Claro: Color Azul del Sistema (#0f172a) */
+html.light #main-sidebar,
+html:not(.dark) #main-sidebar {
+    background-color: #0f172a !important; /* Azul marino ejecutivo del sistema */
+    border-right-color: #1e293b !important;
+}
+
+html.dark #main-sidebar {
+    background-color: #000000 !important;
+    border-right-color: rgba(39, 39, 42, 0.8) !important;
+}
+
+/* Cajas de cabecera y usuario dentro del sidebar en Modo Claro */
+html.light #main-sidebar .sidebar-header-expanded,
+html.light #main-sidebar .sidebar-user-expanded,
+html:not(.dark) #main-sidebar .sidebar-header-expanded,
+html:not(.dark) #main-sidebar .sidebar-user-expanded {
+    background-color: rgba(11, 17, 32, 0.9) !important;
+    border-color: #334155 !important;
+}
+
+html.light #main-sidebar .sidebar-divider,
+html:not(.dark) #main-sidebar .sidebar-divider,
+html.light #main-sidebar div[class*="border-b"],
+html:not(.dark) #main-sidebar div[class*="border-b"],
+html.light #main-sidebar div[class*="border-t"],
+html:not(.dark) #main-sidebar div[class*="border-t"] {
+    border-color: #1e293b !important;
+}
+
+/* 2. Categorías del Sidebar: Siempre en color dorado/ámbar (#F5B81C) */
+#main-sidebar .sidebar-category span,
+html.light #main-sidebar .sidebar-category span,
+html:not(.dark) #main-sidebar .sidebar-category span {
+    color: #F5B81C !important;
+    opacity: 0.95 !important;
+}
+
+/* 3. Íconos inactivos: SIEMPRE conservan su color amarillito (#F5B81C) */
+#main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) svg,
+#main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) .text-\[\#F5B81C\],
+html.light #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) svg,
+html.light #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) .text-\[\#F5B81C\],
+html:not(.dark) #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) svg,
+html:not(.dark) #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) .text-\[\#F5B81C\] {
+    color: #F5B81C !important;
+    stroke: #F5B81C !important;
+}
+
+/* 4. Textos de opciones inactivas del sidebar */
+#main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) .sidebar-text,
+html.light #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) .sidebar-text,
+html:not(.dark) #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]) .sidebar-text {
+    color: #cbd5e1 !important;
+}
+
+/* Hover de ítems inactivos */
+#main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover,
+html.light #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover,
+html:not(.dark) #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: #334155 !important;
+}
+#main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover .sidebar-text,
+html.light #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover .sidebar-text,
+html:not(.dark) #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover .sidebar-text {
+    color: #ffffff !important;
+}
+#main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover svg,
+html.light #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover svg,
+html:not(.dark) #main-sidebar .sidebar-item:not([class*="bg-[#F5B81C]"]):hover svg {
+    color: #F5B81C !important;
+    stroke: #F5B81C !important;
+}
+
+/* 5. OPCIÓN SELECCIONADA (ACTIVA): Fondo amarillo (#F5B81C) y TEXTO + ÍCONO SIEMPRE NEGRITO (#000000) */
+#main-sidebar .sidebar-item[class*="bg-[#F5B81C]"],
+html.light #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"],
+html:not(.dark) #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] {
+    background-color: #F5B81C !important;
+    border-color: #F5B81C !important;
+    color: #000000 !important;
+}
+
+#main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] .sidebar-text,
+html.light #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] .sidebar-text,
+html:not(.dark) #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] .sidebar-text {
+    color: #000000 !important;
+    font-weight: 800 !important;
+}
+
+#main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] svg,
+html.light #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] svg,
+html:not(.dark) #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] svg {
+    color: #000000 !important;
+    stroke: #000000 !important;
+    fill: none !important;
+}
+
+#main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] .sidebar-dot,
+html.light #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] .sidebar-dot,
+html:not(.dark) #main-sidebar .sidebar-item[class*="bg-[#F5B81C]"] .sidebar-dot {
+    background-color: #000000 !important;
+}
+
+/* 6. Cabecera y datos de usuario en sidebar */
+#main-sidebar .sidebar-header-expanded span,
+html.light #main-sidebar .sidebar-header-expanded span,
+html:not(.dark) #main-sidebar .sidebar-header-expanded span,
+#main-sidebar .sidebar-user-expanded p:first-child,
+html.light #main-sidebar .sidebar-user-expanded p:first-child,
+html:not(.dark) #main-sidebar .sidebar-user-expanded p:first-child {
+    color: #ffffff !important;
+}
+
+#main-sidebar .sidebar-user-expanded p:last-child,
+html.light #main-sidebar .sidebar-user-expanded p:last-child,
+html:not(.dark) #main-sidebar .sidebar-user-expanded p:last-child {
+    color: #94a3b8 !important;
+}
+
+/* 7. Botón de alternar tema dentro del sidebar */
+html.light #theme-toggle-btn,
+html:not(.dark) #theme-toggle-btn {
+    border-color: #334155 !important;
+    background-color: rgba(11, 17, 32, 0.7) !important;
+    color: #cbd5e1 !important;
+}
+html.light #theme-toggle-btn:hover,
+html:not(.dark) #theme-toggle-btn:hover {
+    color: #F5B81C !important;
+    border-color: #F5B81C !important;
 }
 

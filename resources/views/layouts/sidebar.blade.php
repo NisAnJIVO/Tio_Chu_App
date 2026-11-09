@@ -78,7 +78,7 @@
 
 <!-- Sidebar Tío Chu: Colapsable, Sin Relleno "Club & Bar", Letras Grandes & Sin Scroll -->
 <aside id="main-sidebar" 
-       class="w-64 h-screen max-h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-hidden z-30 select-none bg-black border-r border-zinc-800/80 {{ session('animate_entrance') ? 'animate-entrance-sidebar' : '' }}" 
+       class="w-64 h-screen max-h-screen sticky top-0 flex flex-col justify-between shrink-0 overflow-hidden z-30 select-none bg-[#0f172a] dark:bg-black border-r border-slate-800 dark:border-zinc-800/80 {{ session('animate_entrance') ? 'animate-entrance-sidebar' : '' }}" 
        style="width: 16rem; min-width: 16rem; max-width: 16rem; height: 100vh;">
     
     <!-- 1. Cabecera con Menú Hamburguesa -->
