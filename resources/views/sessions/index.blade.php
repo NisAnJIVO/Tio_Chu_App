@@ -345,28 +345,28 @@
          FLOATING ACTION BAR (STICKY BOTTOM PILL)
          ========================================== -->
     <div id="floating-consolidated-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[92%] sm:w-auto">
-        <div class="bg-[#09090b]/95 backdrop-blur-md border border-[#F5B81C]/50 rounded-xl p-2.5 sm:px-5 sm:py-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C] animate-pulse"></span>
-                <span class="font-bold text-white font-sans">
-                    <span id="floating-selected-count" class="font-mono text-[#F5B81C] text-sm">0</span> noches seleccionadas
+        <div class="bg-slate-900 text-white border-2 border-[#F5B81C] rounded-2xl p-2.5 sm:px-5 sm:py-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#F5B81C] animate-pulse shrink-0"></span>
+                <span class="font-bold text-white font-sans text-xs sm:text-sm">
+                    <span id="floating-selected-count" class="font-mono text-[#F5B81C] font-black text-sm sm:text-base">0</span> noches seleccionadas
                 </span>
-                <button type="button" onclick="deselectAll()" class="text-[11px] text-zinc-400 hover:text-white underline ml-1 cursor-pointer">
+                <button type="button" onclick="deselectAll()" class="text-xs text-amber-300 hover:text-white underline ml-1 cursor-pointer font-bold">
                     Desmarcar
                 </button>
             </div>
 
             <div class="flex items-center gap-2">
                 <button type="button" onclick="openConsolidatedModal()" 
-                        class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-extrabold text-xs rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 dilemo-btn">
+                        class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center gap-1.5 active:scale-95">
                     <span>Ver Resumen</span>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
                     </svg>
                 </button>
 
-                <button type="button" onclick="goToPrintConsolidated()" title="Imprimir Comprobante Oficial"
-                        class="p-2 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 transition-all cursor-pointer">
+                <button type="button" onclick="goToPrintConsolidated()" title="Imprimir Reporte Consolidado"
+                        class="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-[#F5B81C] hover:text-white transition-all cursor-pointer active:scale-95">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
@@ -711,7 +711,7 @@
             ids = Array.from(document.querySelectorAll('.session-chk')).slice(0, 3).map(c => c.value);
         }
         if (ids.length === 0) return;
-        window.open(`{{ route('sessions.consolidatedSummary') }}?session_ids=${ids.join(',')}`, '_blank');
+        window.location.href = `{{ route('sessions.consolidatedSummary') }}?session_ids=${ids.join(',')}&auto_print=1`;
     }
 
     function fmtBs(val) {

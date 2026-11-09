@@ -121,7 +121,7 @@
                 <span>Volver a Historial</span>
             </a>
             <div>
-                <h2 class="text-sm font-bold text-zinc-950 tracking-tight">Informe de Auditoría Consolidada</h2>
+                <h2 class="text-sm font-bold text-zinc-950 tracking-tight">Resumen Consolidado</h2>
                 <p class="text-[11px] text-zinc-500 font-mono">{{ $summary['date_range'] }} • {{ $summary['count'] }} noches seleccionadas</p>
             </div>
         </div>
@@ -140,54 +140,21 @@
     <!-- FOLIO OFICIAL DE AUDITORÍA EJECUTIVA (BLANCO, FORMAL Y SERIO) -->
     <div class="executive-doc-sheet bg-white text-zinc-900 p-6 sm:p-10 rounded-2xl shadow-2xl border border-zinc-200">
         
-        <!-- MEMBRETE INSTITUCIONAL EJECUTIVO -->
-        <div class="border-b-2 border-black pb-4 mb-5">
-            <div class="flex items-start justify-between">
+        <!-- CABECERA FORMAL Y MINIMALISTA TÍO CHU -->
+        <div class="border-b-2 border-black pb-3 mb-5">
+            <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-black tracking-wider uppercase text-black font-sans">
-                        DISCOTECA TÍO CHU
+                    <h1 class="text-xl sm:text-2xl font-black uppercase text-black font-sans tracking-tight">
+                        TÍO CHU — RESUMEN CONSOLIDADO
                     </h1>
-                    <p class="text-[11px] uppercase tracking-widest text-zinc-700 font-bold mt-0.5">
-                        Departamento de Administración, Finanzas & Control Operativo
-                    </p>
-                    <p class="text-[10px] text-zinc-600 mt-0.5">
-                        Av. Principal, Zona Central — Sucre, Bolivia • Sistema Integrado de Gestión
+                    <p class="text-xs font-bold text-zinc-700 mt-0.5 font-mono">
+                        {{ $summary['date_range'] }} • {{ $summary['count'] }} noches
                     </p>
                 </div>
-                <div class="text-right border border-black p-2.5 rounded bg-zinc-50">
-                    <span class="block text-[9px] font-black uppercase tracking-wider text-zinc-600">Documento Oficial</span>
-                    <span class="block text-xs font-black text-black font-mono">INF-CONS-{{ date('Ymd') }}</span>
-                    <span class="block text-[9px] text-zinc-600 font-mono mt-0.5">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</span>
+                <div class="text-right text-xs text-zinc-600 font-mono">
+                    <span class="block font-bold text-black">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</span>
+                    <span class="text-[10px] text-zinc-500 uppercase">Moneda: Bolivianos (Bs.)</span>
                 </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-t border-zinc-300 text-center">
-                <h2 class="text-base sm:text-lg font-black uppercase tracking-wide text-black underline decoration-2 underline-offset-4">
-                    Resumen Consolidado de Jornadas Nocturnas
-                </h2>
-                <p class="text-xs font-bold text-zinc-800 mt-1 font-sans">
-                    Acta de Liquidación y Auditoría Multisesión de Caja
-                </p>
-            </div>
-        </div>
-
-        <!-- CUADRO DE METADATOS ADMINISTRATIVOS -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-zinc-50 border border-zinc-300 rounded-lg text-xs mb-5">
-            <div>
-                <span class="block text-[9px] font-bold text-zinc-500 uppercase">Período Auditado</span>
-                <span class="font-bold text-black font-mono text-[11px]">{{ $summary['date_range'] }}</span>
-            </div>
-            <div>
-                <span class="block text-[9px] font-bold text-zinc-500 uppercase">Jornadas Consolidadas</span>
-                <span class="font-bold text-black font-mono text-[11px]">{{ $summary['count'] }} noches</span>
-            </div>
-            <div>
-                <span class="block text-[9px] font-bold text-zinc-500 uppercase">Emisión & Fecha</span>
-                <span class="font-bold text-black font-mono text-[11px]">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</span>
-            </div>
-            <div>
-                <span class="block text-[9px] font-bold text-zinc-500 uppercase">Moneda de Registro</span>
-                <span class="font-bold text-black font-mono text-[11px]">Bolivianos (BOB - Bs.)</span>
             </div>
         </div>
 
@@ -565,42 +532,17 @@
             </table>
         </div>
 
-        <!-- 5. FIRMAS DE RESPONSABILIDAD Y CONFORMIDAD ADMINISTRATIVA -->
-        <div class="mt-8 pt-4 border-t-2 border-black avoid-break">
-            <p class="text-[10px] text-zinc-600 uppercase tracking-wider text-center font-bold mb-6 font-sans">
-                Conformidad y Cierre de Auditoría — Discoteca Tío Chu
-            </p>
-
-            <div class="grid grid-cols-3 gap-6 text-center text-xs">
-                <!-- Firma 1: Caja -->
-                <div class="flex flex-col items-center">
-                    <div class="w-full border-b border-black mb-1.5 h-12"></div>
-                    <span class="font-bold text-black text-[11px] block">RESPONSABLE DE CAJA</span>
-                    <span class="text-[9px] text-zinc-600 block">Recepción y Cuadre de Arqueos</span>
-                </div>
-
-                <!-- Firma 2: Administración -->
-                <div class="flex flex-col items-center">
-                    <div class="w-full border-b border-black mb-1.5 h-12"></div>
-                    <span class="font-bold text-black text-[11px] block">ADMINISTRACIÓN OPERATIVA</span>
-                    <span class="text-[9px] text-zinc-600 block">Validación de Egresos & Planillas</span>
-                </div>
-
-                <!-- Firma 3: Propietario -->
-                <div class="flex flex-col items-center">
-                    <div class="w-full border-b border-black mb-1.5 h-12"></div>
-                    <span class="font-bold text-black text-[11px] block">DIRECCIÓN GENERAL</span>
-                    <span class="text-[9px] text-zinc-600 block">V°B° Don Ludo / Propietario</span>
-                </div>
-            </div>
-
-            <!-- Cláusula legal final -->
-            <p class="text-[9px] text-zinc-500 text-center mt-6 italic font-sans border-t border-zinc-300 pt-2">
-                Documento oficial generado automáticamente por el Sistema Operativo de Discoteca Tío Chu. Todos los datos financieros han sido cruzados y conciliados directamente con las cuentas bancarias de Banco Unión (YASTA), Banco BCP (YAPE), terminales POS y el libro de ingresos físicos en bóveda.
-            </p>
-        </div>
-
     </div>
 
 </div>
+
+@if(request()->has('auto_print'))
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            window.print();
+        }, 400);
+    });
+</script>
+@endif
 @endsection

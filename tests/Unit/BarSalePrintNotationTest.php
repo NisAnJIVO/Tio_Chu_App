@@ -95,3 +95,4 @@ class BarSalePrintNotationTest extends TestCase
         $this->assertEquals('5', $sale->getPrintUnitNotation());
     }
 }
+

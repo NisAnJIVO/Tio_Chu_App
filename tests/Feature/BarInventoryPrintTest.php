@@ -44,3 +44,4 @@ class BarInventoryPrintTest extends TestCase
         $response->assertSee('SINGANI CASA REAL NEGRO');
     }
 }
+
