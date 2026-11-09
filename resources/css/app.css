@@ -790,20 +790,32 @@ html.light .bg-purple-600 * {
     color: #ffffff !important;
 }
 
-/* Preservar acentos de color y botones dentro de .notoria-card-header en Modo Claro */
+/* Preservar acentos de color y botones dentro de .notoria-card-header y .drawer-header en Modo Claro */
 .notoria-card-header .notoria-subtile,
+.drawer-header .notoria-subtile,
+.drawer-header button,
 html.light .notoria-card-header .notoria-subtile,
-html:not(.dark) .notoria-card-header .notoria-subtile {
+html.light .drawer-header .notoria-subtile,
+html.light .drawer-header button,
+html:not(.dark) .notoria-card-header .notoria-subtile,
+html:not(.dark) .drawer-header .notoria-subtile,
+html:not(.dark) .drawer-header button {
     background-color: rgba(255, 255, 255, 0.12) !important;
     border: 1px solid rgba(255, 255, 255, 0.25) !important;
     color: #ffffff !important;
 }
 .notoria-card-header .notoria-subtile:hover,
+.drawer-header .notoria-subtile:hover,
+.drawer-header button:hover,
 html.light .notoria-card-header .notoria-subtile:hover,
-html:not(.dark) .notoria-card-header .notoria-subtile:hover {
+html.light .drawer-header .notoria-subtile:hover,
+html.light .drawer-header button:hover,
+html:not(.dark) .notoria-card-header .notoria-subtile:hover,
+html:not(.dark) .drawer-header .notoria-subtile:hover,
+html:not(.dark) .drawer-header button:hover {
     background-color: rgba(255, 255, 255, 0.22) !important;
-    border-color: rgba(255, 255, 255, 0.45) !important;
-    color: #ffffff !important;
+    border-color: rgba(245, 184, 28, 0.6) !important;
+    color: #F5B81C !important;
 }
 
 html:not(.dark) .notoria-card-header [class*="text-cyan-"],
@@ -1015,6 +1027,18 @@ html.light .notoria-card-header button,
 html:not(.dark) .drawer-header button,
 html:not(.dark) .notoria-card-header button {
     color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+.drawer-header button:hover,
+.notoria-card-header button:hover,
+html.light .drawer-header button:hover,
+html.light .notoria-card-header button:hover,
+html:not(.dark) .drawer-header button:hover,
+html:not(.dark) .notoria-card-header button:hover {
+    background-color: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(245, 184, 28, 0.6) !important;
+    color: #F5B81C !important;
 }
 .drawer-header button svg,
 .notoria-card-header button svg,
@@ -1024,6 +1048,15 @@ html:not(.dark) .drawer-header button svg,
 html:not(.dark) .notoria-card-header button svg {
     color: #ffffff !important;
     stroke: #ffffff !important;
+}
+.drawer-header button:hover svg,
+.notoria-card-header button:hover svg,
+html.light .drawer-header button:hover svg,
+html.light .notoria-card-header button:hover svg,
+html:not(.dark) .drawer-header button:hover svg,
+html:not(.dark) .notoria-card-header button:hover svg {
+    color: #F5B81C !important;
+    stroke: #F5B81C !important;
 }
 
 /* ==========================================================================
