@@ -116,12 +116,12 @@
                         Yasta: {{ number_format($totalYasta, 0) }} • Yape: {{ number_format($totalYape, 0) }}
                     </span>
                 </div>
-                <div class="hidden sm:flex w-10 h-10 rounded-xl notoria-subtile items-center justify-center text-[#F5B81C] shrink-0 ml-3 shadow-sm">
-                    <svg class="w-5 h-5 text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#F5B81C]/15 border border-[#F5B81C]/40 items-center justify-center shrink-0 ml-3 shadow-xs">
+                    <svg class="w-6 h-6 text-[#b47d00] dark:text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <rect width="6" height="6" x="3" y="3" rx="1"/>
                         <rect width="6" height="6" x="15" y="3" rx="1"/>
                         <rect width="6" height="6" x="3" y="15" rx="1"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                        <path d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
                     </svg>
                 </div>
             </div>
@@ -139,9 +139,9 @@
                         Yasta: Bs. {{ number_format($totalsByPos['Barra Principal']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Barra Principal']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="w-10 h-10 rounded-xl notoria-subtile flex items-center justify-center theme-text-primary shrink-0 ml-3 shadow-sm">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
+                <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl notoria-subtile border notoria-border items-center justify-center theme-text-primary shrink-0 ml-3 shadow-xs">
+                    <svg class="w-6 h-6 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 22h8M12 15v7M19 3l-7 8-7-8h14z"/>
                     </svg>
                 </div>
             </div>
@@ -159,9 +159,9 @@
                         Yasta: {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="hidden sm:flex w-10 h-10 rounded-xl notoria-subtile items-center justify-center theme-text-primary shrink-0 ml-3 shadow-sm">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl notoria-subtile border notoria-border items-center justify-center theme-text-primary shrink-0 ml-3 shadow-xs">
+                    <svg class="w-6 h-6 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                 </div>
             </div>
@@ -179,9 +179,9 @@
                         Yasta: {{ number_format($totalsByPos['Subte']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Subte']['yape'], 0) }}
                     </span>
                 </div>
-                <div class="hidden sm:flex w-10 h-10 rounded-xl notoria-subtile flex items-center justify-center theme-text-primary shrink-0 ml-3 shadow-sm">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl notoria-subtile border notoria-border items-center justify-center theme-text-primary shrink-0 ml-3 shadow-xs">
+                    <svg class="w-6 h-6 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                 </div>
             </div>
@@ -194,12 +194,12 @@
         <div class="p-4 sm:p-5 notoria-card shadow-sm">
             <div class="border-b notoria-border pb-3.5 mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-[#F5B81C]/15 border border-[#F5B81C]/50 flex items-center justify-center text-[#F5B81C] shadow-sm shrink-0">
-                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#F5B81C]/20 border border-[#F5B81C]/50 flex items-center justify-center shadow-sm shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <rect width="6" height="6" x="3" y="3" rx="1"/>
                             <rect width="6" height="6" x="15" y="3" rx="1"/>
                             <rect width="6" height="6" x="3" y="15" rx="1"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                            <path d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
                         </svg>
                     </div>
                     <div>
@@ -253,7 +253,7 @@
                             <!-- YASTA -->
                             <label class="cursor-pointer">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="app-switch-yasta py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all cursor-pointer">
+                                <div class="py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm cursor-pointer">
                                     <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-4 sm:h-5 w-auto object-contain rounded shrink-0">
                                     <span class="tracking-wide">YASTA</span>
                                 </div>
@@ -261,7 +261,7 @@
                             <!-- YAPE -->
                             <label class="cursor-pointer">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="app-switch-yape py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all cursor-pointer">
+                                <div class="py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm cursor-pointer">
                                     <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-4 sm:h-5 w-auto object-contain rounded shrink-0">
                                     <span class="tracking-wide">YAPE</span>
                                 </div>
@@ -443,11 +443,11 @@
                         </label>
                         <button type="submit" 
                                 class="w-full py-2.5 sm:py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
                                 <line x1="5" y1="12" x2="19" y2="12"/>
                             </svg>
-                            <span>+ Cobrar</span>
+                            <span>COBRAR</span>
                         </button>
                     </div>
 
