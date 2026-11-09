@@ -72,18 +72,13 @@
         <div class="p-12 text-center rounded-2xl notoria-card flex flex-col items-center justify-center shadow-sm">
             <div class="w-12 h-12 rounded-2xl notoria-subtile flex items-center justify-center theme-text-muted mb-3">
                 <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="5" height="5" x="3" y="3" rx="1"/>
-                    <rect width="5" height="5" x="16" y="3" rx="1"/>
-                    <rect width="5" height="5" x="3" y="16" rx="1"/>
-                    <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="3" height="3"/>
+                    <path d="M21 14v3h-3"/>
+                    <path d="M14 21v-3"/>
                     <path d="M21 21v.01"/>
-                    <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-                    <path d="M3 12h.01"/>
-                    <path d="M12 3h.01"/>
-                    <path d="M12 16v.01"/>
-                    <path d="M16 12h1"/>
-                    <path d="M21 12v.01"/>
-                    <path d="M12 21v-1"/>
                 </svg>
             </div>
             <h3 class="text-sm font-black uppercase tracking-wider theme-text-primary">No hay ninguna noche abierta o seleccionada</h3>
@@ -114,18 +109,13 @@
                 </div>
                 <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl notoria-subtile border notoria-border items-center justify-center shrink-0 ml-3 shadow-xs">
                     <svg class="w-6 h-6 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="5" height="5" x="3" y="3" rx="1"/>
-                        <rect width="5" height="5" x="16" y="3" rx="1"/>
-                        <rect width="5" height="5" x="3" y="16" rx="1"/>
-                        <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="3" height="3"/>
+                        <path d="M21 14v3h-3"/>
+                        <path d="M14 21v-3"/>
                         <path d="M21 21v.01"/>
-                        <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-                        <path d="M3 12h.01"/>
-                        <path d="M12 3h.01"/>
-                        <path d="M12 16v.01"/>
-                        <path d="M16 12h1"/>
-                        <path d="M21 12v.01"/>
-                        <path d="M12 21v-1"/>
                     </svg>
                 </div>
             </div>
@@ -198,20 +188,15 @@
         <div class="p-6 sm:p-7 notoria-card shadow-sm rounded-2xl">
             <div class="border-b notoria-border pb-4 mb-6 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl notoria-subtile border notoria-border flex items-center justify-center theme-text-primary shrink-0 shadow-xs">
-                        <svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="5" height="5" x="3" y="3" rx="1"/>
-                            <rect width="5" height="5" x="16" y="3" rx="1"/>
-                            <rect width="5" height="5" x="3" y="16" rx="1"/>
-                            <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-slate-800 dark:text-slate-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="3" height="3"/>
+                            <path d="M21 14v3h-3"/>
+                            <path d="M14 21v-3"/>
                             <path d="M21 21v.01"/>
-                            <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-                            <path d="M3 12h.01"/>
-                            <path d="M12 3h.01"/>
-                            <path d="M12 16v.01"/>
-                            <path d="M16 12h1"/>
-                            <path d="M21 12v.01"/>
-                            <path d="M12 21v-1"/>
                         </svg>
                     </div>
                     <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
@@ -236,19 +221,19 @@
                         <div class="grid grid-cols-3 p-1.5 rounded-xl notoria-subtile gap-2">
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Barra Principal" class="peer sr-only" checked>
-                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-amber-400 peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
                                     Principal
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Tienda" class="peer sr-only">
-                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-amber-400 peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
                                     Tienda
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Subte" class="peer sr-only">
-                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-amber-400 peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
                                     Subte
                                 </div>
                             </label>
@@ -260,19 +245,19 @@
                         <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Aplicación
                         </label>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 p-1.5 rounded-xl notoria-subtile gap-2">
                             <!-- YASTA -->
                             <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="h-12 px-3 rounded-xl notoria-subtile border-2 border-transparent transition-all flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 peer-checked:opacity-100 peer-checked:border-[#F5B81C] peer-checked:ring-2 peer-checked:ring-[#F5B81C]/25 peer-checked:shadow-sm">
-                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-8 sm:h-9 max-w-full object-contain">
+                                <div class="h-12 flex items-center justify-center px-4 rounded-lg transition-all border border-transparent bg-slate-200/50 dark:bg-slate-800/50 peer-checked:bg-amber-400 peer-checked:ring-2 peer-checked:ring-amber-500 peer-checked:shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700">
+                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-7 w-auto object-contain">
                                 </div>
                             </label>
                             <!-- YAPE -->
                             <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="h-12 px-3 rounded-xl notoria-subtile border-2 border-transparent transition-all flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 peer-checked:opacity-100 peer-checked:border-[#F5B81C] peer-checked:ring-2 peer-checked:ring-[#F5B81C]/25 peer-checked:shadow-sm">
-                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-8 sm:h-9 max-w-full object-contain">
+                                <div class="h-12 flex items-center justify-center px-4 rounded-lg transition-all border border-transparent bg-slate-200/50 dark:bg-slate-800/50 peer-checked:bg-amber-400 peer-checked:ring-2 peer-checked:ring-amber-500 peer-checked:shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700">
+                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-7 w-auto object-contain">
                                 </div>
                             </label>
                         </div>
@@ -281,7 +266,7 @@
                 </div>
 
                 <!-- NIVEL 2: DATOS DE TRANSACCIÓN (Cobrante + Monto + Botón Cobrar) -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                     
                     <!-- COBRANTE (Buscador Ancho y Cómodo: 5 columnas) -->
                     <div class="md:col-span-5 space-y-2 relative" id="cobrante-container">
@@ -290,7 +275,7 @@
                         </label>
                         <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
 
-                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all relative">
+                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all relative">
                             <!-- Magnifying glass icon -->
                             <svg class="w-4 h-4 theme-text-muted shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -431,13 +416,13 @@
                         </div>
                     </div>
 
-                    <!-- MONTO COBRADO (BS.) (Destacado: 4 columnas) -->
+                    <!-- MONTO (BS.): col-span-4 (label arriba, input con h-12 w-full) -->
                     <div class="md:col-span-4 space-y-2">
                         <label for="amount" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Monto (Bs.)
                         </label>
-                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all">
-                            <span class="text-sm font-mono font-bold text-[#F5B81C] mr-2.5 shrink-0">Bs.</span>
+                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all">
+                            <span class="text-sm font-mono font-bold text-amber-500 mr-2.5 shrink-0">Bs.</span>
                             <input type="number" 
                                    step="any" 
                                    min="0.01" 
@@ -450,10 +435,10 @@
                         </div>
                     </div>
 
-                    <!-- BOTÓN COBRAR (Sólido y Destacado: 3 columnas) -->
-                    <div class="md:col-span-3 space-y-2">
+                    <!-- BOTÓN + COBRAR: col-span-3 (sin label arriba, altura exacta h-12 w-full) -->
+                    <div class="md:col-span-3">
                         <button type="submit" 
-                                class="w-full h-12 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-sm uppercase tracking-wider rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2">
+                                class="h-12 w-full flex items-center justify-center gap-2 font-bold bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
                                 <line x1="5" y1="12" x2="19" y2="12"/>
