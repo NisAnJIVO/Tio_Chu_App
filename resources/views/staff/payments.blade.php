@@ -191,135 +191,136 @@
             </div>
         @endif
 
-        <!-- ==========================================
-             KPIs DE LA PLANILLA (CARDS NOTORIAS)
-             ========================================== -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
-            
-            <div class="col-span-2 sm:col-span-1 notoria-card p-4 sm:p-5 shadow-sm">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs font-bold theme-text-secondary uppercase tracking-wider">Total Planilla</span>
-                    <span class="text-[11px] sm:text-xs font-bold theme-text-muted font-mono">{{ $attendances->count() }} pers.</span>
-                </div>
-                <div class="mt-1 sm:mt-2 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight">
-                    <span class="text-base sm:text-lg text-[#F5B81C] mr-0.5">Bs.</span><span id="kpi-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
-                </div>
-            </div>
+        <!-- ========================================================
+             BARRA DE CONTROL UNIFICADA: MÉTRICAS, BUSCADOR, ROLES & ACCIONES
+             (Compacto y Nivelado, Idéntico a Personal y Turnos)
+             ======================================================== -->
+        <div class="p-3.5 rounded-xl notoria-card shadow-sm space-y-3 font-sans">
+            <!-- Fila 1: Métricas de Planilla (Píldoras Compactas) + Buscador y Contador -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <!-- Cápsula de Métricas Compactas (reemplaza los KPIs gigantes) -->
+                <div class="inline-flex items-center p-1 rounded-xl notoria-subtile overflow-x-auto no-scrollbar gap-1 text-xs shrink-0 max-w-full">
+                    <!-- Total Planilla -->
+                    <div class="px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-bold whitespace-nowrap theme-text-secondary">
+                        <span class="text-[11px] uppercase tracking-wider">Planilla:</span>
+                        <span class="font-mono text-xs sm:text-sm font-black theme-text-primary">
+                            <span class="text-[#F5B81C]">Bs.</span> <span id="kpi-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
+                        </span>
+                    </div>
 
-            <div class="notoria-card p-4 sm:p-5 border-2 border-emerald-500/40 shadow-sm">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs font-bold text-emerald-500 uppercase tracking-wider truncate">Total Pagado</span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                </div>
-                <div class="mt-1 sm:mt-2 text-xl sm:text-3xl font-black font-mono text-emerald-500 tracking-tight truncate">
-                    <span class="text-sm sm:text-lg text-emerald-600 mr-0.5">Bs.</span><span id="kpi-total-pagado">{{ number_format($totalPagado, 2) }}</span>
-                </div>
-            </div>
+                    <div class="h-4 w-px bg-slate-300 dark:bg-white/10 mx-0.5"></div>
 
-            <div class="notoria-card p-4 sm:p-5 shadow-sm">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs font-bold theme-text-secondary uppercase tracking-wider truncate">Por Pagar</span>
-                    <span class="w-2 h-2 rounded-full {{ $totalPendiente > 0 ? 'bg-amber-400 animate-pulse' : 'bg-slate-400' }} shrink-0"></span>
-                </div>
-                <div class="mt-1 sm:mt-2 text-xl sm:text-3xl font-black font-mono tracking-tight truncate {{ $totalPendiente > 0 ? 'text-[#F5B81C]' : 'theme-text-muted' }}">
-                    <span class="text-sm sm:text-lg mr-0.5">Bs.</span><span id="kpi-total-pendiente">{{ number_format($totalPendiente, 2) }}</span>
-                </div>
-            </div>
+                    <!-- Total Pagado -->
+                    <div class="px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-bold whitespace-nowrap text-emerald-500">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                        <span class="text-[11px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Pagado:</span>
+                        <span class="font-mono text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400">
+                            Bs. <span id="kpi-total-pagado">{{ number_format($totalPagado, 2) }}</span>
+                        </span>
+                    </div>
 
-        </div>
+                    <div class="h-4 w-px bg-slate-300 dark:bg-white/10 mx-0.5"></div>
 
-        <!-- Desglose por Cargo (Cards Notorias) -->
-        <div class="notoria-card p-4 sm:p-5 shadow-sm space-y-3">
-            <span class="text-xs font-black uppercase tracking-wider theme-text-primary block font-sans">Desglose por Cargo</span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs">
-                <div class="p-3 rounded-xl notoria-subtile flex items-center justify-between">
-                    <span class="font-bold theme-text-primary text-xs">Meseros & Limpieza</span>
-                    <span class="font-black text-xs sm:text-sm font-mono text-[#F5B81C]">
-                        {{ $summaryByType['meseros']['count'] }} p. — Bs. {{ number_format($summaryByType['meseros']['total'], 2) }}
-                    </span>
+                    <!-- Por Pagar -->
+                    <div class="px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-bold whitespace-nowrap {{ $totalPendiente > 0 ? 'text-[#F5B81C]' : 'theme-text-muted' }}">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $totalPendiente > 0 ? 'bg-amber-400 animate-pulse' : 'bg-slate-400' }} shrink-0"></span>
+                        <span class="text-[11px] uppercase tracking-wider theme-text-secondary">Por Pagar:</span>
+                        <span class="font-mono text-xs sm:text-sm font-black">
+                            Bs. <span id="kpi-total-pendiente">{{ number_format($totalPendiente, 2) }}</span>
+                        </span>
+                    </div>
                 </div>
 
-                <div class="p-3 rounded-xl notoria-subtile flex items-center justify-between">
-                    <span class="font-bold theme-text-primary text-xs">Bartenders</span>
-                    <span class="font-black text-xs sm:text-sm font-mono text-[#F5B81C]">
-                        {{ $summaryByType['bartenders']['count'] }} p. — Bs. {{ number_format($summaryByType['bartenders']['total'], 2) }}
-                    </span>
-                </div>
-
-                <div class="p-3 rounded-xl notoria-subtile flex items-center justify-between">
-                    <span class="font-bold theme-text-primary text-xs">Seguridad</span>
-                    <span class="font-black text-xs sm:text-sm font-mono text-[#F5B81C]">
-                        {{ $summaryByType['seguridad']['count'] }} p. — Bs. {{ number_format($summaryByType['seguridad']['total'], 2) }}
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Barra de Acciones Rápidas (Card Notoria) -->
-        <div class="notoria-card p-3.5 sm:p-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
-            @if($availableStaff->isNotEmpty())
-                <form method="POST" action="{{ route('staffPayments.store') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1">
-                    @csrf
-                    <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-                    <select name="staff_id" required class="notoria-input text-xs sm:text-sm px-3.5 py-2 cursor-pointer flex-1 focus:outline-none focus:border-[#F5B81C]">
-                        <option value="" disabled selected class="bg-slate-900 text-white">+ Agregar trabajador a la noche...</option>
-                        @foreach($availableStaff as $as)
-                            @php
-                                $roleDisplay = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $as->role);
-                            @endphp
-                            <option value="{{ $as->id }}" class="bg-slate-900 text-white">
-                                {{ $as->name }} ({{ strtoupper($roleDisplay) }}) — Bs. {{ number_format($as->getPayForDay($session->day_name), 2) }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <button type="submit" class="px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black rounded-xl active:scale-95 transition-all whitespace-nowrap cursor-pointer shadow-sm text-center">
-                        + Agregar
-                    </button>
-                </form>
-            @else
-                <span class="text-xs theme-text-muted font-medium">Todo el personal activo está incluido en esta noche.</span>
-            @endif
-
-            <div class="grid grid-cols-2 sm:flex items-center gap-2 shrink-0 w-full sm:w-auto">
-                <!-- Botón Editar Sueldo General -->
-                <button type="button" onclick="openWageBatchDrawer()" 
-                        class="justify-center px-3 sm:px-4 py-2 notoria-subtile hover:border-[#F5B81C] theme-text-primary rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95 text-center">
-                    <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                    </svg>
-                    <span>Editar por Área</span>
-                </button>
-
-                <!-- Marcar Todos como Pagados -->
-                <form method="POST" action="{{ route('staffPayments.markAllPaid', $session) }}" onsubmit="return confirm('¿Marcar a todo el personal como PAGADO?');" class="flex-1">
-                    @csrf
-                    <button type="submit" class="w-full justify-center px-3 sm:px-4 py-2 rounded-xl notoria-subtile border-emerald-500/40 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95 text-center">
-                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                <!-- Buscador Directo y Contador -->
+                <div class="flex items-center gap-2.5 w-full md:w-auto">
+                    <div class="relative w-full md:w-64 shrink-0">
+                        <svg class="w-3.5 h-3.5 theme-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
-                        <span>Marcar Pagados</span>
-                    </button>
-                </form>
+                        <input type="text" 
+                               id="payroll-search-input" 
+                               oninput="filterPayrollTable(this.value)" 
+                               placeholder="Buscar en planilla..." 
+                               class="w-full pl-8 pr-7 py-2 text-xs notoria-input focus:outline-none focus:border-[#F5B81C] transition-all font-sans">
+                        <button type="button" 
+                                id="clear-payroll-search" 
+                                onclick="clearPayrollSearch()" 
+                                class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 theme-text-muted hover:theme-text-primary text-sm leading-none cursor-pointer">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="text-xs theme-text-secondary font-sans whitespace-nowrap hidden sm:flex items-center px-3 py-2 rounded-xl notoria-subtile shadow-sm">
+                        <span>Total: <span class="theme-text-primary font-bold ml-1" id="payroll-count-display">{{ $attendances->count() }}</span></span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Filtros de Rol Oficiales de Don Ludo (1. Seguridad, 2. Barra, 3. Mozos, 4. Limpieza) -->
-        <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono font-bold">
-            <button type="button" onclick="filterPayrollByRole('all')" id="payroll-role-pill-all" class="payroll-role-pill px-3 py-1.5 rounded-xl border border-[#F5B81C] bg-[#F5B81C] text-black font-black transition-all cursor-pointer shadow-sm">
-                Todos ({{ $attendances->count() }})
-            </button>
-            <button type="button" onclick="filterPayrollByRole('seguridad')" id="payroll-role-pill-seguridad" class="payroll-role-pill px-3 py-1.5 rounded-xl notoria-subtile theme-text-secondary hover:theme-text-primary transition-all cursor-pointer">
-                1. Seguridad ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'seguridad')->count() }})
-            </button>
-            <button type="button" onclick="filterPayrollByRole('barra')" id="payroll-role-pill-barra" class="payroll-role-pill px-3 py-1.5 rounded-xl notoria-subtile theme-text-secondary hover:theme-text-primary transition-all cursor-pointer">
-                2. Barra ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'barra')->count() }})
-            </button>
-            <button type="button" onclick="filterPayrollByRole('mozos')" id="payroll-role-pill-mozos" class="payroll-role-pill px-3 py-1.5 rounded-xl notoria-subtile theme-text-secondary hover:theme-text-primary transition-all cursor-pointer">
-                3. Mozos ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'mozos')->count() }})
-            </button>
-            <button type="button" onclick="filterPayrollByRole('limpieza')" id="payroll-role-pill-limpieza" class="payroll-role-pill px-3 py-1.5 rounded-xl notoria-subtile theme-text-secondary hover:theme-text-primary transition-all cursor-pointer">
-                4. Limpieza ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'limpieza')->count() }})
-            </button>
+            <!-- Fila 2: Filtros de Rol Oficiales + Acciones Rápidas Niveladas -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-t notoria-border pt-2.5 text-xs">
+                <!-- Píldoras de Rol -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                    <button type="button" onclick="filterPayrollByRole('all')" id="payroll-role-pill-all" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap bg-[#F5B81C] text-black shadow-sm font-black">
+                        Todos ({{ $attendances->count() }})
+                    </button>
+                    <button type="button" onclick="filterPayrollByRole('seguridad')" id="payroll-role-pill-seguridad" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                        1. Seguridad ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'seguridad')->count() }})
+                    </button>
+                    <button type="button" onclick="filterPayrollByRole('barra')" id="payroll-role-pill-barra" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                        2. Barra ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'barra')->count() }})
+                    </button>
+                    <button type="button" onclick="filterPayrollByRole('mozos')" id="payroll-role-pill-mozos" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                        3. Mozos ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'mozos')->count() }})
+                    </button>
+                    <button type="button" onclick="filterPayrollByRole('limpieza')" id="payroll-role-pill-limpieza" class="payroll-role-pill px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer whitespace-nowrap notoria-subtile theme-text-secondary hover:theme-text-primary hover:border-amber-500/40">
+                        4. Limpieza ({{ $attendances->filter(fn($a) => $a->staff && $a->staff->getRoleCategory() === 'limpieza')->count() }})
+                    </button>
+                </div>
+
+                <!-- Acciones Rápidas (Compactas y Niveladas) -->
+                <div class="flex flex-wrap items-center gap-2 shrink-0 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                    @if($availableStaff->isNotEmpty())
+                        <form method="POST" action="{{ route('staffPayments.store') }}" class="flex items-center gap-1.5">
+                            @csrf
+                            <input type="hidden" name="night_session_id" value="{{ $session->id }}">
+                            <select name="staff_id" required class="notoria-input text-xs px-2.5 py-1.5 rounded-xl cursor-pointer max-w-[210px] focus:outline-none focus:border-[#F5B81C]">
+                                <option value="" disabled selected class="bg-slate-900 text-white">+ Agregar trabajador...</option>
+                                @foreach($availableStaff as $as)
+                                    @php
+                                        $roleDisplay = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $as->role);
+                                    @endphp
+                                    <option value="{{ $as->id }}" class="bg-slate-900 text-white">
+                                        {{ $as->name }} ({{ strtoupper($roleDisplay) }}) — Bs. {{ number_format($as->getPayForDay($session->day_name), 2) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="px-3 py-1.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black rounded-xl active:scale-95 transition-all whitespace-nowrap cursor-pointer shadow-sm text-center">
+                                + Agregar
+                            </button>
+                        </form>
+                    @endif
+
+                    <!-- Editar por Área -->
+                    <button type="button" onclick="openWageBatchDrawer()" 
+                            class="px-3 py-1.5 notoria-subtile hover:border-[#F5B81C] theme-text-primary rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95">
+                        <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+                        <span>Editar por Área</span>
+                    </button>
+
+                    <!-- Marcar Todos Pagados -->
+                    <form method="POST" action="{{ route('staffPayments.markAllPaid', $session) }}" onsubmit="return confirm('¿Marcar a todo el personal como PAGADO?');" class="inline">
+                        @csrf
+                        <button type="submit" class="px-3 py-1.5 rounded-xl notoria-subtile border-emerald-500/40 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Marcar Pagados</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- ==========================================
@@ -331,35 +332,14 @@
             <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
             <div class="notoria-card overflow-hidden shadow-xl">
-                <!-- Encabezado de la planilla (Header Notorio) -->
-                <div class="notoria-card-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <!-- Encabezado de la planilla (Header Notorio Compacto) -->
+                <div class="notoria-card-header flex items-center justify-between gap-3">
                     <h3 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider font-mono">
                         Planilla: {{ mb_strtoupper($session->day_name) }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}
                     </h3>
 
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
-                        <!-- Buscador por Nombre en Planilla -->
-                        <div class="relative w-full sm:w-64">
-                            <svg class="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <circle cx="11" cy="11" r="8"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            </svg>
-                            <input type="text" 
-                                   id="payroll-search-input" 
-                                   oninput="filterPayrollTable(this.value)" 
-                                   placeholder="Buscar por nombre..." 
-                                   class="w-full pl-8 pr-7 py-2 rounded-xl text-xs notoria-input theme-text-primary placeholder-zinc-400 focus:outline-none focus:border-[#F5B81C] transition-all font-sans">
-                            <button type="button" 
-                                    id="clear-payroll-search" 
-                                    onclick="clearPayrollSearch()" 
-                                    class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-sm leading-none cursor-pointer">
-                                &times;
-                            </button>
-                        </div>
-
-                        <div class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] whitespace-nowrap text-right sm:text-left">
-                            TOTAL: Bs. <span id="header-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
-                        </div>
+                    <div class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] whitespace-nowrap">
+                        TOTAL: Bs. <span id="header-total-planilla">{{ number_format($totalPlanilla, 2) }}</span>
                     </div>
                 </div>
 
@@ -919,6 +899,11 @@
         const emptyRow = document.getElementById('payroll-search-empty');
         if (emptyRow) {
             emptyRow.classList.toggle('hidden', visibleCount > 0 || rows.length === 0);
+        }
+
+        const countDisplay = document.getElementById('payroll-count-display');
+        if (countDisplay) {
+            countDisplay.textContent = visibleCount;
         }
     }
 
