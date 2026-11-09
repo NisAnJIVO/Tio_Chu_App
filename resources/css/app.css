@@ -660,16 +660,68 @@ html:not(.dark) main .border-zinc-700 {
     border-color: var(--card-border) !important;
 }
 
-/* Textos legibles en Modo Claro: cero textos blancos invisibles */
-html:not(.dark) main :where(.text-white, .text-zinc-100, .text-zinc-200, .text-zinc-300),
-html.light main :where(.text-white, .text-zinc-100, .text-zinc-200, .text-zinc-300) {
+/* Textos legibles en Modo Claro: cero textos blancos invisibles en fondos claros (excluyendo cabeceras oscuras) */
+html:not(.dark) main :where(.text-white, .text-zinc-100, .text-zinc-200, .text-zinc-300):not(
+    .drawer-header, .drawer-header *,
+    .notoria-card-header, .notoria-card-header *,
+    .notoria-card-dark, .notoria-card-dark *,
+    thead, thead *,
+    tfoot, tfoot *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-slate-950, .bg-slate-950 *,
+    .bg-zinc-900, .bg-zinc-900 *,
+    .bg-zinc-950, .bg-zinc-950 *,
+    .bg-black, .bg-black *,
+    .bg-emerald-600, .bg-emerald-600 *,
+    .bg-rose-600, .bg-rose-600 *,
+    .bg-amber-400, .bg-amber-400 *,
+    .bg-amber-500, .bg-amber-500 *,
+    .bg-\[\#F5B81C\], .bg-\[\#F5B81C\] *
+),
+html.light main :where(.text-white, .text-zinc-100, .text-zinc-200, .text-zinc-300):not(
+    .drawer-header, .drawer-header *,
+    .notoria-card-header, .notoria-card-header *,
+    .notoria-card-dark, .notoria-card-dark *,
+    thead, thead *,
+    tfoot, tfoot *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-slate-950, .bg-slate-950 *,
+    .bg-zinc-900, .bg-zinc-900 *,
+    .bg-zinc-950, .bg-zinc-950 *,
+    .bg-black, .bg-black *,
+    .bg-emerald-600, .bg-emerald-600 *,
+    .bg-rose-600, .bg-rose-600 *,
+    .bg-amber-400, .bg-amber-400 *,
+    .bg-amber-500, .bg-amber-500 *,
+    .bg-\[\#F5B81C\], .bg-\[\#F5B81C\] *
+) {
     color: var(--text-primary);
 }
 
-html:not(.dark) main .text-zinc-400,
-html:not(.dark) main .text-zinc-500,
-html.light main .text-zinc-400,
-html.light main .text-zinc-500 {
+html:not(.dark) main :where(.text-zinc-400, .text-zinc-500):not(
+    .drawer-header, .drawer-header *,
+    .notoria-card-header, .notoria-card-header *,
+    .notoria-card-dark, .notoria-card-dark *,
+    thead, thead *,
+    tfoot, tfoot *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-slate-950, .bg-slate-950 *,
+    .bg-zinc-900, .bg-zinc-900 *,
+    .bg-zinc-950, .bg-zinc-950 *,
+    .bg-black, .bg-black *
+),
+html.light main :where(.text-zinc-400, .text-zinc-500):not(
+    .drawer-header, .drawer-header *,
+    .notoria-card-header, .notoria-card-header *,
+    .notoria-card-dark, .notoria-card-dark *,
+    thead, thead *,
+    tfoot, tfoot *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-slate-950, .bg-slate-950 *,
+    .bg-zinc-900, .bg-zinc-900 *,
+    .bg-zinc-950, .bg-zinc-950 *,
+    .bg-black, .bg-black *
+) {
     color: var(--text-secondary) !important;
 }
 
@@ -860,5 +912,117 @@ html.light #sales-form tfoot {
     background-color: var(--card-surface) !important;
     border-color: var(--card-border) !important;
     color: var(--text-primary) !important;
+}
+
+/* ==========================================================================
+   REGLA MAESTRA DE ALTO CONTRASTE: CABECERAS DE DRAWERS Y CARDS NOTORIAS
+   Garantiza texto blanco puro e hiper-legible sobre fondos oscuros en cualquier modo
+   ========================================================================== */
+.drawer-header,
+html.light .drawer-header,
+html:not(.dark) .drawer-header,
+.notoria-card-header,
+html.light .notoria-card-header,
+html:not(.dark) .notoria-card-header {
+    background-color: var(--card-header-bg) !important;
+    color: #ffffff !important;
+}
+
+/* Títulos, nombres dinámicos y textos principales dentro de cabeceras oscuras */
+.drawer-header h1,
+.drawer-header h2,
+.drawer-header h3,
+.drawer-header h4,
+.drawer-header .text-white,
+.drawer-header [id*="title"],
+.drawer-header [id*="name"],
+.notoria-card-header h1,
+.notoria-card-header h2,
+.notoria-card-header h3,
+.notoria-card-header h4,
+.notoria-card-header .text-white,
+html.light .drawer-header h1,
+html.light .drawer-header h2,
+html.light .drawer-header h3,
+html.light .drawer-header h4,
+html.light .drawer-header .text-white,
+html.light .drawer-header [id*="title"],
+html.light .drawer-header [id*="name"],
+html.light .notoria-card-header h1,
+html.light .notoria-card-header h2,
+html.light .notoria-card-header h3,
+html.light .notoria-card-header h4,
+html.light .notoria-card-header .text-white,
+html:not(.dark) .drawer-header h1,
+html:not(.dark) .drawer-header h2,
+html:not(.dark) .drawer-header h3,
+html:not(.dark) .drawer-header h4,
+html:not(.dark) .drawer-header .text-white,
+html:not(.dark) .drawer-header [id*="title"],
+html:not(.dark) .drawer-header [id*="name"],
+html:not(.dark) .notoria-card-header h1,
+html:not(.dark) .notoria-card-header h2,
+html:not(.dark) .notoria-card-header h3,
+html:not(.dark) .notoria-card-header h4,
+html:not(.dark) .notoria-card-header .text-white {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Subtítulos e indicadores secundarios dentro de cabeceras oscuras */
+.drawer-header p,
+.drawer-header span:not([class*="text-[#F5B81C]"]):not([class*="text-amber-"]):not([class*="bg-"]):not([class*="badge"]),
+.drawer-header .text-zinc-300,
+.drawer-header .text-zinc-400,
+.drawer-header .theme-text-secondary,
+.drawer-header .theme-text-muted,
+.notoria-card-header p,
+.notoria-card-header .text-zinc-300,
+.notoria-card-header .text-zinc-400,
+.notoria-card-header .theme-text-secondary,
+.notoria-card-header .theme-text-muted,
+html.light .drawer-header p,
+html.light .drawer-header span:not([class*="text-[#F5B81C]"]):not([class*="text-amber-"]):not([class*="bg-"]):not([class*="badge"]),
+html.light .drawer-header .text-zinc-300,
+html.light .drawer-header .text-zinc-400,
+html.light .drawer-header .theme-text-secondary,
+html.light .drawer-header .theme-text-muted,
+html.light .notoria-card-header p,
+html.light .notoria-card-header .text-zinc-300,
+html.light .notoria-card-header .text-zinc-400,
+html.light .notoria-card-header .theme-text-secondary,
+html.light .notoria-card-header .theme-text-muted,
+html:not(.dark) .drawer-header p,
+html:not(.dark) .drawer-header span:not([class*="text-[#F5B81C]"]):not([class*="text-amber-"]):not([class*="bg-"]):not([class*="badge"]),
+html:not(.dark) .drawer-header .text-zinc-300,
+html:not(.dark) .drawer-header .text-zinc-400,
+html:not(.dark) .drawer-header .theme-text-secondary,
+html:not(.dark) .drawer-header .theme-text-muted,
+html:not(.dark) .notoria-card-header p,
+html:not(.dark) .notoria-card-header .text-zinc-300,
+html:not(.dark) .notoria-card-header .text-zinc-400,
+html:not(.dark) .notoria-card-header .theme-text-secondary,
+html:not(.dark) .notoria-card-header .theme-text-muted {
+    color: #cbd5e1 !important;
+    opacity: 1 !important;
+}
+
+/* Botones y SVGs de cierre e interactivos en cabeceras oscuras */
+.drawer-header button,
+.notoria-card-header button,
+html.light .drawer-header button,
+html.light .notoria-card-header button,
+html:not(.dark) .drawer-header button,
+html:not(.dark) .notoria-card-header button {
+    color: #ffffff !important;
+}
+.drawer-header button svg,
+.notoria-card-header button svg,
+html.light .drawer-header button svg,
+html.light .notoria-card-header button svg,
+html:not(.dark) .drawer-header button svg,
+html:not(.dark) .notoria-card-header button svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
 }
 

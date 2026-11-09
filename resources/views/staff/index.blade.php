@@ -550,10 +550,11 @@
 <div class="drawer-panel" id="drawer-create-staff">
     <div class="drawer-header">
         <div>
-            <h2 class="text-base font-black text-white tracking-tight">Registrar Personal</h2>
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#F5B81C] block">Alta de Personal</span>
+            <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Registrar Personal</h2>
         </div>
-        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
@@ -686,10 +687,11 @@
 <div class="drawer-panel" id="drawer-edit-staff">
     <div class="drawer-header">
         <div>
-            <h2 class="text-base font-black text-white tracking-tight" id="edit-staff-title">Editar Personal</h2>
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#F5B81C] block">Ficha de Personal</span>
+            <h2 class="text-base sm:text-lg font-black text-white tracking-tight" id="edit-staff-title">Editar Personal</h2>
         </div>
-        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-zinc-300 hover:text-white transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>

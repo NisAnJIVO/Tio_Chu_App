@@ -320,8 +320,8 @@
             <h2 class="text-base font-black text-white tracking-tight">Historial de Noches y Deudas</h2>
             <p class="text-xs text-zinc-300 mt-0.5">Selecciona cualquier noche para auditar y liquidar deudas pendientes.</p>
         </div>
-        <button type="button" onclick="closeNightsHistoryDrawer()" class="w-8 h-8 flex items-center justify-center rounded-lg notoria-subtile theme-text-secondary hover:theme-text-primary transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeNightsHistoryDrawer()" class="w-8 h-8 flex items-center justify-center rounded-lg notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>

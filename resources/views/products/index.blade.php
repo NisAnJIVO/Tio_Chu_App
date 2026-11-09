@@ -560,8 +560,8 @@
             <h2 class="text-base font-black text-white tracking-tight">Registrar Nueva Bebida</h2>
             <span class="text-xs font-bold text-[#F5B81C] tracking-wide block mt-0.5">Ingreso al Almacén</span>
         </div>
-        <button onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
     <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data" class="drawer-body space-y-4">
@@ -687,8 +687,8 @@
             <h2 class="text-base font-black text-white tracking-tight" id="edit-prod-title">Editar Bebida</h2>
             <span class="text-xs font-bold text-[#F5B81C] tracking-wide block mt-0.5" id="edit-prod-badge"></span>
         </div>
-        <button type="button" onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-all cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button type="button" onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
     <form method="POST" id="edit-prod-form" action="" enctype="multipart/form-data" onsubmit="event.preventDefault(); handleEditProductSubmit(event); return false;" class="drawer-body space-y-4">
