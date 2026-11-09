@@ -222,22 +222,22 @@
                         <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Punto de Venta
                         </label>
-                        <div class="grid grid-cols-3 p-1 rounded-xl notoria-subtile gap-1 h-[48px] items-center">
-                            <label class="cursor-pointer h-full">
+                        <div class="grid grid-cols-3 p-1 rounded-xl notoria-subtile gap-1">
+                            <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Barra Principal" class="peer sr-only" checked>
-                                <div class="h-full flex items-center justify-center py-2 text-center rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="py-2.5 px-1 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Principal
                                 </div>
                             </label>
-                            <label class="cursor-pointer h-full">
+                            <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Tienda" class="peer sr-only">
-                                <div class="h-full flex items-center justify-center py-2 text-center rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="py-2.5 px-1 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Tienda
                                 </div>
                             </label>
-                            <label class="cursor-pointer h-full">
+                            <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Subte" class="peer sr-only">
-                                <div class="h-full flex items-center justify-center py-2 text-center rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="py-2.5 px-1 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Subte
                                 </div>
                             </label>
@@ -245,24 +245,24 @@
                     </div>
 
                     <!-- 2. APLICACIÓN BANCARIA (SWITCHES MODO IPHONE CON LOGOS) -->
-                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5">
+                    <div class="sm:col-span-1 lg:col-span-2 space-y-1.5">
                         <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Aplicación
                         </label>
-                        <div class="grid grid-cols-2 p-1 rounded-xl notoria-subtile gap-1.5 h-[48px] items-center">
+                        <div class="grid grid-cols-2 p-1 rounded-xl notoria-subtile gap-1">
                             <!-- YASTA -->
-                            <label class="cursor-pointer h-full">
+                            <label class="cursor-pointer">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="app-switch-yasta h-full flex items-center justify-center gap-2 px-2.5 rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all cursor-pointer">
-                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-6 sm:h-7 w-auto object-contain rounded shrink-0">
+                                <div class="app-switch-yasta py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all cursor-pointer">
+                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-4 sm:h-5 w-auto object-contain rounded shrink-0">
                                     <span class="tracking-wide">YASTA</span>
                                 </div>
                             </label>
                             <!-- YAPE -->
-                            <label class="cursor-pointer h-full">
+                            <label class="cursor-pointer">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="app-switch-yape h-full flex items-center justify-center gap-2 px-2.5 rounded-lg text-sm sm:text-base font-bold theme-text-secondary transition-all cursor-pointer">
-                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-6 sm:h-7 w-auto object-contain rounded shrink-0">
+                                <div class="app-switch-yape py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all cursor-pointer">
+                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-4 sm:h-5 w-auto object-contain rounded shrink-0">
                                     <span class="tracking-wide">YAPE</span>
                                 </div>
                             </label>
@@ -270,35 +270,38 @@
                     </div>
 
                     <!-- 3. COBRANTE (COMBOBOX DIRECTO ULTRA USABLE) -->
-                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5 relative" id="cobrante-container">
+                    <div class="sm:col-span-2 lg:col-span-3 space-y-1.5 relative" id="cobrante-container">
                         <label for="cobrante-search-input" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Cobrante
                         </label>
                         <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
 
-                        <div class="relative flex items-center h-[48px]">
-                            <!-- Indicador / Avatar -->
-                            <div id="cobrante-avatar" class="absolute left-3 w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-muted pointer-events-none transition-colors shrink-0">
-                                <svg class="w-3.5 h-3.5 theme-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                </svg>
-                            </div>
+                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 py-2.5 border notoria-border focus-within:border-[#F5B81C] transition-all relative">
+                            <!-- Magnifying glass icon -->
+                            <svg class="w-4 h-4 theme-text-muted shrink-0 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
 
-                            <!-- Input directo con autocompletado y búsqueda -->
+                            <!-- Direct search input -->
                             <input type="text" 
                                    id="cobrante-search-input" 
                                    autocomplete="off" 
-                                   placeholder="Escribe o elige cobrante..."
-                                   class="w-full h-full text-sm font-bold notoria-input theme-text-primary rounded-xl pl-11 pr-8 focus:outline-none focus:border-[#F5B81C] transition-all cursor-pointer">
+                                   placeholder="Buscar cobrante..."
+                                   class="w-full bg-transparent border-0 text-xs sm:text-sm font-bold theme-text-primary placeholder:text-zinc-400 focus:outline-none p-0 cursor-pointer">
 
                             <!-- Botón Limpiar Selección -->
                             <button type="button" 
                                     id="cobrante-clear-btn" 
                                     onclick="clearCobrante()"
-                                    class="hidden absolute right-2.5 w-5 h-5 rounded-full notoria-subtile flex items-center justify-center text-xs theme-text-muted hover:theme-text-primary transition-colors cursor-pointer"
+                                    class="hidden text-xs theme-text-muted hover:theme-text-primary transition-colors cursor-pointer px-1 mr-1"
                                     title="Limpiar cobrante">
                                 ✕
                             </button>
+
+                            <!-- Chevron indicator -->
+                            <svg id="cobrante-chevron" class="w-4 h-4 theme-text-muted shrink-0 transition-transform duration-200 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </div>
 
                         <!-- Menú Desplegable con Staff Agrupado -->
@@ -414,26 +417,38 @@
                         </div>
                     </div>
 
-                    <!-- 4. MONTO COBRADO & BOTÓN AGREGAR -->
-                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5">
+                    <!-- 4. MONTO COBRADO (BS.) -->
+                    <div class="sm:col-span-1 lg:col-span-2 space-y-1.5">
                         <label for="amount" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
-                            Monto
+                            Monto (Bs.)
                         </label>
-                        <div class="flex items-center gap-2 h-[48px]">
-                            <div class="relative flex-1 h-full">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 font-sans font-bold text-xs text-[#F5B81C]">Bs.</span>
-                                <input type="number" step="any" min="0.01" inputmode="decimal" name="amount" id="amount" required placeholder="0.00"
-                                       class="w-full h-full text-base sm:text-lg font-mono font-black rounded-xl pl-9 pr-2 notoria-input theme-text-primary focus:outline-none focus:border-[#F5B81C] placeholder:text-zinc-400">
-                            </div>
-                            <button type="submit" 
-                                    class="h-full px-4 bg-[#F5B81C] text-black font-black text-sm rounded-xl hover:bg-[#e5ac18] active:scale-95 transition-all shadow-sm shrink-0 flex items-center gap-1.5 cursor-pointer">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <line x1="12" y1="5" x2="12" y2="19"/>
-                                    <line x1="5" y1="12" x2="19" y2="12"/>
-                                </svg>
-                                <span>Cobrar</span>
-                            </button>
+                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 py-2 border notoria-border focus-within:border-[#F5B81C] transition-all">
+                            <span class="text-xs sm:text-sm font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
+                            <input type="number" 
+                                   step="any" 
+                                   min="0.01" 
+                                   inputmode="decimal" 
+                                   name="amount" 
+                                   id="amount" 
+                                   required 
+                                   placeholder="0.00"
+                                   class="w-full text-base sm:text-lg font-mono font-black bg-transparent border-0 theme-text-primary placeholder-zinc-400 focus:outline-none p-0">
                         </div>
+                    </div>
+
+                    <!-- 5. BOTÓN COBRAR -->
+                    <div class="sm:col-span-1 lg:col-span-2 space-y-1.5">
+                        <label class="block text-xs font-black uppercase tracking-wider invisible select-none">
+                            Acción
+                        </label>
+                        <button type="submit" 
+                                class="w-full py-2.5 sm:py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            <span>+ Cobrar</span>
+                        </button>
                     </div>
 
                 </div>
@@ -567,22 +582,17 @@ function closeCobranteMenu() {
 function selectCobrante(name, role) {
     const hiddenInput = document.getElementById('cobrante_name_input');
     const searchInput = document.getElementById('cobrante-search-input');
-    const avatar = document.getElementById('cobrante-avatar');
     const clearBtn = document.getElementById('cobrante-clear-btn');
+    const chevron = document.getElementById('cobrante-chevron');
 
     if (hiddenInput) hiddenInput.value = name;
     if (searchInput) {
         searchInput.value = name;
         searchInput.classList.remove('border-rose-500');
-        searchInput.classList.add('border-[#F5B81C]');
+        searchInput.classList.add('font-black');
     }
-    if (avatar) {
-        avatar.innerHTML = `<span class="text-xs font-black">${name.charAt(0).toUpperCase()}</span>`;
-        avatar.className = 'absolute left-3 w-6 h-6 rounded-lg bg-[#F5B81C] text-black flex items-center justify-center text-xs font-black shadow-sm shrink-0 pointer-events-none';
-    }
-    if (clearBtn) {
-        clearBtn.classList.remove('hidden');
-    }
+    if (clearBtn) clearBtn.classList.remove('hidden');
+    if (chevron) chevron.classList.add('hidden');
 
     // Actualizar checks
     document.querySelectorAll('.cobrante-item').forEach(item => {
@@ -605,22 +615,17 @@ function selectCobrante(name, role) {
 function clearCobrante() {
     const hiddenInput = document.getElementById('cobrante_name_input');
     const searchInput = document.getElementById('cobrante-search-input');
-    const avatar = document.getElementById('cobrante-avatar');
     const clearBtn = document.getElementById('cobrante-clear-btn');
+    const chevron = document.getElementById('cobrante-chevron');
 
     if (hiddenInput) hiddenInput.value = '';
     if (searchInput) {
         searchInput.value = '';
-        searchInput.classList.remove('border-rose-500', 'border-[#F5B81C]');
+        searchInput.classList.remove('font-black', 'border-rose-500');
         searchInput.focus();
     }
-    if (avatar) {
-        avatar.innerHTML = `<svg class="w-3.5 h-3.5 theme-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>`;
-        avatar.className = 'absolute left-3 w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-muted pointer-events-none transition-colors shrink-0';
-    }
-    if (clearBtn) {
-        clearBtn.classList.add('hidden');
-    }
+    if (clearBtn) clearBtn.classList.add('hidden');
+    if (chevron) chevron.classList.remove('hidden');
 
     document.querySelectorAll('.cobrante-item').forEach(item => {
         item.classList.remove('bg-zinc-800/80');
@@ -667,9 +672,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const hidden = document.getElementById('cobrante_name_input');
             if (hidden) hidden.value = searchInput.value.trim();
             const clearBtn = document.getElementById('cobrante-clear-btn');
-            if (clearBtn) {
-                if (searchInput.value.trim()) clearBtn.classList.remove('hidden');
-                else clearBtn.classList.add('hidden');
+            const chevron = document.getElementById('cobrante-chevron');
+            if (clearBtn && chevron) {
+                if (searchInput.value.trim()) {
+                    clearBtn.classList.remove('hidden');
+                    chevron.classList.add('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                    chevron.classList.remove('hidden');
+                }
             }
         });
 

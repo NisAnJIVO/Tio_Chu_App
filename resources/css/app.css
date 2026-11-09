@@ -835,33 +835,29 @@ html:not(.light) .badge-qr-yape {
 /* Switches de selección de App Bancaria QR (YASTA verde agua, YAPE morado) */
 .peer:checked + .app-switch-yasta {
     background-color: #d1fae5 !important;
-    border: 1.5px solid #10b981 !important;
     color: #065f46 !important;
     font-weight: 900 !important;
-    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
 }
 html.dark .peer:checked + .app-switch-yasta,
 html:not(.light) .peer:checked + .app-switch-yasta {
     background-color: rgba(16, 185, 129, 0.25) !important;
-    border: 1.5px solid #10b981 !important;
     color: #6ee7b7 !important;
     font-weight: 900 !important;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.25) !important;
 }
 .peer:checked + .app-switch-yape {
     background-color: #f3e8ff !important;
-    border: 1.5px solid #a855f7 !important;
     color: #6b21a8 !important;
     font-weight: 900 !important;
-    box-shadow: 0 1px 3px rgba(168, 85, 247, 0.2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
 }
 html.dark .peer:checked + .app-switch-yape,
 html:not(.light) .peer:checked + .app-switch-yape {
     background-color: rgba(168, 85, 247, 0.25) !important;
-    border: 1.5px solid #a855f7 !important;
     color: #d8b4fe !important;
     font-weight: 900 !important;
-    box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.25) !important;
 }
 
 /* Ventas por Barra: Diferenciación estricta entre sticky cabecera y sticky filas */
