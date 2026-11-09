@@ -42,7 +42,7 @@
 }
 </style>
 
-<div class="space-y-5 max-w-7xl mx-auto pb-10 font-sans">
+<div class="space-y-5 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 font-sans">
 
     @if($session)
         <!-- ========================================================
