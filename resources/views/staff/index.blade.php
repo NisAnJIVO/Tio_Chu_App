@@ -165,14 +165,6 @@
                 </button>
             @endif
 
-            <button type="button" onclick="window.print()" 
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer">
-                <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                </svg>
-                <span>Imprimir</span>
-            </button>
-
             <a href="{{ route('staffPayments.index') }}" 
                class="inline-flex items-center gap-1.5 px-3.5 py-2 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95">
                 <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -583,8 +575,8 @@
             <span class="text-[10px] font-black uppercase tracking-wider text-[#F5B81C] block">Alta de Personal</span>
             <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Registrar Personal</h2>
         </div>
-        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="#ffffff" stroke-width="2.5" viewBox="0 0 24 24" style="stroke: #ffffff !important;">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
@@ -720,8 +712,8 @@
             <span class="text-[10px] font-black uppercase tracking-wider text-[#F5B81C] block">Ficha de Personal</span>
             <h2 class="text-base sm:text-lg font-black text-white tracking-tight" id="edit-staff-title">Editar Personal</h2>
         </div>
-        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeStaffDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="#ffffff" stroke-width="2.5" viewBox="0 0 24 24" style="stroke: #ffffff !important;">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>

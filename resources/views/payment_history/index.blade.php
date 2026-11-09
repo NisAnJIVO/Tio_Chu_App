@@ -6,50 +6,34 @@
 <div class="space-y-4 max-w-7xl mx-auto pb-10 font-sans">
 
     <!-- ==========================================
-         1. CABECERA: TÍTULO, SELECTOR DE NOCHE Y ACCIONES (CARD NOTORIA)
+         1. CABECERA: TÍTULO, SELECTOR DE NOCHE Y ACCIONES (NIVELADA Y MINIMALISTA)
          ========================================== -->
-    <div class="notoria-card p-3 sm:px-4 sm:py-3 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="notoria-card px-5 py-3.5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3 font-sans">
         
         <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-[#F5B81C]/15 border border-[#F5B81C]/40 flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                </div>
-                <h1 class="text-base sm:text-xl font-black tracking-tight theme-text-primary truncate font-sans">
-                    Historial de Pagos y Deudas
-                </h1>
-            </div>
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
+                Historial de Pagos y Deudas
+            </h1>
 
             @if($session)
-                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg notoria-subtile">
-                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500 shadow-sm shadow-emerald-500/50' : 'bg-zinc-400' }}"></span>
-                    <span class="text-[11px] font-bold uppercase tracking-wider {{ $session->isOpen() ? 'text-emerald-600 dark:text-emerald-400' : 'theme-text-muted' }}">
-                        {{ $session->isOpen() ? 'Abierta' : 'Cerrada' }}
-                    </span>
-                </div>
-
-                <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold theme-text-secondary">
-                    <span class="uppercase theme-text-primary tracking-wide font-bold">{{ $session->day_name }}</span>
-                    <span class="theme-text-muted">•</span>
-                    <span class="font-mono theme-text-primary">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
-                </div>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg notoria-subtile text-xs font-bold theme-text-secondary">
+                    <span class="uppercase text-[#F5B81C] font-mono">{{ $session->day_name }}</span>
+                    <span class="theme-text-muted font-mono text-[11px]">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
+                </span>
             @endif
 
             @if($allSessions->isNotEmpty())
                 <form method="GET" action="{{ route('paymentHistory.index') }}" class="flex items-center w-full sm:w-auto">
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg notoria-subtile text-xs hover:border-[#F5B81C] transition-colors shadow-sm w-full sm:w-auto">
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl notoria-subtile text-xs hover:border-[#F5B81C] transition-colors shadow-sm w-full sm:w-auto">
                         <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-semibold theme-text-primary focus:outline-none cursor-pointer pr-1 w-full">
+                                class="bg-transparent border-0 text-xs sm:text-sm font-bold theme-text-primary focus:outline-none cursor-pointer pr-1 w-full">
                             @foreach($allSessions as $s)
-                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-slate-900 text-white">
+                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-slate-900 text-white font-sans">
                                     {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->status === 'open' ? 'Abierta' : 'Cerrada' }})
                                 </option>
                             @endforeach
@@ -59,10 +43,10 @@
             @endif
         </div>
 
-        <div class="grid grid-cols-2 sm:flex items-center gap-2 shrink-0 w-full sm:w-auto">
+        <div class="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end">
             @if($session)
                 <a href="{{ route('staffPayments.index', ['session_id' => $session->id]) }}" 
-                   class="justify-center px-3 py-1.5 rounded-lg notoria-subtile hover:border-[#F5B81C] text-xs font-bold theme-text-secondary hover:theme-text-primary transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 text-center">
+                   class="justify-center px-3.5 py-2 rounded-xl notoria-subtile hover:border-amber-500 text-xs font-bold theme-text-primary transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 text-center">
                     <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
                     </svg>
@@ -71,8 +55,8 @@
             @endif
 
             <button type="button" onclick="openNightsHistoryDrawer()" 
-                    class="justify-center px-3 py-1.5 rounded-lg bg-[#F5B81C]/15 border border-[#F5B81C]/40 hover:border-[#F5B81C] hover:bg-[#F5B81C]/25 text-[#F5B81C] text-xs font-black transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 text-center">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    class="justify-center px-4 py-2 rounded-xl notoria-subtile hover:border-amber-500 text-xs font-bold theme-text-primary transition-all flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 text-center">
+                <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                 </svg>
@@ -320,8 +304,8 @@
             <h2 class="text-base font-black text-white tracking-tight">Historial de Noches y Deudas</h2>
             <p class="text-xs text-zinc-300 mt-0.5">Selecciona cualquier noche para auditar y liquidar deudas pendientes.</p>
         </div>
-        <button type="button" onclick="closeNightsHistoryDrawer()" class="w-8 h-8 flex items-center justify-center rounded-lg notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeNightsHistoryDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="#ffffff" stroke-width="2.5" viewBox="0 0 24 24" style="stroke: #ffffff !important;">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
@@ -425,12 +409,12 @@
     function setCardFilter(filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-pill-btn').forEach(btn => {
-            btn.className = 'filter-pill-btn px-3 py-1 rounded-md font-semibold transition-all text-zinc-400 hover:text-white hover:bg-zinc-900 cursor-pointer';
+            btn.className = 'filter-pill-btn px-2 sm:px-3 py-1.5 sm:py-1 rounded-lg font-bold transition-all theme-text-secondary hover:theme-text-primary cursor-pointer text-center';
         });
 
         const activeBtn = document.getElementById('filter-btn-' + filter);
         if (activeBtn) {
-            activeBtn.className = 'filter-pill-btn px-3 py-1 rounded-md font-black transition-all bg-[#F5B81C] text-black shadow-sm cursor-pointer';
+            activeBtn.className = 'filter-pill-btn px-2 sm:px-3 py-1.5 sm:py-1 rounded-lg font-black transition-all bg-[#F5B81C] text-black shadow-sm cursor-pointer text-center';
         }
 
         applyCardFilters();

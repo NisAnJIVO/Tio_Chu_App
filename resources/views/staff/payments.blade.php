@@ -9,7 +9,7 @@
     #main-sidebar, header, nav, .print-hide,
     button, #wage-batch-drawer, #wage-batch-drawer-overlay,
     #payroll-toast, a, .payroll-role-pill,
-    .no-print, [type="button"], input[type="checkbox"],
+    .no-print, [type="button"], input, .screen-only,
     .sticky {
         display: none !important;
     }
@@ -24,150 +24,149 @@
     .print-only {
         display: block !important;
     }
-    .payroll-cat-divider {
-        background: #f3f4f6 !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-    }
     table {
         display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
     }
-    thead {
-        display: table-header-group !important;
-    }
-    tbody {
-        display: table-row-group !important;
-    }
-    tr.payroll-table-row {
-        display: table-row !important;
-        background: #ffffff !important;
-        border: none !important;
-    }
-    td {
-        display: table-cell !important;
-        border: 1px solid #d1d5db !important;
-        padding: 6px 10px !important;
+    th, td {
+        border-bottom: 1px solid #e5e7eb !important;
+        padding: 6px 8px !important;
         color: #000000 !important;
     }
     th {
-        border: 1px solid #d1d5db !important;
-        padding: 6px 10px !important;
-        background: #f3f4f6 !important;
-        color: #000000 !important;
+        border-bottom: 2px solid #000000 !important;
         font-weight: bold !important;
-    }
-    .pay-amount-input {
-        border: none !important;
         background: transparent !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-        font-size: 13px !important;
-        text-align: right !important;
-        padding: 0 !important;
-    }
-    .text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400 {
-        color: #000000 !important;
-    }
-    .text-\[\#F5B81C\] {
-        color: #000000 !important;
     }
 }
 </style>
 
 <div class="space-y-5 max-w-7xl mx-auto pb-10 w-full min-w-0 max-w-full overflow-x-hidden">
 
-    <!-- ==========================================
-         CABECERA: PLANILLA DE PAGOS (CARD NOTORIA)
-         ========================================== -->
-    <div class="notoria-card px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-sm">
-        
-        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
-            <div class="flex items-center gap-2.5">
-                <div class="w-10 h-10 rounded-xl notoria-subtile flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
+    @if($session)
+        <!-- ========================================================
+             REPORTE IMPRESO ULTRA MINIMALISTA: PLANILLA DE PAGOS
+             ======================================================== -->
+        <div class="hidden print-only font-sans p-4 text-black bg-white">
+            <div class="border-b-2 border-black pb-2 mb-3 flex items-baseline justify-between">
+                <div>
+                    <h1 class="text-lg font-black uppercase tracking-tight text-black">TÍO CHU — PLANILLA DE PAGOS</h1>
+                    <p class="text-xs font-semibold text-neutral-800 uppercase mt-0.5">
+                        {{ $session->day_name }} ({{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }})
+                    </p>
                 </div>
+                <div class="text-right text-xs text-neutral-800">
+                    <span>Total Personal: <strong>{{ $attendances->count() }}</strong></span>
+                </div>
+            </div>
+
+            <table class="w-full text-xs text-left border-collapse">
+                <thead>
+                    <tr class="border-b-2 border-black text-black uppercase font-bold text-[11px]">
+                        <th class="py-1 px-2 w-8 text-center font-mono">#</th>
+                        <th class="py-1 px-2">Personal</th>
+                        <th class="py-1 px-2">Cargo</th>
+                        <th class="py-1 px-2 text-right">Jornal (Bs.)</th>
+                        <th class="py-1 px-2 text-center">¿Se Pagó?</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-200">
+                    @forelse($attendances as $idx => $att)
+                        @php
+                            $roleName = str_ireplace(['Staff / ', 'Staff/', ' (S)', '(S)', 'mozo', 'mozos'], ['', '', '', '', 'MESERO', 'MESEROS'], $att->staff->role ?? 'Staff');
+                        @endphp
+                        <tr>
+                            <td class="py-1.5 px-2 text-center font-mono font-bold">{{ $idx + 1 }}</td>
+                            <td class="py-1.5 px-2 font-bold uppercase text-black">{{ $att->staff->name ?? '—' }}</td>
+                            <td class="py-1.5 px-2 uppercase text-neutral-700">{{ $roleName }}</td>
+                            <td class="py-1.5 px-2 text-right font-mono font-bold text-black">{{ number_format($att->pay_amount, 2) }}</td>
+                            <td class="py-1.5 px-2 text-center font-bold {{ $att->is_paid ? 'text-black' : 'text-neutral-500' }}">
+                                {{ $att->is_paid ? 'SÍ (PAGADO)' : 'NO' }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-4 text-center text-neutral-500">
+                                No hay personal registrado en esta planilla.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+                <tfoot>
+                    <tr class="border-t-2 border-black font-bold text-black">
+                        <td colspan="3" class="py-2 px-2 text-right uppercase font-bold">TOTALES:</td>
+                        <td class="py-2 px-2 text-right font-mono font-bold">Bs. {{ number_format($totalPlanilla, 2) }}</td>
+                        <td class="py-2 px-2 text-center font-mono text-xs">
+                            Pagados: {{ $attendances->where('is_paid', true)->count() }} / {{ $attendances->count() }} (Bs. {{ number_format($totalPagado, 2) }})
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    @endif
+
+    <!-- CONTENIDO VISIBLE EN PANTALLA -->
+    <div class="screen-only space-y-5">
+
+        <!-- ==========================================
+             CABECERA: PLANILLA DE PAGOS (NIVELADA Y MINIMALISTA)
+             ========================================== -->
+        <div class="notoria-card px-5 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 shadow-sm font-sans">
+            
+            <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
                 <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
                     Pagos al Personal
                 </h1>
-            </div>
 
-            @if($session)
-                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl notoria-subtile">
-                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' }}"></span>
-                    <span class="text-[11px] font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-emerald-500' : 'theme-text-muted' }}">
-                        {{ $session->isOpen() ? 'En Vivo' : 'Cerrada' }}
+                @if($session)
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg notoria-subtile text-xs font-bold theme-text-secondary">
+                        <span class="uppercase text-[#F5B81C] font-mono">{{ $session->day_name }}</span>
+                        <span class="theme-text-muted font-mono text-[11px]">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
                     </span>
-                </div>
+                @endif
 
-                <div class="flex items-center gap-1.5 text-xs sm:text-sm font-bold theme-text-secondary font-sans">
-                    <span class="uppercase font-mono text-[#F5B81C]">{{ $session->day_name }}</span>
-                    <span class="theme-text-muted">•</span>
-                    <span class="font-mono theme-text-primary text-xs sm:text-sm">{{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}</span>
-                </div>
-            @endif
+                @if($allSessions->isNotEmpty())
+                    <form method="GET" action="{{ route('staffPayments.index') }}" class="flex items-center w-full sm:w-auto">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl notoria-subtile text-xs hover:border-[#F5B81C] transition-colors shadow-sm w-full sm:w-auto">
+                            <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                            </svg>
+                            <select name="session_id" id="session_id" onchange="this.form.submit()" 
+                                    class="bg-transparent border-0 text-xs sm:text-sm font-bold theme-text-primary focus:outline-none cursor-pointer pr-1 w-full">
+                                @foreach($allSessions as $s)
+                                    <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-slate-900 text-white font-sans">
+                                        {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                @endif
+            </div>
 
-            @if($allSessions->isNotEmpty())
-                <form method="GET" action="{{ route('staffPayments.index') }}" class="flex items-center w-full sm:w-auto">
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl notoria-subtile text-xs hover:border-[#F5B81C] transition-colors shadow-sm w-full sm:w-auto">
-                        <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
+                @if($session)
+                    <button type="button" onclick="window.print()" 
+                            class="w-full sm:w-auto justify-center px-3.5 py-2 rounded-xl notoria-subtile hover:border-amber-500 text-xs font-bold theme-text-primary transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
+                        <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                         </svg>
-                        <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs sm:text-sm font-bold theme-text-primary focus:outline-none cursor-pointer pr-1 w-full">
-                            @foreach($allSessions as $s)
-                                <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-slate-900 text-white font-sans">
-                                    {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </form>
-            @endif
-        </div>
-
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
-            @if($session)
-                <button type="button" onclick="window.print()" 
-                        class="w-full sm:w-auto justify-center px-3.5 py-2.5 rounded-xl notoria-subtile hover:border-amber-500 text-xs sm:text-sm font-bold theme-text-primary transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
-                    <svg class="w-4 h-4 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        <span>Imprimir Planilla</span>
+                    </button>
+                @endif
+                <a href="{{ route('paymentHistory.index', $session ? ['session_id' => $session->id] : []) }}" 
+                   class="w-full sm:w-auto justify-center px-4 py-2 rounded-xl notoria-subtile hover:border-amber-500 text-xs font-bold theme-text-primary transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
+                    <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
                     </svg>
-                    <span>Imprimir Planilla</span>
-                </button>
-            @endif
-            <a href="{{ route('paymentHistory.index', $session ? ['session_id' => $session->id] : []) }}" 
-               class="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl notoria-subtile hover:border-amber-500 text-xs sm:text-sm font-bold theme-text-primary transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 text-center">
-                <svg class="w-4 h-4 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                </svg>
-                <span>Historial de Pagos</span>
-            </a>
-        </div>
-    </div>
-
-    @if($session)
-        <!-- CABECERA EXCLUSIVA PARA IMPRESIÓN (OCULTA EN PANTALLA) -->
-        <div class="hidden print-only text-center pb-4 mb-4 border-b-2 border-black font-sans">
-            <h1 class="text-2xl font-black uppercase tracking-tight text-black">DISCOTECA TÍO CHU</h1>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-700 mt-0.5">PLANILLA OFICIAL DE PAGOS AL PERSONAL</h2>
-            <div class="flex items-center justify-center gap-3 text-xs text-zinc-600 mt-1">
-                <span>Noche: <strong class="uppercase text-black">{{ $session->day_name }} ({{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }})</strong></span>
-                <span>•</span>
-                <span>Personal: <strong class="text-black">{{ $attendances->count() }} integrantes</strong></span>
-                <span>•</span>
-                <span>Total: <strong class="text-black">Bs. {{ number_format($totalPlanilla, 2) }}</strong></span>
-                <span>•</span>
-                <span>Pagado: <strong class="text-black">Bs. {{ number_format($totalPagado, 2) }}</strong></span>
+                    <span>Historial de Pagos</span>
+                </a>
             </div>
         </div>
-    @endif
 
     @if(!$session)
         <div class="notoria-card p-8 sm:p-12 text-center shadow-sm">
@@ -534,6 +533,8 @@
 
     @endif
 
+    </div> <!-- FIN screen-only -->
+
 </div>
 
 <!-- TOAST FLOTANTE DISCRETO -->
@@ -554,8 +555,8 @@
                 {{ $session->day_name }} {{ \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') }}
             </span>
         </div>
-        <button type="button" onclick="closeWageBatchDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile text-white hover:text-[#F5B81C] transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <button type="button" onclick="closeWageBatchDrawer()" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white hover:text-[#F5B81C] transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="#ffffff" stroke-width="2.5" viewBox="0 0 24 24" style="stroke: #ffffff !important;">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
