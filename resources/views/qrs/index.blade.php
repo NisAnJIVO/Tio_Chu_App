@@ -206,58 +206,59 @@
             </div>
             
             <form method="POST" action="{{ route('qrs.store') }}" 
-                  class="space-y-6 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                  class="space-y-5 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
+                <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
 
                 <!-- NIVEL 1: CONTEXTO / FILTROS (Punto de Venta + Aplicación) -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pb-6 border-b notoria-border">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start pb-5 border-b notoria-border">
                     
-                    <!-- PUNTO DE VENTA (Selector de Pestañas a la izquierda) -->
-                    <div class="md:col-span-7 space-y-2">
-                        <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
+                    <!-- PUNTO DE VENTA (Selector de Pestañas Compacto) -->
+                    <div class="md:col-span-7 flex flex-col gap-1.5">
+                        <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
                             Punto de Venta
                         </label>
-                        <div class="grid grid-cols-3 p-1.5 rounded-xl notoria-subtile gap-2">
+                        <div class="grid grid-cols-3 p-1 rounded-xl notoria-subtile gap-1">
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Barra Principal" class="peer sr-only" checked>
-                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-amber-400 peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-10 flex items-center justify-center px-2 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
                                     Principal
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Tienda" class="peer sr-only">
-                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-amber-400 peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-10 flex items-center justify-center px-2 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
                                     Tienda
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Subte" class="peer sr-only">
-                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-amber-400 peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-10 flex items-center justify-center px-2 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-slate-900 peer-checked:font-black peer-checked:shadow-sm">
                                     Subte
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- APLICACIÓN (Solo Logos Corporativos con Anillo de Selección) -->
-                    <div class="md:col-span-5 space-y-2">
-                        <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
+                    <!-- APLICACIÓN (Logos con Hover Naranja y Selección Ámbar) -->
+                    <div class="md:col-span-5 flex flex-col gap-1.5">
+                        <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
                             Aplicación
                         </label>
-                        <div class="grid grid-cols-2 p-1.5 rounded-xl notoria-subtile gap-2">
+                        <div class="grid grid-cols-2 p-1 rounded-xl notoria-subtile gap-1">
                             <!-- YASTA -->
                             <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="h-12 flex items-center justify-center px-4 rounded-lg transition-all border border-transparent bg-slate-200/50 dark:bg-slate-800/50 peer-checked:bg-amber-400 peer-checked:ring-2 peer-checked:ring-amber-500 peer-checked:shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700">
-                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-7 w-auto object-contain">
+                                <div class="h-10 flex items-center justify-center px-3 rounded-lg transition-all border border-transparent hover:border-[#F5B81C]/40 hover:bg-[#F5B81C]/10 peer-checked:bg-[#F5B81C] peer-checked:border-[#F5B81C] peer-checked:shadow-sm">
+                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-6 sm:h-7 w-auto object-contain">
                                 </div>
                             </label>
                             <!-- YAPE -->
                             <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="h-12 flex items-center justify-center px-4 rounded-lg transition-all border border-transparent bg-slate-200/50 dark:bg-slate-800/50 peer-checked:bg-amber-400 peer-checked:ring-2 peer-checked:ring-amber-500 peer-checked:shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700">
-                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-7 w-auto object-contain">
+                                <div class="h-10 flex items-center justify-center px-3 rounded-lg transition-all border border-transparent hover:border-[#F5B81C]/40 hover:bg-[#F5B81C]/10 peer-checked:bg-[#F5B81C] peer-checked:border-[#F5B81C] peer-checked:shadow-sm">
+                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-6 sm:h-7 w-auto object-contain">
                                 </div>
                             </label>
                         </div>
@@ -266,16 +267,15 @@
                 </div>
 
                 <!-- NIVEL 2: DATOS DE TRANSACCIÓN (Cobrante + Monto + Botón Cobrar) -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
                     
                     <!-- COBRANTE (Buscador Ancho y Cómodo: 5 columnas) -->
-                    <div class="md:col-span-5 space-y-2 relative" id="cobrante-container">
-                        <label for="cobrante-search-input" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
+                    <div class="md:col-span-5 flex flex-col gap-1.5 relative" id="cobrante-container">
+                        <label for="cobrante-search-input" class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
                             Cobrante
                         </label>
-                        <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
 
-                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all relative">
+                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 h-10 sm:h-11 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all relative">
                             <!-- Magnifying glass icon -->
                             <svg class="w-4 h-4 theme-text-muted shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -416,13 +416,13 @@
                         </div>
                     </div>
 
-                    <!-- MONTO (BS.): col-span-4 (label arriba, input con h-12 w-full) -->
-                    <div class="md:col-span-4 space-y-2">
-                        <label for="amount" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
+                    <!-- MONTO (BS.): col-span-4 (label arriba, input con h-10 sm:h-11) -->
+                    <div class="md:col-span-4 flex flex-col gap-1.5">
+                        <label for="amount" class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
                             Monto (Bs.)
                         </label>
-                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all">
-                            <span class="text-sm font-mono font-bold text-amber-500 mr-2.5 shrink-0">Bs.</span>
+                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 h-10 sm:h-11 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all">
+                            <span class="text-sm font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
                             <input type="number" 
                                    step="any" 
                                    min="0.01" 
@@ -430,15 +430,18 @@
                                    name="amount" 
                                    id="amount" 
                                    required 
-                                   placeholder="0.00"
-                                   class="w-full text-lg font-mono font-black bg-transparent border-0 theme-text-primary placeholder-zinc-400 focus:outline-none p-0">
+                                   placeholder="0.00" 
+                                   class="w-full text-base sm:text-lg font-mono font-black bg-transparent border-0 theme-text-primary placeholder-zinc-400 focus:outline-none p-0">
                         </div>
                     </div>
 
-                    <!-- BOTÓN + COBRAR: col-span-3 (sin label arriba, altura exacta h-12 w-full) -->
-                    <div class="md:col-span-3">
+                    <!-- BOTÓN + COBRAR: col-span-3 (label invisible alineador, altura exacta h-10 sm:h-11) -->
+                    <div class="md:col-span-3 flex flex-col gap-1.5">
+                        <span class="block text-xs font-black uppercase tracking-wider invisible select-none h-4 flex items-center" aria-hidden="true">
+                            Acción
+                        </span>
                         <button type="submit" 
-                                class="h-12 w-full flex items-center justify-center gap-2 font-bold bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
+                                class="h-10 sm:h-11 w-full flex items-center justify-center gap-1.5 font-bold bg-[#F5B81C] hover:bg-[#e5ac18] text-slate-900 rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
                                 <line x1="5" y1="12" x2="19" y2="12"/>
