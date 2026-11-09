@@ -3,7 +3,7 @@
 @section('title', 'Multimedia')
 
 @section('content')
-<div class="space-y-5 sm:space-y-8 max-w-7xl mx-auto pb-12 w-full min-w-0 max-w-full overflow-x-hidden">
+<div class="space-y-5 sm:space-y-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 font-sans">
 
     <!-- Cabecera Notoria -->
     <div class="notoria-card px-5 py-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full min-w-0">
