@@ -20,28 +20,19 @@
 <div class="space-y-4 max-w-7xl mx-auto w-full pb-8">
 
     <!-- ========================================================
-         1. CABECERA PRINCIPAL: ESTADO DE NOCHE & SELECTOR
+         1. CABECERA PRINCIPAL: TÍTULO & SELECTOR DE NOCHE
          ======================================================== -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-3.5 rounded-2xl notoria-card shadow-sm">
         
-        <!-- Izquierda: Título y Selector de Noche -->
-        <div class="flex flex-wrap items-center gap-3">
-            <div>
-                <h1 class="text-lg sm:text-xl font-black tracking-tight theme-text-primary font-sans">
-                    Cobros por QR
-                </h1>
-            </div>
+        <!-- Izquierda: Título Principal -->
+        <div>
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
+                Cobros por QR
+            </h1>
+        </div>
 
-            @if($session)
-                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl notoria-subtile">
-                    <span class="w-2 h-2 rounded-full {{ $session->isOpen() ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-500' }}"></span>
-                    <span class="text-xs font-black uppercase tracking-wider {{ $session->isOpen() ? 'text-emerald-500' : 'theme-text-muted' }}">
-                        {{ $session->isOpen() ? 'Noche Abierta' : 'Noche Cerrada' }}
-                    </span>
-                </div>
-            @endif
-
-            <!-- Selector de Noche en Píldora -->
+        <!-- Derecha: Selector de Noche & Modo Lectura -->
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0 sm:ml-auto">
             @if($allSessions->isNotEmpty())
                 <form method="GET" action="{{ route('qrs.index') }}" class="flex items-center">
                     <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl notoria-subtile text-xs hover:border-[#F5B81C] transition-colors">
@@ -51,7 +42,7 @@
                             <line x1="8" y1="2" x2="8" y2="6"/>
                         </svg>
                         <select name="session_id" id="session_id" onchange="this.form.submit()" 
-                                class="bg-transparent border-0 text-xs font-bold theme-text-primary focus:outline-none cursor-pointer pr-1">
+                                class="bg-transparent border-0 text-xs font-semibold theme-text-primary focus:outline-none cursor-pointer pr-1">
                             @foreach($allSessions as $s)
                                 <option value="{{ $s->id }}" {{ $session && $session->id === $s->id ? 'selected' : '' }} class="bg-slate-900 text-white">
                                     {{ $s->day_name }} {{ \Carbon\Carbon::parse($s->session_date)->format('d/m/Y') }} ({{ $s->isOpen() ? 'En Vivo' : 'Cerrada' }})
@@ -61,10 +52,7 @@
                     </div>
                 </form>
             @endif
-        </div>
 
-        <!-- Derecha: Estado o Acceso a Cierre -->
-        <div class="flex items-center gap-2 shrink-0">
             @if($session && !$session->isOpen())
                 <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl notoria-subtile text-xs theme-text-muted">
                     <svg class="w-3.5 h-3.5 theme-text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -83,11 +71,19 @@
         <!-- Estado Vacío -->
         <div class="p-12 text-center rounded-2xl notoria-card flex flex-col items-center justify-center shadow-sm">
             <div class="w-12 h-12 rounded-2xl notoria-subtile flex items-center justify-center theme-text-muted mb-3">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <rect width="6" height="6" x="3" y="3" rx="1"/>
-                    <rect width="6" height="6" x="15" y="3" rx="1"/>
-                    <rect width="6" height="6" x="3" y="15" rx="1"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="5" height="5" x="3" y="3" rx="1"/>
+                    <rect width="5" height="5" x="16" y="3" rx="1"/>
+                    <rect width="5" height="5" x="3" y="16" rx="1"/>
+                    <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                    <path d="M21 21v.01"/>
+                    <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                    <path d="M3 12h.01"/>
+                    <path d="M12 3h.01"/>
+                    <path d="M12 16v.01"/>
+                    <path d="M16 12h1"/>
+                    <path d="M21 12v.01"/>
+                    <path d="M12 21v-1"/>
                 </svg>
             </div>
             <h3 class="text-sm font-black uppercase tracking-wider theme-text-primary">No hay ninguna noche abierta o seleccionada</h3>
@@ -116,12 +112,20 @@
                         Yasta: {{ number_format($totalYasta, 0) }} • Yape: {{ number_format($totalYape, 0) }}
                     </span>
                 </div>
-                <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#F5B81C]/15 border border-[#F5B81C]/40 items-center justify-center shrink-0 ml-3 shadow-xs">
-                    <svg class="w-6 h-6 text-[#b47d00] dark:text-[#F5B81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="6" height="6" x="3" y="3" rx="1"/>
-                        <rect width="6" height="6" x="15" y="3" rx="1"/>
-                        <rect width="6" height="6" x="3" y="15" rx="1"/>
-                        <path d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                <div class="flex w-11 h-11 sm:w-12 sm:h-12 rounded-xl notoria-subtile border notoria-border items-center justify-center shrink-0 ml-3 shadow-xs">
+                    <svg class="w-6 h-6 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        <rect width="5" height="5" x="16" y="3" rx="1"/>
+                        <rect width="5" height="5" x="3" y="16" rx="1"/>
+                        <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                        <path d="M21 21v.01"/>
+                        <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                        <path d="M3 12h.01"/>
+                        <path d="M12 3h.01"/>
+                        <path d="M12 16v.01"/>
+                        <path d="M16 12h1"/>
+                        <path d="M21 12v.01"/>
+                        <path d="M12 21v-1"/>
                     </svg>
                 </div>
             </div>
@@ -189,96 +193,106 @@
         </div>
 
         <!-- ========================================================
-             3. FORMULARIO MINIMALISTA CON SWITCHES MODO IPHONE & LOGOS
+             3. FORMULARIO EN 2 NIVELES CON AIRE & LOGOS CORPORATIVOS
              ======================================================== -->
-        <div class="p-4 sm:p-5 notoria-card shadow-sm">
-            <div class="border-b notoria-border pb-3.5 mb-4 flex items-center justify-between">
+        <div class="p-6 sm:p-7 notoria-card shadow-sm rounded-2xl">
+            <div class="border-b notoria-border pb-4 mb-6 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#F5B81C]/20 border border-[#F5B81C]/50 flex items-center justify-center shadow-sm shrink-0">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="6" height="6" x="3" y="3" rx="1"/>
-                            <rect width="6" height="6" x="15" y="3" rx="1"/>
-                            <rect width="6" height="6" x="3" y="15" rx="1"/>
-                            <path d="M15 15h3m3 0h-3v3m0 3v-3m3 3v.01M10 7v3a2 2 0 01-2 2H5"/>
+                    <div class="w-9 h-9 rounded-xl notoria-subtile border notoria-border flex items-center justify-center theme-text-primary shrink-0 shadow-xs">
+                        <svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                            <rect width="5" height="5" x="16" y="3" rx="1"/>
+                            <rect width="5" height="5" x="3" y="16" rx="1"/>
+                            <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                            <path d="M21 21v.01"/>
+                            <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                            <path d="M3 12h.01"/>
+                            <path d="M12 3h.01"/>
+                            <path d="M12 16v.01"/>
+                            <path d="M16 12h1"/>
+                            <path d="M21 12v.01"/>
+                            <path d="M12 21v-1"/>
                         </svg>
                     </div>
-                    <div>
-                        <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
-                            Registrar Nuevo Cobro QR
-                        </h2>
-                    </div>
+                    <h2 class="text-sm font-black theme-text-primary uppercase tracking-wider font-sans">
+                        Registrar Nuevo Cobro QR
+                    </h2>
                 </div>
             </div>
             
             <form method="POST" action="{{ route('qrs.store') }}" 
-                  class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+                  class="space-y-6 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end">
+                <!-- NIVEL 1: CONTEXTO / FILTROS (Punto de Venta + Aplicación) -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pb-6 border-b notoria-border">
                     
-                    <!-- 1. PUNTO DE VENTA (SWITCHES MODO IPHONE) -->
-                    <div class="sm:col-span-1 lg:col-span-3 space-y-1.5">
+                    <!-- PUNTO DE VENTA (Selector de Pestañas a la izquierda) -->
+                    <div class="md:col-span-7 space-y-2">
                         <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Punto de Venta
                         </label>
-                        <div class="grid grid-cols-3 p-1 rounded-xl notoria-subtile gap-1">
+                        <div class="grid grid-cols-3 p-1.5 rounded-xl notoria-subtile gap-2">
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Barra Principal" class="peer sr-only" checked>
-                                <div class="py-2.5 px-1 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Principal
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Tienda" class="peer sr-only">
-                                <div class="py-2.5 px-1 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Tienda
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="point_of_sale" value="Subte" class="peer sr-only">
-                                <div class="py-2.5 px-1 text-center rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
+                                <div class="h-12 flex items-center justify-center px-3 text-center rounded-lg text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm">
                                     Subte
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- 2. APLICACIÓN BANCARIA (SWITCHES MODO IPHONE CON LOGOS) -->
-                    <div class="sm:col-span-1 lg:col-span-2 space-y-1.5">
+                    <!-- APLICACIÓN (Solo Logos Corporativos con Anillo de Selección) -->
+                    <div class="md:col-span-5 space-y-2">
                         <label class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Aplicación
                         </label>
-                        <div class="grid grid-cols-2 p-1 rounded-xl notoria-subtile gap-1">
+                        <div class="grid grid-cols-2 gap-3">
                             <!-- YASTA -->
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YASTA" class="peer sr-only" checked>
-                                <div class="py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm cursor-pointer">
-                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-4 sm:h-5 w-auto object-contain rounded shrink-0">
-                                    <span class="tracking-wide">YASTA</span>
+                                <div class="h-12 px-3 rounded-xl notoria-subtile border-2 border-transparent transition-all flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 peer-checked:opacity-100 peer-checked:border-[#F5B81C] peer-checked:ring-2 peer-checked:ring-[#F5B81C]/25 peer-checked:shadow-sm">
+                                    <img src="{{ asset('images/LogosQR/yasta.png') }}" alt="Yasta" class="h-8 sm:h-9 max-w-full object-contain">
                                 </div>
                             </label>
                             <!-- YAPE -->
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer block">
                                 <input type="radio" name="bank_app" value="YAPE" class="peer sr-only">
-                                <div class="py-2.5 px-1.5 flex items-center justify-center gap-1.5 rounded-lg text-xs sm:text-sm font-bold theme-text-secondary transition-all peer-checked:bg-[#F5B81C] peer-checked:text-black peer-checked:font-black peer-checked:shadow-sm cursor-pointer">
-                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-4 sm:h-5 w-auto object-contain rounded shrink-0">
-                                    <span class="tracking-wide">YAPE</span>
+                                <div class="h-12 px-3 rounded-xl notoria-subtile border-2 border-transparent transition-all flex items-center justify-center cursor-pointer opacity-80 hover:opacity-100 peer-checked:opacity-100 peer-checked:border-[#F5B81C] peer-checked:ring-2 peer-checked:ring-[#F5B81C]/25 peer-checked:shadow-sm">
+                                    <img src="{{ asset('images/LogosQR/yape.png') }}" alt="Yape" class="h-8 sm:h-9 max-w-full object-contain">
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- 3. COBRANTE (COMBOBOX DIRECTO ULTRA USABLE) -->
-                    <div class="sm:col-span-2 lg:col-span-3 space-y-1.5 relative" id="cobrante-container">
+                </div>
+
+                <!-- NIVEL 2: DATOS DE TRANSACCIÓN (Cobrante + Monto + Botón Cobrar) -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                    
+                    <!-- COBRANTE (Buscador Ancho y Cómodo: 5 columnas) -->
+                    <div class="md:col-span-5 space-y-2 relative" id="cobrante-container">
                         <label for="cobrante-search-input" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Cobrante
                         </label>
                         <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
 
-                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 py-2.5 border notoria-border focus-within:border-[#F5B81C] transition-all relative">
+                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all relative">
                             <!-- Magnifying glass icon -->
-                            <svg class="w-4 h-4 theme-text-muted shrink-0 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="w-4 h-4 theme-text-muted shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
 
@@ -286,8 +300,8 @@
                             <input type="text" 
                                    id="cobrante-search-input" 
                                    autocomplete="off" 
-                                   placeholder="Buscar cobrante..."
-                                   class="w-full bg-transparent border-0 text-xs sm:text-sm font-bold theme-text-primary placeholder:text-zinc-400 focus:outline-none p-0 cursor-pointer">
+                                   placeholder="Buscar cobrante por nombre..."
+                                   class="w-full bg-transparent border-0 text-sm font-bold theme-text-primary placeholder:text-zinc-400 focus:outline-none p-0 cursor-pointer">
 
                             <!-- Botón Limpiar Selección -->
                             <button type="button" 
@@ -306,7 +320,7 @@
 
                         <!-- Menú Desplegable con Staff Agrupado -->
                         <div id="cobrante-menu" 
-                             class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 rounded-2xl notoria-card shadow-2xl p-2 max-h-72 overflow-y-auto space-y-2 border notoria-border">
+                             class="hidden absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl notoria-card shadow-2xl p-2 max-h-72 overflow-y-auto space-y-2 border notoria-border">
                             
                             @php
                                 $bartenders = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'bartender') || str_contains(mb_strtolower($s->role), 'barra'));
@@ -417,13 +431,13 @@
                         </div>
                     </div>
 
-                    <!-- 4. MONTO COBRADO (BS.) -->
-                    <div class="sm:col-span-1 lg:col-span-2 space-y-1.5">
+                    <!-- MONTO COBRADO (BS.) (Destacado: 4 columnas) -->
+                    <div class="md:col-span-4 space-y-2">
                         <label for="amount" class="block text-xs font-black uppercase tracking-wider theme-text-secondary">
                             Monto (Bs.)
                         </label>
-                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 py-2 border notoria-border focus-within:border-[#F5B81C] transition-all">
-                            <span class="text-xs sm:text-sm font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
+                        <div class="flex items-center rounded-xl notoria-subtile px-4 h-12 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all">
+                            <span class="text-sm font-mono font-bold text-[#F5B81C] mr-2.5 shrink-0">Bs.</span>
                             <input type="number" 
                                    step="any" 
                                    min="0.01" 
@@ -432,17 +446,14 @@
                                    id="amount" 
                                    required 
                                    placeholder="0.00"
-                                   class="w-full text-base sm:text-lg font-mono font-black bg-transparent border-0 theme-text-primary placeholder-zinc-400 focus:outline-none p-0">
+                                   class="w-full text-lg font-mono font-black bg-transparent border-0 theme-text-primary placeholder-zinc-400 focus:outline-none p-0">
                         </div>
                     </div>
 
-                    <!-- 5. BOTÓN COBRAR -->
-                    <div class="sm:col-span-1 lg:col-span-2 space-y-1.5">
-                        <label class="block text-xs font-black uppercase tracking-wider invisible select-none">
-                            Acción
-                        </label>
+                    <!-- BOTÓN COBRAR (Sólido y Destacado: 3 columnas) -->
+                    <div class="md:col-span-3 space-y-2">
                         <button type="submit" 
-                                class="w-full py-2.5 sm:py-3 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                                class="w-full h-12 bg-[#F5B81C] hover:bg-[#e5ac18] text-black font-black text-sm uppercase tracking-wider rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
                                 <line x1="5" y1="12" x2="19" y2="12"/>
