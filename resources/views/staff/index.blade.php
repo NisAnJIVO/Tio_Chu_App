@@ -8,7 +8,7 @@
 @media print {
     #main-sidebar, header, nav, .drawer-panel, .drawer-overlay,
     #shift-selector-modal, #staff-toast, button, input,
-    .role-pill, a, [type="button"], .md\:hidden {
+    .role-pill, a, [type="button"], .screen-only, .no-print {
         display: none !important;
     }
     body, main, .max-w-7xl {
@@ -22,89 +22,131 @@
     .print-only {
         display: block !important;
     }
-    .hidden.md\:block {
-        display: block !important;
-    }
     table {
         display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
     }
     th, td {
-        border: 1px solid #d1d5db !important;
-        padding: 6px 10px !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        padding: 6px 8px !important;
         color: #000000 !important;
     }
     th {
-        background: #f3f4f6 !important;
+        border-bottom: 2px solid #000000 !important;
         font-weight: bold !important;
-    }
-    .category-divider-header {
-        background: #e5e7eb !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-    }
-    .text-white, .text-zinc-200, .text-zinc-300, .text-zinc-400 {
-        color: #000000 !important;
-    }
-    .text-\[\#F5B81C\] {
-        color: #000000 !important;
+        background: transparent !important;
     }
 }
 </style>
 
 <div class="space-y-5 max-w-7xl mx-auto pb-10">
 
-    <!-- CABECERA EXCLUSIVA PARA IMPRESIÓN (OCULTA EN PANTALLA) -->
-    <div class="hidden print-only text-center pb-4 mb-4 border-b-2 border-black font-sans">
-        <h1 class="text-2xl font-black uppercase tracking-tight text-black">DISCOTECA TÍO CHU</h1>
-        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-700 mt-0.5">PLANILLA OFICIAL DE PERSONAL Y ASISTENCIA DEL TURNO</h2>
-        <div class="flex items-center justify-center gap-3 text-xs text-zinc-600 mt-1">
-            <span>Día de Turno: <strong class="uppercase text-black">{{ $currentDay }}</strong></span>
-            <span>•</span>
-            <span>Integrantes: <strong class="text-black">{{ $staffMembers->count() }} trabajadores</strong></span>
-            @if($activeSession)
-                <span>•</span>
-                <span>Noche Activa: <strong class="uppercase text-black">{{ $activeSession->day_name }} ({{ \Carbon\Carbon::parse($activeSession->session_date)->format('d/m/Y') }})</strong></span>
-            @endif
-        </div>
-    </div>
-
-    <!-- ==========================================
-         CABECERA: CONTROL OPERATIVO - PERSONAL Y TURNOS
-         ========================================== -->
-    <div class="notoria-card px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-sm font-sans">
-        <!-- Título + Estado de Noche -->
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl notoria-subtile flex items-center justify-center text-[#F5B81C] shrink-0 shadow-sm">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-            </div>
+    <!-- ========================================================
+         REPORTE IMPRESO ULTRA MINIMALISTA: LISTA DE QUIÉNES TRABAJARON Y SI SE LES PAGÓ
+         ======================================================== -->
+    <div class="hidden print-only font-sans p-4 text-black bg-white">
+        <div class="border-b-2 border-black pb-2 mb-3 flex items-baseline justify-between">
             <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
-                        Personal y Turnos
-                    </h1>
-                    @if($activeSession)
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg notoria-subtile text-[11px] font-bold theme-text-secondary">
-                            <span class="w-1.5 h-1.5 rounded-full {{ $activeSession->isOpen() ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' }}"></span>
-                            <span class="uppercase text-[#F5B81C] font-mono">{{ $activeSession->day_name }}</span>
-                            <span class="theme-text-muted font-mono text-[10px]">{{ \Carbon\Carbon::parse($activeSession->session_date)->format('d/m') }}</span>
-                        </span>
-                    @endif
-                </div>
-                <p class="text-xs theme-text-secondary mt-0.5">
-                    Planilla de personal, asignación de áreas y control de asistencia
+                <h1 class="text-lg font-black uppercase tracking-tight text-black">TÍO CHU — PERSONAL DE TURNO</h1>
+                <p class="text-xs font-semibold text-neutral-800 uppercase mt-0.5">
+                    {{ $activeSession ? $activeSession->day_name . ' (' . \Carbon\Carbon::parse($activeSession->session_date)->format('d/m/Y') . ')' : mb_strtoupper($currentDay) }}
                 </p>
             </div>
+            <div class="text-right text-xs text-neutral-800">
+                <span>Total Asistentes: <strong>{{ $staffMembers->count() }}</strong></span>
+            </div>
         </div>
 
-        <!-- Botones de Acción -->
+        <table class="w-full text-xs text-left border-collapse">
+            <thead>
+                <tr class="border-b-2 border-black text-black uppercase font-bold text-[11px]">
+                    <th class="py-1 px-2 w-8 text-center font-mono">#</th>
+                    <th class="py-1 px-2">Nombre</th>
+                    <th class="py-1 px-2">Cargo</th>
+                    <th class="py-1 px-2 text-right">Jornal (Bs.)</th>
+                    <th class="py-1 px-2 text-center">¿Se le pagó?</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-200">
+                @php
+                    $printTotalPay = 0;
+                    $printTotalPaid = 0;
+                    $printPaidCount = 0;
+                @endphp
+                @forelse($staffMembers as $idx => $member)
+                    @php
+                        $att = $attendancesByStaffId[$member->id] ?? null;
+                        $pay = $att && $att->pay_amount ? (float)$att->pay_amount : match($currentDay) {
+                            'viernes' => $member->getPayForDay('Viernes'),
+                            'sabado' => $member->getPayForDay('Sábado'),
+                            'domingo' => $member->getPayForDay('Domingo'),
+                            default => ($activeSession && staffNormalizeDay($activeSession->day_name) === $currentDay)
+                                ? $member->getPayForDay($activeSession->day_name)
+                                : ($member->friday_pay ?? $member->saturday_pay ?? $member->sunday_pay ?? $member->default_pay ?? 0),
+                        };
+                        $isPaid = $att ? (bool)$att->is_paid : false;
+                        $printTotalPay += $pay;
+                        if ($isPaid) {
+                            $printTotalPaid += $pay;
+                            $printPaidCount++;
+                        }
+                        $displayRole = str_ireplace(['Staff / ', 'Staff/', ' (S)', '(S)', 'mozo', 'mozos'], ['', '', '', '', 'MESERO', 'MESEROS'], $member->role);
+                    @endphp
+                    <tr>
+                        <td class="py-1.5 px-2 text-center font-mono font-bold">{{ $idx + 1 }}</td>
+                        <td class="py-1.5 px-2 font-bold uppercase text-black">{{ $member->name }}</td>
+                        <td class="py-1.5 px-2 uppercase text-neutral-700">{{ $displayRole }}</td>
+                        <td class="py-1.5 px-2 text-right font-mono font-bold text-black">{{ number_format($pay, 2) }}</td>
+                        <td class="py-1.5 px-2 text-center font-bold {{ $isPaid ? 'text-black' : 'text-neutral-500' }}">
+                            {{ $isPaid ? 'SÍ (PAGADO)' : 'NO' }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="py-4 text-center text-neutral-500">
+                            No hay personal registrado en este turno.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+            <tfoot>
+                <tr class="border-t-2 border-black font-bold text-black">
+                    <td colspan="3" class="py-2 px-2 text-right uppercase font-bold">TOTALES:</td>
+                    <td class="py-2 px-2 text-right font-mono font-bold">Bs. {{ number_format($printTotalPay, 2) }}</td>
+                    <td class="py-2 px-2 text-center font-mono text-xs">
+                        Pagados: {{ $printPaidCount }} / {{ $staffMembers->count() }} (Bs. {{ number_format($printTotalPaid, 2) }})
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- CONTENIDO VISIBLE EN PANTALLA -->
+    <div class="screen-only space-y-5">
+
+    <!-- ==========================================
+         CABECERA: CONTROL OPERATIVO - PERSONAL Y TURNOS (NIVELADA)
+         ========================================== -->
+    <div class="notoria-card px-5 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 shadow-sm font-sans">
+        <!-- Título + Estado de Noche (Al mismo nivel) -->
+        <div class="flex items-center gap-2.5">
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">
+                Personal y Turnos
+            </h1>
+            @if($activeSession)
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg notoria-subtile text-xs font-bold theme-text-secondary">
+                    <span class="uppercase text-[#F5B81C] font-mono">{{ $activeSession->day_name }}</span>
+                    <span class="theme-text-muted font-mono text-[11px]">{{ \Carbon\Carbon::parse($activeSession->session_date)->format('d/m') }}</span>
+                </span>
+            @endif
+        </div>
+
+        <!-- Botones de Acción (Al mismo nivel) -->
         <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 shrink-0">
             @if($activeSession && $activeSession->isOpen())
                 <button type="button" onclick="openShiftSelectorModal()"
-                        class="inline-flex items-center gap-2 px-3.5 py-2.5 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer active:scale-95">
+                        class="inline-flex items-center gap-2 px-3.5 py-2 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer active:scale-95">
                     <svg class="w-4 h-4 shrink-0 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                     </svg>
@@ -116,15 +158,15 @@
             @endif
 
             <button type="button" onclick="window.print()" 
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2.5 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer">
-                <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                 </svg>
                 <span>Imprimir</span>
             </button>
 
             <a href="{{ route('staffPayments.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3.5 py-2.5 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95">
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95">
                 <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
@@ -132,7 +174,7 @@
             </a>
 
             <button type="button" onclick="openCreateStaffDrawer()"
-                   class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl transition-all shadow-md shadow-[#F5B81C]/20 cursor-pointer active:scale-95">
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-[#F5B81C] hover:bg-[#e5ac18] text-zinc-950 text-xs font-black tracking-wider uppercase rounded-xl transition-all shadow-md shadow-[#F5B81C]/20 cursor-pointer active:scale-95">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -526,20 +568,7 @@
             </table>
         </div>
     </div>
-
-    <!-- FIRMAS PARA REPORTE IMPRESO DE TURNO (OCULTO EN PANTALLA) -->
-    <div class="hidden print-only pt-10 mt-8 border-t border-black text-center text-xs font-sans">
-        <div class="grid grid-cols-2 gap-12">
-            <div>
-                <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Encargado de Turno / Seguridad</div>
-                <span class="text-[10px] text-zinc-600 block mt-0.5">Control de Asistencia</span>
-            </div>
-            <div>
-                <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Don Ludo / Gerencia</div>
-                <span class="text-[10px] text-zinc-600 block mt-0.5">Visto Bueno y Aprobación</span>
-            </div>
-        </div>
-    </div>
+    </div> <!-- FIN screen-only -->
 
 </div>
 

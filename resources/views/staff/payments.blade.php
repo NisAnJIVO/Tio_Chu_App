@@ -532,20 +532,6 @@
             </div>
         </form>
 
-        <!-- FIRMAS PARA REPORTE IMPRESO DE PLANILLA (OCULTO EN PANTALLA) -->
-        <div class="hidden print-only pt-10 mt-8 border-t border-black text-center text-xs font-sans">
-            <div class="grid grid-cols-2 gap-12">
-                <div>
-                    <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Cajero / Encargado de Pagos</div>
-                    <span class="text-[10px] text-zinc-600 block mt-0.5">Firma y Aclaración</span>
-                </div>
-                <div>
-                    <div class="border-t border-black w-48 mx-auto pt-2 font-bold uppercase text-black">Don Ludo / Gerencia</div>
-                    <span class="text-[10px] text-zinc-600 block mt-0.5">Visto Bueno y Aprobación</span>
-                </div>
-            </div>
-        </div>
-
     @endif
 
 </div>

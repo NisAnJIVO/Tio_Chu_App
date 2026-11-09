@@ -124,6 +124,10 @@ class StaffController extends Controller
             ? StaffAttendance::where('night_session_id', $activeSession->id)->pluck('staff_id')->toArray() 
             : [];
 
+        $attendancesByStaffId = $activeSession 
+            ? StaffAttendance::where('night_session_id', $activeSession->id)->get()->keyBy('staff_id') 
+            : collect();
+
         return view('staff.index', compact(
             'staffMembers',
             'currentDay',
@@ -137,7 +141,8 @@ class StaffController extends Controller
             'extraDayKey',
             'countExtra',
             'allActiveStaff',
-            'currentSessionStaffIds'
+            'currentSessionStaffIds',
+            'attendancesByStaffId'
         ));
     }
 
