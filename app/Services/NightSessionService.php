@@ -291,6 +291,9 @@ class NightSessionService
             $totalGuardarropa += (float)$closing->total_guardarropa;
             $totalSnacks += (float)$closing->total_snacks;
 
+            $sPrincipalQrNet = max(0, $sPrincipalQr - $sBeerQr);
+            $sPrincipalCashNet = max(0, $nightEfectivo - $sSubteCash - $sTiendaCash);
+
             $nightsData[] = [
                 'id' => $session->id,
                 'date' => \Carbon\Carbon::parse($session->session_date)->format('d/m/Y'),
@@ -300,6 +303,8 @@ class NightSessionService
                 'ventas' => $nightVentas,
                 'efectivo' => $nightEfectivo,
                 'qr' => $nightQr,
+                'qr_yasta' => $nightQrYasta,
+                'qr_yape' => $nightQrYape,
                 'qr_spent' => $sBeerQr,
                 'qr_remaining' => max(0, $nightQr - $sBeerQr),
                 'tarjeta_bruto' => $nightCardGross,
@@ -312,6 +317,29 @@ class NightSessionService
                 'ingresos' => $nightIngresos,
                 'egresos' => $nightEgresos,
                 'neto' => $nightNeto,
+                'bars' => [
+                    'principal' => [
+                        'card' => $sPrincipalCard,
+                        'qr' => $sPrincipalQr,
+                        'qr_net' => $sPrincipalQrNet,
+                        'personal' => $nightPersonal,
+                        'efectivo' => $sPrincipalCashNet,
+                        'efectivo_bruto' => $sPrincipalCash,
+                        'total' => $sPrincipalSales,
+                    ],
+                    'subte' => [
+                        'card' => $sSubteCard,
+                        'qr' => $sSubteQr,
+                        'efectivo' => $sSubteCash,
+                        'total' => $sSubteSales,
+                    ],
+                    'tienda' => [
+                        'card' => $sTiendaCard,
+                        'qr' => $sTiendaQr,
+                        'efectivo' => $sTiendaCash,
+                        'total' => $sTiendaSales,
+                    ],
+                ],
             ];
         }
 

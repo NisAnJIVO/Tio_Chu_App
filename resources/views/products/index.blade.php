@@ -567,22 +567,22 @@
     <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data" class="drawer-body space-y-4">
         @csrf
         <div>
-            <label for="d_name" class="block text-xs font-bold text-zinc-300 mb-1.5">Nombre de la Bebida <span class="text-[#F5B81C]">*</span></label>
+            <label for="d_name" class="block text-xs font-bold theme-text-secondary mb-1.5">Nombre de la Bebida <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
             <input type="text" name="name" id="d_name" required placeholder="Ej. Fernet Branca 750ml"
-                   class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-[#F5B81C] transition-all">
+                   class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none transition-all">
         </div>
 
         <!-- Imagen de la Bebida -->
-        <div class="p-3.5 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-3">
+        <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-zinc-900/70 border border-slate-300 dark:border-zinc-800 space-y-3">
             <div class="flex items-center justify-between">
-                <label class="block text-xs font-bold text-zinc-300">Foto de la Bebida</label>
-                <span class="text-[10px] text-zinc-500 font-mono">Opcional</span>
+                <label class="block text-xs font-bold theme-text-primary">Foto de la Bebida</label>
+                <span class="text-[10px] theme-text-muted font-mono">Opcional</span>
             </div>
 
             <div class="flex items-center gap-3">
-                <div class="w-14 h-14 rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden flex items-center justify-center shrink-0">
+                <div class="w-14 h-14 rounded-xl bg-white dark:bg-zinc-950 border border-slate-300 dark:border-zinc-800 overflow-hidden flex items-center justify-center shrink-0">
                     <img id="cr_preview_img" src="" alt="" class="w-full h-full object-contain hidden p-1">
-                    <div id="cr_preview_placeholder" class="text-zinc-600 flex flex-col items-center">
+                    <div id="cr_preview_placeholder" class="text-slate-400 dark:text-zinc-600 flex flex-col items-center">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -591,25 +591,25 @@
 
                 <div class="flex-1 space-y-1">
                     <input type="hidden" name="image_path" id="cr_image_path" value="">
-                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold transition-all cursor-pointer border border-zinc-700">
-                        <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 text-xs font-bold transition-all cursor-pointer border border-slate-300 dark:border-zinc-700 shadow-xs">
+                        <svg class="w-3.5 h-3.5 text-amber-600 dark:text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
                         <span>Subir archivo...</span>
                         <input type="file" name="image" id="cr_file_input" accept="image/*" class="hidden" onchange="previewUploadImage(this, 'cr_preview_img', 'cr_preview_placeholder')">
                     </label>
-                    <p class="text-[10px] text-zinc-500">O elige del catálogo de abajo:</p>
+                    <p class="text-[10px] theme-text-muted">O elige del catálogo de abajo:</p>
                 </div>
             </div>
 
             @if(!empty($drinkImages))
-            <div class="pt-2 border-t border-zinc-800/80">
-                <div class="grid grid-cols-6 gap-1.5 max-h-32 overflow-y-auto p-1 bg-zinc-950/60 rounded-xl border border-zinc-800/60">
+            <div class="pt-2 border-t border-slate-300/80 dark:border-zinc-800/80">
+                <div class="grid grid-cols-6 gap-1.5 max-h-32 overflow-y-auto p-1.5 bg-white dark:bg-zinc-950/60 rounded-xl border border-slate-300 dark:border-zinc-800/60">
                     @foreach($drinkImages as $dImg)
                     <button type="button"
                             onclick="pickCatalogImage('{{ $dImg['path'] }}', '{{ $dImg['url'] }}', 'cr_image_path', 'cr_preview_img', 'cr_preview_placeholder', this)"
                             title="{{ $dImg['filename'] }}"
-                            class="catalog-thumb-btn aspect-square rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#F5B81C] p-1 flex items-center justify-center transition-all cursor-pointer">
+                            class="catalog-thumb-btn aspect-square rounded-lg bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:border-[#F5B81C] p-1 flex items-center justify-center transition-all cursor-pointer">
                         <img src="{{ $dImg['url'] }}" alt="{{ $dImg['filename'] }}" class="w-full h-full object-contain pointer-events-none">
                     </button>
                     @endforeach
@@ -620,8 +620,8 @@
 
         <div class="grid grid-cols-2 gap-3.5">
             <div>
-                <label for="d_category" class="block text-xs font-bold text-zinc-300 mb-1.5">Categoría <span class="text-[#F5B81C]">*</span></label>
-                <select name="category" id="d_category" required class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all cursor-pointer">
+                <label for="d_category" class="block text-xs font-bold theme-text-secondary mb-1.5">Categoría <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
+                <select name="category" id="d_category" required class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary focus:outline-none transition-all cursor-pointer">
                     <option value="Licores">Licores (Botellas)</option>
                     <option value="Mixers">Gaseosas & Aguas (Mixers)</option>
                     <option value="Cervezas">Cervezas</option>
@@ -630,44 +630,44 @@
                 </select>
             </div>
             <div>
-                <label for="d_unit" class="block text-xs font-bold text-zinc-300 mb-1.5">Presentación <span class="text-[#F5B81C]">*</span></label>
+                <label for="d_unit" class="block text-xs font-bold theme-text-secondary mb-1.5">Presentación <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
                 <input type="text" name="unit" id="d_unit" required value="Botella 750ml" placeholder="Ej. Botella 750ml"
-                       class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all">
+                       class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary focus:outline-none transition-all">
             </div>
         </div>
         <div class="grid grid-cols-2 gap-3.5">
             <div>
-                <label for="d_sale_price" class="block text-xs font-bold text-zinc-300 mb-1.5">Precio de Venta <span class="text-[#F5B81C]">*</span></label>
-                <div class="flex items-center rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-2 focus-within:border-[#F5B81C] transition-all">
-                    <span class="text-xs font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
+                <label for="d_sale_price" class="block text-xs font-bold theme-text-secondary mb-1.5">Precio de Venta <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
+                <div class="notoria-input flex items-center px-3 py-2 transition-all">
+                    <span class="text-xs font-mono font-bold text-amber-600 dark:text-[#F5B81C] mr-2 shrink-0">Bs.</span>
                     <input type="number" step="0.50" name="sale_price" id="d_sale_price" required value="0"
-                           class="w-full text-sm font-mono font-bold bg-transparent border-0 text-white focus:outline-none p-0">
+                           class="w-full text-sm font-mono font-bold bg-transparent border-0 theme-text-primary focus:outline-none p-0">
                 </div>
             </div>
             <div>
-                <label for="d_cost_price" class="block text-xs font-bold text-zinc-300 mb-1.5">Costo de Compra</label>
-                <div class="flex items-center rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-2 focus-within:border-[#F5B81C] transition-all">
-                    <span class="text-xs font-mono font-bold text-zinc-500 mr-2 shrink-0">Bs.</span>
+                <label for="d_cost_price" class="block text-xs font-bold theme-text-secondary mb-1.5">Costo de Compra</label>
+                <div class="notoria-input flex items-center px-3 py-2 transition-all">
+                    <span class="text-xs font-mono font-bold theme-text-muted mr-2 shrink-0">Bs.</span>
                     <input type="number" step="0.50" name="cost_price" id="d_cost_price" value="0"
-                           class="w-full text-sm font-mono bg-transparent border-0 text-zinc-300 focus:outline-none p-0">
+                           class="w-full text-sm font-mono font-bold bg-transparent border-0 theme-text-primary focus:outline-none p-0">
                 </div>
             </div>
         </div>
         <div class="grid grid-cols-2 gap-3.5">
             <div>
-                <label for="d_units_per_package" class="block text-xs font-bold text-zinc-300 mb-1.5">Unidades por Caja <span class="text-[#F5B81C]">*</span></label>
+                <label for="d_units_per_package" class="block text-xs font-bold theme-text-secondary mb-1.5">Unidades por Caja <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
                 <input type="number" name="units_per_package" id="d_units_per_package" required value="6"
-                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all">
+                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold notoria-input theme-text-primary focus:outline-none transition-all">
             </div>
             <div>
-                <label for="d_stock_warehouse" class="block text-xs font-bold text-zinc-300 mb-1.5">Stock en Bodega <span class="text-[#F5B81C]">*</span></label>
+                <label for="d_stock_warehouse" class="block text-xs font-bold theme-text-secondary mb-1.5">Stock en Bodega <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
                 <input type="number" name="stock_warehouse" id="d_stock_warehouse" required value="0"
-                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold bg-zinc-900 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:border-[#F5B81C] transition-all">
+                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold notoria-input theme-text-primary focus:outline-none transition-all">
             </div>
         </div>
-        <div class="pt-5 border-t border-zinc-800 flex items-center justify-end gap-2.5 mt-6 w-full">
+        <div class="pt-5 border-t notoria-border flex items-center justify-end gap-2.5 mt-6 w-full">
             <button type="button" onclick="closeDrawer()" 
-                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-transparent text-slate-700 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                 Cancelar
             </button>
             <button type="submit" 
@@ -696,23 +696,23 @@
         @method('PUT')
         <input type="hidden" name="_ajax" value="1">
         <div>
-            <label for="ed_name" class="block text-xs font-bold text-zinc-300 mb-1.5">Nombre de la Bebida <span class="text-[#F5B81C]">*</span></label>
+            <label for="ed_name" class="block text-xs font-bold theme-text-secondary mb-1.5">Nombre de la Bebida <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
             <input type="text" name="name" id="ed_name" required
-                   class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all">
+                   class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary focus:outline-none transition-all">
         </div>
 
         <!-- Sección de Imagen de la Bebida -->
-        <div id="ed_image_section" class="p-3.5 rounded-xl bg-zinc-900/70 border border-zinc-800 space-y-3 transition-all duration-300">
+        <div id="ed_image_section" class="p-3.5 rounded-xl bg-slate-100 dark:bg-zinc-900/70 border border-slate-300 dark:border-zinc-800 space-y-3 transition-all duration-300">
             <div class="flex items-center justify-between">
-                <label class="block text-xs font-bold text-zinc-300">Foto de la Bebida</label>
-                <span class="text-[10px] text-zinc-500 font-mono">PNG / JPG / WEBP</span>
+                <label class="block text-xs font-bold theme-text-primary">Foto de la Bebida</label>
+                <span class="text-[10px] theme-text-muted font-mono">PNG / JPG / WEBP</span>
             </div>
 
             <div class="flex items-center gap-3">
                 <!-- Miniatura de Vista Previa -->
-                <div class="w-16 h-16 rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden flex items-center justify-center shrink-0 relative">
+                <div class="w-16 h-16 rounded-xl bg-white dark:bg-zinc-950 border border-slate-300 dark:border-zinc-800 overflow-hidden flex items-center justify-center shrink-0 relative">
                     <img id="ed_preview_img" src="" alt="" class="w-full h-full object-contain hidden p-1">
-                    <div id="ed_preview_placeholder" class="text-zinc-600 flex flex-col items-center">
+                    <div id="ed_preview_placeholder" class="text-slate-400 dark:text-zinc-600 flex flex-col items-center">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -721,27 +721,27 @@
 
                 <div class="flex-1 space-y-1.5">
                     <input type="hidden" name="image_path" id="ed_image_path" value="">
-                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold transition-all cursor-pointer border border-zinc-700">
-                        <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 text-xs font-bold transition-all cursor-pointer border border-slate-300 dark:border-zinc-700 shadow-xs">
+                        <svg class="w-3.5 h-3.5 text-amber-600 dark:text-[#F5B81C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
                         <span>Subir nueva foto...</span>
                         <input type="file" name="image" id="ed_file_input" accept="image/*" class="hidden" onchange="previewUploadImage(this, 'ed_preview_img', 'ed_preview_placeholder')">
                     </label>
-                    <p class="text-[10px] text-zinc-500">O elige una foto del catálogo de abajo:</p>
+                    <p class="text-[10px] theme-text-muted">O elige una foto del catálogo de abajo:</p>
                 </div>
             </div>
 
             <!-- Malla de Selección de Catálogo Drinks -->
             @if(!empty($drinkImages))
-            <div class="pt-2 border-t border-zinc-800/80">
-                <span class="block text-[10px] font-bold text-zinc-400 mb-1.5">Catálogo en /images/drinks ({{ count($drinkImages) }} fotos disponibles):</span>
-                <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-36 overflow-y-auto p-1.5 bg-zinc-950/60 rounded-xl border border-zinc-800/60">
+            <div class="pt-2 border-t border-slate-300/80 dark:border-zinc-800/80">
+                <span class="block text-[10px] font-bold theme-text-secondary mb-1.5">Catálogo en /images/drinks ({{ count($drinkImages) }} fotos disponibles):</span>
+                <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 max-h-36 overflow-y-auto p-1.5 bg-white dark:bg-zinc-950/60 rounded-xl border border-slate-300 dark:border-zinc-800/60">
                     @foreach($drinkImages as $dImg)
                     <button type="button"
                             onclick="pickCatalogImage('{{ $dImg['path'] }}', '{{ $dImg['url'] }}', 'ed_image_path', 'ed_preview_img', 'ed_preview_placeholder', this)"
                             title="{{ $dImg['filename'] }}"
-                            class="catalog-thumb-btn aspect-square rounded-lg bg-zinc-900 border border-zinc-800 hover:border-[#F5B81C] p-1 flex items-center justify-center transition-all cursor-pointer">
+                            class="catalog-thumb-btn aspect-square rounded-lg bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 hover:border-[#F5B81C] p-1 flex items-center justify-center transition-all cursor-pointer">
                         <img src="{{ $dImg['url'] }}" alt="{{ $dImg['filename'] }}" class="w-full h-full object-contain pointer-events-none">
                     </button>
                     @endforeach
@@ -751,8 +751,8 @@
         </div>
         <div class="grid grid-cols-2 gap-3.5">
             <div>
-                <label for="ed_category" class="block text-xs font-bold text-zinc-300 mb-1.5">Categoría <span class="text-[#F5B81C]">*</span></label>
-                <select name="category" id="ed_category" required class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all cursor-pointer">
+                <label for="ed_category" class="block text-xs font-bold theme-text-secondary mb-1.5">Categoría <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
+                <select name="category" id="ed_category" required class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary focus:outline-none transition-all cursor-pointer">
                     <option value="Licores">Licores (Botellas)</option>
                     <option value="Mixers">Gaseosas & Aguas (Mixers)</option>
                     <option value="Cervezas">Cervezas</option>
@@ -761,54 +761,54 @@
                 </select>
             </div>
             <div>
-                <label for="ed_unit" class="block text-xs font-bold text-zinc-300 mb-1.5">Presentación <span class="text-[#F5B81C]">*</span></label>
+                <label for="ed_unit" class="block text-xs font-bold theme-text-secondary mb-1.5">Presentación <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
                 <input type="text" name="unit" id="ed_unit" required placeholder="Ej. Botella 750ml"
-                       class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all">
+                       class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary focus:outline-none transition-all">
             </div>
         </div>
         <div class="grid grid-cols-2 gap-3.5">
             <div>
-                <label for="ed_sale_price" class="block text-xs font-bold text-zinc-300 mb-1.5">Precio de Venta <span class="text-[#F5B81C]">*</span></label>
-                <div class="flex items-center rounded-xl bg-zinc-900 border border-zinc-800 px-3.5 py-2 focus-within:border-[#F5B81C] transition-all">
-                    <span class="text-xs font-mono font-bold text-[#F5B81C] mr-2 shrink-0">Bs.</span>
+                <label for="ed_sale_price" class="block text-xs font-bold theme-text-secondary mb-1.5">Precio de Venta <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
+                <div class="notoria-input flex items-center px-3.5 py-2 transition-all">
+                    <span class="text-xs font-mono font-bold text-amber-600 dark:text-[#F5B81C] mr-2 shrink-0">Bs.</span>
                     <input type="number" step="0.50" name="sale_price" id="ed_sale_price" required
-                           class="w-full text-sm font-mono font-bold bg-transparent border-0 text-white focus:outline-none p-0">
+                           class="w-full text-sm font-mono font-bold bg-transparent border-0 theme-text-primary focus:outline-none p-0">
                 </div>
             </div>
             <div>
-                <label for="ed_cost_price" class="block text-xs font-bold text-zinc-300 mb-1.5">Costo de Compra</label>
-                <div class="flex items-center rounded-xl bg-zinc-900 border border-zinc-800 px-3.5 py-2 focus-within:border-[#F5B81C] transition-all">
-                    <span class="text-xs font-mono font-bold text-zinc-500 mr-2 shrink-0">Bs.</span>
+                <label for="ed_cost_price" class="block text-xs font-bold theme-text-secondary mb-1.5">Costo de Compra</label>
+                <div class="notoria-input flex items-center px-3.5 py-2 transition-all">
+                    <span class="text-xs font-mono font-bold theme-text-muted mr-2 shrink-0">Bs.</span>
                     <input type="number" step="0.50" name="cost_price" id="ed_cost_price"
-                           class="w-full text-sm font-mono bg-transparent border-0 text-zinc-300 focus:outline-none p-0">
+                           class="w-full text-sm font-mono font-bold bg-transparent border-0 theme-text-primary focus:outline-none p-0">
                 </div>
             </div>
         </div>
         <div class="grid grid-cols-2 gap-3.5">
             <div>
-                <label for="ed_units_per_package" class="block text-xs font-bold text-zinc-300 mb-1.5">Unidades por Caja <span class="text-[#F5B81C]">*</span></label>
+                <label for="ed_units_per_package" class="block text-xs font-bold theme-text-secondary mb-1.5">Unidades por Caja <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
                 <input type="number" name="units_per_package" id="ed_units_per_package" required
-                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all">
+                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold notoria-input theme-text-primary focus:outline-none transition-all">
             </div>
             <div>
-                <label for="ed_stock_warehouse" class="block text-xs font-bold text-zinc-300 mb-1.5">Stock en Bodega <span class="text-[#F5B81C]">*</span></label>
+                <label for="ed_stock_warehouse" class="block text-xs font-bold theme-text-secondary mb-1.5">Stock en Bodega <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
                 <input type="number" name="stock_warehouse" id="ed_stock_warehouse" required
-                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold bg-zinc-900 border border-zinc-800 text-[#F5B81C] focus:outline-none focus:border-[#F5B81C] transition-all">
+                       class="w-full px-3.5 py-2.5 rounded-xl text-sm font-mono font-bold notoria-input theme-text-primary focus:outline-none transition-all">
             </div>
         </div>
         <div>
-            <label for="ed_is_active" class="block text-xs font-bold text-zinc-300 mb-1.5">Estado</label>
-            <select name="is_active" id="ed_is_active" class="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#F5B81C] transition-all cursor-pointer">
+            <label for="ed_is_active" class="block text-xs font-bold theme-text-secondary mb-1.5">Estado</label>
+            <select name="is_active" id="ed_is_active" class="w-full px-3.5 py-2.5 rounded-xl text-sm notoria-input theme-text-primary focus:outline-none transition-all cursor-pointer">
                 <option value="1">Activo (Disponible para venta en barras)</option>
                 <option value="0">Pausado (No mostrar en ventas)</option>
             </select>
         </div>
-        <div class="pt-5 border-t border-zinc-800 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 w-full">
-            <button type="button" onclick="confirmDeleteProduct()" class="w-full sm:w-auto text-center sm:text-left py-2 text-xs text-rose-400 hover:text-rose-300 font-bold transition-all cursor-pointer">
+        <div class="pt-5 border-t notoria-border flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 w-full">
+            <button type="button" onclick="confirmDeleteProduct()" class="w-full sm:w-auto text-center sm:text-left py-2 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-500 font-bold transition-all cursor-pointer">
                 Eliminar Bebida
             </button>
             <div class="flex items-center gap-2.5 w-full sm:w-auto">
-                <button type="button" onclick="closeDrawer()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
+                <button type="button" onclick="closeDrawer()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-transparent text-slate-700 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                     Cancelar
                 </button>
                 <button type="button" onclick="handleEditProductSubmit(event)" id="edit-prod-submit-btn" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
@@ -1100,6 +1100,16 @@ function previewUploadImage(input, previewId, placeholderId) {
     }
 }
 
+const THUMB_IDLE_CLS = ['border-slate-200', 'dark:border-zinc-800', 'bg-slate-50', 'dark:bg-zinc-900'];
+const THUMB_ACTIVE_CLS = ['border-[#F5B81C]', 'bg-amber-50', 'dark:bg-zinc-800', 'ring-1', 'ring-[#F5B81C]'];
+
+function resetCatalogThumbs(selector) {
+    document.querySelectorAll(selector).forEach(b => {
+        b.classList.remove(...THUMB_ACTIVE_CLS);
+        b.classList.add(...THUMB_IDLE_CLS);
+    });
+}
+
 function pickCatalogImage(path, url, inputId, previewId, placeholderId, btnEl) {
     const pathInput = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
@@ -1114,11 +1124,11 @@ function pickCatalogImage(path, url, inputId, previewId, placeholderId, btnEl) {
 
     if (btnEl && btnEl.parentElement) {
         btnEl.parentElement.querySelectorAll('.catalog-thumb-btn').forEach(b => {
-            b.classList.remove('border-[#F5B81C]', 'bg-zinc-800', 'ring-1', 'ring-[#F5B81C]');
-            b.classList.add('border-zinc-800', 'bg-zinc-900');
+            b.classList.remove(...THUMB_ACTIVE_CLS);
+            b.classList.add(...THUMB_IDLE_CLS);
         });
-        btnEl.classList.remove('border-zinc-800', 'bg-zinc-900');
-        btnEl.classList.add('border-[#F5B81C]', 'bg-zinc-800', 'ring-1', 'ring-[#F5B81C]');
+        btnEl.classList.remove(...THUMB_IDLE_CLS);
+        btnEl.classList.add(...THUMB_ACTIVE_CLS);
     }
 }
 
@@ -1134,10 +1144,7 @@ function openCreateDrawer() {
     if (crFile) crFile.value = '';
     if (crPath) crPath.value = '';
 
-    document.querySelectorAll('#drawer-create-product .catalog-thumb-btn').forEach(b => {
-        b.classList.remove('border-[#F5B81C]', 'bg-zinc-800', 'ring-1', 'ring-[#F5B81C]');
-        b.classList.add('border-zinc-800', 'bg-zinc-900');
-    });
+    resetCatalogThumbs('#drawer-create-product .catalog-thumb-btn');
 
     document.getElementById('product-drawer-overlay').classList.add('is-open');
     document.getElementById('drawer-create-product').classList.add('is-open');
@@ -1181,10 +1188,7 @@ function openEditDrawer(id, name, cat, unit, saleP, costP, uPkg, stock, active, 
     }
 
     // Resetear selección en catálogo
-    document.querySelectorAll('#drawer-edit-product .catalog-thumb-btn').forEach(b => {
-        b.classList.remove('border-[#F5B81C]', 'bg-zinc-800', 'ring-1', 'ring-[#F5B81C]');
-        b.classList.add('border-zinc-800', 'bg-zinc-900');
-    });
+    resetCatalogThumbs('#drawer-edit-product .catalog-thumb-btn');
 
     document.getElementById('product-drawer-overlay').classList.add('is-open');
     document.getElementById('drawer-edit-product').classList.add('is-open');

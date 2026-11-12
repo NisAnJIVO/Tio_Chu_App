@@ -16,7 +16,7 @@ class MediaController extends Controller
     {
         $this->ensureSystemAssetsExist();
 
-        $category = $request->query('category', 'all');
+        $category = $request->query('category', 'system');
 
         $query = MediaAsset::query();
 

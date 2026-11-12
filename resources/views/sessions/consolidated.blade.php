@@ -1,539 +1,401 @@
 @extends('layouts.app')
 
-@section('title', 'Resumen Consolidado de Noches — ' . $summary['date_range'])
+@section('title', 'Resumen Consolidado — ' . $summary['date_range'])
 
 @section('content')
+@php
+    $totals = $summary['totals'] ?? [];
+    $nights = $summary['nights'] ?? [];
+@endphp
+
 <style>
-    /* Estilos de Impresión Ejecutiva y Administrativa */
+    .excel-sheet {
+        background-color: #ffffff;
+        color: #0f172a;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .excel-night-card {
+        border: 1.5px solid #0f172a;
+        background-color: #ffffff;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .excel-header-top {
+        background-color: #fef08a;
+        color: #0f172a;
+        font-weight: 800;
+        text-align: center;
+        border-bottom: 1px solid #0f172a;
+    }
+
+    .excel-header-day {
+        background-color: #f59e0b;
+        color: #0f172a;
+        font-weight: 800;
+        text-align: center;
+        border-bottom: 1.5px solid #0f172a;
+    }
+
+    .excel-section-title {
+        background-color: #e2e8f0;
+        color: #0f172a;
+        font-weight: 800;
+        text-transform: uppercase;
+        border-bottom: 1px solid #475569;
+    }
+
+    .excel-total-label {
+        background-color: #fef3c7;
+        color: #0f172a;
+        font-weight: 800;
+    }
+
+    .excel-total-val {
+        background-color: #ffedd5;
+        color: #0f172a;
+        font-weight: 800;
+    }
+
+    .excel-grand-label {
+        background-color: #f87171;
+        color: #0f172a;
+        font-weight: 900;
+    }
+
+    .excel-grand-val {
+        background-color: #0f172a;
+        color: #ffffff !important;
+        font-weight: 900;
+    }
+
     @media print {
         @page {
             size: letter portrait;
-            margin: 12mm 15mm 15mm 15mm;
+            margin: 10mm 12mm;
         }
 
         html, body {
             background-color: #ffffff !important;
             color: #000000 !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-            font-size: 9.5pt !important;
-            line-height: 1.35 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+            font-size: 8.5pt !important;
             height: auto !important;
             min-height: 0 !important;
             overflow: visible !important;
         }
 
-        /* Ocultar interfaz web, barra lateral y elementos no imprimibles */
-        #main-sidebar, aside, nav, header, footer, .no-print, #flash-success-toast, button, a[href]:not(.print-include) {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        #main-sidebar, aside, nav, header, footer, .no-print, #flash-success-toast, button, a[href] {
             display: none !important;
             visibility: hidden !important;
             height: 0 !important;
-            width: 0 !important;
-            padding: 0 !important;
             margin: 0 !important;
+            padding: 0 !important;
         }
 
         main {
-            height: auto !important;
-            min-height: 0 !important;
-            overflow: visible !important;
             padding: 0 !important;
             margin: 0 !important;
-            background: #ffffff !important;
             max-width: 100% !important;
             width: 100% !important;
-            box-shadow: none !important;
-            border: none !important;
+            background: #ffffff !important;
         }
 
-        /* Contenedor del documento oficial */
-        .executive-doc-sheet {
-            background: #ffffff !important;
-            color: #000000 !important;
+        .excel-sheet {
             box-shadow: none !important;
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
         }
 
-        /* Tablas formales administrativas */
-        table.exec-table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-            margin-bottom: 12px !important;
-            page-break-inside: auto !important;
-            font-size: 8.5pt !important;
-        }
-
-        table.exec-table tr {
-            page-break-inside: avoid !important;
-            page-break-after: auto !important;
-        }
-
-        table.exec-table thead {
-            display: table-header-group !important;
-        }
-
-        table.exec-table th, table.exec-table td {
-            border: 1px solid #334155 !important;
-            padding: 4.5px 7px !important;
-            color: #000000 !important;
-        }
-
-        table.exec-table th {
-            background-color: #f1f5f9 !important;
-            color: #0f172a !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.03em !important;
-            font-size: 8pt !important;
-        }
-
-        table.exec-table tfoot td {
-            font-weight: 800 !important;
-            background-color: #f8fafc !important;
-            border-top: 2px solid #000000 !important;
-            border-bottom: 2px solid #000000 !important;
-        }
-
-        /* Resaltados de balance */
-        .double-underline {
-            border-bottom: 3px double #000000 !important;
+        .excel-nights-grid {
+            display: grid !important;
+            grid-template-columns: repeat({{ count($nights) > 1 ? 2 : 1 }}, minmax(0, 1fr)) !important;
+            gap: 10px !important;
         }
 
         .avoid-break {
             page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
     }
 </style>
 
-<div class="space-y-4 max-w-5xl mx-auto pb-16">
+<div class="space-y-4 max-w-6xl mx-auto pb-14">
 
-    <!-- BARRA SUPERIOR DE ACCIONES (NO IMPRIMIBLE) -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-white border border-zinc-200 rounded-xl no-print shadow-sm">
+    <!-- Barra de acciones superior (no imprimible) -->
+    <div class="no-print flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl bg-white border border-slate-200 shadow-sm text-slate-900">
         <div class="flex items-center gap-3">
-            <a href="{{ route('sessions.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 hover:text-black rounded-lg text-xs font-bold transition-all border border-zinc-300">
+            <a href="{{ route('sessions.index') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-bold border border-slate-300 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                 </svg>
                 <span>Volver a Historial</span>
             </a>
             <div>
-                <h2 class="text-sm font-bold text-zinc-950 tracking-tight">Resumen Consolidado</h2>
-                <p class="text-[11px] text-zinc-500 font-mono">{{ $summary['date_range'] }} • {{ $summary['count'] }} noches seleccionadas</p>
+                <h2 class="text-sm font-black text-slate-900 tracking-tight">Resumen Consolidado</h2>
+                <p class="text-[11px] text-slate-500 font-mono">
+                    {{ $summary['date_range'] }} • {{ $summary['count'] }} {{ $summary['count'] === 1 ? 'noche' : 'noches' }}
+                </p>
             </div>
         </div>
 
-        <div class="flex items-center gap-2">
-            <button type="button" onclick="window.print()" 
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black tracking-wider uppercase rounded-lg transition-all cursor-pointer shadow-sm active:scale-95 border border-[#dfa414]">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                </svg>
-                <span>Imprimir Reporte Oficial (PDF)</span>
-            </button>
-        </div>
+        <button type="button" onclick="window.print()"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#F5B81C] hover:bg-[#e5ac18] text-slate-950 text-xs font-black tracking-wider uppercase rounded-lg transition-all cursor-pointer shadow-sm border border-amber-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
+            <span>Imprimir Resumen</span>
+        </button>
     </div>
 
-    <!-- FOLIO OFICIAL DE AUDITORÍA EJECUTIVA (BLANCO, FORMAL Y SERIO) -->
-    <div class="executive-doc-sheet bg-white text-zinc-900 p-6 sm:p-10 rounded-2xl shadow-2xl border border-zinc-200">
-        
-        <!-- CABECERA FORMAL Y MINIMALISTA TÍO CHU -->
-        <div class="border-b-2 border-black pb-3 mb-5">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-black uppercase text-black font-sans tracking-tight">
-                        TÍO CHU — RESUMEN CONSOLIDADO
-                    </h1>
-                    <p class="text-xs font-bold text-zinc-700 mt-0.5 font-mono">
-                        {{ $summary['date_range'] }} • {{ $summary['count'] }} noches
-                    </p>
-                </div>
-                <div class="text-right text-xs text-zinc-600 font-mono">
-                    <span class="block font-bold text-black">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</span>
-                    <span class="text-[10px] text-zinc-500 uppercase">Moneda: Bolivianos (Bs.)</span>
-                </div>
+    <!-- Hoja Blanca Limpia (Estilo Excel Don Ludo) -->
+    <div class="excel-sheet p-5 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+
+        <!-- Cabecera Compacta -->
+        <div class="flex items-end justify-between border-b-2 border-slate-900 pb-2.5 mb-5">
+            <div>
+                <h1 class="text-lg sm:text-xl font-black uppercase tracking-tight text-slate-900">
+                    RESUMEN CONSOLIDADO — TÍO CHU
+                </h1>
+                <p class="text-xs font-bold font-mono text-slate-600 mt-0.5">
+                    {{ $summary['date_range'] }} • {{ $summary['count'] }} {{ $summary['count'] === 1 ? 'noche' : 'noches' }}
+                </p>
+            </div>
+            <div class="text-right font-mono text-[11px] text-slate-500">
+                <span class="block font-bold text-slate-800">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</span>
+                <span>Moneda: Bs.</span>
             </div>
         </div>
 
-        <!-- 1. RESUMEN EJECUTIVO DE RESULTADOS Y BALANCE -->
-        <div class="mb-6 avoid-break">
-            <div class="flex items-center justify-between pb-1.5 mb-2 border-b-2 border-black">
-                <h3 class="text-xs font-black uppercase tracking-wider text-black">
-                    1. Estado Financiero Consolidado (Balance Ejecutivo)
-                </h3>
-                <span class="text-[10px] text-zinc-600 italic">Cifras expresadas en Bolivianos</span>
-            </div>
-
-            <table class="exec-table w-full text-xs border border-black border-collapse">
-                <thead>
-                    <tr class="bg-zinc-100 text-black">
-                        <th class="p-2 text-left border border-black font-bold uppercase text-[10px]">Concepto Contable / Rubro</th>
-                        <th class="p-2 text-right border border-black font-bold uppercase text-[10px] w-36">Importe (Bs.)</th>
-                        <th class="p-2 text-left border border-black font-bold uppercase text-[10px] w-56">Detalle / Composición</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-300 text-zinc-900 font-mono">
-                    <tr>
-                        <td class="p-2 border border-black font-bold font-sans">
-                            Total Ingresos
-                        </td>
-                        <td class="p-2 border border-black text-right font-black text-sm">
-                            Bs. {{ number_format($summary['totals']['ingresos'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-700 font-sans">
-                            Efectivo en Bóveda + Cobros QR + Tarjetas POS
-                        </td>
-                    </tr>
-                    <tr class="bg-zinc-50/50">
-                        <td class="p-2 border border-black pl-5 font-sans text-zinc-800">
-                            ( - ) Planilla de Pagos al Personal
-                        </td>
-                        <td class="p-2 border border-black text-right text-rose-700 font-bold">
-                            - Bs. {{ number_format($summary['totals']['personal'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Sueldos liquidados a trabajadores por turno
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="p-2 border border-black pl-5 font-sans text-zinc-800">
-                            ( - ) Gastos Operativos y Salidas de Caja Chica
-                        </td>
-                        <td class="p-2 border border-black text-right text-rose-700 font-bold">
-                            - Bs. {{ number_format($summary['totals']['gastos'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Insumos, compras de emergencia y operaciones
-                        </td>
-                    </tr>
-                    @if($summary['totals']['beer_total'] > 0)
-                    <tr class="bg-amber-50/40">
-                        <td class="p-2 border border-black pl-5 font-sans text-zinc-800">
-                            ( - ) Pagos por Compra de Cerveza
-                        </td>
-                        <td class="p-2 border border-black text-right text-rose-700 font-bold">
-                            - Bs. {{ number_format($summary['totals']['beer_total'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Descontado de QR: Bs. {{ number_format($summary['totals']['beer_qr'], 2) }} | Efectivo: Bs. {{ number_format($summary['totals']['beer_cash'], 2) }}
-                        </td>
-                    </tr>
-                    @endif
-                    <tr class="bg-zinc-50/50">
-                        <td class="p-2 border border-black pl-5 font-sans text-zinc-800">
-                            ( - ) Retención Comisión Bancaria POS (1.30%)
-                        </td>
-                        <td class="p-2 border border-black text-right text-rose-700 font-bold">
-                            - Bs. {{ number_format($summary['totals']['card_commission'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Comisión descontada por entidad adquirente POS
-                        </td>
-                    </tr>
-                    <tr class="bg-zinc-100 font-bold">
-                        <td class="p-2 border border-black font-sans uppercase text-[11px]">
-                            Total Egresos y Retenciones Operativas:
-                        </td>
-                        <td class="p-2 border border-black text-right font-black text-rose-800">
-                            - Bs. {{ number_format($summary['totals']['egresos'] + $summary['totals']['card_commission'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Sueldos + Gastos + Comisiones Bancarias
-                        </td>
-                    </tr>
-                    <tr class="bg-emerald-50 text-emerald-950 font-black border-t-2 border-black">
-                        <td class="p-2.5 border border-black uppercase text-xs font-sans tracking-wide">
-                            (=) Ganancia Neta en Caja (Saldo Líquido Disponible):
-                        </td>
-                        <td class="p-2.5 border border-black text-right text-base text-emerald-900 font-black double-underline">
-                            Bs. {{ number_format($summary['totals']['neto'], 2) }}
-                        </td>
-                        <td class="p-2.5 border border-black text-[10px] text-emerald-800 font-sans font-bold">
-                            Superávit operativo líquido disponible para gerencia
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 2. ARQUEO POR MÉTODOS DE PAGO Y DISPONIBILIDAD -->
-        <div class="mb-6 avoid-break">
-            <div class="flex items-center justify-between pb-1.5 mb-2 border-b-2 border-black">
-                <h3 class="text-xs font-black uppercase tracking-wider text-black">
-                    2. Arqueo y Conciliación por Formas de Cobro
-                </h3>
-                <span class="text-[10px] text-zinc-600 italic">Desglose de medios financieros</span>
-            </div>
-
-            <table class="exec-table w-full text-xs border border-black border-collapse">
-                <thead>
-                    <tr class="bg-zinc-100 text-black">
-                        <th class="p-2 text-left border border-black font-bold uppercase text-[10px]">Canal / Método de Pago</th>
-                        <th class="p-2 text-right border border-black font-bold uppercase text-[10px] w-36">Subtotal (Bs.)</th>
-                        <th class="p-2 text-left border border-black font-bold uppercase text-[10px]">Detalle de Conciliación</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-300 text-zinc-900 font-mono">
-                    <!-- Efectivo -->
-                    <tr>
-                        <td class="p-2 border border-black font-bold font-sans">
-                            Efectivo Físico Total en Bóveda / Caja
-                        </td>
-                        <td class="p-2 border border-black text-right font-black">
-                            Bs. {{ number_format($summary['totals']['efectivo'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-700 font-sans">
-                            B. Principal (Bs. {{ number_format($summary['bars']['principal']['efectivo'], 2) }}) • B. Subte (Bs. {{ number_format($summary['bars']['subte']['efectivo'], 2) }}) • Tienda (Bs. {{ number_format($summary['bars']['tienda']['efectivo'], 2) }})
-                        </td>
-                    </tr>
-                    <!-- QR Yasta -->
-                    <tr class="bg-zinc-50/50">
-                        <td class="p-2 border border-black pl-5 font-sans">
-                            Transferencias QR YASTA (Banco Unión S.A.)
-                        </td>
-                        <td class="p-2 border border-black text-right">
-                            Bs. {{ number_format($summary['totals']['qr_yasta'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Comprobantes verificados en cuenta Banco Unión
-                        </td>
-                    </tr>
-                    <!-- QR Yape -->
-                    <tr>
-                        <td class="p-2 border border-black pl-5 font-sans">
-                            Transferencias QR YAPE (Banco BCP S.A.)
-                        </td>
-                        <td class="p-2 border border-black text-right">
-                            Bs. {{ number_format($summary['totals']['qr_yape'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Comprobantes verificados en cuenta Banco BCP
-                        </td>
-                    </tr>
-                    <!-- Total QR -->
-                    <tr class="bg-zinc-100 font-bold">
-                        <td class="p-2 border border-black font-sans uppercase text-[10px]">
-                            Subtotal Recaudación por QR Electrónico:
-                        </td>
-                        <td class="p-2 border border-black text-right font-black text-blue-900">
-                            Bs. {{ number_format($summary['totals']['qr_total'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            YASTA (Bs. {{ number_format($summary['totals']['qr_yasta'], 2) }}) + YAPE (Bs. {{ number_format($summary['totals']['qr_yape'], 2) }})
-                        </td>
-                    </tr>
-                    @if($summary['totals']['beer_qr'] > 0)
-                    <tr class="bg-amber-50/50 text-rose-800">
-                        <td class="p-2 border border-black pl-5 font-sans">
-                            ( - ) Pagos de Cerveza Descontados de QR
-                        </td>
-                        <td class="p-2 border border-black text-right font-bold">
-                            - Bs. {{ number_format($summary['totals']['beer_qr'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Deducción directa de cuentas bancarias (YAPE/YASTA) por cerveza
-                        </td>
-                    </tr>
-                    <tr class="bg-emerald-50 font-bold">
-                        <td class="p-2 border border-black font-sans uppercase text-[10px] text-emerald-950">
-                            (=) Saldo QR Líquido en Banco (Disponible):
-                        </td>
-                        <td class="p-2 border border-black text-right font-black text-emerald-900">
-                            Bs. {{ number_format($summary['totals']['qr_remaining'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-emerald-800 font-sans">
-                            Saldo real en cuentas tras pagos a proveedores (Kelly / Banco)
-                        </td>
-                    </tr>
-                    @endif
-                    <!-- Tarjeta POS Bruto -->
-                    <tr>
-                        <td class="p-2 border border-black font-bold font-sans">
-                            Tarjetas de Débito / Crédito (Terminales POS)
-                        </td>
-                        <td class="p-2 border border-black text-right font-black">
-                            Bs. {{ number_format($summary['totals']['card_gross'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-700 font-sans">
-                            Facturación bruta emitida con vouchers POS
-                        </td>
-                    </tr>
-                    <!-- Tarjeta POS Comisión -->
-                    <tr class="bg-zinc-50/50 text-rose-800">
-                        <td class="p-2 border border-black pl-5 font-sans">
-                            ( - ) Tasa de Comisión Bancaria (1.30%)
-                        </td>
-                        <td class="p-2 border border-black text-right font-bold">
-                            - Bs. {{ number_format($summary['totals']['card_commission'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Deducción automática por uso de terminal de pago
-                        </td>
-                    </tr>
-                    <!-- Tarjeta POS Neto -->
-                    <tr class="bg-zinc-100 font-bold">
-                        <td class="p-2 border border-black font-sans uppercase text-[10px]">
-                            Subtotal Neto Acreditado en Cuenta Bancaria (POS):
-                        </td>
-                        <td class="p-2 border border-black text-right font-black text-purple-900">
-                            Bs. {{ number_format($summary['totals']['card_net'], 2) }}
-                        </td>
-                        <td class="p-2 border border-black text-[10px] text-zinc-600 font-sans">
-                            Monto efectivamente liquidado a favor de la empresa
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 3. RENDIMIENTO POR PUNTO DE VENTA (BARRAS Y TIENDA) -->
-        <div class="mb-6 avoid-break">
-            <div class="flex items-center justify-between pb-1.5 mb-2 border-b-2 border-black">
-                <h3 class="text-xs font-black uppercase tracking-wider text-black">
-                    3. Rendimiento Operativo por Punto de Venta
-                </h3>
-                <span class="text-[10px] text-zinc-600 italic">Desglose por barra y salón</span>
-            </div>
-
-            <table class="exec-table w-full text-xs border border-black border-collapse">
-                <thead>
-                    <tr class="bg-zinc-100 text-black">
-                        <th class="p-2 text-left border border-black font-bold uppercase text-[10px]">Punto de Venta</th>
-                        <th class="p-2 text-right border border-black font-bold uppercase text-[10px]">Efectivo (Bs.)</th>
-                        <th class="p-2 text-right border border-black font-bold uppercase text-[10px]">QR (Bs.)</th>
-                        <th class="p-2 text-right border border-black font-bold uppercase text-[10px]">POS Tarjeta (Bs.)</th>
-                        <th class="p-2 text-right border border-black font-bold uppercase text-[10px]">Total Ventas (Bs.)</th>
-                        <th class="p-2 text-center border border-black font-bold uppercase text-[10px] w-20">% Aporte</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-300 text-zinc-900 font-mono">
+        <!-- Bloques por Noche (Formato Excel "RESUMEN CIERRE TIO CHU") -->
+        @if(count($nights) > 0)
+            <div class="excel-nights-grid grid grid-cols-1 {{ count($nights) > 1 ? 'lg:grid-cols-2' : '' }} gap-4 mb-6">
+                @foreach($nights as $n)
                     @php
-                        $totV = max(0.01, (float)$summary['totals']['ventas']);
+                        $p = $n['bars']['principal'] ?? ['card' => 0, 'qr' => 0, 'personal' => 0, 'efectivo' => 0, 'total' => 0];
+                        $s = $n['bars']['subte'] ?? ['card' => 0, 'qr' => 0, 'efectivo' => 0, 'total' => 0];
+                        $t = $n['bars']['tienda'] ?? ['card' => 0, 'qr' => 0, 'efectivo' => 0, 'total' => 0];
                     @endphp
-                    <!-- Barra Principal -->
-                    <tr>
-                        <td class="p-2 border border-black font-bold font-sans">
-                            Barra Principal
-                            <span class="block text-[9px] text-zinc-500 font-normal">Planta Baja / Salón Principal</span>
-                        </td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['principal']['efectivo'], 2) }}</td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['principal']['qr'], 2) }}</td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['principal']['card'], 2) }}</td>
-                        <td class="p-2 border border-black text-right font-black">Bs. {{ number_format($summary['bars']['principal']['ventas'], 2) }}</td>
-                        <td class="p-2 border border-black text-center font-bold text-zinc-700">
-                            {{ number_format(($summary['bars']['principal']['ventas'] / $totV) * 100, 1) }}%
-                        </td>
-                    </tr>
-                    <!-- Barra Subterráneo -->
-                    <tr class="bg-zinc-50/50">
-                        <td class="p-2 border border-black font-bold font-sans">
-                            Barra Subterráneo
-                            <span class="block text-[9px] text-zinc-500 font-normal">Nivel Inferior / Pista Principal</span>
-                        </td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['subte']['efectivo'], 2) }}</td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['subte']['qr'], 2) }}</td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['subte']['card'], 2) }}</td>
-                        <td class="p-2 border border-black text-right font-black">Bs. {{ number_format($summary['bars']['subte']['ventas'], 2) }}</td>
-                        <td class="p-2 border border-black text-center font-bold text-zinc-700">
-                            {{ number_format(($summary['bars']['subte']['ventas'] / $totV) * 100, 1) }}%
-                        </td>
-                    </tr>
-                    <!-- Tienda Oficial -->
-                    <tr>
-                        <td class="p-2 border border-black font-bold font-sans">
-                            Tienda Oficial
-                            <span class="block text-[9px] text-zinc-500 font-normal">{{ $summary['bars']['tienda']['store_units'] }} unidades sueltas despachadas</span>
-                        </td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['tienda']['efectivo'], 2) }}</td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['tienda']['qr'], 2) }}</td>
-                        <td class="p-2 border border-black text-right">Bs. {{ number_format($summary['bars']['tienda']['card'], 2) }}</td>
-                        <td class="p-2 border border-black text-right font-black">Bs. {{ number_format($summary['bars']['tienda']['ventas'], 2) }}</td>
-                        <td class="p-2 border border-black text-center font-bold text-zinc-700">
-                            {{ number_format(($summary['bars']['tienda']['ventas'] / $totV) * 100, 1) }}%
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot class="bg-zinc-100 font-black border-t-2 border-black font-mono">
-                    <tr>
-                        <td class="p-2.5 border border-black font-sans uppercase text-[10px]">
-                            Total Ventas de Bebidas:
-                        </td>
-                        <td class="p-2.5 border border-black text-right">Bs. {{ number_format($summary['totals']['efectivo'], 2) }}</td>
-                        <td class="p-2.5 border border-black text-right">Bs. {{ number_format($summary['totals']['qr_total'], 2) }}</td>
-                        <td class="p-2.5 border border-black text-right">Bs. {{ number_format($summary['totals']['card_gross'], 2) }}</td>
-                        <td class="p-2.5 border border-black text-right text-sm double-underline">Bs. {{ number_format($summary['totals']['ventas'], 2) }}</td>
-                        <td class="p-2.5 border border-black text-center">100.0%</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
 
-        <!-- 4. PLANILLA CRONOLÓGICA NOCHE POR NOCHE -->
-        <div class="mb-6 avoid-break">
-            <div class="flex items-center justify-between pb-1.5 mb-2 border-b-2 border-black">
-                <h3 class="text-xs font-black uppercase tracking-wider text-black">
-                    4. Planilla Cronológica Detallada Noche por Noche
-                </h3>
-                <span class="text-[10px] text-zinc-600 italic">Auditoría individual de cada jornada nocturna</span>
+                    <div class="excel-night-card text-[11px]">
+                        <div class="excel-header-top py-1 text-[11px] tracking-wide uppercase">
+                            RESUMEN CIERRE &ldquo;TÍO CHU&rdquo;
+                        </div>
+                        <div class="excel-header-day py-1 text-xs uppercase font-mono">
+                            {{ strtoupper($n['day_name']) }}: {{ $n['date'] }}
+                        </div>
+
+                        <!-- Fila superior: Barra Subterráneo | Tienda Oficial -->
+                        <div class="grid grid-cols-2 border-b border-slate-800">
+                            <!-- Barra Subterráneo -->
+                            <div class="border-r border-slate-800">
+                                <div class="excel-section-title px-2 py-1 text-center text-[10px]">Barra Subterráneo</div>
+                                <table class="w-full font-mono text-[11px] border-collapse">
+                                    <tbody>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Tarjetero</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($s['card'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">QRs</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($s['qr'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Efectivo</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($s['efectivo'], 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="excel-total-label px-2 py-1 font-sans uppercase text-[10px]">Total:</td>
+                                            <td class="excel-total-val px-2 py-1 text-right">{{ number_format($s['total'], 2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Tienda Oficial -->
+                            <div>
+                                <div class="excel-section-title px-2 py-1 text-center text-[10px]">Tienda Oficial</div>
+                                <table class="w-full font-mono text-[11px] border-collapse">
+                                    <tbody>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Tarjetero</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($t['card'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">QRs</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($t['qr'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Efectivo</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($t['efectivo'], 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="excel-total-label px-2 py-1 font-sans uppercase text-[10px]">Total:</td>
+                                            <td class="excel-total-val px-2 py-1 text-right">{{ number_format($t['total'], 2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Fila inferior: Barra Principal | Resumen Noche & Cerveza -->
+                        <div class="grid grid-cols-2">
+                            <!-- Barra Principal -->
+                            <div class="border-r border-slate-800">
+                                <div class="excel-section-title px-2 py-1 text-center text-[10px]">Barra Principal</div>
+                                <table class="w-full font-mono text-[11px] border-collapse">
+                                    <tbody>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Tarjeteros</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($p['card'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">QRs</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($p['qr'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Personal</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($p['personal'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Efectivo</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($p['efectivo'], 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="excel-total-label px-2 py-1 font-sans uppercase text-[10px]">Total:</td>
+                                            <td class="excel-total-val px-2 py-1 text-right">{{ number_format($p['total'], 2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Totales de Noche -->
+                            <div class="flex flex-col justify-between bg-slate-50">
+                                <div class="p-2 border-b border-slate-300">
+                                    <div class="flex items-center justify-between border border-slate-800 bg-amber-300 px-2 py-1">
+                                        <span class="font-sans font-black text-[10px] uppercase text-slate-900">Total Efectivo:</span>
+                                        <span class="font-mono font-black text-slate-900">{{ number_format($n['efectivo'], 2) }}</span>
+                                    </div>
+                                </div>
+
+                                <table class="w-full font-mono text-[11px] border-collapse">
+                                    <tbody>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Principal</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($p['total'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Subterráneo</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($s['total'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-300">
+                                            <td class="px-2 py-0.5 font-sans font-semibold text-slate-700">Tienda</td>
+                                            <td class="px-2 py-0.5 text-right text-slate-900">{{ number_format($t['total'], 2) }}</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-800">
+                                            <td class="excel-grand-label px-2 py-1 font-sans uppercase text-[10px]">TOTAL:</td>
+                                            <td class="excel-grand-val px-2 py-1 text-right">{{ number_format($n['ventas'], 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-2 py-1 font-sans font-extrabold uppercase text-[10px] text-slate-800 bg-white">Cerveza:</td>
+                                            <td class="px-2 py-1 text-right font-extrabold bg-orange-100 text-slate-900">{{ number_format($n['cerveza'] ?? 0, 2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        <!-- Totales Consolidados & Bancos (Limpio y Directo) -->
+        <div class="avoid-break grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Cuadro 1: Totales de Caja -->
+            <div class="border border-slate-900">
+                <div class="bg-slate-900 text-white px-3 py-1.5 font-black uppercase text-[11px] tracking-wider">
+                    Totales Generales ({{ $summary['count'] }} {{ $summary['count'] === 1 ? 'noche' : 'noches' }})
+                </div>
+                <table class="w-full font-mono text-xs border-collapse">
+                    <tbody>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">Total Ventas (Barras + Tienda)</td>
+                            <td class="px-3 py-1.5 text-right font-bold text-slate-900">Bs. {{ number_format($totals['ventas'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">Total Ingresos</td>
+                            <td class="px-3 py-1.5 text-right font-bold text-slate-900">Bs. {{ number_format($totals['ingresos'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">Total Efectivo en Mano</td>
+                            <td class="px-3 py-1.5 text-right font-bold text-emerald-700">Bs. {{ number_format($totals['efectivo'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">Personal Pagado</td>
+                            <td class="px-3 py-1.5 text-right font-bold text-rose-700">- Bs. {{ number_format($totals['personal'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">Cerveza y Otros Gastos</td>
+                            <td class="px-3 py-1.5 text-right font-bold text-rose-700">- Bs. {{ number_format(($totals['beer_total'] ?? 0) + ($totals['gastos'] ?? 0), 2) }}</td>
+                        </tr>
+                        <tr class="bg-emerald-50 border-t-2 border-slate-900">
+                            <td class="px-3 py-2 font-sans font-black uppercase text-[11px] text-slate-900">Ganancia Neta en Caja</td>
+                            <td class="px-3 py-2 text-right font-black text-emerald-800">Bs. {{ number_format($totals['neto'] ?? 0, 2) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <table class="exec-table w-full text-xs border border-black border-collapse">
-                <thead>
-                    <tr class="bg-zinc-100 text-black">
-                        <th class="p-1.5 text-center border border-black font-bold uppercase text-[9px] w-20">Fecha</th>
-                        <th class="p-1.5 text-left border border-black font-bold uppercase text-[9px] w-20">Día</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Ventas (Bs.)</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Efectivo (Bs.)</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">QR (Bs.)</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">POS (Bs.)</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Personal (Bs.)</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Gastos (Bs.)</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Total Ingresos</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Total Egresos</th>
-                        <th class="p-1.5 text-right border border-black font-bold uppercase text-[9px]">Neto Caja</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-300 text-zinc-900 font-mono text-[10px]">
-                    @foreach($summary['nights'] as $n)
-                        <tr class="hover:bg-zinc-50">
-                            <td class="p-1.5 border border-black text-center font-bold text-black">{{ $n['date'] }}</td>
-                            <td class="p-1.5 border border-black font-sans font-semibold text-zinc-800">{{ $n['day_name'] }}</td>
-                            <td class="p-1.5 border border-black text-right font-bold">{{ number_format($n['ventas'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right">{{ number_format($n['efectivo'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right">{{ number_format($n['qr'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right">{{ number_format($n['tarjeta_bruto'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right text-rose-700">{{ number_format($n['personal'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right text-rose-700">{{ number_format($n['gastos'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right font-semibold">{{ number_format($n['ingresos'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right text-rose-800">{{ number_format($n['egresos'], 2) }}</td>
-                            <td class="p-1.5 border border-black text-right font-black text-emerald-900">{{ number_format($n['neto'], 2) }}</td>
+            <!-- Cuadro 2: Bancos (QR y Tarjetero POS con Descuento 1.30%) -->
+            <div class="border border-slate-900">
+                <div class="bg-slate-900 text-white px-3 py-1.5 font-black uppercase text-[11px] tracking-wider">
+                    Bancos — QRs y Tarjetero POS
+                </div>
+                <table class="w-full font-mono text-xs border-collapse">
+                    <tbody>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">QR Banco Unión (YASTA)</td>
+                            <td class="px-3 py-1.5 text-right font-semibold text-slate-900">Bs. {{ number_format($totals['qr_yasta'] ?? 0, 2) }}</td>
                         </tr>
-                    @endforeach
-                </tbody>
-                <tfoot class="bg-zinc-100 font-bold border-t-2 border-black font-mono text-[10px]">
-                    <tr>
-                        <td colspan="2" class="p-1.5 border border-black font-sans uppercase font-black">
-                            TOTALES CONSOLIDADOS:
-                        </td>
-                        <td class="p-1.5 border border-black text-right font-black">{{ number_format($summary['totals']['ventas'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black">{{ number_format($summary['totals']['efectivo'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black">{{ number_format($summary['totals']['qr_total'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black">{{ number_format($summary['totals']['card_gross'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black text-rose-800">{{ number_format($summary['totals']['personal'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black text-rose-800">{{ number_format($summary['totals']['gastos'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black">{{ number_format($summary['totals']['ingresos'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black text-rose-800">{{ number_format($summary['totals']['egresos'], 2) }}</td>
-                        <td class="p-1.5 border border-black text-right font-black text-emerald-950 double-underline">{{ number_format($summary['totals']['neto'], 2) }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">QR Banco BCP (YAPE)</td>
+                            <td class="px-3 py-1.5 text-right font-semibold text-slate-900">Bs. {{ number_format($totals['qr_yape'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-rose-700">(-) Cerveza pagada por QR</td>
+                            <td class="px-3 py-1.5 text-right font-semibold text-rose-700">- Bs. {{ number_format($totals['beer_qr'] ?? ($totals['qr_spent'] ?? 0), 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-blue-50">
+                            <td class="px-3 py-1.5 font-sans font-black text-blue-900">QR Líquido en Banco</td>
+                            <td class="px-3 py-1.5 text-right font-black text-blue-900">Bs. {{ number_format($totals['qr_remaining'] ?? ($totals['qr_total'] ?? 0), 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-slate-700">Tarjetero POS (Bruto)</td>
+                            <td class="px-3 py-1.5 text-right font-semibold text-slate-900">Bs. {{ number_format($totals['card_gross'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="px-3 py-1.5 font-sans font-semibold text-rose-700">(-) Descuento POS (1.30%)</td>
+                            <td class="px-3 py-1.5 text-right font-semibold text-rose-700">- Bs. {{ number_format($totals['card_commission'] ?? 0, 2) }}</td>
+                        </tr>
+                        <tr class="bg-amber-100 border-t-2 border-slate-900">
+                            <td class="px-3 py-2 font-sans font-black uppercase text-[11px] text-slate-900">Tarjetero Neto a Cobrar</td>
+                            <td class="px-3 py-2 text-right font-black text-slate-900">Bs. {{ number_format($totals['card_net'] ?? 0, 2) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
-
 </div>
 
 @if(request()->has('auto_print'))

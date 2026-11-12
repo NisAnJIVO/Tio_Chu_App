@@ -24,7 +24,7 @@
                         Resumen General
                     </h1>
                     <p class="text-xs theme-text-secondary font-medium">
-                        Panel de control ejecutivo y ventas en vivo
+                        Panel de control ejecutivo
                     </p>
                 </div>
             </div>

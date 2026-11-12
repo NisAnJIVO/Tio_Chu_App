@@ -9,27 +9,16 @@
     <div class="notoria-card px-5 py-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full min-w-0">
         <div>
             <div class="flex items-center gap-2 mb-0.5">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#F5B81C]/15 text-[#F5B81C] border border-[#F5B81C]/30">
-                    Galería & Identidad
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#F5B81C]/15 text-amber-700 dark:text-[#F5B81C] border border-[#F5B81C]/30">
+                    Identidad Visual
                 </span>
                 <span class="theme-text-muted text-xs">•</span>
-                <span class="text-xs theme-text-muted font-mono">{{ $counts['all'] }} Recursos</span>
+                <span class="text-xs theme-text-muted font-mono">{{ $counts['system'] }} Recursos del Sistema</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-black tracking-tight theme-text-primary font-sans">Multimedia</h1>
             <p class="text-xs theme-text-secondary mt-0.5">
-                Administra el logo oficial, el fondo de acceso y la biblioteca visual de bebidas, local y personal.
+                Administra el logo oficial, el fondo de inicio de sesión y tu foto de perfil del sistema.
             </p>
-        </div>
-
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            <button type="button" 
-                    onclick="openUploadModal()"
-                    class="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-all shadow-md cursor-pointer active:scale-95">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                </svg>
-                <span>Subir Imagen</span>
-            </button>
         </div>
     </div>
 
@@ -165,55 +154,18 @@
         </div>
     </section>
 
-    <!-- Sección 2: Galería de Recursos Multimedia -->
+    <!-- Sección 2: Archivos del Sistema -->
     <section class="space-y-4 pt-2">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h2 class="text-xs font-black uppercase tracking-wider theme-text-secondary font-mono">Galería de Recursos</h2>
-            
-            <!-- Filtros por Categoría (Pills Notorias) -->
-            <div class="flex items-center gap-1.5 p-1 rounded-xl notoria-subtile overflow-x-auto w-full sm:w-auto max-w-full" style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
-                <a href="{{ route('media.index', ['category' => 'all']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap {{ $category === 'all' ? 'bg-[#F5B81C] text-black font-black shadow-sm' : 'theme-text-secondary hover:theme-text-primary font-bold' }}">
-                    Todas ({{ $counts['all'] }})
-                </a>
-                <a href="{{ route('media.index', ['category' => 'drinks']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap {{ $category === 'drinks' ? 'bg-[#F5B81C] text-black font-black shadow-sm' : 'theme-text-secondary hover:theme-text-primary font-bold' }}">
-                    Bebidas ({{ $counts['drinks'] }})
-                </a>
-                <a href="{{ route('media.index', ['category' => 'establishment']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap {{ $category === 'establishment' ? 'bg-[#F5B81C] text-black font-black shadow-sm' : 'theme-text-secondary hover:theme-text-primary font-bold' }}">
-                    Local ({{ $counts['establishment'] }})
-                </a>
-                <a href="{{ route('media.index', ['category' => 'staff']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap {{ $category === 'staff' ? 'bg-[#F5B81C] text-black font-black shadow-sm' : 'theme-text-secondary hover:theme-text-primary font-bold' }}">
-                    Personal ({{ $counts['staff'] }})
-                </a>
-                <a href="{{ route('media.index', ['category' => 'system']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-lg text-xs transition-all whitespace-nowrap {{ $category === 'system' ? 'bg-[#F5B81C] text-black font-black shadow-sm' : 'theme-text-secondary hover:theme-text-primary font-bold' }}">
-                    Sistema ({{ $counts['system'] }})
-                </a>
-            </div>
+        <div class="flex items-center justify-between gap-3">
+            <h2 class="text-xs font-black uppercase tracking-wider theme-text-secondary font-mono">Archivos del Sistema</h2>
+            <span class="px-3 py-1 rounded-lg text-xs font-black bg-[#F5B81C] text-black shadow-sm">
+                Sistema ({{ $counts['system'] }})
+            </span>
         </div>
 
         @if($mediaAssets->isEmpty())
-            <!-- Estado Vacío Minimalista -->
-            <div class="py-16 text-center rounded-2xl notoria-card border-dashed p-4">
-                <div class="w-12 h-12 rounded-2xl notoria-subtile flex items-center justify-center mx-auto theme-text-muted mb-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                        <circle cx="9" cy="9" r="2"/>
-                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                    </svg>
-                </div>
-                <h3 class="text-sm font-black theme-text-primary">No hay imágenes en esta categoría</h3>
-                <p class="text-xs theme-text-muted mt-1 max-w-sm mx-auto">
-                    Sube fotos de bebidas (Casa Real, Fernet), instalaciones o colaboradores para usarlas en el sistema.
-                </p>
-                <button type="button" 
-                        onclick="openUploadModal()"
-                        class="mt-4 px-4 py-2.5 rounded-xl text-xs font-bold notoria-subtile theme-text-secondary hover:theme-text-primary transition-colors cursor-pointer">
-                    Subir primera imagen
-                </button>
+            <div class="py-12 text-center rounded-2xl notoria-card border-dashed p-4">
+                <h3 class="text-sm font-black theme-text-primary">No hay archivos del sistema registrados</h3>
             </div>
         @else
             <!-- Grilla de Imágenes: 2 cols en celulares, 3 en sm, 4 en md, 5 en lg -->
@@ -318,87 +270,7 @@
 
 </div>
 
-<!-- Modal 1: Subir Nueva Imagen (Card Notoria) -->
-<div id="upload-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="w-full max-w-md max-h-[92vh] overflow-y-auto rounded-2xl notoria-card p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl">
-        <div class="flex items-center justify-between pb-3 border-b notoria-border">
-            <h3 class="text-sm font-black theme-text-primary">Subir a Galería Multimedia</h3>
-            <button type="button" onclick="closeUploadModal()" class="theme-text-muted hover:theme-text-primary transition-colors cursor-pointer p-1">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
-        </div>
-
-        <form action="{{ route('media.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-            @csrf
-            
-            <!-- Zona de Arrastre / Previsualización -->
-            <div>
-                <label class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-1.5">Archivo de Imagen</label>
-                <div id="dropzone" 
-                     onclick="document.getElementById('image-upload-input').click()"
-                     class="border border-dashed notoria-border notoria-subtile rounded-xl p-4 sm:p-5 text-center cursor-pointer transition-colors hover:border-[#F5B81C]">
-                    
-                    <input type="file" name="image" id="image-upload-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" required onchange="handleImagePreview(this)">
-                    
-                    <div id="dropzone-empty" class="space-y-2">
-                        <svg class="w-8 h-8 mx-auto theme-text-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                        <p class="text-xs theme-text-primary font-bold">Haz clic o arrastra una imagen</p>
-                        <p class="text-[10px] theme-text-muted">PNG, JPG, WEBP o SVG (máx. 10MB)</p>
-                    </div>
-
-                    <div id="dropzone-preview" class="hidden">
-                        <img id="preview-img" src="" alt="Preview" class="max-h-36 sm:max-h-40 mx-auto rounded-lg object-contain">
-                        <p class="text-[10px] text-[#F5B81C] mt-2 font-bold">Clic para cambiar imagen</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Título -->
-            <div>
-                <label for="title" class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-1.5">Título o Identificador</label>
-                <input type="text" 
-                       name="title" 
-                       id="title" 
-                       required 
-                       placeholder="Ej: Singani Casa Real Etiqueta Negra"
-                       class="w-full px-3.5 py-2.5 rounded-xl text-xs notoria-input theme-text-primary placeholder-zinc-400 focus:outline-none focus:border-[#F5B81C] transition-colors font-sans">
-            </div>
-
-            <!-- Categoría -->
-            <div>
-                <label for="category" class="block text-xs font-bold theme-text-secondary uppercase tracking-wider mb-1.5">Categoría</label>
-                <select name="category" 
-                        id="category" 
-                        required
-                        class="w-full px-3.5 py-2.5 rounded-xl text-xs notoria-input theme-text-primary focus:outline-none focus:border-[#F5B81C] transition-colors cursor-pointer font-sans">
-                    <option value="drinks" class="bg-slate-900 text-white">Bebidas & Licores</option>
-                    <option value="establishment" class="bg-slate-900 text-white">Local & Discoteca</option>
-                    <option value="staff" class="bg-slate-900 text-white">Personal & Bartenders</option>
-                    <option value="general" class="bg-slate-900 text-white">General</option>
-                </select>
-            </div>
-
-            <!-- Botones -->
-            <div class="pt-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
-                <button type="button" 
-                        onclick="closeUploadModal()"
-                        class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold notoria-subtile theme-text-secondary hover:theme-text-primary transition-colors cursor-pointer text-center">
-                    Cancelar
-                </button>
-                <button type="submit" 
-                        class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-black bg-[#F5B81C] text-black hover:bg-[#e5ac18] transition-colors shadow-md cursor-pointer text-center active:scale-95">
-                    Guardar Imagen
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal 2: Lightbox Visor Fullscreen -->
+<!-- Modal: Lightbox Visor Fullscreen -->
 <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex flex-col justify-between p-4 sm:p-6" onclick="closeLightbox(event)">
     <div class="flex items-center justify-between max-w-6xl w-full mx-auto pb-4">
         <div>
@@ -465,37 +337,6 @@ function copyCurrentLightboxUrl() {
     }
 }
 
-function openUploadModal() {
-    document.getElementById('upload-modal').classList.remove('hidden');
-}
-
-function closeUploadModal() {
-    document.getElementById('upload-modal').classList.add('hidden');
-    document.getElementById('image-upload-input').value = '';
-    document.getElementById('dropzone-preview').classList.add('hidden');
-    document.getElementById('dropzone-empty').classList.remove('hidden');
-}
-
-function handleImagePreview(input) {
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('dropzone-empty').classList.add('hidden');
-            document.getElementById('dropzone-preview').classList.remove('hidden');
-            
-            // Sugerir título si está vacío
-            const titleInput = document.getElementById('title');
-            if (!titleInput.value) {
-                const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-                titleInput.value = nameWithoutExt.charAt(0).toUpperCase() + nameWithoutExt.slice(1);
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
 function openLightbox(url, title, dim, size) {
     currentLightboxUrl = url;
     document.getElementById('lightbox-img').src = url;
@@ -515,40 +356,9 @@ function closeLightboxDirect() {
     document.getElementById('lightbox-modal').classList.add('hidden');
 }
 
-// Drag & drop listeners en dropzone
-const dropzone = document.getElementById('dropzone');
-if (dropzone) {
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropzone.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.classList.add('border-[#F5B81C]');
-        }, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.classList.remove('border-[#F5B81C]');
-        }, false);
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        if (files.length > 0) {
-            const input = document.getElementById('image-upload-input');
-            input.files = files;
-            handleImagePreview(input);
-        }
-    }, false);
-}
-
 // Cerrar con Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        closeUploadModal();
         closeLightboxDirect();
     }
 });

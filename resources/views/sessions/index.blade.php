@@ -384,175 +384,139 @@
             <!-- Encabezado Modal -->
             <div class="flex items-start justify-between border-b notoria-border pb-3">
                 <div>
-                    <span class="text-xs uppercase tracking-wider text-[#F5B81C] font-mono font-bold block">
-                        Liquidación Multisesión • Tío Chu
+                    <span class="text-[11px] uppercase tracking-wider text-amber-600 dark:text-[#F5B81C] font-mono font-black block">
+                        Resumen de Cierre • Tío Chu
                     </span>
-                    <h2 class="text-lg sm:text-xl font-bold theme-text-primary font-sans mt-0.5">
-                        Resumen Consolidado de Jornadas Nocturnas
+                    <h2 class="text-lg sm:text-xl font-black theme-text-primary font-sans mt-0.5">
+                        Resumen Consolidado de Noches
                     </h2>
-                    <p class="text-xs theme-text-secondary mt-0.5" id="modal-consolidated-dates">
+                    <p class="text-xs theme-text-secondary mt-0.5 font-mono" id="modal-consolidated-dates">
                         Cargando información...
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="goToPrintConsolidated()" title="Abrir versión para impresión"
-                            class="px-3 py-1.5 rounded-xl notoria-subtile text-xs font-bold theme-text-primary hover:border-amber-500 flex items-center gap-1.5 cursor-pointer transition-all">
-                        <svg class="w-3.5 h-3.5 text-[#F5B81C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <button type="button" onclick="goToPrintConsolidated()" title="Imprimir resumen"
+                            class="px-3.5 py-2 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs font-black flex items-center gap-1.5 cursor-pointer transition-all shadow-sm active:scale-95">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                         </svg>
-                        <span class="hidden sm:inline">Imprimir Oficial</span>
+                        <span class="hidden sm:inline">Imprimir</span>
                     </button>
-                    <button type="button" onclick="closeConsolidatedModal()" class="theme-text-muted hover:theme-text-primary text-2xl font-bold cursor-pointer p-1 transition-colors leading-none">&times;</button>
+                    <button type="button" onclick="closeConsolidatedModal()" 
+                            class="w-8 h-8 flex items-center justify-center rounded-xl notoria-subtile hover:border-amber-500 theme-text-primary text-lg font-black cursor-pointer transition-all leading-none">&times;</button>
                 </div>
             </div>
 
             <!-- Loader Spinner -->
             <div id="modal-consolidated-loading" class="py-16 text-center space-y-3">
                 <div class="w-10 h-10 border-4 border-[#F5B81C] border-t-transparent rounded-full animate-spin mx-auto"></div>
-                <p class="text-xs font-mono text-zinc-400">Calculando recaudación y consolidando noches...</p>
+                <p class="text-xs font-mono theme-text-secondary">Calculando resumen...</p>
             </div>
 
-            <!-- Contenido Dinámico de Datos -->
-            <div id="modal-consolidated-data" class="hidden space-y-5">
+            <!-- Contenido Dinámico de Datos (Adaptativo Claro & Oscuro) -->
+            <div id="modal-consolidated-data" class="hidden space-y-4">
                 
-                <!-- 1. 4 KPIs Globales -->
+                <!-- 1. 4 KPIs Principales -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
-                        <span class="text-[10px] text-zinc-400 uppercase font-mono tracking-wider block">Total Ingresos</span>
-                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-[#F5B81C]" id="m-kpi-ingresos">Bs. 0.00</div>
-                        <span class="text-[10px] text-zinc-500 font-mono">Efectivo + QR + Tarjetas</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border">
+                        <span class="text-[10px] theme-text-secondary uppercase font-black tracking-wider block">Total Ventas</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-amber-600 dark:text-[#F5B81C]" id="m-kpi-ventas">Bs. 0.00</div>
+                        <span class="text-[10px] theme-text-muted font-medium">Principal + Subte + Tienda</span>
                     </div>
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
-                        <span class="text-[10px] text-rose-400 uppercase font-mono tracking-wider block">Total Egresos</span>
-                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-rose-400" id="m-kpi-egresos">Bs. 0.00</div>
-                        <span class="text-[10px] text-zinc-500 font-mono">Personal + Gastos</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border">
+                        <span class="text-[10px] theme-text-secondary uppercase font-black tracking-wider block">Total Efectivo</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-emerald-600 dark:text-emerald-400" id="m-kpi-efectivo">Bs. 0.00</div>
+                        <span class="text-[10px] theme-text-muted font-medium">Efectivo en mano</span>
                     </div>
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-emerald-500/30">
-                        <span class="text-[10px] text-emerald-400 uppercase font-mono tracking-wider block">Ganancia Neta</span>
-                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-emerald-400" id="m-kpi-neto">Bs. 0.00</div>
-                        <span class="text-[10px] text-zinc-500 font-mono">Saldo neto en caja</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border">
+                        <span class="text-[10px] theme-text-secondary uppercase font-black tracking-wider block">QRs (Banco)</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-blue-600 dark:text-blue-400" id="m-kpi-qr">Bs. 0.00</div>
+                        <span class="text-[10px] theme-text-muted font-medium">Saldo líquido en cuentas</span>
                     </div>
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
-                        <span class="text-[10px] text-zinc-400 uppercase font-mono tracking-wider block">Ventas Totales</span>
-                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-white" id="m-kpi-ventas">Bs. 0.00</div>
-                        <span class="text-[10px] text-zinc-500 font-mono">Barras y Tienda</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border">
+                        <span class="text-[10px] theme-text-secondary uppercase font-black tracking-wider block">Tarjetero Neto</span>
+                        <div class="mt-1 text-lg sm:text-xl font-black font-mono text-purple-600 dark:text-purple-400" id="m-kpi-card-net">Bs. 0.00</div>
+                        <span class="text-[10px] theme-text-muted font-medium">Bruto menos 1.30% POS</span>
                     </div>
                 </div>
 
-                <!-- 2. Desglose Métodos de Pago -->
+                <!-- 2. Desglose Rápido por Método y Egresos -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
-                            <span class="text-xs font-bold text-emerald-400 uppercase font-mono">Efectivo Total</span>
-                            <span class="font-bold font-mono text-white text-xs" id="m-pay-cash">Bs. 0.00</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border space-y-2">
+                        <div class="flex items-center justify-between border-b notoria-border pb-1.5">
+                            <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono">Efectivo & Personal</span>
+                            <span class="font-black font-mono theme-text-primary text-xs" id="m-pay-cash">Bs. 0.00</span>
                         </div>
-                        <div class="text-[11px] space-y-1 text-zinc-400">
+                        <div class="text-[11px] space-y-1 theme-text-secondary">
                             <div class="flex justify-between">
-                                <span>Barra Principal:</span>
-                                <span class="font-mono text-zinc-300" id="m-pay-cash-principal">Bs. 0.00</span>
+                                <span>Principal (neto):</span>
+                                <span class="font-mono font-bold theme-text-primary" id="m-pay-cash-principal">Bs. 0.00</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Barra Subterráneo:</span>
-                                <span class="font-mono text-zinc-300" id="m-pay-cash-subte">Bs. 0.00</span>
+                                <span>Subterráneo:</span>
+                                <span class="font-mono font-bold theme-text-primary" id="m-pay-cash-subte">Bs. 0.00</span>
                             </div>
                             <div class="flex justify-between">
                                 <span>Tienda:</span>
-                                <span class="font-mono text-zinc-300" id="m-pay-cash-tienda">Bs. 0.00</span>
+                                <span class="font-mono font-bold theme-text-primary" id="m-pay-cash-tienda">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between text-rose-600 dark:text-rose-400 pt-1 border-t notoria-border font-bold">
+                                <span>Personal pagado:</span>
+                                <span class="font-mono" id="m-pay-personal">Bs. 0.00</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
-                            <span class="text-xs font-bold text-blue-400 uppercase font-mono">Cobros QR</span>
-                            <span class="font-bold font-mono text-white text-xs" id="m-pay-qr">Bs. 0.00</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border space-y-2">
+                        <div class="flex items-center justify-between border-b notoria-border pb-1.5">
+                            <span class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase font-mono">Cobros QR</span>
+                            <span class="font-black font-mono theme-text-primary text-xs" id="m-pay-qr">Bs. 0.00</span>
                         </div>
-                        <div class="text-[11px] space-y-1 text-zinc-400">
+                        <div class="text-[11px] space-y-1 theme-text-secondary">
                             <div class="flex justify-between">
                                 <span>YASTA (Unión):</span>
-                                <span class="font-mono text-zinc-300" id="m-pay-qr-yasta">Bs. 0.00</span>
+                                <span class="font-mono font-bold theme-text-primary" id="m-pay-qr-yasta">Bs. 0.00</span>
                             </div>
                             <div class="flex justify-between">
                                 <span>YAPE (BCP):</span>
-                                <span class="font-mono text-zinc-300" id="m-pay-qr-yape">Bs. 0.00</span>
+                                <span class="font-mono font-bold theme-text-primary" id="m-pay-qr-yape">Bs. 0.00</span>
                             </div>
-                            <div class="flex justify-between text-zinc-500 pt-1 border-t border-zinc-900">
-                                <span>Total QR:</span>
-                                <span class="font-mono font-bold text-blue-400" id="m-pay-qr-total">Bs. 0.00</span>
+                            <div class="flex justify-between text-rose-600 dark:text-rose-400">
+                                <span>Cerveza pagada:</span>
+                                <span class="font-mono font-bold" id="m-pay-beer">Bs. 0.00</span>
+                            </div>
+                            <div class="flex justify-between text-blue-600 dark:text-blue-400 font-bold pt-1 border-t notoria-border">
+                                <span>QR disponible:</span>
+                                <span class="font-mono" id="m-pay-qr-remaining">Bs. 0.00</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-                        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
-                            <span class="text-xs font-bold text-purple-400 uppercase font-mono">Tarjetas POS</span>
-                            <span class="font-bold font-mono text-white text-xs" id="m-pay-card-gross">Bs. 0.00</span>
+                    <div class="p-3.5 rounded-xl notoria-subtile border notoria-border space-y-2">
+                        <div class="flex items-center justify-between border-b notoria-border pb-1.5">
+                            <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase font-mono">Tarjetero POS</span>
+                            <span class="font-black font-mono theme-text-primary text-xs" id="m-pay-card-gross">Bs. 0.00</span>
                         </div>
-                        <div class="text-[11px] space-y-1 text-zinc-400">
+                        <div class="text-[11px] space-y-1 theme-text-secondary">
                             <div class="flex justify-between">
                                 <span>Monto Bruto:</span>
-                                <span class="font-mono text-zinc-300" id="m-pay-card-bruto">Bs. 0.00</span>
+                                <span class="font-mono font-bold theme-text-primary" id="m-pay-card-bruto">Bs. 0.00</span>
                             </div>
-                            <div class="flex justify-between text-rose-400/80">
-                                <span>Comisión POS:</span>
-                                <span class="font-mono" id="m-pay-card-comision">- Bs. 0.00</span>
+                            <div class="flex justify-between text-rose-600 dark:text-rose-400">
+                                <span>Descuento POS (1.30%):</span>
+                                <span class="font-mono font-bold" id="m-pay-card-comision">- Bs. 0.00</span>
                             </div>
-                            <div class="flex justify-between text-emerald-400 font-bold pt-1 border-t border-zinc-900">
-                                <span>Neto Banco:</span>
+                            <div class="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold pt-1 border-t notoria-border">
+                                <span>Neto a cobrar:</span>
                                 <span class="font-mono" id="m-pay-card-neto">Bs. 0.00</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Rendimiento por Punto de Venta -->
-                <div class="rounded-xl border border-zinc-800 overflow-hidden">
-                    <div class="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-bold text-zinc-300 font-mono uppercase">
-                        Ventas por Punto de Venta (Barras & Tienda)
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left">
-                            <thead class="bg-black/60 text-zinc-500 font-mono uppercase text-[10px] border-b border-zinc-800">
-                                <tr>
-                                    <th class="px-4 py-2">Barra / Tienda</th>
-                                    <th class="px-4 py-2 text-right">Ventas Totales</th>
-                                    <th class="px-4 py-2 text-right">Efectivo</th>
-                                    <th class="px-4 py-2 text-right">QR</th>
-                                    <th class="px-4 py-2 text-right">Tarjetas</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-zinc-900 font-mono text-zinc-300" id="m-bars-tbody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. Comparativa Noche a Noche -->
-                <div class="rounded-xl border border-zinc-800 overflow-hidden">
-                    <div class="px-4 py-2 bg-zinc-950 border-b border-zinc-800 text-xs font-bold text-zinc-300 font-mono uppercase">
-                        Detalle Comparativo Noche por Noche
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left">
-                            <thead class="bg-black/60 text-zinc-500 font-mono uppercase text-[10px] border-b border-zinc-800">
-                                <tr>
-                                    <th class="px-3 py-2">Fecha</th>
-                                    <th class="px-3 py-2">Día</th>
-                                    <th class="px-3 py-2 text-right">Ventas</th>
-                                    <th class="px-3 py-2 text-right">Efectivo</th>
-                                    <th class="px-3 py-2 text-right">QR</th>
-                                    <th class="px-3 py-2 text-right">POS Bruto</th>
-                                    <th class="px-3 py-2 text-right">Personal</th>
-                                    <th class="px-3 py-2 text-right">Gastos</th>
-                                    <th class="px-3 py-2 text-right">Neto Caja</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-zinc-900 font-mono text-zinc-300" id="m-nights-tbody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- 3. Resumen por Noche (Estilo Excel Don Ludo) -->
+                <div class="space-y-3" id="m-nights-cards">
+                    <!-- Populated dynamically -->
                 </div>
 
             </div>
@@ -566,7 +530,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
-                    <span>Imprimir Acta Oficial</span>
+                    <span>Imprimir Resumen</span>
                 </button>
             </div>
 
@@ -719,71 +683,100 @@
     }
 
     function renderConsolidatedData(data) {
-        document.getElementById('modal-consolidated-dates').textContent = `${data.date_range} • ${data.count} noches consolidadas`;
-        
+        const countLabel = data.count === 1 ? '1 noche seleccionada' : `${data.count} noches seleccionadas`;
+        document.getElementById('modal-consolidated-dates').textContent = `${data.date_range} • ${countLabel}`;
+
+        const totals = data.totals || {};
+        const principalCash = (data.nights || []).reduce((sum, n) => sum + (parseFloat(n.bars?.principal?.efectivo) || 0), 0);
+
         // KPIs
-        document.getElementById('m-kpi-ingresos').textContent = fmtBs(data.totals.ingresos);
-        document.getElementById('m-kpi-egresos').textContent = fmtBs(data.totals.egresos);
-        document.getElementById('m-kpi-neto').textContent = fmtBs(data.totals.neto);
-        document.getElementById('m-kpi-ventas').textContent = fmtBs(data.totals.ventas);
+        document.getElementById('m-kpi-ventas').textContent = fmtBs(totals.ventas);
+        document.getElementById('m-kpi-efectivo').textContent = fmtBs(totals.efectivo);
+        document.getElementById('m-kpi-qr').textContent = fmtBs(totals.qr_remaining ?? totals.qr_total);
+        document.getElementById('m-kpi-card-net').textContent = fmtBs(totals.card_net);
 
-        // Pagos
-        document.getElementById('m-pay-cash').textContent = fmtBs(data.totals.efectivo);
-        document.getElementById('m-pay-cash-principal').textContent = fmtBs(data.bars.principal.efectivo);
-        document.getElementById('m-pay-cash-subte').textContent = fmtBs(data.bars.subte.efectivo);
-        document.getElementById('m-pay-cash-tienda').textContent = fmtBs(data.bars.tienda.efectivo);
+        // Desglose Rápido
+        document.getElementById('m-pay-cash').textContent = fmtBs(totals.efectivo);
+        document.getElementById('m-pay-cash-principal').textContent = fmtBs(principalCash);
+        document.getElementById('m-pay-cash-subte').textContent = fmtBs(data.bars?.subte?.efectivo);
+        document.getElementById('m-pay-cash-tienda').textContent = fmtBs(data.bars?.tienda?.efectivo);
+        document.getElementById('m-pay-personal').textContent = fmtBs(totals.personal);
 
-        document.getElementById('m-pay-qr').textContent = fmtBs(data.totals.qr_total);
-        document.getElementById('m-pay-qr-yasta').textContent = fmtBs(data.totals.qr_yasta);
-        document.getElementById('m-pay-qr-yape').textContent = fmtBs(data.totals.qr_yape);
-        document.getElementById('m-pay-qr-total').textContent = fmtBs(data.totals.qr_total);
+        document.getElementById('m-pay-qr').textContent = fmtBs(totals.qr_total);
+        document.getElementById('m-pay-qr-yasta').textContent = fmtBs(totals.qr_yasta);
+        document.getElementById('m-pay-qr-yape').textContent = fmtBs(totals.qr_yape);
+        document.getElementById('m-pay-beer').textContent = fmtBs(totals.beer_total);
+        document.getElementById('m-pay-qr-remaining').textContent = fmtBs(totals.qr_remaining ?? totals.qr_total);
 
-        document.getElementById('m-pay-card-gross').textContent = fmtBs(data.totals.card_gross);
-        document.getElementById('m-pay-card-bruto').textContent = fmtBs(data.totals.card_gross);
-        document.getElementById('m-pay-card-comision').textContent = '- ' + fmtBs(data.totals.card_commission);
-        document.getElementById('m-pay-card-neto').textContent = fmtBs(data.totals.card_net);
+        document.getElementById('m-pay-card-gross').textContent = fmtBs(totals.card_gross);
+        document.getElementById('m-pay-card-bruto').textContent = fmtBs(totals.card_gross);
+        document.getElementById('m-pay-card-comision').textContent = '- ' + fmtBs(totals.card_commission);
+        document.getElementById('m-pay-card-neto').textContent = fmtBs(totals.card_net);
 
-        // Tabla Barras
-        const barsTbody = document.getElementById('m-bars-tbody');
-        barsTbody.innerHTML = `
-            <tr class="hover:bg-zinc-900/50">
-                <td class="px-4 py-2.5 font-bold font-sans text-white">Barra Principal <span class="text-[10px] text-zinc-500 block font-normal font-sans">Piso Principal</span></td>
-                <td class="px-4 py-2.5 text-right font-bold text-[#F5B81C]">${fmtBs(data.bars.principal.ventas)}</td>
-                <td class="px-4 py-2.5 text-right text-emerald-400">${fmtBs(data.bars.principal.efectivo)}</td>
-                <td class="px-4 py-2.5 text-right text-blue-400">${fmtBs(data.bars.principal.qr)}</td>
-                <td class="px-4 py-2.5 text-right text-purple-400">${fmtBs(data.bars.principal.card)}</td>
-            </tr>
-            <tr class="hover:bg-zinc-900/50">
-                <td class="px-4 py-2.5 font-bold font-sans text-white">Barra Subterráneo <span class="text-[10px] text-zinc-500 block font-normal font-sans">Subterráneo</span></td>
-                <td class="px-4 py-2.5 text-right font-bold text-[#F5B81C]">${fmtBs(data.bars.subte.ventas)}</td>
-                <td class="px-4 py-2.5 text-right text-emerald-400">${fmtBs(data.bars.subte.efectivo)}</td>
-                <td class="px-4 py-2.5 text-right text-blue-400">${fmtBs(data.bars.subte.qr)}</td>
-                <td class="px-4 py-2.5 text-right text-purple-400">${fmtBs(data.bars.subte.card)}</td>
-            </tr>
-            <tr class="hover:bg-zinc-900/50">
-                <td class="px-4 py-2.5 font-bold font-sans text-white">Tienda Oficial <span class="text-[10px] text-zinc-500 block font-normal font-sans">${data.bars.tienda.store_units || 0} unid. sueltas</span></td>
-                <td class="px-4 py-2.5 text-right font-bold text-[#F5B81C]">${fmtBs(data.bars.tienda.ventas)}</td>
-                <td class="px-4 py-2.5 text-right text-emerald-400">${fmtBs(data.bars.tienda.efectivo)}</td>
-                <td class="px-4 py-2.5 text-right text-blue-400">${fmtBs(data.bars.tienda.qr)}</td>
-                <td class="px-4 py-2.5 text-right text-purple-400">${fmtBs(data.bars.tienda.card)}</td>
-            </tr>
-        `;
+        const barRow = (label, val, cls = 'theme-text-primary') => `
+            <div class="flex items-center justify-between text-[11px] py-0.5">
+                <span class="theme-text-secondary">${label}</span>
+                <span class="font-mono font-semibold ${cls}">${fmtBs(val)}</span>
+            </div>`;
 
-        // Tabla Noches
-        const nightsTbody = document.getElementById('m-nights-tbody');
-        nightsTbody.innerHTML = data.nights.map(n => `
-            <tr class="hover:bg-zinc-900/50">
-                <td class="px-3 py-2 font-bold text-white">${n.date}</td>
-                <td class="px-3 py-2 text-zinc-300 font-sans">${n.day_name}</td>
-                <td class="px-3 py-2 text-right font-bold text-[#F5B81C]">${fmtBs(n.ventas)}</td>
-                <td class="px-3 py-2 text-right text-emerald-400">${fmtBs(n.efectivo)}</td>
-                <td class="px-3 py-2 text-right text-blue-400">${fmtBs(n.qr)}</td>
-                <td class="px-3 py-2 text-right text-purple-400">${fmtBs(n.tarjeta_bruto)}</td>
-                <td class="px-3 py-2 text-right text-rose-400/80">${fmtBs(n.personal)}</td>
-                <td class="px-3 py-2 text-right text-rose-400/80">${fmtBs(n.gastos)}</td>
-                <td class="px-3 py-2 text-right font-bold text-emerald-400">${fmtBs(n.neto)}</td>
-            </tr>
-        `).join('');
+        const nightsContainer = document.getElementById('m-nights-cards');
+        nightsContainer.innerHTML = (data.nights || []).map(n => {
+            const p = n.bars?.principal || { card: 0, qr: 0, qr_net: 0, personal: 0, efectivo: 0, total: 0 };
+            const s = n.bars?.subte || { card: 0, qr: 0, efectivo: 0, total: 0 };
+            const t = n.bars?.tienda || { card: 0, qr: 0, efectivo: 0, total: 0 };
+
+            return `
+            <div class="rounded-xl border notoria-border overflow-hidden">
+                <div class="px-4 py-2 notoria-card-header border-b notoria-border flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-[#F5B81C]">${n.day_name}</span>
+                        <span class="text-xs font-mono font-bold theme-text-primary">${n.date}</span>
+                    </div>
+                    <div class="text-xs font-black font-mono text-amber-600 dark:text-[#F5B81C]">Total: ${fmtBs(n.ventas)}</div>
+                </div>
+                <div class="p-3 grid grid-cols-1 md:grid-cols-3 gap-3 notoria-card-elevated">
+                    <div class="p-2.5 rounded-lg notoria-subtile border notoria-border space-y-1">
+                        <div class="text-[11px] font-black uppercase tracking-wider theme-text-primary border-b notoria-border pb-1 mb-1">Barra Principal</div>
+                        ${barRow('Tarjeteros', p.card, 'text-purple-600 dark:text-purple-400')}
+                        ${barRow('QRs Principal', p.qr, 'text-blue-600 dark:text-blue-400')}
+                        ${barRow('Personal', p.personal, 'text-rose-600 dark:text-rose-400')}
+                        ${barRow('Efectivo', p.efectivo, 'text-emerald-600 dark:text-emerald-400')}
+                        <div class="flex items-center justify-between text-[11px] pt-1 mt-1 border-t notoria-border font-black">
+                            <span class="theme-text-primary uppercase">Total</span>
+                            <span class="font-mono text-amber-600 dark:text-[#F5B81C]">${fmtBs(p.total)}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-2.5 rounded-lg notoria-subtile border notoria-border space-y-1">
+                        <div class="text-[11px] font-black uppercase tracking-wider theme-text-primary border-b notoria-border pb-1 mb-1">Barra Subterráneo</div>
+                        ${barRow('Tarjetero', s.card, 'text-purple-600 dark:text-purple-400')}
+                        ${barRow('QRs', s.qr, 'text-blue-600 dark:text-blue-400')}
+                        ${barRow('Efectivo', s.efectivo, 'text-emerald-600 dark:text-emerald-400')}
+                        <div class="flex items-center justify-between text-[11px] pt-1 mt-1 border-t notoria-border font-black">
+                            <span class="theme-text-primary uppercase">Total</span>
+                            <span class="font-mono text-amber-600 dark:text-[#F5B81C]">${fmtBs(s.total)}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-2.5 rounded-lg notoria-subtile border notoria-border flex flex-col justify-between space-y-2">
+                        <div class="space-y-1">
+                            <div class="text-[11px] font-black uppercase tracking-wider theme-text-primary border-b notoria-border pb-1 mb-1">Tienda Oficial</div>
+                            ${barRow('Tarjetero', t.card, 'text-purple-600 dark:text-purple-400')}
+                            ${barRow('QRs', t.qr, 'text-blue-600 dark:text-blue-400')}
+                            ${barRow('Efectivo', t.efectivo, 'text-emerald-600 dark:text-emerald-400')}
+                            <div class="flex items-center justify-between text-[11px] pt-1 mt-1 border-t notoria-border font-black">
+                                <span class="theme-text-primary uppercase">Total</span>
+                                <span class="font-mono text-amber-600 dark:text-[#F5B81C]">${fmtBs(t.total)}</span>
+                            </div>
+                        </div>
+                        <div class="pt-1.5 border-t notoria-border space-y-0.5">
+                            ${barRow('Total Efectivo', n.efectivo, 'text-emerald-600 dark:text-emerald-400 font-bold')}
+                            ${barRow('Cerveza', n.cerveza, 'text-rose-600 dark:text-rose-400 font-bold')}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
     }
 </script>
 @endsection
