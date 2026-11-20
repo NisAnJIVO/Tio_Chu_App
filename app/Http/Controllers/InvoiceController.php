@@ -102,10 +102,21 @@ class InvoiceController extends Controller
         // Recalcular el cierre de caja
         $this->sessionService->recalculateClosing($session);
 
-        if ($request->wantsJson() || $request->ajax()) {
+        if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
+            $nextNum = (Invoice::where('night_session_id', $session->id)->max('correlative_num') ?? 0) + 1;
             return response()->json([
                 'success' => true,
-                'invoice' => $invoice,
+                'invoice' => [
+                    'id' => $invoice->id,
+                    'correlative_num' => $invoice->correlative_num,
+                    'bar_name' => $invoice->bar_name,
+                    'amount' => (float)$invoice->amount,
+                    'commission_amount' => (float)$invoice->commission_amount,
+                    'net_amount' => (float)$invoice->net_amount,
+                    'notes' => $invoice->notes,
+                ],
+                'next_correlative' => $nextNum,
+                'message' => 'Factura #' . $invoice->correlative_num . ' registrada.',
             ]);
         }
 
@@ -116,8 +127,8 @@ class InvoiceController extends Controller
     {
         $session = $invoice->nightSession;
         if ($session && !$session->isOpen()) {
-            if ($request->wantsJson() || $request->ajax()) {
-                return response()->json(['error' => 'No se pueden eliminar facturas de una noche cerrada.'], 422);
+            if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
+                return response()->json(['success' => false, 'error' => 'No se pueden eliminar facturas de una noche cerrada.'], 422);
             }
             return back()->with('error', 'No se pueden eliminar facturas de una noche cerrada.');
         }
@@ -129,8 +140,8 @@ class InvoiceController extends Controller
             $this->sessionService->recalculateClosing($session);
         }
 
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json(['success' => true, 'id' => $id]);
+        if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
+            return response()->json(['success' => true, 'id' => $id, 'message' => 'Factura eliminada.']);
         }
 
         return back()->with('success', 'Factura eliminada.');

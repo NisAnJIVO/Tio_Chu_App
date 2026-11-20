@@ -100,10 +100,10 @@
                     <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Total QR
                     </span>
-                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate" id="kpi-qr-global-total">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalGeneral, 2) }}
                     </div>
-                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
+                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate" id="kpi-qr-global-sub">
                         Yasta: {{ number_format($totalYasta, 0) }} • Yape: {{ number_format($totalYape, 0) }}
                     </span>
                 </div>
@@ -126,10 +126,10 @@
                     <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Barra Principal
                     </span>
-                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate" id="kpi-qr-pos-Barra-Principal-total">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Barra Principal']['total'], 2) }}
                     </div>
-                    <span class="text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
+                    <span class="text-[10px] theme-text-muted font-mono block mt-0.5 truncate" id="kpi-qr-pos-Barra-Principal-sub">
                         Yasta: Bs. {{ number_format($totalsByPos['Barra Principal']['yasta'], 0) }} • Yape: Bs. {{ number_format($totalsByPos['Barra Principal']['yape'], 0) }}
                     </span>
                 </div>
@@ -146,10 +146,10 @@
                     <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Tienda
                     </span>
-                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate" id="kpi-qr-pos-Tienda-total">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Tienda']['total'], 2) }}
                     </div>
-                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
+                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate" id="kpi-qr-pos-Tienda-sub">
                         Yasta: {{ number_format($totalsByPos['Tienda']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Tienda']['yape'], 0) }}
                     </span>
                 </div>
@@ -166,10 +166,10 @@
                     <span class="text-[10px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                         Barra Subterráneo
                     </span>
-                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate">
+                    <div class="text-lg sm:text-2xl font-black theme-text-primary font-mono tracking-tight mt-0.5 sm:mt-1 truncate" id="kpi-qr-pos-Subte-total">
                         <span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>{{ number_format($totalsByPos['Subte']['total'], 2) }}
                     </div>
-                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate">
+                    <span class="text-[9px] sm:text-[10px] theme-text-muted font-mono block mt-0.5 truncate" id="kpi-qr-pos-Subte-sub">
                         Yasta: {{ number_format($totalsByPos['Subte']['yasta'], 0) }} • Yape: {{ number_format($totalsByPos['Subte']['yape'], 0) }}
                     </span>
                 </div>
@@ -205,7 +205,7 @@
                 </div>
             </div>
             
-            <form method="POST" action="{{ route('qrs.store') }}" 
+            <form method="POST" action="{{ route('qrs.store') }}" id="create-qr-form" onsubmit="event.preventDefault(); handleCreateQrSubmit(event); return false;"
                   class="space-y-5 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
@@ -468,8 +468,9 @@
                         'Subte' => 'Barra Subterráneo',
                         default => $posName,
                     };
+                    $posSlug = Str::slug($posName);
                 @endphp
-                <div class="notoria-card flex flex-col h-full overflow-hidden shadow-sm">
+                <div class="notoria-card flex flex-col h-full overflow-hidden shadow-sm" data-pos="{{ $posName }}" data-pos-slug="{{ $posSlug }}">
                     
                     <!-- Encabezado de Columna -->
                     <div class="notoria-card-header px-4 py-3.5">
@@ -477,11 +478,11 @@
                             <h3 class="text-xs font-black text-white uppercase tracking-wider font-sans">
                                 {{ $displayPosName }}
                             </h3>
-                            <span class="text-sm font-mono font-black text-white">
+                            <span class="text-sm font-mono font-black text-white" id="header-col-total-{{ $posSlug }}">
                                 <span class="text-xs text-[#F5B81C] font-sans mr-0.5">Bs.</span>{{ number_format($subtotals['total'], 2) }}
                             </span>
                         </div>
-                        <div class="flex justify-between items-center text-[10px] text-zinc-300 mt-1 font-mono">
+                        <div class="flex justify-between items-center text-[10px] text-zinc-300 mt-1 font-mono" id="header-col-sub-{{ $posSlug }}">
                             <span>Yasta: Bs. {{ number_format($subtotals['yasta'], 0) }} • Yape: Bs. {{ number_format($subtotals['yape'], 0) }}</span>
                             <span class="font-sans text-zinc-300">({{ $list->count() }} cobros)</span>
                         </div>
@@ -498,9 +499,9 @@
                                     <th class="px-2 py-2.5 text-right w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y notoria-border font-sans">
+                            <tbody class="divide-y notoria-border font-sans" id="qr-tbody-{{ $posSlug }}">
                                 @forelse($list as $qr)
-                                    <tr id="qr-row-{{ $qr->id }}" class="hover:bg-slate-500/10 transition-colors">
+                                    <tr id="qr-row-{{ $qr->id }}" data-id="{{ $qr->id }}" data-pos="{{ $posName }}" data-pos-slug="{{ $posSlug }}" data-app="{{ $qr->bank_app }}" data-amount="{{ $qr->amount }}" class="hover:bg-slate-500/10 transition-colors">
                                         <td class="px-3.5 py-2.5 font-bold theme-text-primary uppercase text-xs truncate max-w-[120px]">
                                             {{ $qr->operator_name }}
                                         </td>
@@ -521,24 +522,19 @@
                                             Bs. {{ number_format($qr->amount, 2) }}
                                         </td>
                                         <td class="px-2 py-2.5 text-right">
-                                            <form method="POST" action="{{ route('qrs.destroy', $qr) }}" 
-                                                  class="delete-qr-form {{ !$session->isOpen() ? 'pointer-events-none opacity-40' : '' }}"
-                                                  data-qr-id="{{ $qr->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        title="Eliminar cobro"
-                                                        class="text-rose-500 hover:text-rose-400 p-1 rounded-md transition-colors cursor-pointer active:scale-95">
-                                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <polyline points="3 6 5 6 21 6"/>
-                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <button type="button" 
+                                                    onclick="handleDeleteQr({{ $qr->id }}, '{{ route('qrs.destroy', $qr) }}')"
+                                                    title="Eliminar cobro"
+                                                    class="text-rose-500 hover:text-rose-400 p-1 rounded-md transition-colors cursor-pointer active:scale-95 {{ !$session->isOpen() ? 'pointer-events-none opacity-40' : '' }}">
+                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3 6 5 6 21 6"/>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                                </svg>
+                                            </button>
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
+                                    <tr id="empty-qr-row-{{ $posSlug }}">
                                         <td colspan="4" class="px-4 py-8 text-center theme-text-muted text-xs font-sans">
                                             Sin cobros QR en {{ $displayPosName }}.
                                         </td>
@@ -551,7 +547,7 @@
                     <!-- Pie de la Columna -->
                     <div class="px-4 py-3 notoria-subtile border-t notoria-border rounded-none flex items-center justify-between font-sans">
                         <span class="text-[11px] theme-text-secondary font-bold uppercase tracking-wider">Subtotal:</span>
-                        <span class="text-xs font-black font-mono text-[#F5B81C]">Bs. {{ number_format($subtotals['total'], 2) }}</span>
+                        <span class="text-xs font-black font-mono text-[#F5B81C]" id="footer-col-subtotal-{{ $posSlug }}">Bs. {{ number_format($subtotals['total'], 2) }}</span>
                     </div>
 
                 </div>
@@ -703,65 +699,274 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Validación al enviar el formulario
-    const qrForm = document.querySelector('form[action="{{ route('qrs.store') }}"]');
-    if (qrForm) {
-        qrForm.addEventListener('submit', function(e) {
-            const cobranteVal = (document.getElementById('cobrante_name_input')?.value || '').trim();
-            if (!cobranteVal) {
-                e.preventDefault();
-                const input = document.getElementById('cobrante-search-input');
-                if (input) {
-                    input.classList.add('border-rose-500');
-                    input.focus();
-                }
-                openCobranteMenu();
-            }
-        });
+<!-- Toast flotante estilo iOS -->
+<div id="qr-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-black/95 border border-zinc-800 text-xs text-zinc-200 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none">
+    <span id="qr-toast-dot" class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
+    <span id="qr-toast-text" class="font-bold font-sans"></span>
+</div>
+
+<script>
+const YASTA_LOGO_URL = "{{ asset('images/LogosQR/yasta.png') }}";
+const YAPE_LOGO_URL = "{{ asset('images/LogosQR/yape.png') }}";
+
+function showQrToast(text, type = 'success') {
+    const toast = document.getElementById('qr-toast');
+    const toastText = document.getElementById('qr-toast-text');
+    const toastDot = document.getElementById('qr-toast-dot');
+    if (!toast || !toastText) return;
+
+    toastText.innerHTML = text;
+    if (toastDot) {
+        toastDot.className = type === 'error' ? 'w-2 h-2 rounded-full bg-rose-500' : 'w-2 h-2 rounded-full bg-[#F5B81C]';
+    }
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 2800);
+}
+
+function getPosSlug(posName) {
+    if (posName === 'Barra Principal') return 'barra-principal';
+    if (posName === 'Tienda') return 'tienda';
+    if (posName === 'Subte') return 'subte';
+    return posName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+/* --- RECALCULAR TODOS LOS TOTALES Y KPIS DE QR EN VIVO --- */
+function recalculateQrKPIs() {
+    let globalTotal = 0, globalYasta = 0, globalYape = 0;
+    const posTotals = {
+        'Barra Principal': { total: 0, yasta: 0, yape: 0, count: 0, slug: 'barra-principal' },
+        'Tienda': { total: 0, yasta: 0, yape: 0, count: 0, slug: 'tienda' },
+        'Subte': { total: 0, yasta: 0, yape: 0, count: 0, slug: 'subte' }
+    };
+
+    document.querySelectorAll('tr[id^="qr-row-"]').forEach(row => {
+        const pos = row.dataset.pos || 'Barra Principal';
+        const app = row.dataset.app || 'YASTA';
+        const amount = parseFloat(row.dataset.amount) || 0;
+
+        globalTotal += amount;
+        if (app === 'YASTA') globalYasta += amount;
+        else globalYape += amount;
+
+        if (posTotals[pos]) {
+            posTotals[pos].total += amount;
+            posTotals[pos].count += 1;
+            if (app === 'YASTA') posTotals[pos].yasta += amount;
+            else posTotals[pos].yape += amount;
+        }
+    });
+
+    // 1. Tarjetas KPI Globales Superiores
+    const globTotalEl = document.getElementById('kpi-qr-global-total');
+    const globSubEl = document.getElementById('kpi-qr-global-sub');
+    if (globTotalEl) globTotalEl.innerHTML = `<span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>${globalTotal.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (globSubEl) globSubEl.textContent = `Yasta: ${Math.round(globalYasta).toLocaleString('es-BO')} • Yape: ${Math.round(globalYape).toLocaleString('es-BO')}`;
+
+    // 2. Tarjetas KPI por Barra
+    for (const [pos, data] of Object.entries(posTotals)) {
+        const idKey = pos === 'Barra Principal' ? 'Barra-Principal' : pos;
+        const cardTotal = document.getElementById(`kpi-qr-pos-${idKey}-total`);
+        const cardSub = document.getElementById(`kpi-qr-pos-${idKey}-sub`);
+
+        if (cardTotal) cardTotal.innerHTML = `<span class="text-xs font-sans font-bold text-[#F5B81C] mr-0.5">Bs.</span>${data.total.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (cardSub) {
+            const prefix = pos === 'Barra Principal' ? 'Yasta: Bs. ' : 'Yasta: ';
+            const yapePrefix = pos === 'Barra Principal' ? ' • Yape: Bs. ' : ' • Yape: ';
+            cardSub.textContent = `${prefix}${Math.round(data.yasta).toLocaleString('es-BO')}${yapePrefix}${Math.round(data.yape).toLocaleString('es-BO')}`;
+        }
+
+        // 3. Encabezados y Pies de Columna
+        const headerTotal = document.getElementById(`header-col-total-${data.slug}`);
+        const headerSub = document.getElementById(`header-col-sub-${data.slug}`);
+        const footerSub = document.getElementById(`footer-col-subtotal-${data.slug}`);
+
+        if (headerTotal) headerTotal.innerHTML = `<span class="text-xs text-[#F5B81C] font-sans mr-0.5">Bs.</span>${data.total.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (headerSub) headerSub.innerHTML = `<span>Yasta: Bs. ${Math.round(data.yasta).toLocaleString('es-BO')} • Yape: Bs. ${Math.round(data.yape).toLocaleString('es-BO')}</span><span class="font-sans text-zinc-300">(${data.count} cobros)</span>`;
+        if (footerSub) footerSub.textContent = `Bs. ${data.total.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+}
+
+/* --- ENVÍO ASÍNCRONO DE COBRO QR (SIN RECARGA) --- */
+window.handleCreateQrSubmit = async function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const form = document.getElementById('create-qr-form');
+    if (!form) return false;
+
+    const cobranteVal = (document.getElementById('cobrante_name_input')?.value || '').trim();
+    if (!cobranteVal) {
+        const input = document.getElementById('cobrante-search-input');
+        if (input) {
+            input.classList.add('border-rose-500');
+            input.focus();
+        }
+        if (typeof openCobranteMenu === 'function') openCobranteMenu();
+        showQrToast('Selecciona el personal que cobró', 'error');
+        return false;
     }
 
-    document.querySelectorAll('.delete-qr-form').forEach(form => {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!confirm('¿Eliminar este cobro QR?')) return;
+    const amountInput = document.getElementById('amount');
+    const amountVal = parseFloat(amountInput.value);
+    if (!amountVal || amountVal <= 0) {
+        showQrToast('Ingresa un monto válido', 'error');
+        amountInput.focus();
+        return false;
+    }
 
-            const qrId = this.getAttribute('data-qr-id');
-            const row = document.getElementById('qr-row-' + qrId);
-            const actionUrl = this.getAttribute('action');
-            const token = this.querySelector('input[name="_token"]').value;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.innerHTML : 'COBRAR';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Cobrando...</span>';
+    }
 
-            try {
-                const response = await fetch(actionUrl, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token,
-                        'X-HTTP-Method-Override': 'DELETE',
-                        'Accept': 'application/json'
-                    },
-                    body: new URLSearchParams({
-                        '_method': 'DELETE',
-                        '_token': token
-                    })
-                });
+    try {
+        const formData = new FormData(form);
+        formData.append('_ajax', '1');
 
-                if (response.ok) {
-                    if (row) {
-                        row.classList.add('transition-all', 'duration-300', 'opacity-0', 'scale-95');
-                        setTimeout(() => {
-                            row.remove();
-                            window.location.reload();
-                        }, 200);
-                    } else {
-                        window.location.reload();
-                    }
-                } else {
-                    this.submit();
-                }
-            } catch (err) {
-                this.submit();
-            }
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData
         });
-    });
-});
-</script>
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            const qr = data.qr;
+            const slug = getPosSlug(qr.point_of_sale);
+            const emptyRow = document.getElementById(`empty-qr-row-${slug}`);
+            if (emptyRow) emptyRow.remove();
+
+            const tbody = document.getElementById(`qr-tbody-${slug}`);
+            if (tbody) {
+                const tr = document.createElement('tr');
+                tr.id = `qr-row-${qr.id}`;
+                tr.dataset.id = qr.id;
+                tr.dataset.pos = qr.point_of_sale;
+                tr.dataset.posSlug = slug;
+                tr.dataset.app = qr.bank_app;
+                tr.dataset.amount = qr.amount;
+                tr.className = 'hover:bg-slate-500/10 transition-colors animate-fade-in';
+
+                const appBadge = qr.bank_app === 'YASTA'
+                    ? `<span class="badge-qr-yasta inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-black tracking-wider uppercase shadow-xs">
+                           <img src="${YASTA_LOGO_URL}" alt="Yasta" class="h-3.5 w-auto object-contain rounded">
+                           <span>YASTA</span>
+                       </span>`
+                    : `<span class="badge-qr-yape inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-black tracking-wider uppercase shadow-xs">
+                           <img src="${YAPE_LOGO_URL}" alt="Yape" class="h-3.5 w-auto object-contain rounded">
+                           <span>YAPE</span>
+                       </span>`;
+
+                tr.innerHTML = `
+                    <td class="px-3.5 py-2.5 font-bold theme-text-primary uppercase text-xs truncate max-w-[120px]">
+                        ${qr.operator_name}
+                    </td>
+                    <td class="px-2 py-2.5 text-center">
+                        ${appBadge}
+                    </td>
+                    <td class="px-3.5 py-2.5 text-right font-black font-mono theme-text-primary text-xs">
+                        Bs. ${qr.amount.toFixed(2)}
+                    </td>
+                    <td class="px-2 py-2.5 text-right">
+                        <button type="button" 
+                                onclick="handleDeleteQr(${qr.id}, '${qr.destroy_url}')"
+                                title="Eliminar cobro"
+                                class="text-rose-500 hover:text-rose-400 p-1 rounded-md transition-colors cursor-pointer active:scale-95">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </td>
+                `;
+
+                tbody.prepend(tr);
+            }
+
+            recalculateQrKPIs();
+            amountInput.value = '';
+            amountInput.focus();
+            showQrToast(data.message || 'Pago QR registrado');
+        } else {
+            showQrToast(data.message || 'Error al registrar cobro QR', 'error');
+        }
+    } catch(err) {
+        console.error('Error al registrar QR:', err);
+        showQrToast('Error de conexión al registrar cobro QR', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    }
+
+    return false;
+};
+
+/* --- ELIMINACIÓN ASINCRÓNICA DE COBRO QR (SIN RECARGA) --- */
+window.handleDeleteQr = async function(id, actionUrl) {
+    if (!confirm('¿Eliminar este cobro QR definitivamente?')) return;
+    const row = document.getElementById('qr-row-' + id);
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    try {
+        const response = await fetch(actionUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'X-HTTP-Method-Override': 'DELETE',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new URLSearchParams({
+                '_method': 'DELETE',
+                '_token': token,
+                '_ajax': '1'
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            if (row) {
+                const slug = row.dataset.posSlug;
+                row.classList.add('transition-all', 'duration-300', 'opacity-0', 'scale-95');
+                setTimeout(() => {
+                    row.remove();
+                    recalculateQrKPIs();
+
+                    const tbody = document.getElementById(`qr-tbody-${slug}`);
+                    if (tbody && !tbody.querySelector('tr[id^="qr-row-"]')) {
+                        tbody.innerHTML = `
+                            <tr id="empty-qr-row-${slug}">
+                                <td colspan="4" class="px-4 py-8 text-center theme-text-muted text-xs font-sans">
+                                    Sin cobros QR en esta barra.
+                                </td>
+                            </tr>
+                        `;
+                    }
+                }, 200);
+            }
+            showQrToast(data.message || 'Pago QR eliminado');
+        } else {
+            showQrToast(data.message || 'No se pudo eliminar el cobro QR', 'error');
+        }
+    } catch(err) {
+        console.error('Error al eliminar QR:', err);
+        showQrToast('Error de conexión al eliminar el cobro QR', 'error');
+    }
+};
 @endsection

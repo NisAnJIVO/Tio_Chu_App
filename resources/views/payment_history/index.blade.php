@@ -552,7 +552,11 @@
                     showToast(`Pago registrado para ${staffName}.`);
                     applyCardFilters();
                 } else {
-                    window.location.reload();
+                    if (card) {
+                        card.style.opacity = '1';
+                        card.style.pointerEvents = 'auto';
+                    }
+                    showToast(data.message || 'No se pudo actualizar el pago', 'error');
                 }
             } else {
                 if (card) {

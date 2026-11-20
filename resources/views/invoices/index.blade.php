@@ -87,10 +87,10 @@
             <!-- 1. Pasado por Tarjeta (Bruto) -->
             <div class="notoria-card p-4 sm:p-5 shadow-sm">
                 <span class="text-xs font-black theme-text-secondary uppercase tracking-wider block truncate">Pasado por Tarjeta</span>
-                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight truncate">
+                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono theme-text-primary tracking-tight truncate" id="kpi-tarjeta-bruto">
                     <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjeta, 2) }}
                 </div>
-                <p class="text-[11px] theme-text-muted mt-1 truncate">{{ $invoices->count() }} vouchers registrados</p>
+                <p class="text-[11px] theme-text-muted mt-1 truncate" id="kpi-tarjeta-count">{{ $invoices->count() }} vouchers registrados</p>
             </div>
 
             <!-- 2. Comisión del Banco -->
@@ -98,7 +98,7 @@
                 <span class="text-xs font-black theme-text-secondary uppercase tracking-wider block truncate">
                     Comisión Banco ({{ number_format(($session->pos_commission_rate ?? 0.035) * 100, 1) }}%)
                 </span>
-                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono text-rose-500 tracking-tight truncate">
+                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono text-rose-500 tracking-tight truncate" id="kpi-tarjeta-comision">
                     - <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjetaComision, 2) }}
                 </div>
                 <p class="text-[11px] theme-text-muted mt-1 truncate">Retención del tarjetero</p>
@@ -107,7 +107,7 @@
             <!-- 3. Neto al Banco -->
             <div class="notoria-card p-4 sm:p-5 shadow-sm">
                 <span class="text-xs font-black theme-text-secondary uppercase tracking-wider block truncate">Neto al Banco</span>
-                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono text-[#F5B81C] tracking-tight truncate">
+                <div class="mt-2 text-2xl sm:text-3xl font-black font-mono text-[#F5B81C] tracking-tight truncate" id="kpi-tarjeta-neto">
                     <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>{{ number_format($totalTarjetaNeto, 2) }}
                 </div>
                 <p class="text-[11px] theme-text-muted mt-1 truncate">Dinero neto acreditado</p>
@@ -143,17 +143,17 @@
 
                 <!-- Insignia del Siguiente N° de Factura -->
                 <div class="flex items-center gap-2">
-                    <span class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] bg-[#F5B81C]/10 border border-[#F5B81C]/30 px-3.5 py-1.5 rounded-xl shadow-xs" title="Número autoincremental de factura">
+                    <span class="text-xs sm:text-sm font-mono font-black text-[#F5B81C] bg-[#F5B81C]/10 border border-[#F5B81C]/30 px-3.5 py-1.5 rounded-xl shadow-xs" title="Número autoincremental de factura" id="badge-next-correlative">
                         Factura #{{ $nextCorrelative }}
                     </span>
                 </div>
             </div>
             
             <!-- Formulario Simple y Al Grano -->
-            <form method="POST" action="{{ route('invoices.store') }}" id="invoice-form" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
+            <form method="POST" action="{{ route('invoices.store') }}" id="invoice-form" onsubmit="event.preventDefault(); handleInvoiceSubmit(event); return false;" class="space-y-4 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-                <input type="hidden" name="correlative_num" value="{{ $nextCorrelative }}">
+                <input type="hidden" name="correlative_num" id="correlative_num_input" value="{{ $nextCorrelative }}">
                 <input type="hidden" name="payment_method" value="tarjeta">
                 <input type="hidden" name="bar_name" id="bar_name_input" value="Principal">
 
@@ -229,10 +229,10 @@
              ======================================================== -->
         <div class="notoria-card rounded-2xl shadow-sm overflow-hidden">
             <div class="px-5 py-3.5 notoria-card-header flex items-center justify-between border-b notoria-border">
-                <h3 class="text-xs font-black uppercase tracking-wider text-white font-mono">
+                <h3 class="text-xs font-black uppercase tracking-wider text-white font-mono" id="table-header-count">
                     Historial de Facturas Emitidas ({{ $invoices->count() }})
                 </h3>
-                <span class="text-xs font-mono font-bold text-[#F5B81C]">
+                <span class="text-xs font-mono font-bold text-[#F5B81C]" id="table-header-total">
                     Total Facturado: Bs. {{ number_format($totalTarjeta, 2) }}
                 </span>
             </div>
@@ -251,7 +251,7 @@
                     </thead>
                     <tbody class="divide-y notoria-border font-sans" id="invoices-table-body">
                         @forelse($invoices as $inv)
-                            <tr id="invoice-row-{{ $inv->id }}" class="hover:bg-slate-500/10 transition-colors">
+                            <tr id="invoice-row-{{ $inv->id }}" data-id="{{ $inv->id }}" data-amount="{{ $inv->amount }}" data-commission="{{ $inv->commission_amount }}" data-net="{{ $inv->net_amount }}" class="hover:bg-slate-500/10 transition-colors">
                                 <td class="px-4 py-3 text-center font-bold font-mono theme-text-secondary text-xs">
                                     #{{ $inv->correlative_num }}
                                 </td>
@@ -291,7 +291,32 @@
 
 </div>
 
+<!-- Toast flotante estilo iOS -->
+<div id="invoice-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-black/95 border border-zinc-800 text-xs text-zinc-200 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none">
+    <span id="invoice-toast-dot" class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
+    <span id="invoice-toast-text" class="font-bold font-sans"></span>
+</div>
+
 <script>
+function showInvoiceToast(text, type = 'success') {
+    const toast = document.getElementById('invoice-toast');
+    const toastText = document.getElementById('invoice-toast-text');
+    const toastDot = document.getElementById('invoice-toast-dot');
+    if (!toast || !toastText) return;
+
+    toastText.innerHTML = text;
+    if (toastDot) {
+        toastDot.className = type === 'error' ? 'w-2 h-2 rounded-full bg-rose-500' : 'w-2 h-2 rounded-full bg-[#F5B81C]';
+    }
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 2800);
+}
+
 /* --- CONTROL DE BARRA (PÍLDORAS MODO IPHONE) --- */
 function selectBar(bar) {
     document.getElementById('bar_name_input').value = bar;
@@ -308,7 +333,146 @@ function selectBar(bar) {
     });
 }
 
-/* --- ELIMINACIÓN ASINCRÓNICA SIN PARPADEO --- */
+/* --- RECALCULAR KPIS DE FACTURAS EN TIEMPO REAL --- */
+function recalculateInvoiceKPIs() {
+    let count = 0;
+    let totalBruto = 0;
+    let totalComision = 0;
+    let totalNeto = 0;
+
+    document.querySelectorAll('#invoices-table-body tr[id^="invoice-row-"]').forEach(row => {
+        count++;
+        totalBruto += parseFloat(row.dataset.amount) || 0;
+        totalComision += parseFloat(row.dataset.commission) || 0;
+        totalNeto += parseFloat(row.dataset.net) || 0;
+    });
+
+    const brutoEl = document.getElementById('kpi-tarjeta-bruto');
+    const countEl = document.getElementById('kpi-tarjeta-count');
+    const comisionEl = document.getElementById('kpi-tarjeta-comision');
+    const netoEl = document.getElementById('kpi-tarjeta-neto');
+    const headerCount = document.getElementById('table-header-count');
+    const headerTotal = document.getElementById('table-header-total');
+
+    if (brutoEl) brutoEl.innerHTML = `<span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>${totalBruto.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (countEl) countEl.textContent = `${count} vouchers registrados`;
+    if (comisionEl) comisionEl.innerHTML = `- <span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>${totalComision.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (netoEl) netoEl.innerHTML = `<span class="text-sm mr-0.5 font-sans font-bold">Bs.</span>${totalNeto.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (headerCount) headerCount.textContent = `Historial de Facturas Emitidas (${count})`;
+    if (headerTotal) headerTotal.textContent = `Total Facturado: Bs. ${totalBruto.toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+/* --- REGISTRO ASINCRÓNICO DE FACTURA (SIN RECARGA) --- */
+window.handleInvoiceSubmit = async function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const form = document.getElementById('invoice-form');
+    if (!form) return false;
+
+    const amountInput = document.getElementById('amount');
+    const val = parseFloat(amountInput.value);
+    if (!val || val <= 0) {
+        showInvoiceToast('Ingresa un monto válido', 'error');
+        amountInput.focus();
+        return false;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.innerHTML : 'Registrar Tarjeta';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Registrando...</span>';
+    }
+
+    try {
+        const formData = new FormData(form);
+        formData.append('_ajax', '1');
+
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            const inv = data.invoice;
+            const emptyRow = document.getElementById('empty-invoices-row');
+            if (emptyRow) emptyRow.remove();
+
+            const tbody = document.getElementById('invoices-table-body');
+            const tr = document.createElement('tr');
+            tr.id = `invoice-row-${inv.id}`;
+            tr.dataset.id = inv.id;
+            tr.dataset.amount = inv.amount;
+            tr.dataset.commission = inv.commission_amount;
+            tr.dataset.net = inv.net_amount;
+            tr.className = 'hover:bg-slate-500/10 transition-colors animate-fade-in';
+
+            const comText = inv.commission_amount > 0 ? `- Bs. ${inv.commission_amount.toFixed(2)}` : '—';
+            tr.innerHTML = `
+                <td class="px-4 py-3 text-center font-bold font-mono theme-text-secondary text-xs">
+                    #${inv.correlative_num}
+                </td>
+                <td class="px-4 py-3 theme-text-secondary font-medium">
+                    ${inv.bar_name || 'Principal'}
+                </td>
+                <td class="px-4 py-3 text-right font-black font-mono theme-text-primary text-sm">
+                    Bs. ${inv.amount.toFixed(2)}
+                </td>
+                <td class="px-4 py-3 text-right font-mono text-rose-500 font-bold text-xs">
+                    ${comText}
+                </td>
+                <td class="px-4 py-3 text-right font-black font-mono text-[#F5B81C] text-sm">
+                    Bs. ${inv.net_amount.toFixed(2)}
+                </td>
+                <td class="px-4 py-3 text-right">
+                    <button type="button" 
+                            onclick="deleteInvoice(${inv.id})" 
+                            class="text-rose-500 hover:text-rose-400 font-bold text-xs cursor-pointer transition-colors active:scale-95">
+                        Borrar
+                    </button>
+                </td>
+            `;
+
+            tbody.prepend(tr);
+
+            // Actualizar correlativo siguiente
+            if (data.next_correlative) {
+                const badge = document.getElementById('badge-next-correlative');
+                if (badge) badge.textContent = `Factura #${data.next_correlative}`;
+                const inp = document.getElementById('correlative_num_input');
+                if (inp) inp.value = data.next_correlative;
+            }
+
+            recalculateInvoiceKPIs();
+            amountInput.value = '';
+            amountInput.focus();
+            showInvoiceToast(data.message || 'Factura registrada con éxito');
+        } else {
+            showInvoiceToast(data.message || data.error || 'Error al registrar factura', 'error');
+        }
+    } catch (err) {
+        console.error('Error al registrar factura:', err);
+        showInvoiceToast('Error de conexión al registrar factura', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    }
+
+    return false;
+};
+
+/* --- ELIMINACIÓN ASINCRÓNICA SIN RECARGA DE PÁGINA --- */
 async function deleteInvoice(id) {
     if (!confirm('¿Eliminar esta factura definitivamente?')) return;
     const row = document.getElementById('invoice-row-' + id);
@@ -320,27 +484,41 @@ async function deleteInvoice(id) {
             headers: {
                 'X-CSRF-TOKEN': csrf,
                 'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json'
             }
         });
 
-        if (res.ok) {
+        const data = await res.json();
+
+        if (res.ok && data.success) {
             if (row) {
                 row.style.transition = 'all 0.25s ease';
                 row.style.opacity = '0';
                 row.style.transform = 'translateX(14px)';
                 setTimeout(() => {
                     row.remove();
-                    window.location.reload();
+                    recalculateInvoiceKPIs();
+
+                    const tbody = document.getElementById('invoices-table-body');
+                    if (tbody && !tbody.querySelector('tr[id^="invoice-row-"]')) {
+                        tbody.innerHTML = `
+                            <tr id="empty-invoices-row">
+                                <td colspan="6" class="px-4 py-10 text-center theme-text-muted font-sans">
+                                    No hay facturas registradas en esta noche.
+                                </td>
+                            </tr>
+                        `;
+                    }
                 }, 220);
-            } else {
-                window.location.reload();
             }
+            showInvoiceToast(data.message || 'Factura eliminada');
         } else {
-            window.location.reload();
+            showInvoiceToast(data.error || data.message || 'No se pudo eliminar la factura', 'error');
         }
     } catch (err) {
-        window.location.reload();
+        console.error('Error al eliminar factura:', err);
+        showInvoiceToast('Error de red al eliminar la factura', 'error');
     }
 }
 

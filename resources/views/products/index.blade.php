@@ -140,7 +140,7 @@
                 <span class="text-[11px] font-black uppercase tracking-wider theme-text-secondary block truncate">
                     Variedad de Bebidas
                 </span>
-                <div class="text-2xl font-black theme-text-primary tracking-tight mt-0.5 font-sans truncate">
+                <div class="text-2xl font-black theme-text-primary tracking-tight mt-0.5 font-sans truncate" id="kpi-variety">
                     {{ $products->where('is_active', true)->count() }} <span class="text-xs font-normal theme-text-muted">marcas</span>
                 </div>
                 <span class="text-[10px] font-bold theme-text-muted block mt-0.5">Bebidas activas en carta</span>
@@ -564,7 +564,7 @@
             <svg class="w-4 h-4 text-white" fill="none" stroke="#ffffff" stroke-width="2.5" viewBox="0 0 24 24" style="stroke: #ffffff !important;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
-    <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data" class="drawer-body space-y-4">
+    <form method="POST" action="{{ route('products.store') }}" id="create-prod-form" onsubmit="event.preventDefault(); handleCreateProductSubmit(event); return false;" enctype="multipart/form-data" class="drawer-body space-y-4">
         @csrf
         <div>
             <label for="d_name" class="block text-xs font-bold theme-text-secondary mb-1.5">Nombre de la Bebida <span class="text-amber-600 dark:text-[#F5B81C]">*</span></label>
@@ -670,7 +670,7 @@
                     class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-transparent text-slate-700 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-white text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                 Cancelar
             </button>
-            <button type="submit" 
+            <button type="button" onclick="handleCreateProductSubmit(event)" id="create-prod-submit-btn"
                     class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#F5B81C] hover:bg-[#e5ac18] text-black text-xs sm:text-sm font-black uppercase tracking-wider text-center transition-all cursor-pointer shadow-md">
                 Guardar Bebida
             </button>
@@ -900,6 +900,11 @@ function syncAllInputs(id, total) {
     const pkgs = Math.floor(Math.max(0, total) / uPkg);
     const units = Math.max(0, total) % uPkg;
 
+    // Actualizar dataset en todos los contenedores de este producto
+    document.querySelectorAll('.product-item[data-id="' + id + '"]').forEach(el => {
+        el.dataset.stock = total;
+    });
+
     // Actualizar inputs principales
     getInputs(id).forEach(inp => {
         inp.value = total;
@@ -951,33 +956,42 @@ function showError(id) {
 
 /* --- ACTUALIZAR KPIS GLOBALES --- */
 function refreshKPIs() {
-    let total = 0, val = 0, low = 0;
-    document.querySelectorAll('#table-products-tbody .product-item').forEach(row => {
+    let total = 0, val = 0, low = 0, activeCount = 0;
+    const rows = document.querySelectorAll('#table-products-tbody .product-item');
+    const items = rows.length > 0 ? rows : document.querySelectorAll('#view-cards-container .product-item');
+
+    items.forEach(row => {
         const id = row.dataset.id;
-        const inp = document.getElementById('stock-input-table-' + id);
+        const inp = document.getElementById('stock-input-cards-' + id) || document.getElementById('stock-input-table-' + id);
         const s = inp ? (parseInt(inp.value) || 0) : (parseInt(row.dataset.stock) || 0);
         row.dataset.stock = s;
         total += s;
         val += s * (parseFloat(row.dataset.price) || 0);
         if (s <= 10) low++;
+        activeCount++;
     });
 
     const kb = document.getElementById('kpi-total-bottles');
     const kv = document.getElementById('kpi-valuation');
     const kl = document.getElementById('kpi-low-stock');
+    const kvar = document.getElementById('kpi-variety');
 
-    if (kb) kb.innerHTML = total.toLocaleString() + ' <span class="text-xs font-normal text-zinc-400">botellas</span>';
+    if (kb) kb.innerHTML = total.toLocaleString() + ' <span class="text-xs font-normal theme-text-muted">botellas</span>';
     if (kv) kv.innerHTML = '<span class="text-sm text-[#F5B81C] mr-0.5 font-bold">Bs.</span>' + Math.round(val).toLocaleString();
+    if (kvar) kvar.innerHTML = activeCount + ' <span class="text-xs font-normal theme-text-muted">marcas</span>';
     if (kl) {
-        kl.innerHTML = low + ' <span class="text-xs font-normal text-zinc-400">alertas</span>';
+        kl.innerHTML = low + ' <span class="text-xs font-normal theme-text-muted">alertas</span>';
         if (low > 0) {
-            kl.classList.remove('text-zinc-400');
-            kl.classList.add('text-amber-400');
+            kl.classList.remove('theme-text-primary', 'text-zinc-400');
+            kl.classList.add('text-amber-500');
         } else {
-            kl.classList.remove('text-amber-400');
-            kl.classList.add('text-zinc-400');
+            kl.classList.remove('text-amber-500');
+            kl.classList.add('theme-text-primary');
         }
     }
+
+    const allPill = document.querySelector('.category-btn[data-cat="all"]');
+    if (allPill) allPill.textContent = 'Todas (' + activeCount + ')';
 }
 
 /* --- ENVÍO AL SERVIDOR (AJAX PATCH) --- */
@@ -1165,7 +1179,9 @@ function openEditDrawer(id, name, cat, unit, saleP, costP, uPkg, stock, active, 
     document.getElementById('ed_sale_price').value = saleP;
     document.getElementById('ed_cost_price').value = costP;
     document.getElementById('ed_units_per_package').value = uPkg;
-    document.getElementById('ed_stock_warehouse').value = stock;
+    const liveInp = document.getElementById('stock-input-cards-' + id) || document.getElementById('stock-input-table-' + id);
+    const liveStock = liveInp ? parseInt(liveInp.value) : stock;
+    document.getElementById('ed_stock_warehouse').value = isNaN(liveStock) ? stock : liveStock;
     document.getElementById('ed_is_active').value = active;
     for (let o of document.getElementById('ed_category').options) o.selected = o.value === cat;
 
@@ -1275,7 +1291,7 @@ function updateProductDOM(p) {
             const titleEl = item.querySelector('h3');
             if (titleEl) titleEl.textContent = p.name;
 
-            const unitSpans = item.querySelectorAll('.flex.items-center.justify-between.text-\\[10px\\] span');
+            const unitSpans = item.querySelectorAll('.theme-text-secondary.font-medium span, .text-\\[10px\\] span');
             if (unitSpans.length >= 2) {
                 unitSpans[0].textContent = p.unit;
                 unitSpans[1].textContent = uPkg + ' unid/caja';
@@ -1284,7 +1300,7 @@ function updateProductDOM(p) {
             const catBadge = item.querySelector('.uppercase');
             if (catBadge) catBadge.textContent = sub;
 
-            const priceBadge = item.querySelector('.font-mono.font-bold');
+            const priceBadge = item.querySelector('.font-mono.font-black') || item.querySelector('.font-mono');
             if (priceBadge) {
                 priceBadge.innerHTML = `<span class="text-[#F5B81C] text-[10px] mr-1">Bs.</span>${saleP.toFixed(2)}`;
             }
@@ -1299,10 +1315,10 @@ function updateProductDOM(p) {
             setTimeout(() => item.classList.remove('ring-2', 'ring-[#F5B81C]'), 1500);
         } else {
             // Actualizar visual de Fila de Tabla
-            const nameEl = item.querySelector('.font-black.text-white.text-xs');
+            const nameEl = item.querySelector('.font-black.theme-text-primary') || item.querySelector('span.font-black');
             if (nameEl) nameEl.textContent = p.name;
 
-            const unitEl = item.querySelector('.text-\\[10px\\].text-zinc-400');
+            const unitEl = item.querySelector('.text-\\[10px\\].theme-text-secondary') || item.querySelector('.text-\\[10px\\]');
             if (unitEl) unitEl.textContent = `${p.unit} • ${uPkg} unid. x caja`;
 
             const catBadge = item.querySelector('td:nth-child(2) span');
@@ -1322,6 +1338,262 @@ function updateProductDOM(p) {
 
     syncAllInputs(id, stock);
 }
+
+function insertNewProductDOM(p) {
+    const id = p.id;
+    const sub = calcSubcat(p.name, p.category);
+    const saleP = parseFloat(p.sale_price) || 0;
+    const costP = parseFloat(p.cost_price) || 0;
+    const stock = parseInt(p.stock_warehouse) || 0;
+    const uPkg = parseInt(p.units_per_package) || 1;
+    const pkgs = Math.floor(Math.max(0, stock) / uPkg);
+    const units = Math.max(0, stock) % uPkg;
+    const stockColor = stock <= 0 ? 'text-zinc-400' : (stock <= 10 ? 'text-amber-500' : 'text-emerald-500');
+
+    // 1. Agregar a vista de Tarjetas
+    const cardsContainer = document.getElementById('view-cards-container');
+    if (cardsContainer) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'product-item notoria-card relative overflow-hidden flex flex-col justify-between group shadow-lg';
+        cardDiv.dataset.id = id;
+        cardDiv.dataset.name = p.name.toLowerCase();
+        cardDiv.dataset.subcat = sub;
+        cardDiv.dataset.price = saleP;
+        cardDiv.dataset.stock = stock;
+        cardDiv.dataset.unitsPerPackage = uPkg;
+
+        const imgHtml = p.image_url ? `
+            <img src="${p.image_url}" alt="" class="absolute inset-0 w-full h-full object-cover blur-sm opacity-20 scale-110 pointer-events-none transition-transform duration-500 group-hover:scale-125">
+            <img src="${p.image_url}" alt="${p.name}" class="relative z-10 max-h-32 w-auto object-contain drop-shadow-[0_8px_14px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-105">
+        ` : `
+            <div class="w-12 h-12 rounded-2xl notoria-card flex items-center justify-center theme-text-muted">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+            </div>
+        `;
+
+        cardDiv.innerHTML = `
+            <div class="relative w-full h-36 overflow-hidden flex items-center justify-center notoria-subtile rounded-t-2xl rounded-b-none border-x-0 border-t-0">
+                ${imgHtml}
+                <div class="absolute top-2.5 left-2.5 right-2.5 z-20 flex items-center justify-between pointer-events-none">
+                    <span class="inline-flex px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider notoria-subtile theme-text-secondary shadow-sm">
+                        ${sub}
+                    </span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-black notoria-subtile theme-text-primary shadow-sm">
+                        <span class="text-[#F5B81C] text-[10px] mr-1">Bs.</span>${saleP.toFixed(2)}
+                    </span>
+                </div>
+                <button type="button"
+                        onclick="openEditDrawer(${id}, ${JSON.stringify(p.name)}, ${JSON.stringify(p.category)}, ${JSON.stringify(p.unit)}, ${saleP}, ${costP}, ${uPkg}, ${stock}, ${p.is_active ? 1 : 0}, ${JSON.stringify(p.image_url)}, true)"
+                        title="Cambiar foto de esta bebida"
+                        class="absolute bottom-2 right-2 z-20 p-1.5 rounded-xl notoria-subtile hover:border-amber-500 hover:text-[#F5B81C] theme-text-secondary transition-all opacity-85 hover:opacity-100 cursor-pointer shadow-md active:scale-95">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="relative z-10 p-3.5 rounded-b-2xl notoria-card rounded-t-none border-x-0 border-b-0 flex flex-col justify-between flex-1 space-y-2.5">
+                <div>
+                    <h3 class="font-black theme-text-primary text-xs line-clamp-1 leading-tight tracking-tight">${p.name}</h3>
+                    <div class="flex items-center justify-between text-[10px] theme-text-secondary font-medium mt-0.5">
+                        <span>${p.unit}</span>
+                        <span class="theme-text-muted font-mono">${uPkg} unid/caja</span>
+                    </div>
+                </div>
+                <div class="p-2.5 rounded-xl notoria-card-elevated border notoria-border flex flex-col items-center">
+                    <div class="flex items-center justify-between w-full mb-1 px-1">
+                        <span class="text-[9px] font-black uppercase tracking-wider theme-text-secondary">Stock Bodega</span>
+                        <span class="text-[9px] font-mono font-bold theme-text-muted">Botellas</span>
+                    </div>
+                    <div class="relative w-full flex items-center justify-center">
+                        <input type="number" min="0" id="stock-input-cards-${id}" value="${stock}"
+                               data-product-id="${id}" data-sale-price="${saleP}" data-last-saved="${stock}"
+                               oninput="onStockInput(this, ${id})" onchange="onStockChange(this, ${id})"
+                               onkeydown="if(event.key==='Enter'){this.blur();event.preventDefault();}"
+                               class="w-24 text-center text-xl font-black font-mono rounded-xl py-0.5 px-2 border transition-all cursor-text notoria-input ${stockColor}">
+                        <span class="save-indicator absolute -top-2 -right-2 text-[9px] font-mono opacity-0 transition-opacity duration-300 pointer-events-none notoria-subtile px-1 py-0.5 rounded border"></span>
+                    </div>
+                    <div class="flex items-center justify-center gap-2 mt-1.5 w-full text-[10px]">
+                        <div class="flex items-center gap-1 notoria-subtile px-2 py-0.5 rounded-lg">
+                            <span class="text-[8px] font-black theme-text-muted uppercase">Cajas:</span>
+                            <input type="number" min="0" value="${pkgs}" id="stock-packages-cards-${id}" data-product-id="${id}"
+                                   onchange="onStockPartChange(${id}, 'cards')"
+                                   class="w-7 text-center font-mono font-bold text-xs bg-transparent border-0 theme-text-primary focus:outline-none p-0">
+                        </div>
+                        <div class="flex items-center gap-1 notoria-subtile px-2 py-0.5 rounded-lg">
+                            <span class="text-[8px] font-black theme-text-muted uppercase">Sueltas:</span>
+                            <input type="number" min="0" value="${units}" id="stock-units-cards-${id}" data-product-id="${id}"
+                                   onchange="onStockPartChange(${id}, 'cards')"
+                                   class="w-7 text-center font-mono font-bold text-xs bg-transparent border-0 theme-text-primary focus:outline-none p-0">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-1.5 pt-1 border-t notoria-border">
+                    <div class="inline-flex items-center gap-1 shrink-0">
+                        <button type="button" onclick="stepStock(${id}, -10)" title="-10 unidades" class="px-1.5 py-1 rounded-lg text-[9px] font-mono font-black notoria-subtile text-rose-500 hover:border-rose-500 transition-all active:scale-95 cursor-pointer">-10</button>
+                        <button type="button" onclick="stepStock(${id}, -1)" title="-1 unidad" class="px-1.5 py-1 rounded-lg text-[9px] font-mono font-black notoria-subtile text-rose-500 hover:border-rose-500 transition-all active:scale-95 cursor-pointer">-1</button>
+                        <button type="button" onclick="stepStock(${id}, 1)" title="+1 unidad" class="px-1.5 py-1 rounded-lg text-[9px] font-mono font-black notoria-subtile text-emerald-500 hover:border-emerald-500 transition-all active:scale-95 cursor-pointer">+1</button>
+                        <button type="button" onclick="stepStock(${id}, 10)" title="+10 unidades" class="px-1.5 py-1 rounded-lg text-[9px] font-mono font-black notoria-subtile text-emerald-500 hover:border-emerald-500 transition-all active:scale-95 cursor-pointer">+10</button>
+                    </div>
+                    <div class="inline-flex items-center gap-1.5 ml-auto shrink-0">
+                        <button type="button" onclick="openEditDrawer(${id}, ${JSON.stringify(p.name)}, ${JSON.stringify(p.category)}, ${JSON.stringify(p.unit)}, ${saleP}, ${costP}, ${uPkg}, ${stock}, ${p.is_active ? 1 : 0}, ${JSON.stringify(p.image_url)}, true)" title="Cambiar Foto" class="p-1.5 rounded-xl notoria-subtile hover:border-amber-500 text-zinc-400 hover:text-[#F5B81C] text-xs transition-all cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </button>
+                        <button type="button" onclick="openEditDrawer(${id}, ${JSON.stringify(p.name)}, ${JSON.stringify(p.category)}, ${JSON.stringify(p.unit)}, ${saleP}, ${costP}, ${uPkg}, ${stock}, ${p.is_active ? 1 : 0}, ${JSON.stringify(p.image_url)})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl notoria-subtile hover:border-amber-500 theme-text-primary text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
+                            <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            <span>Editar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        cardsContainer.prepend(cardDiv);
+    }
+
+    // 2. Agregar a vista de Tabla
+    const tbody = document.getElementById('table-products-tbody');
+    if (tbody) {
+        const tr = document.createElement('tr');
+        tr.className = 'product-item hover:bg-slate-500/10 transition-colors';
+        tr.dataset.id = id;
+        tr.dataset.name = p.name.toLowerCase();
+        tr.dataset.subcat = sub;
+        tr.dataset.price = saleP;
+        tr.dataset.stock = stock;
+        tr.dataset.unitsPerPackage = uPkg;
+
+        tr.innerHTML = `
+            <td class="py-3 px-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg notoria-subtile flex items-center justify-center text-[#F5B81C] shrink-0 font-black text-xs">
+                        ${p.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="min-w-0">
+                        <span class="font-black theme-text-primary text-xs block truncate">${p.name}</span>
+                        <span class="text-[10px] theme-text-secondary font-medium block">${p.unit} • ${uPkg} unid. x caja</span>
+                    </div>
+                </div>
+            </td>
+            <td class="py-3 px-3">
+                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider notoria-subtile theme-text-secondary">
+                    ${sub}
+                </span>
+            </td>
+            <td class="py-3 px-3 text-right font-mono font-black theme-text-primary text-xs">
+                <span class="text-[#F5B81C] text-[10px] mr-0.5">Bs.</span>${saleP.toFixed(2)}
+            </td>
+            <td class="py-3 px-4">
+                <div class="flex items-center justify-center gap-1.5">
+                    <div class="flex items-center gap-1 notoria-subtile px-2 py-1 rounded-lg">
+                        <span class="text-[10px] font-bold theme-text-muted uppercase">Cajas:</span>
+                        <input type="number" min="0" value="${pkgs}" id="stock-packages-table-${id}" data-product-id="${id}"
+                               onchange="onStockPartChange(${id}, 'table')"
+                               class="w-10 text-center font-mono font-bold text-xs bg-transparent border-0 theme-text-primary focus:outline-none focus:ring-0 p-0">
+                    </div>
+                    <div class="flex items-center gap-1 notoria-subtile px-2 py-1 rounded-lg">
+                        <span class="text-[10px] font-bold theme-text-muted uppercase">Sueltas:</span>
+                        <input type="number" min="0" value="${units}" id="stock-units-table-${id}" data-product-id="${id}"
+                               onchange="onStockPartChange(${id}, 'table')"
+                               class="w-10 text-center font-mono font-bold text-xs bg-transparent border-0 theme-text-primary focus:outline-none focus:ring-0 p-0">
+                    </div>
+                </div>
+            </td>
+            <td class="py-3 px-4">
+                <div class="relative flex items-center justify-center">
+                    <input type="number" min="0" id="stock-input-table-${id}" value="${stock}"
+                           data-product-id="${id}" data-sale-price="${saleP}" data-last-saved="${stock}"
+                           oninput="onStockInput(this, ${id})" onchange="onStockChange(this, ${id})"
+                           onkeydown="if(event.key==='Enter'){this.blur();event.preventDefault();}"
+                           class="stock-total-input excel-input w-24 text-center text-base font-black font-mono rounded-xl py-1 px-2 focus:outline-none transition-all cursor-text ${stockColor}">
+                    <span class="save-indicator absolute -top-2 -right-2 text-[9px] font-mono opacity-0 transition-opacity duration-300 pointer-events-none notoria-subtile px-1 py-0.5 rounded border"></span>
+                </div>
+            </td>
+            <td class="py-3 px-4 text-center">
+                <div class="inline-flex items-center gap-1">
+                    <button type="button" onclick="stepStock(${id}, -10)" title="Restar 10 botellas" class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-rose-500 hover:border-rose-500 transition-all active:scale-95 cursor-pointer">-10</button>
+                    <button type="button" onclick="stepStock(${id}, -1)" title="Restar 1 botella" class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-rose-500 hover:border-rose-500 transition-all active:scale-95 cursor-pointer">-1</button>
+                    <button type="button" onclick="stepStock(${id}, 1)" title="Sumar 1 botella" class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-emerald-500 hover:border-emerald-500 transition-all active:scale-95 cursor-pointer">+1</button>
+                    <button type="button" onclick="stepStock(${id}, 10)" title="Sumar 10 botellas" class="px-2 py-1 rounded-lg text-[10px] font-mono font-black notoria-subtile text-emerald-500 hover:border-emerald-500 transition-all active:scale-95 cursor-pointer">+10</button>
+                </div>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap w-24">
+                <button type="button" onclick="openEditDrawer(${id}, ${JSON.stringify(p.name)}, ${JSON.stringify(p.category)}, ${JSON.stringify(p.unit)}, ${saleP}, ${costP}, ${uPkg}, ${stock}, ${p.is_active ? 1 : 0}, ${JSON.stringify(p.image_url)})"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl notoria-subtile hover:border-[#F5B81C] theme-text-secondary hover:theme-text-primary text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95">
+                    <svg class="w-3.5 h-3.5 text-[#F5B81C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <span>Editar</span>
+                </button>
+            </td>
+        `;
+        tbody.prepend(tr);
+    }
+}
+
+/* --- ENVÍO ASÍNCRONO DEL FORMULARIO DE CREACIÓN (SIN RECARGA) --- */
+window.handleCreateProductSubmit = async function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const form = document.getElementById('create-prod-form');
+    if (!form) return false;
+
+    const submitBtn = document.getElementById('create-prod-submit-btn') || form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.innerHTML : 'Guardar Bebida';
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Guardando...</span>';
+    }
+
+    try {
+        const formData = new FormData(form);
+        formData.append('_ajax', '1');
+
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': CSRF
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            closeDrawer();
+            form.reset();
+            const crPreview = document.getElementById('cr_preview_img');
+            const crPlaceholder = document.getElementById('cr_preview_placeholder');
+            if (crPreview) { crPreview.src = ''; crPreview.classList.add('hidden'); }
+            if (crPlaceholder) crPlaceholder.classList.remove('hidden');
+
+            if (data.product) {
+                insertNewProductDOM(data.product);
+            }
+            showAppToast(data.message || 'Bebida registrada');
+            refreshKPIs();
+        } else {
+            const err = data.message || (data.errors ? Object.values(data.errors).flat().join('<br>') : 'Error al registrar bebida');
+            showAppToast(err, 'error');
+        }
+    } catch(err) {
+        console.error('Error al registrar bebida:', err);
+        showAppToast('Error de conexión al registrar bebida', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    }
+
+    return false;
+};
+
+document.getElementById('create-prod-form')?.addEventListener('submit', window.handleCreateProductSubmit);
 
 /* --- ENVÍO ASÍNCRONO DEL FORMULARIO DE EDICIÓN (SIN RECARGA NI PÉRDIDA DE SCROLL) --- */
 window.handleEditProductSubmit = async function(e) {

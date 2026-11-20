@@ -45,17 +45,41 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:100',
-            'sale_price' => 'required|numeric|min:0',
-            'cost_price' => 'nullable|numeric|min:0',
-            'unit' => 'required|string|max:50',
-            'image_path' => 'nullable|string|max:255',
-            'units_per_package' => 'required|integer|min:1',
-            'stock_warehouse' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:5120',
-        ]);
+        if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'category' => 'required|string|max:100',
+                'sale_price' => 'required|numeric|min:0',
+                'cost_price' => 'nullable|numeric|min:0',
+                'unit' => 'required|string|max:50',
+                'image_path' => 'nullable|string|max:255',
+                'units_per_package' => 'required|integer|min:1',
+                'stock_warehouse' => 'required|integer|min:0',
+                'image' => 'nullable|image|max:5120',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first(),
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+        } else {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'category' => 'required|string|max:100',
+                'sale_price' => 'required|numeric|min:0',
+                'cost_price' => 'nullable|numeric|min:0',
+                'unit' => 'required|string|max:50',
+                'image_path' => 'nullable|string|max:255',
+                'units_per_package' => 'required|integer|min:1',
+                'stock_warehouse' => 'required|integer|min:0',
+                'image' => 'nullable|image|max:5120',
+            ]);
+        }
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -69,6 +93,27 @@ class ProductController extends Controller
         $product = Product::create($validated);
         $this->syncStockBreakdown($product);
         $product->save();
+
+        if ($request->wantsJson() || $request->ajax() || $request->has('_ajax')) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bebida "' . $product->name . '" registrada correctamente.',
+                'product' => [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'category' => $product->category,
+                    'sale_price' => (float)$product->sale_price,
+                    'cost_price' => (float)($product->cost_price ?? 0),
+                    'unit' => $product->unit,
+                    'units_per_package' => (int)$product->units_per_package,
+                    'stock_warehouse' => (int)$product->stock_warehouse,
+                    'stock_packages' => (int)$product->stock_packages,
+                    'stock_units' => (int)$product->stock_units,
+                    'is_active' => (bool)$product->is_active,
+                    'image_url' => $product->image_url,
+                ],
+            ]);
+        }
 
         return redirect()->route('products.index')->with('success', 'Producto registrado correctamente.');
     }

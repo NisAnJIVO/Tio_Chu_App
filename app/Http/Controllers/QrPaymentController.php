@@ -97,17 +97,43 @@ class QrPaymentController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'night_session_id' => 'required|exists:night_sessions,id',
-            'point_of_sale' => 'nullable|string|in:Barra Principal,Tienda,Subte',
-            'operator_name' => 'nullable|string|max:100',
-            'cobrante_name' => 'nullable|string|max:100',
-            'bank_app' => 'required|in:YASTA,YAPE',
-            'amount' => 'required|numeric|min:0.01',
-        ]);
+        $isAjax = $request->wantsJson() || $request->ajax() || $request->has('_ajax');
+
+        if ($isAjax) {
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'night_session_id' => 'required|exists:night_sessions,id',
+                'point_of_sale' => 'nullable|string|in:Barra Principal,Tienda,Subte',
+                'operator_name' => 'nullable|string|max:100',
+                'cobrante_name' => 'nullable|string|max:100',
+                'bank_app' => 'required|in:YASTA,YAPE',
+                'amount' => 'required|numeric|min:0.01',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first(),
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+        } else {
+            $validated = $request->validate([
+                'night_session_id' => 'required|exists:night_sessions,id',
+                'point_of_sale' => 'nullable|string|in:Barra Principal,Tienda,Subte',
+                'operator_name' => 'nullable|string|max:100',
+                'cobrante_name' => 'nullable|string|max:100',
+                'bank_app' => 'required|in:YASTA,YAPE',
+                'amount' => 'required|numeric|min:0.01',
+            ]);
+        }
 
         $session = NightSession::findOrFail($validated['night_session_id']);
         if (!$session->isOpen()) {
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'No se pueden registrar cobros QR en una noche cerrada.'], 422);
+            }
             return back()->with('error', 'No se pueden registrar cobros QR en una noche cerrada.');
         }
 
@@ -115,10 +141,13 @@ class QrPaymentController extends Controller
 
         $cobrante = trim($validated['cobrante_name'] ?? $validated['operator_name'] ?? '');
         if (empty($cobrante)) {
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'El Nombre del Cobrante es obligatorio.'], 422);
+            }
             return back()->withErrors(['operator_name' => 'El Nombre del Cobrante es obligatorio.'])->withInput();
         }
 
-        QrPayment::create([
+        $qr = QrPayment::create([
             'night_session_id' => $validated['night_session_id'],
             'point_of_sale' => $pointOfSale,
             'operator_name' => $cobrante,
@@ -130,27 +159,45 @@ class QrPaymentController extends Controller
 
         $this->sessionService->recalculateClosing($session);
 
+        if ($isAjax) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pago QR de Bs. ' . number_format($qr->amount, 2) . ' registrado en ' . $pointOfSale . '.',
+                'qr' => [
+                    'id' => $qr->id,
+                    'point_of_sale' => $qr->point_of_sale,
+                    'operator_name' => $qr->operator_name,
+                    'bank_app' => $qr->bank_app,
+                    'amount' => (float)$qr->amount,
+                    'destroy_url' => route('qrs.destroy', $qr),
+                ],
+            ]);
+        }
+
         return back()->with('success', 'Pago QR registrado en ' . $pointOfSale . '.');
     }
 
     public function destroy(Request $request, QrPayment $qr)
     {
+        $isAjax = $request->wantsJson() || $request->ajax() || $request->has('_ajax');
+
         $session = $qr->nightSession;
         if ($session && !$session->isOpen()) {
-            if ($request->wantsJson()) {
+            if ($isAjax) {
                 return response()->json(['success' => false, 'message' => 'No se pueden anular cobros QR de una noche cerrada.'], 403);
             }
             return back()->with('error', 'No se pueden anular cobros QR de una noche cerrada.');
         }
 
+        $id = $qr->id;
         $qr->delete();
 
         if ($session) {
             $this->sessionService->recalculateClosing($session);
         }
 
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'message' => 'Pago QR eliminado.']);
+        if ($isAjax) {
+            return response()->json(['success' => true, 'id' => $id, 'message' => 'Pago QR eliminado.']);
         }
 
         return back()->with('success', 'Pago QR eliminado.');

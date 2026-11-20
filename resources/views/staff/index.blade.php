@@ -266,7 +266,7 @@
     <!-- ========================================================
          3. TABLA Y TARJETAS DE PERSONAL (CARDS NOTORIAS)
          ======================================================== -->
-    <div class="notoria-card overflow-hidden font-sans min-h-[480px] shadow-xl">
+    <div id="staff-list-container" class="notoria-card overflow-hidden font-sans min-h-[480px] shadow-xl">
         @php
             $catLabels = [
                 1 => '1. SEGURIDAD',
@@ -1324,9 +1324,26 @@
                 closeShiftSelectorModal();
                 const badge = document.getElementById('header-shift-count-badge');
                 if (badge) badge.textContent = data.count;
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
+
+                // Actualizar la lista en vivo sin recargar la página completa
+                try {
+                    const htmlRes = await fetch(window.location.href, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (htmlRes.ok) {
+                        const htmlText = await htmlRes.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlText, 'text/html');
+
+                        const newContainer = doc.getElementById('staff-list-container');
+                        const oldContainer = document.getElementById('staff-list-container');
+                        if (newContainer && oldContainer) {
+                            oldContainer.innerHTML = newContainer.innerHTML;
+                        }
+                    }
+                } catch(err) {
+                    console.log('Actualización suave de lista de personal:', err);
+                }
             } else {
                 showToast(data.message || 'Error al guardar el turno', 'error');
             }
