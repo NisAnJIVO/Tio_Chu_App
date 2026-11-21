@@ -209,7 +209,6 @@
                   class="space-y-5 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-                <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="">
 
                 <!-- NIVEL 1: CONTEXTO / FILTROS (Punto de Venta + Aplicación) -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start pb-5 border-b notoria-border">
@@ -269,150 +268,58 @@
                 <!-- NIVEL 2: DATOS DE TRANSACCIÓN (Cobrante + Monto + Botón Cobrar) -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
                     
-                    <!-- COBRANTE (Buscador Ancho y Cómodo: 5 columnas) -->
-                    <div class="md:col-span-5 flex flex-col gap-1.5 relative" id="cobrante-container">
-                        <label for="cobrante-search-input" class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
-                            Cobrante
+                    <!-- COBRANTE (Selector de Turno: Meseros y Bartenders de esa noche) -->
+                    <div class="md:col-span-5 flex flex-col gap-1.5">
+                        <label for="cobrante_select" class="block text-xs font-black uppercase tracking-wider theme-text-secondary h-4 flex items-center">
+                            Cobrante de Turno
                         </label>
-
-                        <div class="flex items-center rounded-xl notoria-subtile px-3.5 h-10 sm:h-11 border notoria-border focus-within:border-[#F5B81C] focus-within:ring-2 focus-within:ring-[#F5B81C]/20 transition-all relative">
-                            <!-- Magnifying glass icon -->
-                            <svg class="w-4 h-4 theme-text-muted shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-
-                            <!-- Direct search input -->
-                            <input type="text" 
-                                   id="cobrante-search-input" 
-                                   autocomplete="off" 
-                                   placeholder="Buscar cobrante por nombre..."
-                                   class="w-full bg-transparent border-0 text-sm font-bold theme-text-primary placeholder:text-zinc-400 focus:outline-none p-0 cursor-pointer">
-
-                            <!-- Botón Limpiar Selección -->
-                            <button type="button" 
-                                    id="cobrante-clear-btn" 
-                                    onclick="clearCobrante()"
-                                    class="hidden text-xs theme-text-muted hover:theme-text-primary transition-colors cursor-pointer px-1 mr-1"
-                                    title="Limpiar cobrante">
-                                ✕
-                            </button>
-
-                            <!-- Chevron indicator -->
-                            <svg id="cobrante-chevron" class="w-4 h-4 theme-text-muted shrink-0 transition-transform duration-200 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-
-                        <!-- Menú Desplegable con Staff Agrupado -->
-                        <div id="cobrante-menu" 
-                             class="hidden absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl notoria-card shadow-2xl p-2 max-h-72 overflow-y-auto space-y-2 border notoria-border">
-                            
-                            @php
-                                $bartenders = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'bartender') || str_contains(mb_strtolower($s->role), 'barra'));
-                                $refuerzos  = $cobrantesStaff->filter(fn($s) => str_contains(mb_strtolower($s->role), 'refuerzo'));
-                                $meseros    = $cobrantesStaff->reject(fn($s) =>
-                                    str_contains(mb_strtolower($s->role), 'bartender') ||
-                                    str_contains(mb_strtolower($s->role), 'barra') ||
-                                    str_contains(mb_strtolower($s->role), 'refuerzo')
-                                );
-                            @endphp
-
-                            <!-- Grupo Bartenders -->
-                            @if($bartenders->isNotEmpty())
-                                <div class="cobrante-group" data-group="bartenders">
-                                    <div class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#F5B81C]">
-                                        BARTENDERS
-                                    </div>
-                                    <div class="space-y-0.5 mt-0.5">
+                        <div class="relative">
+                            <select name="cobrante_select" id="cobrante_select" required onchange="handleCobranteChange(this)"
+                                    class="w-full h-10 sm:h-11 rounded-xl notoria-subtile pl-3.5 pr-9 border notoria-border font-bold text-sm theme-text-primary focus:outline-none focus:border-[#F5B81C] focus:ring-2 focus:ring-[#F5B81C]/20 transition-all cursor-pointer appearance-none">
+                                <option value="" disabled selected>-- Seleccionar Cobrante de Turno --</option>
+                                @if(isset($bartenders) && $bartenders->isNotEmpty())
+                                    <optgroup label="🍹 BARTENDERS / BARRA">
                                         @foreach($bartenders as $b)
-                                            @php
-                                                $bRole = str_ireplace('mozo', 'MESERO', $b->role);
-                                            @endphp
-                                            <div onclick="selectCobrante('{{ $b->name }}', '{{ strtoupper($bRole) }}')" 
-                                                 class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F5B81C]/15 cursor-pointer transition-colors group"
-                                                 data-name="{{ $b->name }}"
-                                                 data-search="{{ strtolower($b->name . ' ' . $bRole) }}">
-                                                <div class="flex items-center gap-2.5 min-w-0">
-                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
-                                                        {{ substr($b->name, 0, 1) }}
-                                                    </div>
-                                                    <div class="min-w-0 truncate">
-                                                        <span class="text-xs font-bold theme-text-primary block truncate">{{ $b->name }}</span>
-                                                        <span class="text-[10px] theme-text-secondary font-medium block truncate">{{ strtoupper($bRole) }}</span>
-                                                    </div>
-                                                </div>
-                                                <span class="cobrante-check hidden text-[#F5B81C] text-xs font-black shrink-0 ml-2">✓</span>
-                                            </div>
+                                            <option value="{{ $b->name }}" class="bg-slate-900 text-white py-1">
+                                                {{ $b->name }} ({{ strtoupper($b->role ?? 'BARTENDER') }})
+                                            </option>
                                         @endforeach
-                                    </div>
-                                </div>
-                            @endif
-
-                            <!-- Grupo Meseros -->
-                            @if($meseros->isNotEmpty())
-                                <div class="cobrante-group" data-group="meseros">
-                                    <div class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#F5B81C]">
-                                        MESEROS
-                                    </div>
-                                    <div class="space-y-0.5 mt-0.5">
+                                    </optgroup>
+                                @endif
+                                @if(isset($meseros) && $meseros->isNotEmpty())
+                                    <optgroup label="🤵 MESEROS / MOZOS">
                                         @foreach($meseros as $m)
                                             @php
-                                                $cleanRole = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $m->role);
-                                                if (empty($cleanRole) || strtolower($cleanRole) === 'staff') {
-                                                     $cleanRole = 'MESERO';
-                                                }
+                                                $cleanRole = str_ireplace(['mozo', 'mozos'], ['MESERO', 'MESEROS'], $m->role ?? 'MESERO');
                                             @endphp
-                                            <div onclick="selectCobrante('{{ $m->name }}', '{{ strtoupper($cleanRole) }}')" 
-                                                 class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F5B81C]/15 cursor-pointer transition-colors group"
-                                                 data-name="{{ $m->name }}"
-                                                 data-search="{{ strtolower($m->name . ' ' . $cleanRole) }}">
-                                                <div class="flex items-center gap-2.5 min-w-0">
-                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
-                                                        {{ substr($m->name, 0, 1) }}
-                                                    </div>
-                                                    <div class="min-w-0 truncate">
-                                                        <span class="text-xs font-bold theme-text-primary block truncate">{{ $m->name }}</span>
-                                                        <span class="text-[10px] theme-text-secondary font-medium block truncate">{{ strtoupper($cleanRole) }}</span>
-                                                    </div>
-                                                </div>
-                                                <span class="cobrante-check hidden text-[#F5B81C] text-xs font-black shrink-0 ml-2">✓</span>
-                                            </div>
+                                            <option value="{{ $m->name }}" class="bg-slate-900 text-white py-1">
+                                                {{ $m->name }} ({{ strtoupper($cleanRole) }})
+                                            </option>
                                         @endforeach
-                                    </div>
-                                </div>
-                            @endif
-
-                            <!-- Grupo Refuerzos -->
-                            @if($refuerzos->isNotEmpty())
-                                <div class="cobrante-group" data-group="refuerzos">
-                                    <div class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#F5B81C]">
-                                        REFUERZOS
-                                    </div>
-                                    <div class="space-y-0.5 mt-0.5">
-                                        @foreach($refuerzos as $r)
-                                            @php
-                                                $rRole = str_ireplace('mozo', 'MESERO', $r->role);
-                                            @endphp
-                                            <div onclick="selectCobrante('{{ $r->name }}', '{{ strtoupper($rRole) }}')" 
-                                                 class="cobrante-item flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F5B81C]/15 cursor-pointer transition-colors group"
-                                                 data-name="{{ $r->name }}"
-                                                 data-search="{{ strtolower($r->name . ' ' . $rRole) }}">
-                                                <div class="flex items-center gap-2.5 min-w-0">
-                                                    <div class="w-6 h-6 rounded-lg notoria-subtile flex items-center justify-center text-xs font-black theme-text-primary group-hover:border-[#F5B81C] shrink-0">
-                                                        {{ substr($r->name, 0, 1) }}
-                                                    </div>
-                                                    <div class="min-w-0 truncate">
-                                                        <span class="text-xs font-bold theme-text-primary block truncate">{{ $r->name }}</span>
-                                                        <span class="text-[10px] theme-text-secondary font-medium block truncate">{{ strtoupper($rRole) }}</span>
-                                                    </div>
-                                                </div>
-                                                <span class="cobrante-check hidden text-[#F5B81C] text-xs font-black shrink-0 ml-2">✓</span>
-                                            </div>
+                                    </optgroup>
+                                @endif
+                                @if((!isset($bartenders) || $bartenders->isEmpty()) && (!isset($meseros) || $meseros->isEmpty()) && isset($cobrantesStaff) && $cobrantesStaff->isNotEmpty())
+                                    <optgroup label="PERSONAL ACTIVO">
+                                        @foreach($cobrantesStaff as $cs)
+                                            <option value="{{ $cs->name }}" class="bg-slate-900 text-white py-1">
+                                                {{ $cs->name }} ({{ strtoupper($cs->role ?? 'STAFF') }})
+                                            </option>
                                         @endforeach
-                                    </div>
-                                </div>
-                            @endif
+                                    </optgroup>
+                                @endif
+                                <option value="__custom__" class="bg-slate-900 text-[#F5B81C] font-black py-1">
+                                    ➕ Otro cobrante (escribir nombre)...
+                                </option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 theme-text-muted">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
 
+                        <!-- Input adicional sólo si elige 'Otro' -->
+                        <div id="custom-cobrante-box" class="hidden mt-1.5">
+                            <input type="text" id="custom_cobrante_input" placeholder="Escribe el nombre del cobrante..."
+                                   class="w-full h-10 rounded-xl notoria-subtile px-3.5 border border-[#F5B81C] font-bold text-sm theme-text-primary placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#F5B81C]/20 transition-all">
                         </div>
                     </div>
 
@@ -440,13 +347,13 @@
                         <span class="block text-xs font-black uppercase tracking-wider invisible select-none h-4 flex items-center" aria-hidden="true">
                             Acción
                         </span>
-                        <button type="button" onclick="handleCreateQrSubmit(event)" id="btn-submit-qr"
-                                class="h-10 sm:h-11 w-full flex items-center justify-center gap-1.5 font-bold bg-[#F5B81C] hover:bg-[#e5ac18] text-slate-900 rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
+                        <button type="submit" id="btn-submit-qr"
+                                class="h-10 sm:h-11 w-full flex items-center justify-center gap-1.5 font-bold bg-[#F5B81C] hover:bg-[#e5ac18] disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
                                 <line x1="5" y1="12" x2="19" y2="12"/>
                             </svg>
-                            <span>COBRAR</span>
+                            <span id="btn-submit-text">COBRAR</span>
                         </button>
                     </div>
 
@@ -596,93 +503,17 @@ function getPosSlug(posName) {
     return (posName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-// Control del Selector Personalizado de Cobrante (Directo & Usable)
-function openCobranteMenu() {
-    const menu = document.getElementById('cobrante-menu');
-    if (!menu) return;
-    menu.classList.remove('hidden');
-}
-
-function closeCobranteMenu() {
-    const menu = document.getElementById('cobrante-menu');
-    if (!menu) return;
-    menu.classList.add('hidden');
-}
-
-function selectCobrante(name, role) {
-    const hiddenInput = document.getElementById('cobrante_name_input');
-    const searchInput = document.getElementById('cobrante-search-input');
-    const clearBtn = document.getElementById('cobrante-clear-btn');
-    const chevron = document.getElementById('cobrante-chevron');
-
-    if (hiddenInput) hiddenInput.value = name;
-    if (searchInput) {
-        searchInput.value = name;
-        searchInput.classList.remove('border-rose-500');
-        searchInput.classList.add('font-black');
+// Control del Cobrante (Select de Turno / Manual)
+function handleCobranteChange(select) {
+    const customBox = document.getElementById('custom-cobrante-box');
+    const customInput = document.getElementById('custom_cobrante_input');
+    if (select.value === '__custom__') {
+        if (customBox) customBox.classList.remove('hidden');
+        if (customInput) customInput.focus();
+    } else {
+        if (customBox) customBox.classList.add('hidden');
+        if (customInput) customInput.value = '';
     }
-    if (clearBtn) clearBtn.classList.remove('hidden');
-    if (chevron) chevron.classList.add('hidden');
-
-    // Actualizar checks
-    document.querySelectorAll('.cobrante-item').forEach(item => {
-        const check = item.querySelector('.cobrante-check');
-        if (item.getAttribute('data-name') === name) {
-            item.classList.add('bg-zinc-800/80');
-            if (check) check.classList.remove('hidden');
-        } else {
-            item.classList.remove('bg-zinc-800/80');
-            if (check) check.classList.add('hidden');
-        }
-    });
-
-    closeCobranteMenu();
-
-    const amountInput = document.getElementById('amount');
-    if (amountInput) amountInput.focus();
-}
-
-function clearCobrante() {
-    const hiddenInput = document.getElementById('cobrante_name_input');
-    const searchInput = document.getElementById('cobrante-search-input');
-    const clearBtn = document.getElementById('cobrante-clear-btn');
-    const chevron = document.getElementById('cobrante-chevron');
-
-    if (hiddenInput) hiddenInput.value = '';
-    if (searchInput) {
-        searchInput.value = '';
-        searchInput.classList.remove('font-black', 'border-rose-500');
-        searchInput.focus();
-    }
-    if (clearBtn) clearBtn.classList.add('hidden');
-    if (chevron) chevron.classList.remove('hidden');
-
-    document.querySelectorAll('.cobrante-item').forEach(item => {
-        item.classList.remove('bg-zinc-800/80');
-        const check = item.querySelector('.cobrante-check');
-        if (check) check.classList.add('hidden');
-    });
-
-    filterCobrantes('');
-    openCobranteMenu();
-}
-
-function filterCobrantes(query) {
-    const q = (query || '').toLowerCase().trim();
-    document.querySelectorAll('.cobrante-item').forEach(item => {
-        const searchData = item.getAttribute('data-search') || '';
-        if (!q || searchData.includes(q)) {
-            item.style.display = 'flex';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-
-    // Ocultar grupos vacíos
-    document.querySelectorAll('.cobrante-group').forEach(group => {
-        const visibleItems = Array.from(group.querySelectorAll('.cobrante-item')).filter(i => i.style.display !== 'none');
-        group.style.display = visibleItems.length ? 'block' : 'none';
-    });
 }
 
 /* --- RECALCULAR TODOS LOS TOTALES Y KPIS DE QR EN VIVO --- */
@@ -741,49 +572,66 @@ function recalculateQrKPIs() {
     }
 }
 
-/* --- ENVÍO ASÍNCRONO DE COBRO QR (SIN RECARGA) --- */
+/* --- ENVÍO ASÍNCRONO DE COBRO QR (SIN RECARGA & SIN DUPLICADOS) --- */
+let isQrSubmitting = false;
+
 window.handleCreateQrSubmit = async function(e) {
     if (e) {
         e.preventDefault();
         e.stopPropagation();
     }
+
+    if (isQrSubmitting) return false;
+
     const form = document.getElementById('create-qr-form');
     if (!form) return false;
 
-    const hiddenCobrante = document.getElementById('cobrante_name_input');
-    const searchInput = document.getElementById('cobrante-search-input');
-    let cobranteVal = (hiddenCobrante?.value || searchInput?.value || '').trim();
+    const selectEl = document.getElementById('cobrante_select');
+    const customInput = document.getElementById('custom_cobrante_input');
+    let cobranteVal = '';
+
+    if (selectEl) {
+        if (selectEl.value === '__custom__') {
+            cobranteVal = (customInput?.value || '').trim();
+        } else {
+            cobranteVal = (selectEl.value || '').trim();
+        }
+    }
 
     if (!cobranteVal) {
-        if (searchInput) {
-            searchInput.classList.add('border-rose-500');
-            searchInput.focus();
+        showQrToast('Selecciona o indica el cobrante', 'error');
+        if (selectEl && selectEl.value === '__custom__') {
+            customInput?.focus();
+        } else if (selectEl) {
+            selectEl.focus();
         }
-        openCobranteMenu();
-        showQrToast('Selecciona o escribe el cobrante', 'error');
         return false;
     }
-
-    if (hiddenCobrante) hiddenCobrante.value = cobranteVal;
 
     const amountInput = document.getElementById('amount');
-    const amountVal = parseFloat(amountInput.value);
-    if (!amountVal || amountVal <= 0) {
-        showQrToast('Ingresa un monto válido', 'error');
-        amountInput.focus();
+    const amountVal = parseFloat(amountInput?.value);
+    if (!amountVal || isNaN(amountVal) || amountVal <= 0) {
+        showQrToast('Ingresa un monto válido mayor a 0', 'error');
+        amountInput?.focus();
         return false;
     }
 
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn ? submitBtn.innerHTML : 'COBRAR';
+    const submitBtn = document.getElementById('btn-submit-qr');
+    const submitText = document.getElementById('btn-submit-text');
+    const originalText = submitText ? submitText.textContent : 'COBRAR';
+
+    // Bloquear inmediatamente para prevenir doble envío
+    isQrSubmitting = true;
     if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Cobrando...</span>';
+        if (submitText) submitText.textContent = 'Cobrando...';
     }
 
     try {
         const formData = new FormData(form);
         formData.append('_ajax', '1');
+        formData.set('cobrante_name', cobranteVal);
+        formData.set('operator_name', cobranteVal);
 
         const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
@@ -852,9 +700,15 @@ window.handleCreateQrSubmit = async function(e) {
                 tbody.prepend(tr);
             }
 
+            // Recalcular KPIs y totales inmediatamente sin recarga
             recalculateQrKPIs();
-            amountInput.value = '';
-            amountInput.focus();
+
+            // Resetear campo monto y reenfocar
+            if (amountInput) {
+                amountInput.value = '';
+                amountInput.focus();
+            }
+
             showQrToast(data.message || 'Pago QR registrado');
         } else {
             showQrToast(data.message || 'Error al registrar cobro QR', 'error');
@@ -863,9 +717,10 @@ window.handleCreateQrSubmit = async function(e) {
         console.error('Error al registrar QR:', err);
         showQrToast('Error de conexión al registrar cobro QR', 'error');
     } finally {
+        isQrSubmitting = false;
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
+            if (submitText) submitText.textContent = originalText;
         }
     }
 
@@ -925,55 +780,5 @@ window.handleDeleteQr = async function(id, actionUrl) {
         showQrToast('Error de conexión al eliminar el cobro QR', 'error');
     }
 };
-
-// Event Listeners de Inicio
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('cobrante-search-input');
-    const container = document.getElementById('cobrante-container');
-
-    if (searchInput) {
-        searchInput.addEventListener('focus', () => {
-            filterCobrantes(searchInput.value);
-            openCobranteMenu();
-        });
-
-        searchInput.addEventListener('input', () => {
-            openCobranteMenu();
-            filterCobrantes(searchInput.value);
-            const hidden = document.getElementById('cobrante_name_input');
-            if (hidden) hidden.value = searchInput.value.trim();
-            const clearBtn = document.getElementById('cobrante-clear-btn');
-            const chevron = document.getElementById('cobrante-chevron');
-            if (clearBtn && chevron) {
-                if (searchInput.value.trim()) {
-                    clearBtn.classList.remove('hidden');
-                    chevron.classList.add('hidden');
-                } else {
-                    clearBtn.classList.add('hidden');
-                    chevron.classList.remove('hidden');
-                }
-            }
-        });
-
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const firstVisible = Array.from(document.querySelectorAll('.cobrante-item')).find(i => i.style.display !== 'none');
-                if (firstVisible) {
-                    e.preventDefault();
-                    firstVisible.click();
-                }
-            } else if (e.key === 'Escape') {
-                closeCobranteMenu();
-            }
-        });
-    }
-
-    // Cerrar al hacer clic afuera
-    document.addEventListener('click', (e) => {
-        if (container && !container.contains(e.target)) {
-            closeCobranteMenu();
-        }
-    });
-});
 </script>
 @endsection

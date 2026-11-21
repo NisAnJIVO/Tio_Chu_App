@@ -67,20 +67,49 @@ class QrPaymentController extends Controller
             $totalGeneral = $totalYasta + $totalYape;
         }
 
-        // Obtener personal activo filtrado: solo Meseros, Bartenders y Refuerzos
-        // Excluye explícitamente Limpieza y Seguridad
-        $cobrantesStaff = Staff::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('role', 'like', '%mesero%')
-                  ->orWhere('role', 'like', '%mozo%')
-                  ->orWhere('role', 'like', '%refuerzo%')
-                  ->orWhere('role', 'like', '%bartender%')
-                  ->orWhere('role', 'like', '%barra%');
-            })
-            ->where('role', 'not like', '%limpieza%')
-            ->where('role', 'not like', '%seguridad%')
-            ->orderBy('name')
-            ->get();
+        // Obtener personal de la noche activa: Meseros y Bartenders/Barras seleccionados esa noche
+        $nightStaff = collect();
+        if ($session && $session->staffAttendances()->exists()) {
+            $nightStaff = $session->staffAttendances()
+                ->with('staff')
+                ->get()
+                ->map(fn($att) => $att->staff)
+                ->filter();
+        }
+
+        // Si la sesión no tiene asistencias aún registradas, cargar según el día de la sesión
+        if ($nightStaff->isEmpty() && $session) {
+            $nightStaff = Staff::where('is_active', true)
+                ->get()
+                ->filter(fn($s) => $s->worksOnDay($session->day_name));
+        }
+
+        // Fallback de seguridad si no hay registros
+        if ($nightStaff->isEmpty()) {
+            $nightStaff = Staff::where('is_active', true)->get();
+        }
+
+        // Excluir terminantemente Limpieza y Seguridad (incluyendo marcas (S) o roles afines)
+        $nightStaff = $nightStaff->filter(function ($s) {
+            $role = mb_strtolower($s->role ?? '');
+            $name = mb_strtolower($s->name ?? '');
+            return !str_contains($role, 'limpieza') 
+                && !str_contains($role, 'seguridad') 
+                && !str_contains($name, '(s)');
+        });
+
+        // Clasificar en Bartenders / Barra y Meseros / Mozos
+        $bartenders = $nightStaff->filter(function ($s) {
+            $role = mb_strtolower($s->role ?? '');
+            $cat = method_exists($s, 'getRoleCategory') ? $s->getRoleCategory() : '';
+            return $cat === 'barra' || str_contains($role, 'bar') || str_contains($role, 'coctel');
+        })->sortBy('name')->values();
+
+        $meseros = $nightStaff->reject(function ($s) use ($bartenders) {
+            return $bartenders->contains('id', $s->id);
+        })->sortBy('name')->values();
+
+        $cobrantesStaff = $nightStaff->sortBy('name')->values();
 
         return view('qrs.index', compact(
             'session',
@@ -91,7 +120,9 @@ class QrPaymentController extends Controller
             'totalYasta',
             'totalYape',
             'totalGeneral',
-            'cobrantesStaff'
+            'cobrantesStaff',
+            'bartenders',
+            'meseros'
         ));
     }
 
