@@ -209,7 +209,7 @@
                   class="space-y-5 {{ !$session->isOpen() ? 'pointer-events-none opacity-50' : '' }}">
                 @csrf
                 <input type="hidden" name="night_session_id" value="{{ $session->id }}">
-                <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="" required>
+                <input type="hidden" name="cobrante_name" id="cobrante_name_input" value="">
 
                 <!-- NIVEL 1: CONTEXTO / FILTROS (Punto de Venta + Aplicación) -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start pb-5 border-b notoria-border">
@@ -440,7 +440,7 @@
                         <span class="block text-xs font-black uppercase tracking-wider invisible select-none h-4 flex items-center" aria-hidden="true">
                             Acción
                         </span>
-                        <button type="submit" 
+                        <button type="button" onclick="handleCreateQrSubmit(event)" id="btn-submit-qr"
                                 class="h-10 sm:h-11 w-full flex items-center justify-center gap-1.5 font-bold bg-[#F5B81C] hover:bg-[#e5ac18] text-slate-900 rounded-xl shadow-sm active:scale-95 transition-all cursor-pointer">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -559,8 +559,43 @@
 
 </div>
 
+<!-- Toast flotante estilo iOS -->
+<div id="qr-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-black/95 border border-zinc-800 text-xs text-zinc-200 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none">
+    <span id="qr-toast-dot" class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
+    <span id="qr-toast-text" class="font-bold font-sans"></span>
+</div>
+
 <!-- Script para interacción rápida y eliminación asíncrona -->
 <script>
+const YASTA_LOGO_URL = "{{ asset('images/LogosQR/yasta.png') }}";
+const YAPE_LOGO_URL = "{{ asset('images/LogosQR/yape.png') }}";
+
+function showQrToast(text, type = 'success') {
+    const toast = document.getElementById('qr-toast');
+    const toastText = document.getElementById('qr-toast-text');
+    const toastDot = document.getElementById('qr-toast-dot');
+    if (!toast || !toastText) return;
+
+    toastText.innerHTML = text;
+    if (toastDot) {
+        toastDot.className = type === 'error' ? 'w-2 h-2 rounded-full bg-rose-500' : 'w-2 h-2 rounded-full bg-[#F5B81C]';
+    }
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 2800);
+}
+
+function getPosSlug(posName) {
+    if (posName === 'Barra Principal') return 'barra-principal';
+    if (posName === 'Tienda') return 'tienda';
+    if (posName === 'Subte') return 'subte';
+    return (posName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 // Control del Selector Personalizado de Cobrante (Directo & Usable)
 function openCobranteMenu() {
     const menu = document.getElementById('cobrante-menu');
@@ -650,91 +685,6 @@ function filterCobrantes(query) {
     });
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('cobrante-search-input');
-    const container = document.getElementById('cobrante-container');
-
-    if (searchInput) {
-        searchInput.addEventListener('focus', () => {
-            filterCobrantes(searchInput.value);
-            openCobranteMenu();
-        });
-
-        searchInput.addEventListener('input', () => {
-            openCobranteMenu();
-            filterCobrantes(searchInput.value);
-            const hidden = document.getElementById('cobrante_name_input');
-            if (hidden) hidden.value = searchInput.value.trim();
-            const clearBtn = document.getElementById('cobrante-clear-btn');
-            const chevron = document.getElementById('cobrante-chevron');
-            if (clearBtn && chevron) {
-                if (searchInput.value.trim()) {
-                    clearBtn.classList.remove('hidden');
-                    chevron.classList.add('hidden');
-                } else {
-                    clearBtn.classList.add('hidden');
-                    chevron.classList.remove('hidden');
-                }
-            }
-        });
-
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const firstVisible = Array.from(document.querySelectorAll('.cobrante-item')).find(i => i.style.display !== 'none');
-                if (firstVisible) {
-                    e.preventDefault();
-                    firstVisible.click();
-                }
-            } else if (e.key === 'Escape') {
-                closeCobranteMenu();
-            }
-        });
-    }
-
-    // Cerrar al hacer clic afuera
-    document.addEventListener('click', (e) => {
-        if (container && !container.contains(e.target)) {
-            closeCobranteMenu();
-        }
-    });
-
-<!-- Toast flotante estilo iOS -->
-<div id="qr-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-black/95 border border-zinc-800 text-xs text-zinc-200 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none">
-    <span id="qr-toast-dot" class="w-2 h-2 rounded-full bg-[#F5B81C]"></span>
-    <span id="qr-toast-text" class="font-bold font-sans"></span>
-</div>
-
-<script>
-const YASTA_LOGO_URL = "{{ asset('images/LogosQR/yasta.png') }}";
-const YAPE_LOGO_URL = "{{ asset('images/LogosQR/yape.png') }}";
-
-function showQrToast(text, type = 'success') {
-    const toast = document.getElementById('qr-toast');
-    const toastText = document.getElementById('qr-toast-text');
-    const toastDot = document.getElementById('qr-toast-dot');
-    if (!toast || !toastText) return;
-
-    toastText.innerHTML = text;
-    if (toastDot) {
-        toastDot.className = type === 'error' ? 'w-2 h-2 rounded-full bg-rose-500' : 'w-2 h-2 rounded-full bg-[#F5B81C]';
-    }
-    toast.classList.remove('opacity-0', 'pointer-events-none');
-    toast.classList.add('opacity-100');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0', 'pointer-events-none');
-    }, 2800);
-}
-
-function getPosSlug(posName) {
-    if (posName === 'Barra Principal') return 'barra-principal';
-    if (posName === 'Tienda') return 'tienda';
-    if (posName === 'Subte') return 'subte';
-    return posName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
 /* --- RECALCULAR TODOS LOS TOTALES Y KPIS DE QR EN VIVO --- */
 function recalculateQrKPIs() {
     let globalTotal = 0, globalYasta = 0, globalYape = 0;
@@ -800,17 +750,21 @@ window.handleCreateQrSubmit = async function(e) {
     const form = document.getElementById('create-qr-form');
     if (!form) return false;
 
-    const cobranteVal = (document.getElementById('cobrante_name_input')?.value || '').trim();
+    const hiddenCobrante = document.getElementById('cobrante_name_input');
+    const searchInput = document.getElementById('cobrante-search-input');
+    let cobranteVal = (hiddenCobrante?.value || searchInput?.value || '').trim();
+
     if (!cobranteVal) {
-        const input = document.getElementById('cobrante-search-input');
-        if (input) {
-            input.classList.add('border-rose-500');
-            input.focus();
+        if (searchInput) {
+            searchInput.classList.add('border-rose-500');
+            searchInput.focus();
         }
-        if (typeof openCobranteMenu === 'function') openCobranteMenu();
-        showQrToast('Selecciona el personal que cobró', 'error');
+        openCobranteMenu();
+        showQrToast('Selecciona o escribe el cobrante', 'error');
         return false;
     }
+
+    if (hiddenCobrante) hiddenCobrante.value = cobranteVal;
 
     const amountInput = document.getElementById('amount');
     const amountVal = parseFloat(amountInput.value);
@@ -831,12 +785,14 @@ window.handleCreateQrSubmit = async function(e) {
         const formData = new FormData(form);
         formData.append('_ajax', '1');
 
+        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
         const res = await fetch(form.action, {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                ...(token ? { 'X-CSRF-TOKEN': token } : {})
             },
             body: formData
         });
@@ -920,20 +876,20 @@ window.handleCreateQrSubmit = async function(e) {
 window.handleDeleteQr = async function(id, actionUrl) {
     if (!confirm('¿Eliminar este cobro QR definitivamente?')) return;
     const row = document.getElementById('qr-row-' + id);
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
     try {
         const response = await fetch(actionUrl, {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': token,
+                ...(token ? { 'X-CSRF-TOKEN': token } : {}),
                 'X-HTTP-Method-Override': 'DELETE',
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             },
             body: new URLSearchParams({
                 '_method': 'DELETE',
-                '_token': token,
+                ...(token ? { '_token': token } : {}),
                 '_ajax': '1'
             })
         });
@@ -969,4 +925,55 @@ window.handleDeleteQr = async function(id, actionUrl) {
         showQrToast('Error de conexión al eliminar el cobro QR', 'error');
     }
 };
+
+// Event Listeners de Inicio
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('cobrante-search-input');
+    const container = document.getElementById('cobrante-container');
+
+    if (searchInput) {
+        searchInput.addEventListener('focus', () => {
+            filterCobrantes(searchInput.value);
+            openCobranteMenu();
+        });
+
+        searchInput.addEventListener('input', () => {
+            openCobranteMenu();
+            filterCobrantes(searchInput.value);
+            const hidden = document.getElementById('cobrante_name_input');
+            if (hidden) hidden.value = searchInput.value.trim();
+            const clearBtn = document.getElementById('cobrante-clear-btn');
+            const chevron = document.getElementById('cobrante-chevron');
+            if (clearBtn && chevron) {
+                if (searchInput.value.trim()) {
+                    clearBtn.classList.remove('hidden');
+                    chevron.classList.add('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                    chevron.classList.remove('hidden');
+                }
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const firstVisible = Array.from(document.querySelectorAll('.cobrante-item')).find(i => i.style.display !== 'none');
+                if (firstVisible) {
+                    e.preventDefault();
+                    firstVisible.click();
+                }
+            } else if (e.key === 'Escape') {
+                closeCobranteMenu();
+            }
+        });
+    }
+
+    // Cerrar al hacer clic afuera
+    document.addEventListener('click', (e) => {
+        if (container && !container.contains(e.target)) {
+            closeCobranteMenu();
+        }
+    });
+});
+</script>
 @endsection
